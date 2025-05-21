@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ46381              110821    IDS Payment - Should be able to scan a barcode of IDS Customer Number and IDS WO Number when doing a RV Service Payment Search in Xstore
+ *===================================================================
+ */
+  -->
+<EventConfigRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="EventConfig.xsd">
+  <EventActionMap name="SELLING">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    
+    <EventAction priority="20">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_EMPLOYEE_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="25">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_RAINCHECK_ID" />
+      <Action chainKey="REDEEM_RAIN_CHECK_BY_SCAN" chainType="START" >
+        <VisibilityRule class="dtv.pos.raincheck.RainCheckFeatureEnabledVisibilityRule" />
+      </Action>
+    </EventAction>
+    
+    <EventAction priority="30">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_TRANSACTION" />
+      <Action chainKey="START_RETURN_FROM_RECEIPT_SCAN" chainType="START">
+        <VisibilityRule class="dtv.pos.framework.action.access.CurrentUserAccCheck">
+          <Parameter name="privilege" value="RETURN_ITEM" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowMixedInTransWithSaleItemTypeRule">
+          <Parameter name="type" value="RETURN" />
+        </VisibilityRule>
+      </Action>
+    </EventAction>
+    
+    <EventAction priority="40">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_LAYAWAY_ID" />
+      <Action chainKey="PRE_LAYAWAY_CHAIN" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="50">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_SP_ORDER_ID" />
+      <Action chainKey="PRE_SPECIAL_ORDER_CHAIN" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="55">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_WORK_ORDER_ID" />
+      <Action chainKey="PRE_WORK_ORDER_CHAIN" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="60">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CCA_PRESALE_ID" />
+      <Action chainKey="PRE_PRESALE_CHAIN" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="65">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CCA_ONHOLD_ID" />
+      <Action chainKey="PRE_ONHOLD_CHAIN" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="67">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_ORDER_INFO" />
+      <Action chainKey="ORDER_MAINTENANCE_REGISTER_SETUP" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="70">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CREDIT_CARD" />
+      <!-- CHOOSE ONE CHAIN FOR DESIRED BEHAVIOUR -->
+      <!--Action chainKey="INVALID_INPUT" chainType="STACK"-->
+      <!-- <Action chainKey="SAVE_CREDIT_CARD_INPUT" chainType="STACK" /> -->
+      <Action chainKey="TENDER_CREDIT_CARD_FROM_ITEMS" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" />
+      </Action>
+    </EventAction>
+    
+    <EventAction priority="80">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_ERROR" />
+      <!-- CHOOSE ONE CHAIN FOR DESIRED BEHAVIOUR -->
+      <!--Action chainKey="INVALID_INPUT" chainType="STACK" /-->
+      <Action chainKey="BAD_CARD_READ" chainType="STACK" />
+    </EventAction>
+    
+    <EventAction priority="90">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_VOUCHER" />
+      <Action chainKey="SELLING_VOUCHER_EVENT" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="100">
+      <Event class="dtv.hardware.types.InputType" name="IN-STORE_COUPON" />
+      <Action chainKey="SCAN_SMART_COUPON" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="110">
+      <Event class="dtv.hardware.types.InputType" name="MANUFACTURER_COUPON" />
+      <Action chainKey="SCAN_SMART_COUPON" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="120">
+      <Event class="dtv.hardware.types.InputType" name="COUPON_VOUCHER" />
+      <Action chainKey="REDEEM_VOUCHER_COUPON_START" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="130">
+      <Event class="dtv.hardware.types.InputType" name="BOUNCE_BACK_COUPON" />
+      <Action chainKey="REDEEM_BOUNCE_BACK_COUPON_FROM_EVENT" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="140">
+      <EventType dtype="Class">dtv.hardware.events.CouponScanEvent</EventType>
+      <Action chainKey="SCAN_COUPON" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="150">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CUSTOMER_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    
+    <EventAction priority="160">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_OTHER" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+    
+    <!-- Zip code entry event handling -->
+    <EventAction priority="200">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_ZIP_CODE" />
+      <Action chainKey="CONTINUE_TENDER_AFTER_ZIP_ENTRY" chainType="STACK" />
+    </EventAction>
+     <!-- Zip code entry event handling -->
+     
+    <EventAction priority="210">
+      <Event class="caw.hardware.types.CawInputType" name="INPUT_RV_PAYMENT" />
+      <Action chainKey="CAW_RV_PAYMENT_SEARCH" chainType="STACK" >
+      	<VisibilityRule class="caw.pos.register.rvpayment.CawRvPaymentEnableVisibilityRule" >
+			<Parameter name="type" value="SCAN" />
+		</VisibilityRule>
+      </Action>
+    </EventAction>
+    
+  </EventActionMap>
+</EventConfigRoot>

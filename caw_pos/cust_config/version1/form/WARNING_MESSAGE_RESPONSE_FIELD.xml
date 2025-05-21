@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ31813              100719    [INTERNAL] Xstore did not displayed as the html code in prompting engines when ESB responded as message
+ *===================================================================
+ */
+-->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">WARNING_MESSAGE_RESPONSE_FIELD</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+     <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">-1.0, -3.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">inputLabelPrompt</Resource>
+        <Font fontSize="+5" />
+      </FormViewCell>
+    </FormViewPanel>
+    <ActionGroup key="DEFAULT">
+       <Action dataKey="ACCEPT" text="_OK" keyStroke="Enter"/>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

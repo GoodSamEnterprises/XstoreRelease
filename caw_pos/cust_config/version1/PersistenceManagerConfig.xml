@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#       ddMMyy      Description
+ * BZ24137           091117      [Xstore] Cannot assign new customer to transaction when the Store Primary register is offline
+ * BZ26419           180818      [PROD] Cannot return warranty when the covered item is returned
+ * BZ30754           160519      [PORT 30531 to 5.0] [Prod] Unable to complete the WO if WO deposit is created in xstore offline mode
+ *===================================================================
+ */ 
+-->
+<PersistenceManagerTypeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="PersistenceManagerConfig.xsd">
+
+  <!-- Begin BZ24137 -->
+  <PersistenceManagerType name="CUSTOMER" ref="CAW_XCENTER_STANDARD" sync="true" />
+  <PersistenceManagerType name="CUSTOMER_CRM" ref="CAW_XCENTER_STANDARD" sync="true" />
+  <PersistenceManagerType name="LOYALTY" ref="CAW_XCENTER_STANDARD" sync="true" />
+  <PersistenceManagerType name="WARRANTY" ref="XCENTER_STANDARD" /><!-- BZ26419 -->
+  <PersistenceManagerType name="CAW_XCENTER_STANDARD" ref="STORE_STANDARD">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Xcenter" />
+      <LookupLocation dataSourceName="StorePrimary" />
+      <LookupLocation dataSourceName="Local" />
+      <PersistenceLocation dataSourceName="StorePrimary" />
+    </Online>
+  </PersistenceManagerType>
+  <!-- End BZ24137 -->
+  
+  <!-- BEGIN BZ30754 -->
+  <PersistenceManagerType name="CAW_WO_XCENTER_STANDARD" ref="CUSTOMER_ACCOUNT">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Xcenter" />
+      <LookupLocation dataSourceName="StorePrimary" />
+      <LookupLocation dataSourceName="Local" />
+      <PersistenceLocation dataSourceName="StorePrimary" />
+    </Online>
+  </PersistenceManagerType>
+  <!-- END BZ30754 -->
+</PersistenceManagerTypeSet>

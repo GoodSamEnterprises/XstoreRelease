@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ23999              181017    New Changes to Sales Screen Required
+ * BZ31523              250619    [Port BZ30263 to 5.0]Display GSC member savings in transaction
+ * BZ33229              021019    Increase font size for "Will Save" amount banner
+ * BZ49884          ....060522    [PROD] Store 28 reg 3 tran 5990 Payment / Transaction completion issue
+ * BZ58480          ....010923    CAWO PROD - Suspended Transaction Issue
+ * BZ62028          ....270224    [Internal] - Amount due shows incorrectly at the first transaction when restarting Xstore.
+ * BZ61159              220224    [New Requirement] - Xstore AGIS Replacement
+ *===================================================================
+ */
+-->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+   <FormView formKey="TRANSACTION_LIST_PRIMARY" formLocation="TRANSACTION_LIST_AREA" formLayout="LEFT_TO_RIGHT">
+      <FormViewPanel panelType="TOP_INFO" class="dtv.pos.register.ui.FormTransactionInformationHeader">
+         <Touch ref="CUSTOMER::EDIT">
+            <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+            <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+            <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateCurrentPromptResponsivenessRule" />
+            <ResponsivenessRule class="caw.pos.framework.touch.rules.CawSuspendSaleResponsivenessRule" /> <!-- BZ58480 -->
+         </Touch>
+         <Touch ref="CUSTOMER::ATTACH">
+            <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+            <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+            <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateCurrentPromptResponsivenessRule" />
+            <ResponsivenessRule class="caw.pos.framework.touch.rules.CawSuspendSaleResponsivenessRule" /> <!-- BZ58480 -->
+         </Touch>
+         <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+         <LayoutParameters dtype="ParameterList">
+            <Parameter name="setGaps">
+               <param_value dtype="InsetsRef">_gapsTransactionInformationPanel</param_value>
+            </Parameter>
+            <Parameter name="setMargins">
+               <param_value dtype="InsetsRef">_marginTransactionInformationPanel</param_value>
+            </Parameter>
+         </LayoutParameters>
+         <FormViewCell type="FormLabelEmphasized" resource="customerName">
+            <Font fontSize="+4" /> <!-- BZ23999 -->
+         </FormViewCell>
+         <FormViewCell layoutLocation="Last" type="FormIcon" resource="loyaltyIcon">
+            <ReadOnly dtype="Boolean">true</ReadOnly>
+         </FormViewCell>
+      </FormViewPanel>
+
+   <!-- BEGIN BZ31523 -->
+  <FormViewPanel panelType="LIST" formTabKey="DEFAULT">
+        <ComponentParameter name="setBackground">
+          <param_value dtype="Color">0xffff66</param_value>
+        </ComponentParameter>
+        <ComponentParameter name="setOpaque">
+          <param_value dtype="Boolean">true</param_value>
+        </ComponentParameter>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutParameters dtype="ParameterList">
+            <Parameter name="setColumn">
+                <!--1.0 -->
+                <param_value dtype="DoubleArray">1.0</param_value>
+            </Parameter>
+            <Parameter name="setRow">
+                <!--1.0 -->
+                <param_value dtype="DoubleArray">-1.0, -2.0</param_value>
+            </Parameter>
+            <Parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+            </Parameter>
+        </LayoutParameters>
+        <FormViewCell layoutLocation="0, 0, 1, 1, F, F" type="ScrollEventFormList"
+            resource="viewList">
+            <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+            <Renderer>
+                <Role dtype="String">ColumnHeader</Role>
+                <Type dtype="String">SALE</Type>
+            </Renderer>
+        </FormViewCell>
+        <FormViewPanel>
+            <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+            <LayoutLocation dtype="String">0, 1, 1, 1, C, F
+            </LayoutLocation>
+            <FormViewCell layoutLocation="0, 0, 1, 1, C, F"
+                resource="clubSavingMessage">
+                <Type dtype="String">FormLabel</Type>
+                <Font fontStyle="BOLD" fontSize="+10" /> <!-- BZ33229 --><!-- BZ61159 -->
+            </FormViewCell>
+        </FormViewPanel>
+    </FormViewPanel>
+    <!-- END BZ31523 -->
+    <!-- BEGIN BZ49884 -->
+    <FormViewPanel panelType="BOTTOM_INFO" class="dtv.pos.register.ui.FormTransactionInformationFooter">
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">-1.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginTransactionInformationPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      
+      <FormViewPanel name="ASSOCIATES_AREA">
+        <Touch ref="TOUCH::SALE.CHANGE_COMMISSIONED_ASSOCIATES">
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateMenuPromptResponsivenessRule" />
+          <ResponsivenessRule class="caw.pos.framework.touch.rules.CawSuspendSaleResponsivenessRule" />          <!-- BZ58480 -->
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateCurrentPromptResponsivenessRule" />   <!-- BZ58480 -->
+        </Touch>
+        <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsTransactionHeaderPanel</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell type="FormLabel" textKey="_commissionedViewAssociates" accessibilityText="_commissionedViewAssociates">
+          <Font fontSize="+8" />
+          <ComponentParameter name="setForeground">
+            <param_value dtype="ColorRef">_white</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell type="FormLabel" resource="associateList">
+          <Font fontSize="+8" />
+          <ComponentParameter name="setForeground">
+            <param_value dtype="ColorRef">_white</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+      </FormViewPanel>
+      
+      <FormViewPanel name="TENDER_AREA">
+        <Touch ref="RETAIL::COMPLETE.TO_TENDERING">
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateMenuPromptResponsivenessRule" />
+          <!-- Begin retrofit code from oracle patch 29613162  -->
+          <ResponsivenessRule class="caw.pos.framework.touch.rules.CawSuspendSaleResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateCurrentPromptResponsivenessRule" />
+          <!-- End retrofit code from oracle patch 29613162 -->
+        </Touch>
+        <Touch ref="SEND_SALE::COMPLETE.TO_TENDERING">
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateMenuPromptResponsivenessRule" />
+        </Touch>
+        <Touch ref="RETAIL::COMPLETE.NO_TENDERING">
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateMenuPromptResponsivenessRule" />
+          <!-- Begin retrofit code from Oracle patch 29613162 -->
+          <ResponsivenessRule class="caw.pos.framework.touch.rules.CawSuspendSaleResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateCurrentPromptResponsivenessRule" />
+          <!-- End retrofit code from Oracle patch 29613162 -->
+        </Touch>
+        <Touch ref="SEND_SALE::COMPLETE.NO_TENDERING">
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateMenuPromptResponsivenessRule" />
+        </Touch>
+        <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+        <LayoutLocation dtype="String">1, 0, 1, 1, R, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsTransactionInformationPanel</param_value>
+          </Parameter>
+        </LayoutParameters>
+        
+        <FormViewCell type="FormLabel" resource="footerAmountLabel">
+          <Font fontSize="+8" />
+          <ComponentParameter name="setForeground">
+            <param_value dtype="ColorRef">_white</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell type="FormLabelTransaction" resource="amountDue"> <!-- BZ62028 -->
+          <FormatterType dtype="String">Money</FormatterType>
+          <Font fontSize="+8" />
+          <ComponentParameter name="setForeground">
+            <param_value dtype="ColorRef">_white</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell type="FormIcon" resource="footerCompleteTransactionIcon" />
+      </FormViewPanel>
+    </FormViewPanel>
+    <!-- END BZ49884 -->
+   </FormView>
+</FormViewSet>

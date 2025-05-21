@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * 
+ *===================================================================
+ */
+-->
+<DataSourceSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/DataSourceConfig.xsd">
+  <!-- Disable all query timeouts unless explicitly assigned to a data source.  Certain database
+  operations such as backups and restores might take longer than any default timeout value. -->
+  <Property key="QueryTimeout" value="0" />
+
+<!-- This file is a template for customer-specific data source configurations. 
+     Using it directly will result in erroneous encryption errors and is not 
+     generally useful in any case.  Copy this template to a customer 
+     configuration tier and make the changes appropriate for that customer's 
+     data sources, including proper customer-specific identification of encrypted 
+     database login information. -->
+
+  <DataSource name="Master" networkScope="LAN" highAvailability="true">
+    <Strategy dtype="String">jdbcPersistenceStrategy</Strategy>
+    <Property key="ConnectionFactoryClassName" value="oracle.jdbc.pool.OracleDataSource"/>
+    <Property key="ConnectionUserName" value="Pj4+MAAAAAB4rQn7iobPcLvdQ6Fcu0DG"/>
+    <Property key="ConnectionPassword" value="Pj4+MAAAAAB4rQn7iobPcLvdQ6Fcu0DG"/>
+    <Property key="ConnectionURL" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+    <Property key="ConnectionPoolMinSize" value="0"/>
+    <Property key="ConnectionPoolMaxSize" value="1"/>
+    <Property key="jdbc:SetBigStringTryClob" value="true" />
+  </DataSource>
+  <!-- 
+  <DataSource name="Training" networkScope="LAN">
+    <Strategy dtype="String">jdbcPersistenceStrategy</Strategy>
+    <Property key="ConnectionFactoryClassName" value="oracle.jdbc.pool.OracleDataSource"/>
+    <Property key="ConnectionUserName" value="Pj4+MAAAAACI8ts6YPzY5WYuln0DiBKL"/>
+    <Property key="ConnectionPassword" value="Pj4+MAAAAACI8ts6YPzY5WYuln0DiBKL"/>
+    <Property key="ConnectionURL" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+    <Property key="jdbc:SetBigStringTryClob" value="true" />
+    <Property key="ConnectionPoolMinSize" value="0"/>
+    <Property key="ConnectionPoolMaxSize" value="1"/>
+  </DataSource>
+  -->
+</DataSourceSet>

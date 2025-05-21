@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * 23164                080917    [DEV] Implement EMV Payment Integration
+ * BZ23263              250917    Implement House Account 
+ * BZ23951              171017    Customer Search Screen Needs to Include Membership#, Expiration Date
+ * BZ25640              052518    New Requirement - Used Firearm System Process Redesign
+ * BZ26270              060718    New Requirement - Display UPC on both Xstore screens and on receipts
+ * BZ26742              110718    [New Requirement] Update QAS results include the entered or existing customer address as an option
+ * BZ26847              170718    [1.6.0][25958] Reload/Issue Gift card info prints on receipt incorrectly
+ * BZ26207              190718    New Requirement - Enable Work Order Functionality
+ * BZ27000              030818    [26289] House Account tab info displays incorrectly the A/R data retrieved from EBS Neuron or localDB.
+ * BZ27339              031018    [New Requirement] Display Membership Information on Xstore POS Information tab
+ * BZ28014              310519    [New Requirement] Xstore needs to allow stackability for/Allow multiple Merchant Certificates in a transaction
+ * BZ30922              210619    [New Requirement] Price Check and Inventory Lookup
+ * BZ33305              171019    [New Requirement] Need changing about formatting, color, displaying on Current Warranty Plans Screen
+ * BZ35053              170220    [Porting the fix from patch 8 to Xstore 6.0] [PROD] Difficulty determining which gift card option to pick without associated item number
+ * BZ44917              110921    [New Requirement] IDS Payment Integration with Xstore
+ *===================================================================
+ */
+  -->
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ListViewConfig.xsd">
+<Element name="HOUSE_ACCOUNT_TENDER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="16" method="getTenderStatusCodeTranslated" />
+      <Column start="20" width="58" method="getTender.getTenderDescriptionTranslated" />
+      <Column start="78" width="20" method="getAmount" alignment="RIGHT" formatter="Money" />
+    </Row>
+    <Row>
+      <!-- <Column start="20" width="78" method="getAccountNumber" /> -->
+    </Row>
+  </Element>
+  <!-- Begin BZ23951 -->
+  <Header name="CAW_CUSTOMER_LIST">
+    <Row>
+      <Column start="0" width="30" translatable="_customers" alignment="CENTER" />
+      <Column start="30" width="40" translatable="_membership" alignment="CENTER" />
+      <Column start="70" width="15" translatable="_status" alignment="CENTER" />
+      <Column start="85" width="15" translatable="_expDate" alignment="CENTER" />
+    </Row>
+  </Header>
+  
+  <Element name="CAW_CUSTOMER_LIST">
+    <Row>
+      <Column start="0" width="100">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.customer.CustomerNameCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row securedObject="CUSTOMER_CONTACT_INFO">
+      <Column start="0" width="30" wrapText="true" >
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.customer.CustomerAddressCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="92" width="8" >
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.customer.LimitedReadIconCellHandler</CellDataHandlerFactoryClass>
+        <Icon dtype="IconRef">_imageIconLimitedRead</Icon>
+      </Column>
+      <Column start="30" width="25" wrapText="true" >
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.customer.CawCustMemshipNameCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="55" width="15" wrapText="true" >
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.customer.CawCustMemshipIdCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="70" width="15" wrapText="true" >
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.customer.CawCustMemshipStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="85" width="15" wrapText="true" >
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.customer.CawCustMemshipExpDateCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <!-- End BZ23951 -->
+  
+  <!-- Begin BZ25640 LIKE DASHBOARD_CUSTOMER_WISH_LIST-->
+  <Header name="UFA_DETAIL_LAYOUT_HEADER">
+    <ColorGroup fgColor="0xC60000" bgColor="0xFFFFFF" selectionFgColor="0xC8FFFF" selectionBgColor="0xC60000" selectionBgColor2="0xFF0A0A" /> 
+    <Row>
+      <Column start="0" width="100" translatable="_ufaAttributeLabel" />
+    </Row>
+  </Header>
+  <Element name="UFA_DETAIL_LAYOUT_HEADER">
+    <ColorGroup fgColor="0xC60000" bgColor="0xFFFFFF" selectionFgColor="0xC8FFFF" selectionBgColor="0xC60000" selectionBgColor2="0xFF0A0A" /> 
+    <Row>
+      <Column start="0" width="100" method="getItemId" />
+    </Row>
+  </Element>
+  <!-- End BZ25640 -->
+
+  <!-- Begin BZ26270 copied from base -->
+  <Element name="SALE_LINE_ITEM" iconKey="imageFromItemUrl">
+    <HiddenButton ref="TOUCH::SALE.VOID_LINE">
+      <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+      <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateCurrentPromptResponsivenessRule" />
+    </HiddenButton>
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="45" method="getItemDescription">
+        <FontRef fontKey="_fontListMedium" fontStyle="BOLD" />
+      </Column>
+      <Column start="45" width="18" method="getPreDealAmount" alignment="RIGHT" formatter="Money">
+        <Touch ref="TOUCH::SALE.CHANGE_LINE_PRICE" >
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        </Touch>
+      </Column>
+      <Column start="63" width="5">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.PriceDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="PROMO_PRICE">
+          <param_value dtype="IconRef">_imageListPriceMarkedDown</param_value>
+        </Parameter>
+        <Parameter name="RAINCHECK_PRICE">
+          <param_value dtype="IconRef">_imageListRainCheck</param_value>
+        </Parameter>
+        <Parameter name="AIRPORT_PRICE">
+          <param_value dtype="IconRef">_imageListAirportPrice</param_value>
+        </Parameter>
+        <Parameter name="CLEARANCE_PRICE">
+          <param_value dtype="IconRef">_imageListPriceClearance</param_value>
+        </Parameter>
+      </Column>
+      <Column start="68" width="10" alignment="CENTER">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.returns.QuantityDataHandler</CellDataHandlerFactoryClass>
+        <Touch ref="TOUCH::SALE.CHANGE_LINE_QUANTITY" >
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        </Touch>
+      </Column>
+      <Column start="78" width="18" alignment="RIGHT">
+        <FontRef fontKey="_fontListMedium" fontStyle="BOLD" />
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.ExtPriceDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="96" width="4" alignment="RIGHT">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.tax.TaxCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="15" method="getCompositeSaleReturnLineItemTypeCode">
+        <Touch ref="TOUCH::DISPLAY_SELECTED_ITEM" >
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        </Touch>
+      </Column>
+      <Column start="15" width="15" method="getItemId">
+        <Touch ref="TOUCH::DISPLAY_SELECTED_ITEM" >
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        </Touch>
+      </Column>
+      <!-- Begin BZ26270 added -->
+      <Column start="30" width="55">
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.register.CawUPCCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <!-- End BZ26270 added -->
+      <Column start="55" width="85">
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.register.nonphysical.CawSerialNumberCellDataHandler</CellDataHandlerFactoryClass><!-- BZ26847 -->
+      </Column>
+      <Column start="85" width="5">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.shared.listview.IconLineItemCellHandler</CellDataHandlerFactoryClass>
+        <Parameter name="attachedItem">
+          <param_value dtype="IconRef">_imageAttachedItem</param_value>
+        </Parameter>
+        <Parameter name="wishListItem">
+          <param_value dtype="IconRef">_imageWishListItem</param_value>
+        </Parameter>
+        <Parameter name="digitalCartItem">
+          <param_value dtype="IconRef">_imageDigitalCartItem</param_value>
+        </Parameter>
+      </Column>
+      <Column start="90" width="5">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.giftreceipt.GiftReceiptCellDataHandler</CellDataHandlerFactoryClass>
+        <Icon dtype="IconRef">_imageListGift</Icon>
+      </Column>
+      <Column start="95" width="5">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.warranty.WarrantyDeclinedCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="WARRANTY">
+          <param_value dtype="IconRef">_imageListWarrantyDeclined</param_value>
+        </Parameter>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="20" width="80">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.returns.prorate.ProratedRefundCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="30" width="70" wrapText="true">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.kits.KitComponentCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="30" width="70" method="getInventoryDocumentLineItem.getDocumentId" />
+    </Row>
+    <Row>
+      <Column start="30" width="70">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.item.PropertyCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="ItemPropertyKey" value="GIFT_REGISTRY_NAME" />
+        <Parameter name="LabelTranslationKey" value="_giftRegistryLineItemLabel" />
+      </Column>
+    </Row>
+    <Row>
+      <Column start="30" width="20">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.sale.ItemDimensionCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="DimensionIndex" value="1" />
+      </Column>
+      <Column start="52" width="20">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.sale.ItemDimensionCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="DimensionIndex" value="2" />
+      </Column>
+      <Column start="74" width="20">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.sale.ItemDimensionCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="DimensionIndex" value="3" />
+      </Column>
+    </Row>
+  </Element>
+  <!-- End BZ26270 -->
+  <!-- Start BZ33305 -->
+  <Header name="WARRANTY_PLAN">
+    <Row>
+      <Column start="0" width="55" translatable="_warrantyPlanDescHeader" />
+      <!-- <Column start="57" width="18" translatable="_warrantyPlanTypeHeader" alignment="CENTER" /> -->
+      <Column start="79" width="18" translatable="_warrantyPlanPriceHeader" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="WARRANTY_PLAN">
+    <Row>
+      <Column start="0" width="55" method="a.getDescription" />
+       <!-- <Column start="57" width="20" alignment="CENTER" method="a.getNonPhysicalItemSubtype" /> -->
+      <Column start="79" width="20" alignment="RIGHT" method="a.getComputedPriceAmt" formatter="Money" />
+    </Row>
+  </Element>
+  <!-- End BZ33305 -->
+  <!-- BEGIN BZ26742 -->
+  <Header name="ADDRESS_GROUPS_HEADER">
+    <Row>
+      <Column start="0" width="15" translatable="_addressResultTypeLabel" />
+      <Column start="16" width="100" translatable="_addressResultLabel" />
+    </Row>
+  </Header>
+  <Element name="ADDRESS_GROUPS">
+    <Row>
+      <Column start="0" width="15">
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.address.search.CawResultTypeCellDataHandler</CellDataHandlerFactoryClass>
+        <ColorGroup fgColor="0xC60000" bgColor="0xFFFFFF" selectionFgColor="0xC8FFFF" selectionBgColor="0xC60000" selectionBgColor2="0xFF0A0A" /> 
+      </Column>
+      <Column start="16" width="100"  method="getAddressLine" />
+    </Row>
+  </Element>
+  <!-- End BZ26742 -->
+  <!-- Begin BZ26847 -->
+  <Element name="VOUCHER_TENDER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="20" method="getTenderStatusCodeTranslated" />
+      <Column start="20" width="58" method="getTender.getTenderDescriptionTranslated" />
+      <Column start="78" width="18" method="getAmount" alignment="RIGHT" formatter="Money">
+        <FontRef fontKey="_fontListMedium" fontStyle="BOLD" />
+      </Column>
+    </Row>
+    <Row>
+      <Column start="20" width="80">
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.register.nonphysical.CawSerialNumberCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <!-- End BZ26847 -->
+  <!--BZ26207 Begin Work Order Session -->
+  <Header name="CAW_WORK_ORDER_LIST">
+    <Row>
+      <Column start="0" width="30" translatable="_woDateTime" alignment="LEFT" />
+      <Column start="30" width="15" translatable="_woNumber" alignment="LEFT" />
+      <Column start="45" width="15" translatable="_woStatus" alignment="LEFT" />
+      <Column start="60" width="40" translatable="_woFirstProduct" alignment="LEFT" />
+    </Row>
+  </Header>
+  <Element name="CAW_WORK_ORDER_LIST">
+    <Row>
+      <Column start="0" width="30" alignment="LEFT">
+          <CellDataHandlerFactoryClass dtype="Class">caw.pos.workorder.common.CawWorkOrderDateTimeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="30" width="15" method="getAccountId" alignment="LEFT" />
+      <Column start="45" width="15" method="getWoPosStatusDescription" alignment="LEFT" />
+      <Column start="60" width="40" wrapText="true" method="getWoDescription" alignment="LEFT" />
+    </Row>
+  </Element>
+  <!--BZ26207 End Work Order Session -->
+  <!-- BZ27000 start: copied from base, and left all fields as blank-->
+  <Element name="HOUSE_ACCOUNTS_USERS">
+    <Row>
+      <Column start="0" width="16" alignment="CENTER" />
+      <Column start="16" width="26" />
+      <Column start="42" width="26" />
+      <Column start="68" width="16" />
+      <Column start="84" width="16" />
+    </Row>
+  </Element>
+  <!-- BZ27000 end -->
+
+  <!-- Begin BZ27339 -->
+  <Header name="CAW_CUSTOMER_MEMBERSHIP_LIST">
+    <Row>
+      <Column start="0" width="20" translatable="_custMemberShipRowHeader1" alignment="LEFT"/>
+      <Column start="20" width="15" translatable="_custMemberShipRowHeader2" alignment="LEFT" />
+      <Column start="35" width="15" translatable="_custMemberShipRowHeader3" alignment="LEFT" />
+      <Column start="50" width="15" translatable="_custMemberShipRowHeader4" alignment="LEFT" />
+      <Column start="65" width="15" translatable="_custMemberShipRowHeader5" alignment="LEFT" />
+      <Column start="80" width="15" translatable="_custMemberShipRowHeader6" alignment="LEFT" />
+    </Row>
+  </Header>
+  <Element name="CAW_CUSTOMER_MEMBERSHIP_ELEMENT">
+    <RendererClass dtype="Class">caw.pos.customer.membership.CawCustomerMembershipViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="20" method="getMemberShip" alignment="LEFT"/>
+      <Column start="20" width="15" method="getClub" alignment="LEFT" />
+      <Column start="35" width="15" method="getBenefitLevel" alignment="LEFT" />      
+      <Column start="50" width="15" method="getStatus" alignment="LEFT" />
+      <Column start="65" width="15" method="getRenewal" alignment="LEFT" />
+      <Column start="80" width="15" method="getExpDate" alignment="LEFT" />
+    </Row>
+  </Element>
+  <Header name="LOYALTY_CARD_SUMMARY">
+    <Row>    
+      <Column start="0" width="27" translatable="_membershipInfor" />
+      <Column start="28" width="16" translatable="_loyaltyCardNumber" />
+      <Column start="45" width="27" translatable="_expires" />
+      <Column start="73" width="27" translatable="_loyaltyAccountPoints" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="LOYALTY_CARD_SUMMARY">
+    <Row>
+      <Column start="0" width="27" alignment="LEFT">
+         <CellDataHandlerFactoryClass dtype="Class">caw.pos.customer.membership.CawCustomerMembershipsCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="28" width="16" method="getCardNumber" />
+      <Column start="45" width="27" method="getExpirationDate" formatter="DateMedium" />
+      <Column start="73" width="27" method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="Decimal" alignment="RIGHT" />
+    </Row>
+  </Element>
+  <!-- End BZ27339 -->
+  <!-- Begin BZ28014 -->
+  <Element name="DEAL_PRICE_MODIFIER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="5" width="5" icon="_imageDealIcon" />
+      <Column start="10" width="58" method="getDescription" />
+      <Column start="68" width="10" alignment="CENTER">
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.pricing.CawDealApplyTimesCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="78" width="18" method="getExtendedAmount.negate" alignment="CENTER" formatter="Money" />
+    </Row>
+  </Element>
+  <!-- End BZ28014 -->
+    <!-- BEGIN BZ30922 -->
+    <Header name="INVENTORY_LIST_HEADER">
+        <Row>
+             <Column start="0" width="10" translatable="_storeIDLabel" />
+             <Column start="10" width="50" translatable="_storeNameLabel" />
+             <Column start="50" width="75" translatable="_locationLabel" />
+             <Column start="75" width="90" translatable="_distanceLabel" />
+             <Column start="90" width="100" translatable="_quantityLabel" />
+       </Row>
+    </Header>
+    <Element name="INVENTORY_LIST_ELEMENT">
+       <Row>
+            <Column start="0" width="10" method="getStoreId" />
+            <Column start="10" width="50" method="getStoreName" />
+            <Column start="50" width="75" method="getLocation" />
+            <Column start="75" width="90" method="getDistance" />
+            <Column start="90" width="100" method="getQuantity" />
+       </Row>
+    </Element>
+    <!-- END BZ30922 -->
+
+    <!-- BEGIN BZ35053 -->
+    <Header name="VOUCHER_RESULTS"> 
+       <Row>
+            <Column start="0" width="20" translatable="_cawGCItemNumber" />
+            <Column start="20" width="90" translatable="_cawGCItemDescription" />
+       </Row>
+    </Header>
+    <Element name="VOUCHER_RESULTS">
+       <Row>
+            <Column start="0" width="20" method="getItemId" />
+            <Column start="20" width="90" method="getDescription" />
+       </Row>
+    </Element>
+    <!-- END BZ35053 -->
+
+    <!-- BEGIN BZ44917 -->
+    <Header name="CAW_RV_PAYMENT_ITEMS">
+	    <Row>
+	      <Column start="0" width="30" translatable="_rvCustomerId" alignment="LEFT" />
+	      <Column start="30" width="30" translatable="_rvWoNumber" alignment="LEFT" />
+	      <Column start="60" width="20" translatable="_commonDescription" alignment="LEFT" />
+	      <Column start="80" width="20" translatable="_rvAmount" alignment="RIGHT" />
+	    </Row>
+  	</Header>
+  	<Element name="CAW_RV_PAYMENT_ITEMS">
+	    <Row>
+	      <Column start="0" width="30" method="getRvServiceCustomer" alignment="LEFT" />
+	      <Column start="30" width="30" method="getRvServiceWo" alignment="LEFT" />
+	      <Column start="60" width="20" method="getRvDescription" alignment="LEFT" />
+	      <Column start="80" width="20" method="getRvAmount" alignment="RIGHT" formatter="Money"/>
+	    </Row>
+  	</Element>
+  <!-- END BZ44917 -->
+</ListView>

@@ -1,0 +1,789 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * INT-92               260817    Customer Integration
+ * BZ23340              280917    Customer ID should be displayed instead of Account# on Contact information screen when adding a new Customer
+ * BZ23267              041017    UI issues on Customer Search prompt screen
+ * BZ26244              110518    [16.0.4] Some mandatory fields are removed out from Customer Dashboard when upgrading to Xstore v16.0.4
+ * BZ25640              052518    New Requirement - Used Firearm System Process Redesign
+ * BZ26289              240718    New Requirement - Enable A/R Payment Functionality in Xstore
+ * BZ27000              030818    [26289] House Account tab info displays incorrectly the A/R data retrieved from EBS Neuron or localDB.
+ * BZ27339              031018    [New Requirement] Display Membership Information on Xstore POS Information tab
+ * BZ29372              150218    [Requirement] PLCC Account Lookup - ID Verification Screen new request
+ * BZ30922              210619    [New Requirement] Price Check and Inventory Lookup
+ * BZ37305              260820    [New Requirement] Prompting Engine call before customer information gets displayed on the PinPad.      
+ * BZ37871              140920    [New Requirement] Swap 2 fields Last Name and First Name at Order Search screen for user convenience.
+ * BZ37871              071020    [Internal] - Swapping Last Name and First Name fields at the Order Search screen
+ * BZ38158              071020    [Task] Need to require email address on orders for Customer Notification
+ * BZ44528				130821	  Electric World & Mobile POS Implementation (Phase 1)
+ * BZ44917              110921    [New Requirement] IDS Payment Integration with Xstore
+ * BZ42307              200921    [Requirement] Add ability to reject at the item level for BOPIS
+ * BZ45995          	141021    [New requirement] Email capture when good sam membership is sold
+ * BZ61159              060224    [New Requirement] - Xstore AGIS Replacement
+ * BZ62149              060224	  [Internal] - Format of the Pitches form is incorrect.
+ * BZ65612              260724    AGMOD Update to Membership SKU New Requirements
+ * BZ69391          	020625    [AGIS Modification] - Update Pitches form to be able to add non-membership items (Section 2.1.4)
+ * BZ69389          	020625    [AGIS Modification] - Update UI to display membership item by group (Section 2.1.2)
+ * BZ69390          	020625    [AGIS Modification] - Update Last Chance Prompt to handle grouping (Section 2.1.3)
+ *===================================================================
+ */
+-->
+<FieldLayoutSet xmlns="http://micros.com/xstore/config/form/fieldlayout"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="FieldLayoutConfig.xsd">
+
+    <FieldLayout name="customerSearchLayout" type="SimpleLayout">
+        <Row>
+            <Column />
+            <Column fieldRef="header1Label" horizontalAlignment="Left" />
+        </Row>
+        <Row>
+            <Column fieldRef="telephoneLabel" horizontalAlignment="Right" />
+            <Column fieldRef="telephoneSearch" />
+        </Row>
+        <Row>
+            <Column fieldRef="loyaltyNumberLabel" horizontalAlignment="Right" />
+            <Column fieldRef="loyaltyNumber" />
+        </Row>
+        <Row>
+            <Column fieldRef="customerIdInputLabel" horizontalAlignment="Right" />
+            <Column fieldRef="customerIdInput" />
+        </Row>
+        <Row>
+            <Column fieldRef="emailAddressLabel" horizontalAlignment="Right" />
+            <Column fieldRef="emailAddress" />
+        </Row>
+        <Row>
+            <Column fieldRef="organizationNameLabel" horizontalAlignment="Right" />
+            <Column fieldRef="organizationName" />
+        </Row>
+        <Row>
+            <Column />
+            <Column fieldRef="header2Label" horizontalAlignment="Left"/>
+        </Row>
+        <Row>
+            <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+            <Column fieldRef="firstName"/>
+        </Row>
+        <Row>
+            <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+            <Column fieldRef="lastName" />
+        </Row>
+        <Row>
+            <Column fieldRef="address1Label" horizontalAlignment="Right" verticalAlignment="Top" />
+            <Column fieldRef="address1"  />
+        </Row>
+        <Row>
+            <Column fieldRef="cityLabel" horizontalAlignment="Right" />
+            <Column fieldRef="city" />
+        </Row>
+        <Row>
+            <Column fieldRef="stateLabel" horizontalAlignment="Right" />
+            <Column fieldRef="state" />
+        </Row>
+       <Row>
+            <Column fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+            <Column fieldRef="postalCode" refreshOnChange="true" />
+        </Row>
+        <!-- Begin BZ23267 -->
+        <Row>
+            <Column />
+            <Column fieldRef="cawCountry" horizontalAlignment="Right" />
+            
+        </Row>
+        <Row>
+            <Column />
+            <Column fieldRef="cawEmptyField" horizontalAlignment="Right" />
+        </Row>
+        <!-- End BZ23267 -->
+    </FieldLayout>
+    
+     <!-- Begin BZ23340 -->
+    <FieldLayout name="cawCustomerMaintHeader" type="ListLayout">
+        <Row>
+          <Column start="0" width="20" fieldRef="customerName" verticalAlignment="Center" fontRef="whiteColorFont" />
+          <Column start="20" width="18" fieldRef="cawCustomerIdLabelFull" verticalAlignment="Center" horizontalAlignment="Right" fontRef="fullScreenFormHeaderLabel" />
+          <Column start="38" width="20" fieldRef="customerIdLabelValue" verticalAlignment="Center" fontRef="whiteColorFont" />
+          <Column start="58" width="17" fieldRef="customerSinceLabel" verticalAlignment="Center" horizontalAlignment="Right" fontRef="fullScreenFormHeaderLabel" />
+          <Column start="75" width="15" fieldRef="customerAnniversaryDateLabel" verticalAlignment="Center" horizontalAlignment="Left" fontRef="whiteColorFont" />
+        </Row>
+  </FieldLayout>
+  <!-- End  BZ23340-->
+  
+  <!-- Begin BZ26244 -->
+  <FieldLayout name="customerNameLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="15" fieldRef="firstNameShortLabel" horizontalAlignment="Right" />
+      <Column start="15" width="25" fieldRef="firstName" required="true"/>
+      <Column start="40" width="10" fieldRef="middleNameLabel" horizontalAlignment="Right" />
+      <Column start="50" width="10" fieldRef="middleName" />
+      <Column start="60" width="10" fieldRef="lastNameShortLabel" horizontalAlignment="Right" />
+      <Column start="70" width="30" fieldRef="lastName" required="true" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerAddressInformationLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="15" fieldRef="organizationNameLabel" horizontalAlignment="Right" />
+      <Column start="15" width="49" fieldRef="organizationName" refreshOnChange="true" fieldSubmitPriority="2" />
+      <Column start="64" width="12" fieldRef="organizationTypeCodeLabel" horizontalAlignment="Right" />
+      <Column start="76" width="24" fieldRef="organizationTypeCode" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column start="15" width="49" fieldRef="address1" required="true"/>
+      <Column start="64" width="12" fieldRef="apartmentLabel" visibilityGroup="apartmentVisibility" horizontalAlignment="Right" />
+      <Column start="76" width="24" fieldRef="apartment" visibilityGroup="apartmentVisibility" />
+    </Row>
+    <Row>
+      <Column start="15" width="49" fieldRef="address2" />
+      <Column start="64" width="12" fieldRef="countryLabel" horizontalAlignment="Right" />
+      <Column start="76" width="24" fieldRef="country" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column start="15" width="13" fieldRef="postalCode" refreshOnChange="true" required="true"/>
+      <Column start="28" width="13" fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column start="41" width="23" fieldRef="city" required="true"/>
+      <Column start="64" width="12" fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column start="76" width="24" fieldRef="stateCustMaint" required="true"/>
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="countyLabel" visibilityGroup="countyVisibility" horizontalAlignment="Right" />
+      <Column start="15" width="13" fieldRef="county" visibilityGroup="countyVisibility" />
+      <Column start="28" width="13" fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility" horizontalAlignment="Right" />
+      <Column start="41" width="23" fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" />
+    </Row> 
+  </FieldLayout>
+  
+  <FieldLayout name="custContactInformationLayout" type="ListLayout">
+   <Row>
+      <Column start="0" width="60" fieldRef="customerContactInformationLabel" fontRef="formContentHeader" />
+      <Column start="60" width="40" fieldRef="customerPersonalInformationLabel" fontRef="formContentHeader" />
+    </Row>
+   <Row>
+      <Column start="48" width="12" fieldRef="okToContact" horizontalAlignment="Center"/>
+    </Row>
+    <!-- BEGIN BZ65612 -->
+    <Row>
+      <Column start="0" width="18" fieldRef="telephone3Label" horizontalAlignment="Right" />
+      <Column start="18" width="30" fieldRef="telephone3" refreshOnChange="true" required="true" /> <!-- BZ61159 Turn on required for mobile -->
+      <Column start="48" width="12" fieldRef="telephone3Contact" horizontalAlignment="Center" />
+      <Column start="60" width="17" fieldRef="anniversaryDateLabel" horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="anniversaryDate" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="telephone1Label" horizontalAlignment="Right" />
+      <Column start="18" width="30" fieldRef="telephone1" refreshOnChange="true"/>
+      <Column start="48" width="12" fieldRef="telephone1Contact" horizontalAlignment="Center" />
+      <Column start="60" width="17" fieldRef="birthDateLabel" horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="birthDate" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="telephone2Label" horizontalAlignment="Right" />
+      <Column start="18" width="30" fieldRef="telephone2" refreshOnChange="true" />
+      <Column start="48" width="12" fieldRef="telephone2Contact" horizontalAlignment="Center" />
+      <Column start="60" width="17" fieldRef="genderLabel" horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="gender" />
+    </Row>
+    <!-- END BZ65612 -->
+    <Row>
+      <Column start="0" width="18" fieldRef="emailAddressLabel" horizontalAlignment="Right" />
+      <Column start="18" width="30" fieldRef="emailAddress" refreshOnChange="true" required="true" /> <!-- BZ61159 Turn on required for email -->
+      <Column start="48" width="12" fieldRef="emailContact" horizontalAlignment="Center" />
+      <Column start="60" width="17" fieldRef="preferredLocaleLabel" horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="preferredLocale" />
+    </Row>
+    <Row>
+      <Column start="0" width="48" fieldRef="emailRcptsLabel" horizontalAlignment="Right" />
+      <Column start="48" width="12" fieldRef="emailRcpts" horizontalAlignment="Center" />
+      <Column start="60" width="17" fieldRef="personalTaxIdLabel" visibilityGroup="fiscalCodeVisibility"
+              horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="personalTaxId" visibilityGroup="fiscalCodeVisibility" /> 
+    </Row>
+    <Row>
+      <Column start="60" width="17" fieldRef="nationalTaxIdLabel" visibilityGroup="taxCodeVisibility"
+              horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="nationalTaxId" visibilityGroup="taxCodeVisibility" />
+    </Row>
+  </FieldLayout>
+  <!-- End BZ26244 -->
+  
+  <!-- Begin BZ25640 -->
+  <FieldLayout name="cawUFACustomerInfoLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="address1Label" horizontalAlignment="Right"
+        verticalAlignment="Top" />
+      <Column fieldRef="lb_ufaCustomerAddressField" />
+    </Row>
+    <Row>
+      <Column fieldRef="ufaCustomerCountryLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lb_ufaCustomerCountryField" />
+    </Row>
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lb_ufaCustomerPhoneField" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="cawUFAPaidOutAmtLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="ufaEtrackIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="ufaEtrackIdField" horizontalAlignment="Left"  fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaPaidOutAmtLabel" horizontalAlignment="Right" />
+      <Column fieldRef="ufaPaidOutAmtField" horizontalAlignment="Left"  fontRef="formContentHeader"/>
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="cawUFADetailLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="ufaSerialNbrLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaSerialNbrField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaUPCLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaUPCField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaModelLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaModelField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaManufacturerLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaManufacturerField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaImporterLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaImporterField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaActionLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaActionField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaFirearmTypeLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaFirearmTypeField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaMagazineTypeLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaMagazineTypeField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaChamberLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaChamberField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaCaliberGaugeLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaCaliberGaugeField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaBarrelLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaBarrelField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="cawUFAMerHieLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="ufaDepInfoLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaDepInfoField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaClassInfoLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaClassInfoField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+    <Row>
+      <Column fieldRef="ufaSubclassInfoLabel" horizontalAlignment="Left" />
+      <Column fieldRef="ufaSubclassInfoField" horizontalAlignment="Left" fontRef="formContentHeader"/>
+    </Row>
+  </FieldLayout>
+   <FieldLayout name="cawUFADetailLayoutHeader" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="ufaAttributeLabel" fontRef="formContentHeader"  horizontalAlignment="Left" verticalAlignment="Top" />
+    </Row> 
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="ufaFirearmListHeader" />
+    </Row>
+  </FieldLayout>
+  
+  <!-- End BZ25640 -->
+  <!-- Begin BZ26289 -->
+  <FieldLayout name="custHouseAcctDetailLayout" type="ListLayout">
+    <!-- BZ27000 start-->
+    <Row>
+      <Column start="0" width="100" fieldRef="houseAccountDetails" />
+    </Row>
+    <Row>
+      <Column start="0" width="17" fieldRef="houseAcctNoLabel" horizontalAlignment="Right" />
+      <Column start="17" width="17" fieldRef="houseAcctNo" />
+      <Column start="34" width="20" fieldRef="houseAcctSetupDateLabel" horizontalAlignment="Right" />
+      <Column start="54" width="15" fieldRef="houseAcctSetupDate" />
+      <Column start="69" width="15" fieldRef="houseAcctAvailableCreditLabel" horizontalAlignment="Right" />
+      <Column start="84" width="16" fieldRef="houseAcctAvailableCredit" />
+    </Row>    
+    <Row>
+      <Column start="0" width="17" fieldRef="houseAcctStatusLabel" horizontalAlignment="Right" />
+      <Column start="17" width="17" fieldRef="houseAcctStatus" />    
+      <Column start="34" width="20" fieldRef="houseAcctLastPaymentDateLabel" horizontalAlignment="Right" />
+      <Column start="54" width="15" fieldRef="houseAcctLastPaymentDate"/>
+      <Column start="69" width="15" fieldRef="taxExemptStatusLabel" horizontalAlignment="Right" /><!-- BZ26289 -->
+      <Column start="84" width="16" fieldRef="taxExemptStatus" /><!-- BZ26289 -->
+      
+    </Row>
+    <Row>
+      <Column start="0" width="17" fieldRef="houseAcctOnHoldLabel" horizontalAlignment="Right" />
+      <Column start="17" width="17" fieldRef="houseAcctOnHold" />
+    </Row>
+
+    <!-- BZ27000 end-->
+  </FieldLayout>
+  <!-- End BZ26289 -->
+  <!-- Begin BZ27339 -->
+  <FieldLayout name="cawCustomerMemberShipLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerMembershipSummaryList" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="cawWHSLMembershipTitleLayout" type="SimpleLayout">
+    <Row>
+      <Column fill="true" fieldRef="houseAccountDetailsLabel" verticalAlignment="Bottom" fontRef="formContentHeader"/>
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="cawCustomerMembershipLogoLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="cawHouseAccountAvatar" verticalAlignment="Bottom" horizontalAlignment="Right" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="cawGrayLineSeparatorLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="grayLineSeparator" />
+    </Row>
+  </FieldLayout>
+  
+   <FieldLayout name="cawWholeSaleMemberDetailLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="accountLabel" />
+      <Column fieldRef="accountValue" />
+    </Row>
+    <Row>
+      <Column fieldRef="statusLabel" />
+      <Column fieldRef="statusValue" />
+    </Row>
+    <Row>
+      <Column fieldRef="availableCreditLabel" />
+      <Column fieldRef="availableCreditValue" />
+    </Row>
+    <Row>
+      <Column fieldRef="taxExemptStatusLabel" />
+      <Column fieldRef="taxExemptStatusValue"  />
+    </Row>
+    <Row>
+      <Column fieldRef="accountOnHoldLabel"  />
+      <Column fieldRef="accountOnHoldValue" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="cawCustomerMembershipTitleLayout" type="SimpleLayout">
+    <Row>
+      <Column fill="true" fieldRef="membershipInfoTitle" verticalAlignment="Bottom" fontRef="formContentHeader"/>
+    </Row>
+  </FieldLayout>
+  <!-- End BZ27339 -->
+  
+  <!-- Begin BZ29372 -->
+  <FieldLayout name="cawAccountValidationTitleLayout" type="SimpleLayout">
+    <Row>
+      <Column fill="true" width="100" fieldRef="cawAccountValidationMsgLine1" horizontalAlignment="Center" fontRef="promptMessageFont"/>
+    </Row>
+    <Row>
+      <Column fill="true" width="100" fieldRef="cawAccountValidationMsgLine2" horizontalAlignment="Center" fontRef="promptMessageFont"/>
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="cawAccountValidationFieldLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="cawAccountFirstNameLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="accountFirstName" horizontalAlignment="Left"/>
+    </Row>
+    
+    <Row>
+      <Column fieldRef="cawAccountLastName" horizontalAlignment="Right"/>
+      <Column fieldRef="accountLastName" horizontalAlignment="Left"/>
+    </Row>
+
+    <Row>
+      <Column fieldRef="cawAccountSelectIDType" horizontalAlignment="Right"/>
+      <Column fieldRef="acountCardType" horizontalAlignment="Left"  refreshOnChange="true"/>
+    </Row>
+    
+    <Row>
+      <Column fieldRef="cawAccounStateOfIssuance" horizontalAlignment="Right"/>
+      <Column fieldRef="acountState" horizontalAlignment="Left"/>
+    </Row>
+  </FieldLayout>
+  <!-- End BZ29372 -->
+  
+  <!-- BEGIN BZ37871 -->
+  <FieldLayout name="orderSearchRegisterLayout" type="SimpleLayout">
+    <Row> 
+      <Column fieldRef="orderIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderId" />
+    </Row>
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="firstName" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lastName" />
+    </Row>
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column fieldRef="telephoneSearch" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderDate" />
+    </Row>
+  </FieldLayout>
+  <!-- END BZ37871 -->
+   
+  <!-- BEGIN BZ30922 -->
+  <FieldLayout name="cawProductAttributeLayoutPrice" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="cawRegularPriceLabel"/>
+      <Column fieldRef="cawRegularPrice"/>
+    </Row>
+    <Row>
+      <Column fieldRef="cawClubPriceLabel" />
+      <Column fieldRef="cawClubPrice" />
+    </Row>
+    <Row>
+      <Column fieldRef="cawWholeSalePriceLabel" />
+      <Column fieldRef="cawWholeSalePrice" />
+    </Row>
+    <Row>
+      <Column fieldRef="cawCrewPriceLabel" />
+      <Column fieldRef="cawCrewPrice" />
+    </Row>
+  </FieldLayout>>
+    <FieldLayout name="listInvStoreNearestLayout" type="ListLayout">
+        <Row>
+            <Column start="0" width="100" fieldRef="inventoryLabel" />
+        </Row>
+        <Row fill="true">
+            <Column start="0" width="100" fieldRef="inventoryList" />
+        </Row>
+    </FieldLayout>
+  <!-- END BZ30922 -->
+  <!-- BEGIN BZ37305 -->
+  <FieldLayout name="cawDisplaycustomerInformationLayout" type="SimpleLayout">
+  	<Row>
+      <Column fill="true" width="100" fieldRef="valicationMessage1" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+    <Row>
+      <Column fill="true" width="100" fieldRef="valicationMessage2" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+    <Row horizontalAlignment="Center">
+      <Column fieldRef="custNameLabel" />
+      <Column fieldRef="custName"/>
+    </Row>
+    <Row>
+      <Column  fieldRef="custAddressLabel" />
+      <Column fieldRef="custAddress"/>
+    </Row>
+    <Row>
+      <Column fieldRef="custCityLabel"/>
+      <Column fieldRef="custCity"/>
+    </Row>
+    <Row>
+      <Column fieldRef="custStateLabel" />
+      <Column fieldRef="custState"/>
+    </Row>
+    <Row>
+      <Column fieldRef="custPostalCodeLabel"/>
+      <Column fieldRef="custPostalCode"/>
+    </Row>
+    <Row>
+      <Column fieldRef="custTelephoneHomeLabel"/>
+      <Column fieldRef="custTelephoneHome"/>
+    </Row>
+    <Row>
+      <Column fieldRef="custTelephoneMobileLabel"/>
+      <Column fieldRef="custTelephoneMobile"/>
+    </Row>
+    <Row>
+      <Column fieldRef="custEmailLabel"/>
+      <Column fieldRef="custEmail"/>
+    </Row>   
+  </FieldLayout>
+  <!-- BEGIN BZ37305 -->
+  
+  <!-- Begin BZ-37871 -->
+  <FieldLayout name="orderSearchLayout" type="SimpleLayout">
+    <Row> 
+      <Column fieldRef="orderIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderId" />
+    </Row>
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="firstName" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lastName" />
+    </Row>
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column fieldRef="telephoneSearch" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderDate" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderStatusLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderStatus" />
+    </Row>
+  </FieldLayout>
+  <!-- End BZ-37871 -->
+  
+  
+  <!-- BEGIN BZ38158 -->
+  <FieldLayout name="orderDeliveryInfoLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="20" fieldRef="telephoneLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="50" fieldRef="telephoneExt" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="emailAddressLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="80" fieldRef="emailAddress" required="true"/> <!-- BZ38158 -->
+    </Row>
+    <Row>   
+      <Column start="0" width="20" fieldRef="commonNameLabel" horizontalAlignment="Right" />
+      <Column start="20" width="15" fieldRef="salutation" />
+      <Column start="35" width="25" fieldRef="firstName" required="true" />
+      <Column start="60" width="10" fieldRef="middleName" />
+      <Column start="70" width="30" fieldRef="lastName" required="true" />
+    </Row>
+    <Row>
+      <Column start="20" width="15" fieldRef="prefixLabel" horizontalAlignment="Center" />
+      <Column start="35" width="25" fieldRef="firstNameShortLabel" horizontalAlignment="Center" />
+      <Column start="60" width="10" fieldRef="middleShortLabel" horizontalAlignment="Center" />
+      <Column start="70" width="30" fieldRef="lastNameShortLabel" horizontalAlignment="Center" />     
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="organizationNameLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="80" fieldRef="organizationName" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="address1Label" horizontalAlignment="Right"/>
+      <Column start="20" width="80" fieldRef="address1" required="true" />
+    </Row>
+    <Row>
+      <Column start="20" width="80" fieldRef="address2" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="apartmentLabel" visibilityGroup="apartmentVisibility"
+              horizontalAlignment="Right"/>
+      <Column start="20" width="80" fieldRef="apartment" visibilityGroup="apartmentVisibility" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="statePostalLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="20" fieldRef="postalCode" required="true" />
+      <Column start="40" width="60" fieldRef="state" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="cityCountryLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="30" fieldRef="city" required="true" />
+      <Column start="50" width="50" fieldRef="country" />
+    </Row>
+  </FieldLayout>
+  <!-- END BZ38158 -->
+  
+  <!-- BEGIN BZ44528: Phase 1 -->
+  <FieldLayout name="cawWonderSignCartSearchLayout" type="SimpleLayout">
+  	<Row>
+  	  <Column start="0" width="20" fieldRef="cawWonderSignCartSearchDateRangeLable" />
+  	  <Column start="20" width="80" fieldRef="cawWonderSignCartSearchFromDateText" />
+  	</Row>
+  	<Row>
+  	  <Column start="0" width="20" />
+  	  <Column start="20" width="80" fieldRef="cawWonderSignCartSearchToDateText" />
+  	</Row>
+  	<Row>
+  	  <Column start="0" width="20" />
+  	  <Column start="20" width="80" fieldRef="cawWonderSignCartSearchRangeDropDown" />
+  	</Row>
+  	<Row>
+  	  <Column start="0" width="20" />
+  	  <Column start="20" width="80" fieldRef="cawWOnderSignCartSearchAllFieldRequireMsg" />
+  	</Row>
+  	<Row>
+  	  <Column start="0" width="20" fieldRef="cawWonderSignCartSearchFirstNameLabel" />
+  	  <Column start="20" width="80" fieldRef="cawWonderSignCartSearchFirstNameText" />
+  	</Row>
+  	<Row>
+  	  <Column start="0" width="20" fieldRef="cawWonderSignCartSearchLastNameLabel" />
+  	  <Column start="20" width="80" fieldRef="cawWonderSignCartSearchLastNameText" />
+  	</Row>
+  	<Row>
+  	  <Column start="0" width="20" fieldRef="cawWonderSignCartSearchPhoneLabel" />
+  	  <Column start="20" width="80" fieldRef="cawWonderSignCartSearchPhoneText" />
+  	</Row>
+  </FieldLayout>
+  <!-- BEGIN BZ44528: Phase 1 -->
+  <!-- BEGIN BZ44917 -->
+  <FieldLayout name="rvPaymentLookupLayout" type="SimpleLayout">
+  	<Row>
+  		<Column horizontalAlignment="Right"/>
+        <Column fieldRef="rvHeader1Label"/>
+    </Row>
+    <Row>
+      <Column fieldRef="rvServiceCustomerLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="rvServiceCustomer"/>
+    </Row>
+    <Row>
+      <Column fieldRef="rvServiceWoLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="rvServiceWo"/>
+    </Row>
+    <Row>
+      <Column horizontalAlignment="Right"/>
+      <Column fieldRef="rvHeader2Label"/>
+    </Row>
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="rvFistName"/>
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="rvLastName" />
+    </Row>
+    <Row>
+      <Column fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="rvPostalCode" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="rvPaymentViewDetailLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="rvCustomerDetailLabel" fontRef="formLargeFont"/>
+      <Column fieldRef="rvCustomerDetail" fontRef="formLargeFont"/>
+    </Row>
+    <Row>
+      <Column fieldRef="rvWoLabelDetail" fontRef="formLargeFont"/>
+      <Column fieldRef="rvWoDetail" fontRef="formLargeFont"/>
+    </Row>
+    <Row>
+      <Column fieldRef="locationCodeLabel" fontRef="formLargeFont"/>
+      <Column fieldRef="locationCode" fontRef="formLargeFont"/>
+    </Row>
+    <Row>
+      <Column fieldRef="salesChannelIdLabel" fontRef="formLargeFont"/>
+      <Column fieldRef="salesChannelId" fontRef="formLargeFont"/>
+    </Row>
+    <Row>
+      <Column fieldRef="rvAmountLabel" fontRef="formLargeFont"/>
+      <Column fieldRef="rvAmount" fontRef="formLargeFont"/>
+    </Row>
+  </FieldLayout>
+  <!-- END BZ44917 -->
+  
+  <!-- BEGIN BZ42307 -->
+  <FieldLayout name="orderItemUpdateQtyLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="orderItemUpdateQtyPrompt" horizontalAlignment="Center" fontRef="promptMessageFont"/>
+    </Row>
+    <Row>
+    </Row>
+    <Row>
+      <Column start="0" width="40" fieldRef="quantityLabel" horizontalAlignment="Right"/>
+      <Column start="40" width="20" fieldRef="orderQty" required="true"/>
+    </Row>
+  </FieldLayout> 
+  <!-- END BZ42307 -->
+  
+  <!-- BEGIN BZ45995 -->
+  <FieldLayout name="membershipEmailCaptureLayout" type="SimpleLayout">
+    <Row>
+      <Column fill="true" fieldRef="membershipEmailCaptureLabel" fontRef="formLargeFont"/>
+    </Row>
+    <Row>
+      <Column fill="true" fieldRef="membershipEmailCaptureText" fontRef="formLargeFont"/>
+    </Row>
+  </FieldLayout>
+  <!-- END BZ45995 -->  
+  
+	<!-- BEGIN BZ61159 -->
+	<FieldLayout name="cawAGISPitchesBreakline" type="SimpleLayout">
+		<Row fill="false">
+			<Column />
+			<Column fieldRef="cawAGISPitchesBreakline" />
+		</Row>
+	</FieldLayout>
+	<!-- BEGIN BZ62149 -->
+	<FieldLayout name="cawAGISPitchesHeader" type="ListLayout">
+		<Row fill="false">
+			<Column fieldRef="cawAvailbleMembershipHeader" start="0" width="59" fontRef="formFontCW" horizontalAlignment="Left" />
+		</Row>
+	</FieldLayout>
+	
+	<FieldLayout name="cawAGISPitchesItems" type="ListLayout">
+	    <Row fill="false">
+	        <Column fieldRef="itemName_1" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo1" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule" />
+	    </Row>
+	    <Row fill="false">
+	        <Column fieldRef="itemName_2" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo2" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule"/>
+	    </Row>
+	    <Row fill="false">
+	        <Column fieldRef="itemName_3" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo3" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule"/>
+	    </Row>
+	    <Row fill="false">
+	        <Column fieldRef="itemName_4" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo4" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule"/>
+	    </Row>
+	    <Row fill="false">
+	        <Column fieldRef="itemName_5" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo5" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule"/>
+	    </Row>
+	    <Row fill="false">
+	        <Column fieldRef="itemName_6" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo6" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule"/>
+	    </Row>
+	    <Row fill="false">
+	        <Column fieldRef="itemName_7" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo7" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule"/>
+	    </Row>
+	    <Row fill="false">
+	        <Column fieldRef="itemName_8" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo8" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule"/>
+	    </Row>
+	    <Row fill="false">
+	        <Column fieldRef="itemName_9" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo9" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule"/>
+	    </Row>
+	    <Row fill="false">
+	        <Column fieldRef="itemName_10" start="0" width="38" fontRef="formDiminishedFont" />
+	        <Column fieldRef="combo10" start="40" width="58" fontRef="formDiminishedFont" visibilityGroup="cawAGISPitchesCheckBoxVisibilityRule"/>
+	    </Row>
+	</FieldLayout>
+
+	<!-- END BZ62149 -->
+	<!-- END BZ61159 -->
+</FieldLayoutSet>

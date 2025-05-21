@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Scope/Bug ID#     ddMMyy        Description
+ * BZ22710           080917        Xenvironment does NOT start automatically when completing installation.
+ * BZ24110           080917        Multiple brand name forXstore
+ * BZ27028           021018        [New Requirement] Move the configuration for Return Merchandise Receipt into the table
+ * BZ30217           170419        [Prod] Update deployment overwrites Prod URLs to Test and also brand images
+ * BZ30316           230419        [Prod] Update deployment overwrites Prod URLs to Test and also brand images
+ * BZ28036           100220    [New Requirement] Enable the base Functionality available for Customer Purchase History
+ *===================================================================
+ */ 
+-->
+<project name="custom pre-install tasks" default="run-tasks" basedir=".">
+
+    <!-- Properties required for Country Specific DB Script to run -->
+    <!-- ========================================================= -->
+
+    <target name="run-tasks" description="Master target that calls other targets in order.">
+        <property file="${basedir}/custom/update/caw.update.properties" />
+        <antcall target="caw-run-specific-inst-type" />
+    </target>
+
+    <target name="caw-run-specific-inst-type" description="Install Country Specific Data Scripts">
+        <echo message="... install.type=${install.type}" />
+        <if>
+            <equals arg1="INSTALL" arg2="${install.type}" casesensitive="false" trim="true" />
+            <then>
+                <echo message="... Skipping" />
+            </then>
+            <elseif>
+                <equals arg1="UPDATE" arg2="${install.type}" casesensitive="false" trim="true" />
+                <then>
+                    <antcall target="caw-update-log4j-file" />
+                    <antcall target="update-properties-system-parameters" />
+                    <antcall target="graphics-folder-backup" /> <!-- BZ30316 -->
+                </then>
+            </elseif>
+            <elseif>
+                <equals arg1="UPGRADE" arg2="${install.type}" casesensitive="false" trim="true" />
+                <then>
+                    <antcall target="res-folder-backup" />
+                    <antcall target="graphics-folder-backup" /> <!-- BZ30316 -->
+                </then>
+            </elseif>
+            <else>
+                <echo message="... This is an patch." />
+            	<antcall target="graphics-folder-backup" /> <!-- BZ33304 -->
+            </else>
+        </if>
+    </target>
+
+    <target name="check-ebs-config">
+        <available file="${user.dir}/custom.properties" property="ebs.existed" />
+        <echo message="... Check ebs-config!!!" />
+    </target>
+
+    <target name="load-ebs-config-file" depends="check-ebs-config" if="ebs.existed">
+        <property file="${user.dir}/custom.properties"/>
+        <echo message="... Loading ebs config file sucessfully!!!" />
+    </target> 
+
+    <target name="update-ebs-parameters" depends="load-ebs-config-file" if="ebs.existed" description="Update EBS URL parameters">
+        <echo message="... ebs config file is existed!!!" />
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.customer.template.url" value="${caw.pos.customer.template.url}"/>
+            <entry key="caw.pos.customer.search.url" value="${caw.pos.customer.search.url}"/>
+            <entry key="caw.pos.customer.lookup.url" value="${caw.pos.customer.lookup.url}"/>
+            <entry key="caw.pos.customer.upsert.url" value="${caw.pos.customer.upsert.url}"/>
+            <entry key="caw.pos.customer.neuron.user" value="${caw.pos.customer.neuron.user}"/>
+            <entry key="caw.pos.customer.neuron.key" value="${caw.pos.customer.neuron.key}"/>
+            <entry key="caw.pos.promotion.api.url" value="${caw.pos.promotion.api.url}"/>
+            <entry key="caw.pos.promotion.reserve.url" value="${caw.pos.promotion.reserve.url}"/>
+            <entry key="caw.pos.promotion.reset.url" value="${caw.pos.promotion.reset.url}"/>
+            <entry key="caw.pos.catalyst.request.url" value="${caw.pos.catalyst.request.url}"/>
+            <entry key="caw.pos.catalyst.results.url" value="${caw.pos.catalyst.results.url}"/>
+            <entry key="caw.pos.madeoffer.request.url" value="${caw.pos.madeoffer.request.url}"/>
+            <entry key="caw.pos.caretaker.request.url" value="${caw.pos.caretaker.request.url}"/>
+            <entry key="olps.app.username" value="${olps.app.username}"/>
+            <entry key="olps.app.password" value="${olps.app.password}"/>
+            <entry key="caw.pos.membership.validate.request.url" value="${caw.pos.membership.validate.request.url}"/>
+            <!-- BEGIN BZ30217 -->
+            <entry key="caw.pos.ufa.search.url" value="${caw.pos.ufa.search.url}"/>
+            <entry key="caw.pos.card.services.submit.request" value="${caw.pos.card.services.submit.request}"/>
+            <entry key="caw.pos.card.services.status.request" value="${caw.pos.card.services.status.request}"/>
+            <entry key="caw.pos.work.order.search.request.url" value="${caw.pos.work.order.search.request.url}"/>
+            <entry key="caw.pos.work.order.lookup.request.url" value="${caw.pos.work.order.lookup.request.url}"/>
+            <entry key="caw.pos.work.order.update.status.request.url" value="${caw.pos.work.order.update.status.request.url}"/>
+            <!-- END BZ30217 -->
+            
+            <!-- BEGIN BZ28036 -->
+            <entry key="caw.pos.customer.purchase.history.url" value="${caw.pos.customer.purchase.history.url}"/>
+            <entry key="caw.pos.customer.purchase.history.detail.url" value="${caw.pos.customer.purchase.history.detail.url}"/>
+            <!-- END BZ28036 -->
+        </propertyfile>
+    </target>
+
+    <!--Begin BZ25391 -->
+    <target name="update-properties-system-parameters" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.eigen.timeout" value=""/>
+            <entry key="EBS_ENABLE" value="TRUE"/>
+            <entry key="caw.customer.group.type.retl.old.name" value="retail"/>
+            <entry key="caw.customer.group.type.retl.new.name" value="RETL"/>
+            <entry key="caw.customer.group.type.club.old.name" value="club"/>
+            <entry key="caw.customer.group.type.club.new.name" value="CLUB"/>
+            <entry key="caw.customer.group.type.crew.old.name" value="crew"/>
+            <entry key="caw.customer.group.type.crew.new.name" value="CREW"/>
+            <entry key="caw.customer.group.type.whsl.old.name" value="whsl"/>
+            <entry key="caw.customer.group.type.whsl.new.name" value="WHSL"/>
+            <entry key="caw.pos.miraserv.config" value="/opt/Eigen/miraserv.ini"/>
+            <entry key="dtv.hardware.IHardwareMgr" value="caw.hardware.service.CawHardwareMgr"/>
+        </propertyfile>
+    </target>
+    <!--End BZ25391 -->
+
+    <target name="caw-update-log4j-file" description="Copy overwrite log4j2.xml into config folder">
+        <copy file="${basedir}/custom/update/log4j2.xml" todir="${install.dir}/config" overwrite="true" force="true" verbose="true"/>
+    </target>
+
+    <target name="caw-update-base-xstore" description="Update config into base-xstore.properties">
+        <echo message="Updating config path - base-xstore.properties" />
+        <propertyfile file="${install.dir}/updates/base-xstore.properties" comment="base-xstore.properties">
+          <entry key="dtv.email.receipt.from" value="${dtv.email.receipt.from}"/>
+        </propertyfile>
+    </target>
+
+    <target name="res-folder-backup" description="backup .truststore file">
+        <property name="bkXstoreDir" location="${external.file.root}/BACKUPXstore" />
+        <mkdir dir="${bkXstoreDir}" />
+        <echo message="Create the backup directory if it doesn'e exist" />
+        <echo message="Created backup folder - ${bkXstoreDir}" />
+        <property name="backup.res.folder" location="${bkXstoreDir}/res" />
+        <property name="xenv.ssl.folder" location="${install.dir}/res/ssl" />
+        <property name="xenv.keys.folder" location="${install.dir}/res/keys" />
+        <echo message="Copy 2 folders: ssl and keys to - ${bkXstoreDir}" />
+
+        <copy todir="${backup.res.folder}/ssl" overwrite="true" force="true" verbose="true">
+            <fileset dir="${xenv.ssl.folder}"/>
+        </copy>
+        <copy todir="${backup.res.folder}/keys" overwrite="true" force="true" verbose="true">
+            <fileset dir="${xenv.keys.folder}"/>
+        </copy>
+    </target>
+    <!-- BEGIN BZ30316 -->
+    <target name="graphics-folder-backup" description="backup graphics file">
+        <property name="bkXstoreDir" location="${external.file.root}/BACKUPXstoreGraphics" />
+        <property name="xstore.res.graphics" location="${install.dir}/res/graphics" />
+        <property name="backup.res.folder" location="${bkXstoreDir}/res" />
+        <mkdir dir="${bkXstoreDir}" />
+
+        <echo message="Create the backup directory if it doesn't exist" />
+        <echo message="Created backup folder - ${bkXstoreDir}" />
+        <echo message="Copy folders: graphics/(OV,GO,CW) to - ${bkXstoreDir}" />
+
+        <copy todir="${backup.res.folder}/graphics/OV" overwrite="true" force="true" verbose="true">
+            <fileset dir="${xstore.res.graphics}/OV"/>
+        </copy>
+        <copy todir="${backup.res.folder}/graphics/GO" overwrite="true" force="true" verbose="true">
+            <fileset dir="${xstore.res.graphics}/GO"/>
+        </copy>
+        <copy todir="${backup.res.folder}/graphics/CW" overwrite="true" force="true" verbose="true">
+            <fileset dir="${xstore.res.graphics}/CW"/>
+        </copy>
+    </target>
+    <!-- END BZ30316 -->
+</project>

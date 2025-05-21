@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * 24372                141117    When looking at the reports at Back office the time stamps are off.
+ * 24405                151117    AR account payment should be displayed on Customer Account Activity Summary Report instead of 'House Account Payment'
+ * 26986                220818    [PROD] Xadmin reporting issue - Returned Merchandise Report requires employee fields in 16.0.4
+ *===================================================================
+ */ 
+-->
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <!-- Get data from begin_time_int from BEGIN_DATETIME instead of begin time from begin_time_int -->
+  <!-- Begin BZ26986 -->
+  <Query name="RETURN_MERCHANDISE_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="trans_seq" type="String" />
+    <ResultField name="item_id" type="String" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="unit_price" type="BigDecimal" />
+    <ResultField name="ext_price" type="BigDecimal" />
+    <ResultField name="commissioned_associate" type="String" />
+    <ResultField name="description" type="String" />
+    <ResultField name="wkstn_id" type="String" />
+    <ResultField name="business_date" type="Date" />
+    <ResultField name="begin_time_int" type="Date" />
+    <ResultField name="item_description" type="String" />
+    <ResultField name="ringing_associate" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT
+            TSL.trans_seq,
+            TSL.item_id,
+            COALESCE((TSL.quantity * TCM.percentage_of_item), TSL.quantity) AS quantity,
+            CASE
+              WHEN TCM.percentage_of_item IS NULL THEN ABS(TSL.unit_price)
+              ELSE ABS(COALESCE(TSL.net_amt,0) / COALESCE(TSL.quantity,1)) * COALESCE(TCM.percentage_of_item, 1)
+            END AS unit_price,
+            CASE
+              WHEN TCM.percentage_of_item IS NULL THEN ABS(TSL.extended_amt)
+              ELSE ABS(COALESCE(TSL.net_amt,0) * COALESCE(TCM.percentage_of_item, 1))
+            END AS ext_price,
+            CRP.employee_id as commissioned_associate,
+            COALESCE(TRR.description,''),
+            TSL.wkstn_id,
+            TSL.business_date,
+            TRN.BEGIN_DATETIME,
+            ITM.description AS item_description,
+            CRE.employee_id AS ringing_associate
+          FROM
+            trl_sale_lineitm TSL
+
+           INNER JOIN
+            trl_rtrans_lineitm TRL
+          ON
+            TSL.organization_id = TRL.organization_id
+            AND TSL.rtl_loc_id = TRL.rtl_loc_id
+            AND TSL.trans_seq = TRL.trans_seq
+            AND TSL.rtrans_lineitm_seq = TRL.rtrans_lineitm_seq
+            AND TSL.wkstn_id = TRL.wkstn_id
+            AND TSL.business_date = TRL.business_date
+            AND TRL.void_flag = '0'
+
+          INNER JOIN
+            trn_trans TRN
+          ON
+            TSL.organization_id = TRN.organization_id
+            AND TSL.rtl_loc_id = TRN.rtl_loc_id
+            AND TSL.trans_seq = TRN.trans_seq
+            AND TSL.wkstn_id = TRN.wkstn_id
+            AND TSL.business_date = TRN.business_date
+
+          INNER JOIN
+            crm_party CRE
+          ON
+            TRN.organization_id = CRE.organization_id
+            AND TRN.operator_party_id = CRE.party_id
+
+          LEFT OUTER JOIN
+            itm_item ITM
+          ON
+            TSL.organization_id = ITM.organization_id
+            AND /*UPPER*/ TSL.item_id = ITM.item_id
+
+          LEFT OUTER JOIN
+            com_reason_code TRR
+          ON
+            TSL.organization_id = TRR.organization_id
+            AND /*UPPER*/ TSL.return_reascode = TRR.reason_code
+            AND TRR.reason_typcode = 'RETURN'
+
+         LEFT OUTER JOIN
+            trl_commission_mod TCM
+         ON
+           TSL.organization_id = TCM.organization_id
+           AND TSL.rtl_loc_id = TCM.rtl_loc_id
+           AND TSL.trans_seq = TCM.trans_seq
+           AND TSL.rtrans_lineitm_seq = TCM.rtrans_lineitm_seq
+           AND TSL.wkstn_id = TCM.wkstn_id
+           AND TSL.business_date = TCM.business_date
+
+         LEFT OUTER JOIN
+            crm_party CRP
+         ON
+            TCM.organization_id = CRP.organization_id
+            AND TCM.employee_party_id = CRP.party_id
+
+          WHERE
+            TSL.organization_id = ?
+            AND TSL.rtl_loc_id = ?
+            AND TSL.return_flag = '1'
+            AND TRN.post_void_flag = '0'
+            AND /*UPPER*/ TRN.trans_statcode = 'COMPLETE'
+            AND (TSL.exclude_from_net_sales_flag <> '1' OR TSL.exclude_from_net_sales_flag IS NULL)
+            AND /*UPPER*/ ITM.item_typcode <> 'NON_PHYSICAL'
+            AND TRN.trans_date BETWEEN ? AND ?
+            AND TSL.net_amt *-1 >= ?
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateEnd" />
+      <Parameter name="minimumReturnAmount" />
+      <Expression trigger="returnReason_getReasonCode"><![CDATA[/*UPPER*/ TSL.return_reascode LIKE ?]]></Expression>
+      <Expression parameters="startEmp, endEmp" trigger="startEmp"><![CDATA[/*UPPER*/ CRE.employee_id between ? AND ?]]></Expression>
+    </SQL>
+    <Sort field="sortOrder" order="ascDesc" />
+  </Query>
+  <!-- End BZ26986 -->
+  <!-- Begin BZ24405 -->
+  <Query name="CONFIGURABLE_CUST_ACCT_ACTIVITY_SUMMARY_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="cust_acct_id" type="String" />
+    <ResultField name="last_name" type="String" />
+    <ResultField name="first_name" type="String" />
+    <ResultField name="party_id" type="String" />
+    <ResultField name="telephone1" type="String" />
+    <ResultField name="acct_setup_date" type="Date" />
+    <ResultField name="last_activity_date" type="Date" />
+    <ResultField name="last_payment_date" type="Date" />
+    <ResultField name="account_status" type="String" />
+    <ResultField name="acct_total" type="BigDecimal" />
+    <ResultField name="total_payment_amt" type="BigDecimal" />
+    <ResultField name="acct_balance" type="BigDecimal" />
+    <ResultField name="account_type" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT distinct cust_acct_id, last_name, first_name, party_id, telephone1, 
+               setup_date, last_activity_date, last_payment_date, 
+               cust_acct_statcode, acct_total, total_payment_amt, acct_balance, cust_acct_code 
+        FROM (
+          SELECT
+            ca.cust_acct_id,
+            crm.last_name,
+            crm.first_name,
+            ca.party_id,
+            cpt.telephone_number as telephone1,
+            ca.acct_setup_date as setup_date,
+            ca.last_activity_date as last_activity_date,
+            CASE 
+              WHEN ca.cust_acct_code='SEND_SALE' 
+                THEN ca.last_activity_date 
+              WHEN ca.cust_acct_code = 'HOUSE_ACCOUNT' OR ca.cust_acct_code = 'AR_ACCOUNT' OR ca.cust_acct_code = 'THIRD_PARTY'
+                THEN 
+                  (SELECT MAX(chrg.business_date) 
+                    FROM cat_charge_acct_history chrg 
+                    WHERE 
+                      /*UPPER*/ chrg.activity_enum = 'PAYMENT' 
+                      AND ca.cust_acct_id = chrg.cust_acct_id
+                      AND ca.cust_acct_code  = chrg.cust_acct_code
+                      AND ca.organization_id = chrg.organization_id
+                      AND ca.rtl_loc_id = chrg.rtl_loc_id
+                  )
+              ELSE
+              (
+                SELECT
+                  MAX(caa.business_date)
+                FROM
+                 cat_cust_item_acct_activity caa
+                WHERE
+                      ca.cust_acct_id = caa.cust_acct_id
+                  AND ca.cust_acct_code = caa.cust_acct_code
+                  AND ca.organization_id = caa.organization_id
+                  AND (/*UPPER*/ caa.line_typcode='PAYMENT' 
+                  OR /*UPPER*/ caa.line_typcode='DEPOSIT'
+                  OR /*UPPER*/ caa.item_acct_activity_code='PICKUP')
+              ) END as last_payment_date,
+            ca.cust_acct_statcode,
+            CASE 
+                 WHEN ca.cust_acct_code = 'HOUSE_ACCOUNT' OR ca.cust_acct_code = 'AR_ACCOUNT' OR ca.cust_acct_code = 'THIRD_PARTY'
+                  THEN 
+                    (SELECT SUM(chrg.amt) 
+                       FROM cat_charge_acct_history chrg 
+                       WHERE 
+                        /*UPPER*/ chrg.activity_enum = 'CHARGE'
+                        AND ca.cust_acct_id = chrg.cust_acct_id
+                        AND ca.cust_acct_code  = chrg.cust_acct_code
+                        AND ca.organization_id = chrg.organization_id
+                        AND ca.rtl_loc_id = chrg.rtl_loc_id
+                    )                     
+                  ELSE 
+                   cia.acct_total END acct_total,
+            CASE WHEN ca.cust_acct_code='SEND_SALE' 
+                    THEN ca.acct_balance
+                 WHEN ca.cust_acct_code = 'HOUSE_ACCOUNT' OR ca.cust_acct_code = 'AR_ACCOUNT' OR ca.cust_acct_code = 'THIRD_PARTY'
+                  THEN 
+                    (SELECT SUM(chrg.amt)*-1 
+                       FROM cat_charge_acct_history chrg 
+                       WHERE 
+                        (/*UPPER*/ chrg.activity_enum = 'PAYMENT' or /*UPPER*/ chrg.activity_enum = 'REVERSAL')
+                        AND ca.cust_acct_id = chrg.cust_acct_id
+                        AND ca.cust_acct_code  = chrg.cust_acct_code
+                        AND ca.organization_id = chrg.organization_id
+                        AND ca.rtl_loc_id = chrg.rtl_loc_id
+                    )                     
+                 ELSE cia.total_payment_amt END total_payment_amt,
+            CASE 
+              WHEN ca.cust_acct_code='SEND_SALE' 
+                THEN 0 
+              ELSE 
+                ca.acct_balance 
+            END acct_balance,
+            ca.cust_acct_code
+          FROM
+            cat_cust_acct ca
+
+          LEFT OUTER JOIN
+            cat_cust_item_acct cia
+          ON
+            ca.organization_id = cia.organization_id
+            AND ca.cust_acct_id = cia.cust_acct_id
+            AND ca.cust_acct_code = cia.cust_acct_code
+
+          INNER JOIN
+            crm_party crm
+          ON
+            ca.organization_id = crm.organization_id
+            AND ca.party_id = crm.party_id
+      LEFT OUTER JOIN
+        crm_party_telephone cpt ON crm.party_id = cpt.party_id AND crm.organization_id = cpt.organization_id AND cpt.telephone_type = /*UPPER*/ 'Home'
+          WHERE 
+              ca.organization_id = ?
+          AND ca.rtl_loc_id = ?
+          AND /*UPPER*/ ca.cust_acct_statcode LIKE ?
+          AND ca.cust_acct_code LIKE ? ) dt
+       WHERE (? = 'SETUP DATE' and setup_date between ? and ?) 
+           OR (? = 'LAST ACTIVITY DATE' and last_activity_date between ? and ?)
+           OR (? = 'LAST PAYMENT DATE' and last_payment_date between ? and ?)
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="accountStatus" />
+      <Parameter name="accountType" />
+      <Parameter name="baseAgeOn" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateEnd" />
+      <Parameter name="baseAgeOn" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateEnd" />
+      <Parameter name="baseAgeOn" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateEnd" />
+    </SQL>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        UNION
+        SELECT cust_acct_id, last_name, first_name, party_id, telephone1, 
+               setup_date, last_activity_date, last_payment_date, 
+               cust_acct_statcode, acct_total, total_payment_amt, acct_balance, cust_acct_code 
+        FROM (
+          SELECT
+            ca.cust_acct_id,
+            crm.last_name,
+            crm.first_name,
+            ca.party_id,
+            cpt.telephone_number as telephone1,
+            ca.acct_setup_date as setup_date,
+            ca.last_activity_date as last_activity_date,
+            null as last_payment_date,
+            null as cust_acct_statcode,
+            null as acct_total,
+            null as total_payment_amt,
+            cia.amt as acct_balance,
+            'ESCROW' as cust_acct_code
+          FROM
+            cat_escrow_acct ca
+
+          INNER JOIN
+            cat_escrow_acct_activity cia
+          ON
+            ca.organization_id = cia.organization_id
+            AND ca.cust_acct_id = cia.cust_acct_id
+
+          INNER JOIN
+            crm_party crm
+          ON
+            ca.organization_id = crm.organization_id
+            AND ca.party_id = crm.party_id
+          
+          LEFT OUTER JOIN
+            crm_party_telephone cpt 
+          ON 
+            crm.party_id = cpt.party_id 
+            AND crm.organization_id = cpt.organization_id 
+            AND cpt.telephone_type = /*UPPER*/ 'Home'
+          WHERE 
+              cia.organization_id = ?
+          AND cia.rtl_loc_id = ?
+          AND 'ESCROW' LIKE ? ) dt
+       WHERE ( ? = 'SETUP DATE' and setup_date between ? and ?) 
+           OR (? = 'LAST ACTIVITY DATE' and last_activity_date between ? and ?)
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="accountType" />
+      <Parameter name="baseAgeOn" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateEnd" />
+      <Parameter name="baseAgeOn" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateEnd" />
+    </SQL>
+    <Sort field="sortOrder" />
+  </Query>
+  <!-- End BZ24405 -->
+</QuerySet>

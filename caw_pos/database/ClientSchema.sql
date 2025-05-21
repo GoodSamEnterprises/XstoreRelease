@@ -1,0 +1,6 @@
+-- ***************************************************************************
+-- Place any customer specific schema changes into this file
+--
+-- All sql statements that goes here should be defined in a update-safe way, ie. the final script should be able 
+-- to run against the database any number of times and should produce the same output.
+-- ***************************************************************************

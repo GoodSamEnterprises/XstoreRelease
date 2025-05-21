@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Scope/Bug ID#          ddMMyy             Description
+ * BZ22710                08092017           Xenvironment does NOT start automatically when completing installation.
+ * BZ23047                30102017           [ENV] Cannot deploy xstore-16.0.1.0.25-x.x.x-0.0-CAW-pos-update.jar from xcenter
+ * BZ25648                12032018           build 1.3.1 Xenvironment update jar not working properly
+ * BZ29599                070819             Non-lead not catch up the updates from lead after back up from offline 
+ * BZ29121                041219             [Prod] Clean up data files from xenvironment wwwroot
+ * BZ25633                040220             [Oracle Fix] - Updates are not applying in order they are deployed by xadmin
+ *===================================================================
+ */ 
+-->
+<project name="custom post-install tasks" default="run-tasks" basedir=".">
+
+    <!-- Properties required for Country Specific DB Script to run -->
+    <!-- ========================================================= -->
+
+    <target name="run-tasks" description="Master target that calls other targets in order.">
+        <property file="${basedir}/custom/update/caw.update.properties" />
+        <antcall target="caw-run-specific-inst-type" />
+    </target>
+	 <!-- BEGIN BZ25633 -->
+    <target name="caw-run-specific-inst-type" description="">
+        <echo message="... install.type=${install.type}" />
+        <if>
+            <equals arg1="INSTALL" arg2="${install.type}" casesensitive="false" trim="true" />
+            <then>
+                <echo message="This is an install." />
+            </then>
+            <elseif>
+                <equals arg1="UPGRADE" arg2="${install.type}" casesensitive="false" trim="true" />
+                <then>
+                    <echo message="This is an upgrade." />
+                    <antcall target="res-folder-restore" />
+                    <antcall target="update-action-config" />
+                </then>
+            </elseif>
+            <elseif>
+                <equals arg1="UPDATE" arg2="${install.type}" casesensitive="false" trim="true" />
+                <then>
+                    <echo message="This is an update." />
+                    <antcall target="extract-xenv-update" />
+                    <antcall target="update-action-config" />
+                </then>
+            </elseif>
+            <else>
+                <echo message="... This is not an install nor update. Skipping this step" />
+            </else>
+        </if>
+    </target>
+	 <!-- END BZ25633 -->
+
+    <target name="res-folder-restore" description="Restore ssl and keys folder">
+        <property name="bkEnvDir" location="${external.file.root}/BACKUPxenv" />
+        <property name="backup.res.folder" location="${bkEnvDir}/res" />
+        <property name="xenv.ssl.folder" location="${install.dir}/res/ssl" />
+        <property name="xenv.keys.folder" location="${install.dir}/res/keys" />
+        <echo message="Copy 2 folders: ssl and keys xenvironment folder" />
+
+        <copy todir="${xenv.ssl.folder}" overwrite="true" force="true" verbose="true">
+            <fileset dir="${backup.res.folder}/ssl"/>
+        </copy>
+        <copy todir="${xenv.keys.folder}" overwrite="true" force="true" verbose="true">
+            <fileset dir="${backup.res.folder}/keys"/>
+        </copy>
+        <delete dir="${bkEnvDir}"/>
+    </target>
+    
+	 <!-- BEGIN BZ25633 -->
+    <target name="update-action-config" description="Update actions.properties">
+        <echo message="Start update actions.properties for fixing BZ25344, BZ29599, BZ29121...." />
+        <propertyfile file="${install.dir}/cust_config/version1/actions.properties" comment="actions.properties">
+            <!-- BEGIN BZ25344 -->
+            <entry key="atom.remove-old-pospoll-files.class" value="${atom.remove-old-pospoll-files.class}"/>
+            <entry key="atom.remove-old-pospoll-files.directory" value="${atom.remove-old-pospoll-files.directory}"/>
+            <entry key="atom.remove-old-pospoll-files.filter" value="${atom.remove-old-pospoll-files.filter}"/>
+            <entry key="atom.remove-old-pospoll-files.days" value="${atom.remove-old-pospoll-files.days}"/>
+            <entry key="atom.remove-old-deployment-download-dat-files.class" value="${atom.remove-old-deployment-download-dat-files.class}"/>
+            <entry key="atom.remove-old-deployment-download-dat-files.directory" value="${atom.remove-old-deployment-download-dat-files.directory}"/>
+            <entry key="atom.remove-old-deployment-download-dat-files.filter" value="${atom.remove-old-deployment-download-dat-files.filter}"/>
+            <entry key="atom.remove-old-deployment-download-dat-files.days" value="${atom.remove-old-deployment-download-dat-files.days}"/>
+            <entry key="atom.cleanup-package-archive-directory.class" value="${atom.cleanup-package-archive-directory.class}"/>
+            <entry key="atom.cleanup-package-archive-directory.directory" value="${atom.cleanup-package-archive-directory.directory}"/>
+            <entry key="atom.cleanup-package-archive-directory.filter" value="${atom.cleanup-package-archive-directory.filter}"/>
+            <entry key="atom.cleanup-package-archive-directory.days" value="${atom.cleanup-package-archive-directory.days}"/>
+            <entry key="atom.create-local-polling-package.class" value="${atom.create-local-polling-package.class}"/>
+            <entry key="atom.create-local-polling-package.path" value="${atom.create-local-polling-package.path}"/>
+            <entry key="atom.create-local-polling-package.regex" value="${atom.create-local-polling-package.regex}"/>
+            <entry key="lead.atom.create-local-polling-package.archive" value="${lead.atom.create-local-polling-package.archive}"/>
+            <entry key="nonlead.atom.create-local-polling-package.archive" value="${nonlead.atom.create-local-polling-package.archive}"/>
+            <entry key="chain.prepare-local-polling-package.atoms" value="${chain.prepare-local-polling-package.atoms}"/>
+            <entry key="lead.chain.BUSINESS_DATE_CHANGED.atoms" value="${lead.chain.BUSINESS_DATE_CHANGED.atoms}"/>
+            <entry key="chain.DO_INVASIVE_UPDATES.atoms" value="${chain.DO_INVASIVE_UPDATES.atoms}"/>
+            <!-- BEGIN BZ25344 -->
+            <entry key="chain.startup-nonlead.atoms" value="${chain.startup-nonlead.atoms}"/> <!-- BZ29599 -->
+            <entry key="lead.atom.update-feeds.expiration_days" value="${lead.atom.update-feeds.expiration_days}"/> <!-- BZ29121 -->
+        </propertyfile>
+        <runXenvConfigureProcess installDir="${install.dir}" />
+    </target>
+    
+  <target name="extract-xenv-update" description="Extract xenvironment.zip">
+    <echo message="Extract xenvironment.zip" />
+    <applyXenvUpdate installdir="${install.dir}" />
+  </target>
+    
+  <macrodef name="applyXenvUpdate">
+    <attribute name="installDir" />
+    <sequential>
+      <unzip src="xenvironment.zip" dest="@{installDir}">
+      </unzip>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="runXenvConfigureProcess">
+    <attribute name="installDir" />
+    <sequential>
+      <local name="baseconfigure.script.file" />
+      <property name="baseconfigure.script.file" location="@{installDir}/configure${os.ext}" />
+      <if>
+        <available file="${baseconfigure.script.file}" />
+        <then>
+          <echo message="... execute ${baseconfigure.script.file}" />
+          <exec dir="@{installDir}" executable="${baseconfigure.script.file}" />
+        </then>
+      </if>
+    </sequential>
+  </macrodef>
+  <!-- END BZ25633 -->
+</project>

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!--
+
+InstallX Common Database Targets and Properties
+
+-->
+<project name="InstallX Common Database Targets and Properties" default="" basedir=".">
+
+  <target name="local-db-mssql" if="ismssql">
+    <propertyfile file="${install.dir}/updates/xstore.properties">
+      <entry key="dtv.datasource.local.ConnectionURL" value="jdbc:sqlserver://${local.host};databaseName=${local.db};sendStringParametersAsUnicode=false" />
+      <entry key="dtv.datasource.local.ping.port" value="1433" />
+    </propertyfile>
+  </target>
+
+  <target name="local-db-mssql-unicode" if="ismssqlunicode">
+    <propertyfile file="${install.dir}/updates/xstore.properties">
+      <entry key="dtv.datasource.local.ConnectionURL" value="jdbc:sqlserver://${local.host};databaseName=${local.db}" />
+      <entry key="dtv.datasource.local.ping.port" value="1433" />
+    </propertyfile>
+  </target>
+
+  <target name="local-db-oracle" if="isoracle">
+    <propertyfile file="${install.dir}/updates/xstore.properties">
+      <entry key="dtv.datasource.local.ConnectionURL" value="jdbc:oracle:thin:@${local.host}:1521:${local.db}" />
+      <entry key="dtv.datasource.local.ping.port" value="1521" />
+    </propertyfile>
+  </target>
+
+  <target name="local-db-oraclepdb" if="isoraclepdb">
+    <propertyfile file="${install.dir}/updates/xstore.properties">
+      <entry key="dtv.datasource.local.ConnectionURL" value="jdbc:oracle:thin:@${local.host}:1521/${local.db}" />
+      <entry key="dtv.datasource.local.ping.port" value="1521" />
+    </propertyfile>
+  </target>
+
+  <target name="local-db-all" depends="local-db-mssql,local-db-mssql-unicode,local-db-oracle,local-db-oraclepdb">
+    <updateDriverInProperties file="${install.dir}/updates/xstore.properties"/>
+    <propertyfile file="${install.dir}/updates/xstore.properties">
+      <entry key="dtv.datasource.local.ping.Host" value="${local.host}" />
+      <entry key="local.db.user" value="${local.db.user}" />
+      <entry key="local.db.pwd" value="${local.db.pwd}" />
+    </propertyfile>
+  </target>
+
+</project>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ37177              100820    Enable Order Function in Xstore
+ * BZ44917              110921    [New Requirement] IDS Payment Integration with Xstore
+ * BZ42307              200921    [Requirement] Add ability to reject at the item level for BOPIS
+ * BZ45995              141021    [New requirement] Email capture when good sam membership is sold
+*===================================================================
+ */
+-->
+<PromptSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PromptConfig.xsd">
+   <!-- BEGIN BZ37177 -->
+  <Prompt name="ORDER_TYPE" type="Notify" title="_orderTitle" message="_orderSelectType">
+    <Action dataKey="STANDARD_DELIVERY" text="_orderTypeStandardDelivery" keyStroke="F4" />
+  
+ 
+    <Action dataKey="STANDARD_PICKUP" text="_orderTypeStandardPickup" keyStroke="F6" />
+     <!-- Disable "Pickup This Store" (F8) option -->
+    <!-- <Action dataKey="DELAYED_PICKUP" text="_orderTypeDelayedPickup" keyStroke="F8" /> -->
+  </Prompt>
+  <!-- END BZ37177 -->
+  
+  <!-- BEGIN BZBZ33319 -->
+  <Prompt name="CAW_DEFER_FINANCIAL_MIXED_NOT_ALLOWED" type="Notify" title="_deferFinancialTitle" message="_deferFinancialMessage">
+    <Action ref="CANCEL_BACK" />
+  </Prompt>
+  <!-- END BZBZ33319 -->
+   
+  <!-- BEGIN BZ44917 -->
+  <Prompt name="CAW_RV_PAYMENT_ITEMS" type="List" title="_cawRVPaymentResultsTitle" message="_cawRVPaymentResultsMessage">
+    <ListViewType dtype="String">CAW_RV_PAYMENT_ITEMS</ListViewType>
+    <Action ref="CANCEL_BACK"/>
+    <Action dataKey="SELECTION_COMPLETE" text="_rvPaymentSelectionCompleteBtn" keyStroke="F8">
+        <VisibilityRule class="caw.pos.register.rvpayment.CawRvPaymentSelectedItemVisibilityRule"/>
+    </Action>
+    <Action dataKey="SELECT" text="_selectAndContinue" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_RV_PAYMENT_NOT_FOUND" type="Notify" title="_rvPaymentNotFoundTitle" message="_rvPaymentNotFoundMessage">
+    <Action keywords="exclude" category="" dataKey="CANCEL" text="_woContinueBtn" keyStroke="Enter"/>
+    <Action keywords="exclude" category="" dataKey="RETRY" text="_woRetryBtn" keyStroke="Escape"/>
+  </Prompt>
+  <Prompt name="CAW_RV_PAYMENT_ERROR" type="Notify" title="_rvPaymentErrorTitle" message="_rvPaymentErrorMessage">
+    <Action ref="ACCEPT_ENTER"/>
+  </Prompt>
+  <!-- END BZ44917 -->
+  <!-- BEGIN BZ42307 -->
+  <Prompt name="ORDER_ITEMS_CONFIRM_REJECT" type="Notify" title="_orderRejectOrderAction" message="_orderConfirmRejectItems" >
+     <Action ref="NO" />
+     <Action ref="YES" />
+     <Action dataKey="PARTIAL_UPDATE" text="_orderPartialReject" keyStroke="P" >
+         <VisibilityRule class="caw.pos.order.maint.CawPartialUpdateVisibilityRule" />
+     </Action>
+  </Prompt>
+  <!-- END BZ42307 -->
+  
+  <!-- BEGIN BZ45995 -->
+  <Prompt name="CAW_MEMBERSHIP_EMAIL_CAPTURE_EMAIL_INVALID" type="Notify" title="_cawEmailAddressValidationTitle" message="_cawEmailValidationInvalidMsg">
+    <Action dataKey="BACK" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_MEMBERSHIP_EMAIL_CAPTURE_EMAIL_ERROR" type="Notify" title="_cawEmailAddressValidationErrorTitle" message="_cawEmailValidationErrorMsg">
+    <Action dataKey="BACK" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_MEMBERSHIP_EMAIL_CAPTURE_EMAIL_UNAVAILABLE" type="Notify" title="_cawEmailAddressValidationUnavailableTitle" message="_cawEmailValidationUnavailableMsg">
+    <Action dataKey="OK_UPDATE" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ45995 -->
+</PromptSet>

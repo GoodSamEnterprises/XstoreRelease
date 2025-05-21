@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ44528				130821	  Electric World & Mobile POS Implementation (Phase 1)
+ * BZ45972				270821	  Phase 1 Electric World - Item lookup function in the Kiosk Order screen
+ *===================================================================
+ */
+-->
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+  <!-- BEGIN BZ41379 -->
+  <Action name="ORDER::COMPLETE" category="Order" keywords="order" text="_orderExitOrderAction" chainKey="ORDER_MAINTENANCE_REGISTER_FINISH">
+    <VisibilityRule class="caw.pos.order.CawWonderSignLinesVisibilityRule"/><!-- BZ44528 -->
+  </Action>
+  <!-- END BZ41379 -->
+  
+  <!-- BEGIN BZ44528: Phase 1 -->
+  <Action name="CAW_WONDER_SIGN" category="" keywords="" text="_cawElectricWorld" chainKey="PRE_CAW_WONDER_SIGN_CHAIN" keyStroke="F8">
+    <VisibilityRule class="caw.pos.wondersign.visibilityrules.CawWonderSignEnableCheck" />
+  </Action>
+  <Action name="SALE::MAKE_SALE" category="Sale" keywords="sale" text="_cawMakeSale" keyStroke="F5" dataKey="MAKE_SALE" />
+  <Action name="ORDER::MAKE_ORDER" category="Order" keywords="order" text="_cawMakeOrder" keyStroke="F8" dataKey="MAKE_ORDER" />
+  <Action name="CAW_CART_SELECT" category="" keywords="" text="_cawCartSelectAndCountinue" keyStroke="ENTER" dataKey="SELECT" />
+  <Action name="CAW_CART_PROCESS" category="" keywords="" text="_process" keyStroke="ENTER" dataKey="PROCESS" />
+  <Action name="CAW_CART_ERROR_BACK" category="" keywords="" text="_back" keyStroke="Escape" dataKey="BACK_SEARCH" />
+  <Action name="ACCEPT_PROCESS_ENTER" category="" keywords="exclude" ref="ACCEPT" keyStroke="ENTER" />
+  <!-- END BZ44528: Phase 1 -->
+  
+  <!-- BEGIN BZ45972 -->
+  <Action name="ORDER::SEARCH_FOR_ITEM" category="Order" keywords="order" text="_itemLookupKey" chainKey="GENERIC_ITEM_LOOKUP" keyStroke="F9" >
+    <VisibilityRule class="caw.pos.order.CawWonderSignDisableRule"/>
+  </Action>
+  <!-- BEGIN BZ45972 -->
+  
+</ActionSet>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ24354              081117    [Advance Prompting] Add membership info validation API to all membership types when manually entered in POS 
+ * BZ24424              131117    "RA membership validation" prompt does not display for RA JOIN when you select "1-Year join (w/Auto Renew) - $69.95"
+ * BZ25434              200418    New Requirement - Extend Membership Validation Calls to Include Renewal Items
+ *===================================================================
+ */
+  -->
+<Memberships dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MembershipConfig.xsd">
+  <Membership >
+    <Activity name="600202"><!-- BZ24424 -->
+      <ValidateMembershipID>true</ValidateMembershipID>
+      <PromptingMemberShipID>true</PromptingMemberShipID><!-- BZ25434 -->
+      <PromptTitle>GS JOIN MEMBERSHIP NUMBER</PromptTitle>
+      <PromptMessage>Enter the Good Sam Membership number and press Enter</PromptMessage>
+      <IsAuto>false</IsAuto>
+      <CustomerGroup>CLUB</CustomerGroup>
+      <!-- Begin BZ24424 -->
+      <MembershipType>1</MembershipType>
+      <MembershipTypeDescription>GoodSamClub</MembershipTypeDescription>
+      <MembershipStatus>4</MembershipStatus>
+      <MembershipStatusDescription>Processing</MembershipStatusDescription>
+      <BenefitLevel>1</BenefitLevel>
+      <BenefitLevlName>Classic</BenefitLevlName>
+      <!-- End BZ24424 -->
+    </Activity>
+    <Activity name="600203"><!-- BZ24424 -->
+      <ValidateMembershipID>true</ValidateMembershipID><!-- BZ25434 -->
+      <PromptingMemberShipID>false</PromptingMemberShipID><!-- BZ25434 -->
+      <PromptTitle></PromptTitle>
+      <PromptMessage></PromptMessage>
+      <IsAuto>false</IsAuto>
+      <CustomerGroup>CLUB</CustomerGroup>
+      <!-- Begin BZ24424 -->
+      <MembershipType>1</MembershipType>
+      <MembershipTypeDescription>GoodSamClub</MembershipTypeDescription>
+      <MembershipStatus>4</MembershipStatus>
+      <MembershipStatusDescription>Processing</MembershipStatusDescription>
+      <BenefitLevel>1</BenefitLevel>
+      <BenefitLevlName>Classic</BenefitLevlName>
+      <!-- End BZ24424 -->
+    </Activity>
+    <Activity name="600204"><!-- BZ24424 -->
+      <ValidateMembershipID>true</ValidateMembershipID>
+      <PromptingMemberShipID>true</PromptingMemberShipID><!-- BZ25434 -->
+      <PromptTitle>GS UPGRADE MEMBERSHIP NUMBER</PromptTitle>
+      <PromptMessage>Enter the Good Sam Membership number and press Enter</PromptMessage>
+      <IsAuto>false</IsAuto>
+      <CustomerGroup>CLUB</CustomerGroup>
+      <!-- Begin BZ24424 -->
+      <MembershipType>1</MembershipType>
+      <MembershipTypeDescription>GoodSamClub</MembershipTypeDescription>
+      <MembershipStatus>4</MembershipStatus>
+      <MembershipStatusDescription>Processing</MembershipStatusDescription>
+      <BenefitLevel>1</BenefitLevel>
+      <BenefitLevlName>Classic</BenefitLevlName>
+      <!-- End BZ24424 -->
+    </Activity>
+    <!-- <Activity name="GC_AUTORENEW">
+      <ValidateMembershipID>true</ValidateMembershipID>
+      <PromptTitle>GS JOIN MEMBERSHIP NUMBER</PromptTitle>
+      <PromptMessage>Enter the Good Sam Membership number and press Enter</PromptMessage>
+      <IsAuto>true</IsAuto>
+      <CustomerGroup>CLUB</CustomerGroup>
+    </Activity> -->
+    <Activity name="600100"><!-- BZ24424 -->
+      <ValidateMembershipID>true</ValidateMembershipID>
+      <PromptingMemberShipID>true</PromptingMemberShipID><!-- BZ25434 -->
+      <PromptTitle>RA JOIN MEMBERSHIP NUMBER</PromptTitle>
+      <PromptMessage>Enter the Good Sam Roadside Assistance number and press Enter</PromptMessage>
+      <IsAuto>false</IsAuto>
+      <CustomerGroup></CustomerGroup>
+      <!-- Begin BZ24424 -->
+      <MembershipType>4</MembershipType>
+      <MembershipTypeDescription>GoodSamRoadside</MembershipTypeDescription>
+      <MembershipStatus>4</MembershipStatus>
+      <MembershipStatusDescription>Processing</MembershipStatusDescription>
+      <BenefitLevel>0</BenefitLevel>
+      <BenefitLevlName>None</BenefitLevlName>
+      <!-- End BZ24424 -->
+    </Activity>
+    <Activity name="600101"><!-- BZ24424 -->
+      <ValidateMembershipID>true</ValidateMembershipID><!-- BZ25434 -->
+      <PromptingMemberShipID>false</PromptingMemberShipID><!-- BZ25434 -->
+      <PromptTitle></PromptTitle>
+      <PromptMessage></PromptMessage>
+      <IsAuto>false</IsAuto>
+      <CustomerGroup></CustomerGroup>
+      <!-- Begin BZ24424 -->
+      <MembershipType>4</MembershipType>
+      <MembershipTypeDescription>GoodSamRoadside</MembershipTypeDescription>
+      <MembershipStatus>4</MembershipStatus>
+      <MembershipStatusDescription>Processing</MembershipStatusDescription><!-- BZ25434 -->
+      <BenefitLevel>0</BenefitLevel>
+      <BenefitLevlName>None</BenefitLevlName>
+      <!-- End BZ24424 -->
+    </Activity>
+    <!-- <Activity name="RA_AUTORENEW">
+      <ValidateMembershipID>true</ValidateMembershipID>
+      <PromptTitle>RA JOIN MEMBERSHIP NUMBER</PromptTitle>
+      <PromptMessage>Enter the Good Sam Roadside Assistance number and press Enter</PromptMessage>
+      <IsAuto>true</IsAuto>
+      <CustomerGroup></CustomerGroup>
+    </Activity> -->
+    <Activity name="600400"><!-- BZ24424 -->
+      <ValidateMembershipID>true</ValidateMembershipID><!-- BZ25434 -->
+      <PromptTitle>TA JOIN MEMBERSHIP NUMBER</PromptTitle>
+      <PromptingMemberShipID>true</PromptingMemberShipID><!-- BZ25434 -->
+      <PromptMessage>Enter the Good Sam Travel Assistance number and press Enter</PromptMessage>
+      <IsAuto>false</IsAuto>
+      <CustomerGroup></CustomerGroup>
+      <!-- Begin BZ24424 -->
+      <MembershipType>64</MembershipType>
+      <MembershipTypeDescription>GoodSamTravelAssist</MembershipTypeDescription>
+      <MembershipStatus>4</MembershipStatus>
+      <MembershipStatusDescription>Processing</MembershipStatusDescription>
+      <BenefitLevel>0</BenefitLevel>
+      <BenefitLevlName>None</BenefitLevlName>
+      <!-- End BZ24424 -->
+    </Activity>
+    <Activity name="600401"><!-- BZ24424 -->
+      <ValidateMembershipID>true</ValidateMembershipID><!-- BZ25434 -->
+      <PromptingMemberShipID>false</PromptingMemberShipID><!-- BZ25434 -->
+      <PromptTitle></PromptTitle>
+      <PromptMessage></PromptMessage>
+      <IsAuto>false</IsAuto>
+      <CustomerGroup></CustomerGroup>
+      <!-- Begin BZ24424 -->
+      <MembershipType>64</MembershipType>
+      <MembershipTypeDescription>GoodSamTravelAssist</MembershipTypeDescription>
+      <MembershipStatus>4</MembershipStatus>
+      <MembershipStatusDescription>Processing</MembershipStatusDescription>
+      <BenefitLevel>0</BenefitLevel>
+      <BenefitLevlName>None</BenefitLevlName>
+      <!-- End BZ24424 -->
+    </Activity>
+    <!-- <Activity name="TA_AUTORENEW">
+      <ValidateMembershipID dtype="Boolean">true</ValidateMembershipID>
+      <PromptTitle>TA JOIN MEMBERSHIP NUMBER</PromptTitle>
+      <PromptMessage>Enter the Good Sam Travel Assistance number and press Enter</PromptMessage>
+      <IsAuto>true</IsAuto>
+      <CustomerGroup></CustomerGroup>
+    </Activity> -->
+  </Membership>
+</Memberships>

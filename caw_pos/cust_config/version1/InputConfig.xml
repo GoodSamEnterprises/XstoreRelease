@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ23339              080917    [DEV] Implement Gift card authorization
+ * BZ23782              091017    Enable MSR swipe for Gift card
+ * BZ23733              121017    [Payments] Cannot swipe gift card on pin pad for load/reload gift card transactions
+ * BZ23359              121017    Gift cards can't be swiped at screen.
+ * BZ24275              151117    unable to scan sale receipts on scan screen.
+ * BZ24815              121217    Bin Range for new Gander Gift card
+ * BZ34293              171219    [Internal] Xstore show inappropriate prompt when scan item has properties
+ * BZ34291              301219    [Defect 33595] Xstore show HDE when using scanner with serialized item
+ * BZ26268              110220    Driver License and State ID scan for customer add/age prompts
+ * BZ46381              110821    IDS Payment - Should be able to scan a barcode of IDS Customer Number and IDS WO Number when doing a RV Service Payment Search in Xstore
+ *===================================================================
+ */
+  -->
+<InputTypeList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="InputConfig.xsd">
+
+  <!--BZ 24815  Start -->
+  <InputType name="GO_GIFT_CARD">
+      <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+      <Type dtype="String">XPAY_GIFT_CARD</Type>
+      <InputRuleList>
+        <InputRule RuleType="LengthRule">
+          <Parameter name="length" value="19"/>
+        </InputRule>
+        <InputRule RuleType="RangeRule">
+          <Parameter name="range_start" value="608825"/>
+          <Parameter name="range_end" value="608825"/>
+        </InputRule>
+    </InputRuleList>
+  </InputType>
+
+    <!--BZ 24815  End -->
+    
+    <InputType name="EIGEN_GIFT_CARD1">
+        <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+        <Type dtype="String">EIGEN_GIFT_CARD</Type>
+        <InputRuleList>
+          <InputRule RuleType="LengthRule">
+            <Parameter name="length" value="19"/>
+          </InputRule>
+        </InputRuleList>
+    </InputType>
+    
+   <InputType name="TRAN_SCAN">
+    <Event dtype="Class">dtv.hardware.events.TransactionScanEvent</Event>
+    <Type dtype="String">INPUT_RECEIPT</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Code 93"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="23"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="T"/>
+        <Parameter name="range_end" value="T"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+  
+   <!-- BEGIN BZ26268 -->
+  <InputType name="DRIVERS_LICENSE_BARCODE">
+    <Event dtype="Class">caw.hardware.dl.CawDriversLicenseBarcodeEvent</Event>
+    <Type dtype="String">INPUT_DRIVERS_LICENSE</Type>
+    <InputRuleList>
+       <InputRule RuleType="ScannerSourceRule"/>
+       <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="PDF 417"/>
+       </InputRule>
+    </InputRuleList>
+  </InputType>
+  <!-- END BZ26268 -->
+  
+  <!-- BEGIN BZ46381 -->
+  <InputType name="INPUT_RV_PAYMENT">
+    <Event dtype="Class">caw.hardware.events.CawRvPaymentScanEvent</Event>
+    <Type dtype="String">INPUT_RV_PAYMENT</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="RegExRule">
+        <Parameter name="Expression" value="^IDSCU.*|^IDSWO.*" />
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+  <!-- END BZ46381 -->
+  
+   <ProcessingOrder>
+       <Entry name="FDMS_GIFT_CARD1" order="100" enabled="true" />
+       <Entry name="FDMS_GIFT_CARD2" order="200" enabled="true" />
+       <Entry name="DRIVERS_LICENSE_SWIPE" order="500" enabled="true" />
+       <Entry name="DRIVERS_LICENSE_BARCODE" order="600" enabled="true" />
+       <Entry name="MANUFACTURER_COUPON_UPC-A" order="700" enabled="true" />
+       <Entry name="IN-STORE_COUPON_EAN13" order="800" enabled="true" />
+       <Entry name="CUST_CARD_MSR" order="900" enabled="true" />
+       <Entry name="CUST_CARD_SCAN" order="1000" enabled="true" />
+       <Entry name="ANSWER" order="1100" enabled="true" />
+       <Entry name="SIGNATURE" order="1200" enabled="true" />
+       <Entry name="MSR_ERROR" order="1300" enabled="true" />
+       <Entry name="PIN_ENTRY" order="1400" enabled="true" />
+       <Entry name="MASTERCARD1" order="1500" enabled="true" />
+       <Entry name="MASTERCARD2" order="1600" enabled="true" />
+       <Entry name="MASTERCARD3" order="1650" enabled="true" />
+       <Entry name="TRANSARMOR_UTILITY" order="1700" enabled="true" />
+       <Entry name="VISA1" order="1800" enabled="true" />
+       <Entry name="VISA2" order="1900" enabled="true" />
+       <Entry name="AMEX1" order="2000" enabled="true" />
+       <Entry name="AMEX2" order="2100" enabled="true" />
+       <Entry name="DISCOVER" order="2200" enabled="true" />
+       <Entry name="JCB" order="2400" enabled="true" />
+       <Entry name="JCB2" order="2500" enabled="true" />
+       <Entry name="JCB3" order="2600" enabled="true" />
+       <Entry name="DINERS_CLUB" order="2700" enabled="true" />
+       <Entry name="DEBIT" order="2800" enabled="true" />
+       <Entry name="COUPON_GIFT_CARD" order="2900" enabled="true" />
+       <Entry name="PRIVATE_LABEL" order="3000" enabled="true" />
+       <Entry name="MERCH_CC" order="3100" enabled="true" />
+       <Entry name="TRAN_SCAN" order="3200" enabled="true" />
+
+       <!-- enabled with ":order" config path -->
+       <Entry name="XSTORE_ORDER_SCAN" order="3300" enabled="false" />
+       <Entry name="SERENADE_ORDER_SCAN" order="3400" enabled="false" />
+
+       <Entry name="STORE_CREDIT_SCAN" order="3500" enabled="true" />
+       <Entry name="GIFT_CERT" order="3600" enabled="true" />
+       <Entry name="HOUSE_ACCOUNT" order="3700" enabled="true" />
+       <Entry name="BOUNCE_BACK_COUPON" order="3800" enabled="true" />
+       <Entry name="LAYAWAY_SCAN" order="3900" enabled="true" />
+       <Entry name="SPECIAL_ORDER_SCAN" order="4000" enabled="true" />
+       <Entry name="PRESALE_SCAN" order="4100" enabled="true" />
+       <Entry name="ONHOLD_SCAN" order="4200" enabled="true" />
+       <Entry name="ENCODED_PRICE_SCAN" order="4300" enabled="true" />
+       <Entry name="ASN_SCAN" order="4400" enabled="true" />
+       <Entry name="STORE_TRANSFER_SCAN" order="4500" enabled="true" />
+       <Entry name="RETURN_TO_VENDOR_SCAN" order="4600" enabled="true" />
+       <Entry name="SHIPMENT_OUT_SCAN" order="4700" enabled="true" />
+       <Entry name="CARTON_SCAN" order="4800" enabled="true" />
+       <Entry name="WARRANTY_SCAN" order="4900" enabled="true" />
+       <Entry name="RAIN_CHECK_INPUT" order="5000" enabled="true" />
+       <!-- BEGIN BZ34293 -->
+       <Entry name="EMP_CARD_MSR_BIN" order="5100" enabled="false" />
+       <Entry name="EMP_CARD_SCAN_BIN" order="5200" enabled="false" />
+       <!-- END BZ34293 -->
+       <Entry name="BOARDING_PASS_SCAN" order="5300" enabled="true" />
+       
+       <!-- enabled with ":ipcashdrawer" config path -->
+       <Entry name="CASHDRAWER_SCAN" order="5350" enabled="false" />
+       <Entry name="INPUT_RV_PAYMENT" order="5360" enabled="true" /><!-- BZ46381 -->
+       <Entry name="ITEM_SCAN" order="5400" enabled="true" />
+       <Entry name="MANUFACTURER_COUPON_MANUAL" order="5500" enabled="true" />
+       <Entry name="IN-STORE_COUPON_MANUAL" order="5600" enabled="true" />
+       <Entry name="STORE_CREDIT_MANUAL" order="5700" enabled="true" />
+       <!-- BEGIN BZ34291 -->
+       <Entry name="PAYMENTECH_GIFT_CARD" order="5800" enabled="true" />
+       <Entry name="GO_GIFT_CARD" order="5850" enabled="true" />
+       <Entry name="EIGEN_GIFT_CARD1" order="5870" enabled="true" />
+       <!-- END BZ34291 -->
+       <Entry name="RELATE_GIFT_CARD" order="5900" enabled="true" />
+
+       <!-- enabled with ":relate" config path -->
+       <Entry name="RELATE_LOYALTY_CARD_SCAN" order="6000" enabled="false" />
+       <Entry name="RELATE_LOYALTY_CARD" order="6100" enabled="false" />
+
+       <Entry name="RELATE_GIFT_CARD_MANUAL" order="6200" enabled="true" />
+       <Entry name="AMEX_CID" order="6300" enabled="true" />
+       <Entry name="DISCOVER_CID" order="6400" enabled="true" />
+       <Entry name="VISA_CID" order="6500" enabled="true" />
+       <Entry name="MASTERCARD_CID" order="6600" enabled="true" />
+       <Entry name="JCB_CID" order="6700" enabled="true" />
+       <Entry name="XPAY_GIFT_CARD_CID" order="6800" enabled="true" />
+       <Entry name="ISSUE_XPAY_GIFT_CARD_CID" order="6900" enabled="true" />
+       <Entry name="RELOAD_XPAY_GIFT_CARD_CID" order="7000" enabled="true" />
+       <Entry name="MERCHANDISE_CREDIT_CARD_CID" order="7100" enabled="true" />
+       <Entry name="ISSUE_MERCHANDISE_CREDIT_CARD_CID" order="7200" enabled="true" />
+       <Entry name="RELOAD_MERCHANDISE_CREDIT_CARD_CID" order="7300" enabled="true" />
+       <Entry name="ISSUE_XPAY_POINTS_CARD_CID" order="7400" enabled="true" />
+       <Entry name="MALL_CERT" order="7500" enabled="true" />
+       <!-- <Entry name="MSR_OTHER" order="7600" enabled="true" /> -->
+   </ProcessingOrder>
+</InputTypeList>
