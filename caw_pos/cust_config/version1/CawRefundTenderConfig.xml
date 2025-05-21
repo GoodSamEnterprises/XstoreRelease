@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#       ddMMyy      Description
+ * BZ27922           011118      [New Requirement] Make all tender changes configurable
+ * BZ33089           251019      [5.0 UAT] Return with receipt a transaction with a Check Tender didn't have mail refund as an option.
+ * BZ33090           241219      [5.0 UAT] Disable Cash refund on the verified return transaction unless the original transaction has Cash
+ * BZ34597           090120      [Defect 33090] Cash refund is disabled on the unverified return
+ * BZ61330           290124      Update tender options for Verified return, Unverified return, web orders and Tender Exchange 
+ *===================================================================
+ */ 
+-->
+<RefundTenders xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CawRefundTenderConfig.xsd">
+    <!--Return type/NoRequiredOriginalTransaction:   RETURN_WEB_ORDER, BLIND, UNVERIFIED, VERIFIED-->
+    <!--OriginalTenderId: ref to TND_TNDR table-->
+    <RefundTenderId RefundTenderId="CREDIT_CARD">
+        <CheckOriginalTransaction dtype="Boolean">true</CheckOriginalTransaction>
+        <NoRequiredOriginalTransaction dtype="String">RETURN_WEB_ORDER,BLIND</NoRequiredOriginalTransaction> <!-- BZ61330 remove UNVERIFIED -->
+        <OriginalTenderId dtype="String">CREDIT_CARD</OriginalTenderId>
+        <MinAmountWithoutOriginalTrans dtype="BigDecimal">0</MinAmountWithoutOriginalTrans>
+        <MinAmountWithOriginalTrans dtype="BigDecimal">0</MinAmountWithOriginalTrans>
+    </RefundTenderId>
+    <RefundTenderId RefundTenderId="AR_ACCOUNT">
+        <CheckOriginalTransaction dtype="Boolean">true</CheckOriginalTransaction>
+        <NoRequiredOriginalTransaction dtype="String"></NoRequiredOriginalTransaction>
+        <OriginalTenderId dtype="String">AR_ACCOUNT</OriginalTenderId>
+        <MinAmountWithoutOriginalTrans dtype="BigDecimal">0</MinAmountWithoutOriginalTrans>
+        <MinAmountWithOriginalTrans dtype="BigDecimal">0</MinAmountWithOriginalTrans>
+    </RefundTenderId>
+    <RefundTenderId RefundTenderId="THIRD_PARTY">
+        <CheckOriginalTransaction dtype="Boolean">true</CheckOriginalTransaction>
+        <NoRequiredOriginalTransaction dtype="String"></NoRequiredOriginalTransaction>
+        <OriginalTenderId dtype="String">THIRD_PARTY</OriginalTenderId>
+        <MinAmountWithoutOriginalTrans dtype="BigDecimal">0</MinAmountWithoutOriginalTrans>
+        <MinAmountWithOriginalTrans dtype="BigDecimal">0</MinAmountWithOriginalTrans>
+    </RefundTenderId>
+    <RefundTenderId RefundTenderId="HOME_OFFICE_CHECK">
+        <CheckOriginalTransaction dtype="Boolean">true</CheckOriginalTransaction>
+        <NoRequiredOriginalTransaction dtype="String">RETURN_WEB_ORDER,UNVERIFIED</NoRequiredOriginalTransaction> <!-- BZ61330 add UNVERIFIED -->
+        <OriginalTenderId dtype="String">USD_CURRENCY,CHECK,USD_TRAVELERS_CHECK,AR_ACCOUNT,DEBIT_CARD,CREDIT_CARD,MASTERCARD,AMERICAN_EXPRESS,DINERS_CLUB,DISCOVER,GSPLCC,GSVISA,JCB,PRIVATE_LABEL,SHOPPING_PASS,VISA</OriginalTenderId><!-- BZ61330 -->
+        <MinAmountWithoutOriginalTrans dtype="BigDecimal">0</MinAmountWithoutOriginalTrans>
+        <MinAmountWithOriginalTrans dtype="BigDecimal">0</MinAmountWithOriginalTrans> <!-- BZ33089: this no longer effect -->
+    </RefundTenderId>
+    <!-- BEGIN BZ33090 -->
+    <RefundTenderId RefundTenderId="USD_CURRENCY">
+        <CheckOriginalTransaction dtype="Boolean">true</CheckOriginalTransaction>
+        <NoRequiredOriginalTransaction dtype="String">BLIND</NoRequiredOriginalTransaction> <!-- BZ34597, BZ61330 remove UNVERIFIED, RETURN_WEB_ORDER -->
+        <OriginalTenderId dtype="String">USD_CURRENCY</OriginalTenderId>
+        <MinAmountWithoutOriginalTrans dtype="BigDecimal">0</MinAmountWithoutOriginalTrans>
+        <MinAmountWithOriginalTrans dtype="BigDecimal">0</MinAmountWithOriginalTrans> 
+    </RefundTenderId>
+    <!-- END BZ33090 -->
+</RefundTenders>

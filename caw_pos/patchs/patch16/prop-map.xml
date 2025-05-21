@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ24525              161117    [UAT] Xstore base xstore.properties doesnt include EBS URL, credentials
+ * BZ25391              070218    properties on system.properties doesn't exists on xstore.properties
+ * BZ24110              130418    Multiple brand name forXstore
+ * BZ25358              053018    Enhancements to QAS Integration with POS
+ * BZ25640              053018    New Requirement - Used Firearm System Process Redesign
+ * BZ26178              060418    Need a consolidate build support for both Window 10 and Oracle Linux 7
+ * BZ25435              160718    New Requirement - Xstore changes to call the CardServices API instead of the Prompting Engine
+ * BZ26270              180718    New Requirement - Display UPC on both Xstore screens and on receipts
+ * BZ26207              190718    New Requirement - Enable Work Order Functionality
+ * BZ26629              300718    [New Requirement] Add a prompt to capture discount code when the Retail Coupon discount reason is selected
+ * BZ27028              021018    [New Requirement] Move the configuration for Return Merchandise Receipt into the table
+ * BZ27344              301018    Pin Pad Performance is slow when item price is updated by a deal/promo or a manual price adjustment
+ * BZ28247              181218    [New Requirement] Move Xstore integration to Card Service version 2
+ * BZ32399				070819    [Internal] Missing define the URL for Neuron Inventory lookup in xstore.properties
+ * BZ28036              100220    [New Requirement] Enable the base Functionality available for Customer Purchase History
+ * BZ37023              120820    [Task] Modify Xstore to call ShippingAPI to calculate shipping rate for the Delivery Order
+ * BZ37396              051020    Tax value calculation issue in Order transactions
+ * BZ44528              130821    Electric World & Mobile POS Implementation (Phase 1)
+ * BZ44917              110921    [New Requirement] IDS Payment Integration with Xstore
+ * BZ42307              200921    [Requirement] Add ability to reject at the item level for BOPIS
+ *===================================================================
+ */
+  -->
+<propmap basedirectory=".">
+
+    <prop name="dtv.config.path.1111" location="system.properties"
+          property="dtv.config.path.1111" />
+      
+    <prop name="caw.pos.customer.template.url" location="system.properties"
+          property="caw.pos.customer.template.url" />
+      
+    <prop name="caw.pos.customer.search.url" location="system.properties"
+          property="caw.pos.customer.search.url" />
+          
+    <prop name="caw.pos.customer.lookup.url" location="system.properties"
+          property="caw.pos.customer.lookup.url" />
+          
+    <prop name="caw.pos.customer.upsert.url" location="system.properties"
+          property="caw.pos.customer.upsert.url" />
+          
+    <prop name="caw.pos.customer.neuron.user" location="system.properties"
+          property="caw.pos.customer.neuron.user" />
+          
+    <prop name="caw.pos.customer.neuron.key" location="system.properties"
+          property="caw.pos.customer.neuron.key" />
+          
+    <prop name="caw.pos.promotion.api.url" location="system.properties"
+          property="caw.pos.promotion.api.url" />
+          
+    <prop name="caw.pos.promotion.reserve.url" location="system.properties"
+          property="caw.pos.promotion.reserve.url" />
+          
+    <prop name="caw.pos.promotion.reset.url" location="system.properties"
+          property="caw.pos.promotion.reset.url" />
+          
+    <prop name="caw.pos.catalyst.request.url" location="system.properties"
+          property="caw.pos.catalyst.request.url" />
+          
+    <prop name="caw.pos.catalyst.results.url" location="system.properties"
+          property="caw.pos.catalyst.results.url" />
+          
+    <prop name="caw.pos.madeoffer.request.url" location="system.properties"
+          property="caw.pos.madeoffer.request.url" />
+          
+    <prop name="caw.pos.caretaker.request.url" location="system.properties"
+          property="caw.pos.caretaker.request.url" />
+    
+    <prop name="caw.pos.shippingrate.request.url" location="system.properties"
+          property="caw.pos.shippingrate.request.url" /><!-- BZ37023 -->
+          
+    <prop name="caw.pos.tax.request.url" location="system.properties"
+          property="caw.pos.tax.request.url" /><!-- BZ37396 -->
+
+    <prop name="olps.app.username" location="system.properties"
+          property="olps.app.username" />
+          
+    <prop name="olps.app.password" location="system.properties"
+          property="olps.app.password" />
+          
+    <prop name="caw.pos.membership.validate.request.url" location="system.properties"
+          property="caw.pos.membership.validate.request.url" /> 
+
+    <!--Begin BZ25391 -->
+    <prop name="caw.eigen.timeout" location="system.properties"
+          property="caw.eigen.timeout" /> 
+
+    <prop name="EBS_ENABLE" location="system.properties"
+          property="EBS_ENABLE" /> 
+
+    <prop name="caw.customer.group.type.retl.old.name" location="system.properties"
+          property="caw.customer.group.type.retl.old.name" />
+
+    <prop name="caw.customer.group.type.retl.new.name" location="system.properties"
+          property="caw.customer.group.type.retl.new.name" /> 
+
+    <prop name="caw.customer.group.type.club.old.name" location="system.properties"
+          property="caw.customer.group.type.club.old.name" /> 
+
+    <prop name="caw.customer.group.type.club.new.name" location="system.properties"
+          property="caw.customer.group.type.club.new.name" /> 
+
+    <prop name="caw.customer.group.type.crew.old.name" location="system.properties"
+          property="caw.customer.group.type.crew.old.name" /> 
+
+    <prop name="caw.customer.group.type.crew.new.name" location="system.properties"
+          property="caw.customer.group.type.crew.new.name" /> 
+
+    <prop name="caw.customer.group.type.whsl.old.name" location="system.properties"
+          property="caw.customer.group.type.whsl.old.name" /> 
+
+    <prop name="caw.customer.group.type.whsl.new.name" location="system.properties"
+          property="caw.customer.group.type.whsl.new.name" /> 
+
+    <prop name="caw.pos.miraserv.config" location="system.properties"
+          property="caw.pos.miraserv.config" /> 
+
+    <prop name="dtv.hardware.IHardwareMgr" location="system.properties"
+          property="dtv.hardware.IHardwareMgr" /> 
+    <!--End BZ25391 --> 
+
+    <!--Begin BZ25640 -->
+    <prop name="caw.pos.ufa.search.url" location="system.properties"
+          property="caw.pos.ufa.search.url" />
+    <!--Begin BZ25640 -->
+
+    <!--Begin BZ25358 -->
+    <prop name="caw.pos.address.picklist.entry.limit" location="system.properties"
+          property="caw.pos.address.picklist.entry.limit" />
+    <!--Begin BZ25358 -->
+
+    <!--Begin BZ25358 and BZ26410 to update all 4 properties-->
+    <prop name="qas.wsdlLocation" location="version1/ServiceHandlers.xml"
+          xpath="/Services/Service[@name='CAW_QAS_PROWEB']/Parameters/WsdlLocation"
+          jarfile="lib/caw-config.jar"/>
+
+    <prop name="qas.targetNamespace" location="version1/ServiceHandlers.xml"
+          xpath="/Services/Service[@name='CAW_QAS_PROWEB']/Parameters/QasTargetNamespaceUri"
+          jarfile="lib/caw-config.jar"/>
+
+    <prop name="qas.engine.timeout" location="version1/ServiceHandlers.xml"
+          xpath="/Services/Service[@name='CAW_QAS_PROWEB']/Parameters/QasEngineTimeout"
+          jarfile="lib/caw-config.jar"/>
+
+    <prop name="qas.engine.threshold" location="version1/ServiceHandlers.xml"
+          xpath="/Services/Service[@name='CAW_QAS_PROWEB']/Parameters/ConnectTimeout"
+          jarfile="lib/caw-config.jar"/>
+    <!--End BZ25358 and BZ26410-->
+    
+    <!-- BEGIN BZ26178 -->
+    <prop name="caw.close.marker.location"
+      location="version1/EnvironmentConfig.xml"
+      xpath="/Environment/Options/CloseMarkerLocation"
+      jarfile="lib/caw-config.jar" />
+
+    <prop name="caw.version.location"
+      location="version1/EnvironmentConfig.xml"
+      xpath="/Environment/Options/VersionLocation"
+      jarfile="lib/caw-config.jar" />
+  
+    <prop name="caw.password.location"
+      location="version1/EnvironmentConfig.xml"
+      xpath="/Environment/Options/PasswordLocation"
+      jarfile="lib/caw-config.jar" />
+    <!-- BEGIN BZ26178 -->
+    
+    <!-- Begin BZ25435 -->
+     <prop name="caw.pos.card.services.submit.request" location="system.properties"
+          property="caw.pos.card.services.submit.request" /> 
+     <prop name="caw.pos.card.services.status.request" location="system.properties"
+          property="caw.pos.card.services.status.request" /> 
+    <!-- End BZ25435 -->
+
+    <!--Begin BZ26270-->
+    <prop name="caw.pos.sale.upc.visible" location="version1/SystemConfig.xml"
+          xpath="/Store/SystemConfig/Transaction/DisplayUPCLine"
+          jarfile="lib/caw-config.jar"/>
+    <!--End BZ26270-->
+    
+    <!--  BZ26207 Begin Work Order Session -->
+     <prop name="caw.pos.work.order.search.request.url" location="system.properties"
+          property="caw.pos.work.order.search.request.url" /> 
+     <prop name="caw.pos.work.order.lookup.request.url" location="system.properties"
+          property="caw.pos.work.order.lookup.request.url" />
+     <prop name="caw.pos.work.order.update.status.request.url" location="system.properties"
+          property="caw.pos.work.order.update.status.request.url" /> 
+    <!--  BZ26207 End Work Order Session -->
+    
+    <!--  Begin BZ27344 Send Request To Pinpad -->
+     <prop name="caw.pos.scheduled.send.request.to.pinpad.initial.delay" location="system.properties"
+          property="caw.pos.scheduled.send.request.to.pinpad.initial.delay" /> 
+     <prop name="caw.pos.scheduled.send.request.to.pinpad.fixed.delay" location="system.properties"
+          property="caw.pos.scheduled.send.request.to.pinpad.fixed.delay" />
+    <!--  End BZ27344 Send Request To Pinpad -->
+
+    <!--  BEGIN BZ28247 Integration to Card Service version 2 -->
+     <prop name="caw.pos.card.services.v2.submit.request" location="system.properties"
+          property="caw.pos.card.services.v2.submit.request" /> 
+     <prop name="caw.pos.card.services.v2.status.request" location="system.properties"
+          property="caw.pos.card.services.v2.status.request" />
+     <prop name="caw.pos.madeoffer.v2.request.url" location="system.properties"
+          property="caw.pos.madeoffer.v2.request.url" /> 
+     <prop name="caw.pos.caretaker.v2.request.url" location="system.properties"
+          property="caw.pos.caretaker.v2.request.url" />
+    <!--  END BZ28247 Integration to Card Service version 2 -->
+    
+    <prop name="caw.pos.inventory.search.request.url" location="system.properties"
+          property="caw.pos.inventory.search.request.url" /> <!-- BZ32399 -->
+          
+    <!-- BEGIN BZ28036 -->
+    <prop name="caw.pos.customer.purchase.history.url" location="system.properties"
+          property="caw.pos.customer.purchase.history.url" />
+    <prop name="caw.pos.customer.purchase.history.detail.url" location="system.properties"
+          property="caw.pos.customer.purchase.history.detail.url" />
+    <!-- END BZ28036 -->
+        
+    <!-- BEGIN BZ44528: Phase 1 -->
+    <!-- Only apply for patch 14
+    <prop name="caw.pos.wondersign.cart.search.url" location="system.properties"
+          property="caw.pos.wondersign.cart.search.url" />
+	<prop name="caw.pos.wondersign.enable" location="system.properties"
+          property="caw.pos.wondersign.enable" />
+    <prop name="caw.pos.wondersign.cart.search.page.size" location="system.properties"
+          property="caw.pos.wondersign.cart.search.page.size" />
+    <prop name="caw.pos.wondersign.skip.product.availability.api" location="system.properties"
+          property="caw.pos.wondersign.skip.product.availability.api" />
+    <prop name="caw.pos.wondersign.skip.order.submit.api" location="system.properties"
+          property="caw.pos.wondersign.skip.order.submit.api" />
+    -->
+	<!-- END BZ44528: Phase 1 -->
+	
+	<prop name="caw.pos.rv.payment.request.url" location="system.properties"
+          property="caw.pos.rv.payment.request.url" /><!-- BZ44917 -->
+    <prop name="caw.locate.allow.split.order" location="version1/ServiceHandlers.xml" xpath="/Services/Service[@name='LOCATE']/Parameters/AllowSplitOrder"
+          jarfile="lib/caw-config.jar" /><!-- BZ42307 -->
+</propmap>

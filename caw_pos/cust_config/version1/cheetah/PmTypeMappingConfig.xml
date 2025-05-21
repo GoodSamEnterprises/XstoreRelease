@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ48401              210222    [Task] Apply Reward to Redeem in Sales Transaction
+ * BZ53752              221122    [BTM-255] - Wrong ItemCorrelationKey is being set in OrginalCorrelationKey attribute on returned items in SubmitOrder Request
+ *===================================================================
+ */ 
+-->
+
+<PmTypeMappingSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PmTypeMappingConfig.xsd">
+
+  <!-- =================================================================================================== -->
+  <!-- ==                 PLEASE MAINTAIN ALPHABETICAL ORDER WHEN ADDING NEW TYPES                      == -->
+  <!-- =================================================================================================== -->
+  <PmTypeMapping ObjectId="dtv.xst.dao.dsc.DiscountPropertyId" PmType="DISCOUNTING"/>
+  <PmTypeMapping ObjectId="dtv.xst.dao.cat.CustomerLoyaltyCardPropertyId" PmType="LOYALTY"/>
+  <!-- BEGIN BZ53752 -->
+  <PmTypeMapping ObjectId="dtv.xst.dao.tnd.TenderId" PmType="REGISTER_CORE" LoadProperties="true"/>
+  <PmTypeMapping ObjectId="dtv.xst.dao.tnd.TenderPropertyId" PmType="REGISTER_CORE"/>
+  <!-- END BZ53752 -->
+</PmTypeMappingSet>

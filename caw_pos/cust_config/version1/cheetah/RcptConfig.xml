@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#       ddMMyy      Description
+ * BZ48573           250222      [Task] - Need to updated the receipts to display loyalty information
+ * BZ48629           250222      [Task] Print Points Balances - Sale transaction 
+ * BZ49750 			 090522  	 [Internal] Missing the message 'You could have saved $XX.XX' on the Sale receipt for non-Good Sam Club customer
+ * BZ49734 			 090522 	 Need clarification about the "you could have earned" message on the receipt for the Crew/Wholesale Members
+ * BZ54776           120123      Bug 54776 : [Patch 22.0] Extend ability to turn ON/OFF loyalty functionality into xstore to specific stores if needed. 
+ * BZ53503 			 030823	 	 [UAT][Change request] Receipt is not showing correct message in footer for non GSAM members
+ * BZ62206           050324      [Internal] - The message about savings shows incorrectly on the receipt.
+ *===================================================================
+ */ 
+-->
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+<sections>
+    <section name="CustomerCopy">
+      <sectionref>header</sectionref>
+      <sectionref>COUNTRYPACK.SUSPEND_NONFISCAL</sectionref>
+      <sectionref>items</sectionref>
+      <sectionref>subTotals</sectionref>
+      <sectionref>tax_code_summary</sectionref>
+      <sectionref>totals</sectionref>
+      <sectionref>tenders</sectionref>
+      <sectionref>change</sectionref>      
+      <sectionref>cawLoyaltyYouSavedMessage</sectionref>
+      <sectionref>cawLoyaltyYouCouldSavedMessage</sectionref>      
+      <sectionref>cawLoyaltyYouCouldSavedMessageEqual</sectionref>
+      <sectionref>cawLoyaltyPoint</sectionref>
+      <sectionref>cawLoyaltyPrintEndYouSavedMessage</sectionref>
+      <sectionref>cawLoyaltyPrintEndYouCouldSavedMessage</sectionref>     
+      <sectionref>cawLoyaltyPrintEndYouCouldSavedMessageEqual</sectionref> 
+      <sectionref>TaxExemptInfo</sectionref>
+      <sectionref>SALE_DISCLAIMER_DB</sectionref>
+      <sectionref>DONATION_FOOTER_MESSAGE</sectionref>
+      <sectionref>verbiageGiftCardRedeem</sectionref>
+      <sectionref>marcus_quote</sectionref>
+      <sectionref>footer_cust_copy</sectionref>
+      <sectionref>system_mode</sectionref>
+      <sectionref>CustomerCopyLabel</sectionref>
+      <sectionref>LOCAL.CUST_COPY_FOOTER</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+    
+    <section name="WORK_ORDER_ACCOUNT">
+      <sectionref>work_order_header</sectionref>
+      <sectionref>work_order_title</sectionref>
+      <sectionref>WO_CUSTOMER_DETAILS</sectionref>
+      <sectionref>WO_LOYALTY_INFO</sectionref>
+      <sectionref>WORK_ORDER_NUMBER</sectionref>
+      <sectionref>work_order_items</sectionref>
+      <sectionref>wo_account_info</sectionref>
+      <sectionref>wo_subTotals</sectionref>
+      <sectionref>wo_tax</sectionref>
+      <sectionref>wo_totals</sectionref>
+      <sectionref>wo_tenders</sectionref>
+      <sectionref>wo_change</sectionref>
+      <call method="getCurrentTransaction">
+      <sectionref>cawLoyaltyYouSavedMessage</sectionref>
+      <sectionref>cawLoyaltyYouCouldSavedMessage</sectionref>      
+      <sectionref>cawLoyaltyYouCouldSavedMessageEqual</sectionref>
+      <sectionref>cawLoyaltyPoint</sectionref>
+      <sectionref>cawLoyaltyPrintEndYouSavedMessage</sectionref>
+      <sectionref>cawLoyaltyPrintEndYouCouldSavedMessage</sectionref>     
+      <sectionref>cawLoyaltyPrintEndYouCouldSavedMessageEqual</sectionref> 
+      </call>
+      <sectionref>TaxExemptInfo</sectionref>
+      <sectionref>SALE_DISCLAIMER_DB_WO</sectionref> <!-- BZ33655 -->
+      <sectionref>DONATION_FOOTER_MESSAGE</sectionref>
+      <sectionref>verbiageGiftCardRedeem</sectionref>
+      <sectionref>marcus_quote_wo</sectionref> <!-- BZ32067, BZ33655 -->
+      <sectionref>wo_footer_cust_copy</sectionref>
+      <!-- <sectionref>AUTO_RENEWAL</sectionref> --><!-- BZ45487 -->
+      <call method="getCurrentTransaction">
+        <sectionref>trans_barcode</sectionref>
+      </call>
+      <sectionref>system_mode</sectionref>
+      <sectionref>CustomerCopyLabel</sectionref>
+      <sectionref>LOCAL.CUST_COPY_FOOTER</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+    
+    <section name="cawLoyaltyYouSavedMessage">
+      <condition class="caw.pos.common.rcpt.CawTotalAmountSavedMsgCondition" />
+      <condition class="caw.pos.common.rcpt.CawNotRegularPriceInTransCondition" />
+      <row align="C">
+        <field text="********************************************" style="BOLD" />
+      </row>
+      <row align="C">
+        <field text="_caw_totalAmountSaved" />
+      </row>
+      <row align="C">
+        <field text="$"/>
+        <field formatter="Money"> 
+          <aggregate class="caw.pos.common.rcpt.CawTotalAmountSavedDocBuilderField" /> 
+        </field> 
+      </row>
+    </section>
+    
+    <section name="cawLoyaltyPrintEndYouSavedMessage">
+      <condition class="caw.pos.common.rcpt.CawTotalAmountSavedMsgCondition" />
+      <condition class="caw.pos.common.rcpt.CawNotRegularPriceInTransCondition" />
+      <row align="C">
+        <condition class="dtv.pos.docbuilding.conditions.TaxExemptCondition" inverted="true"/>
+        <field text="********************************************" style="BOLD" />
+      </row>
+    </section>
+    
+    <section name="cawLoyaltyYouCouldSavedMessageEqual">
+      <condition class="caw.pos.common.rcpt.CawRegularEqualsClubPriceInTransCondition"/>
+      <condition class="caw.pos.common.rcpt.CawNotClubPriceInTransCondition"/>
+      <!-- <condition class="caw.pos.docbuilding.conditions.CawCheckIsClubMemberShipExpiredCondition"/> BZ53503 remove this line -->
+      <condition class="caw.pos.common.rcpt.CawIsSaleTransCondition"/>
+      <condition class="caw.pos.common.rcpt.CawLoyaltyEnableRcptCondition"/><!-- BZ54776 -->
+      
+      <row align="C">
+        <field text="********************************************" style="BOLD" />
+      </row>
+      <row align="C">
+        <field text="_caw_messagesave" />
+      </row>
+      <!-- Begin BZ62206 -->
+      <row align="C">
+        <field text="_cawAGIS_totalPointCouldSaved" />
+        <field formatter="Quantity">
+          <aggregate class="caw.pos.common.rcpt.CawAGISTotalPointCouldSavedDocBuilderField" />
+        </field>
+        <sp />
+        <field text="_cawAGIS_totalAmountCouldSaved" />
+      </row>
+<!--       <row align="C">
+      	<field text="_caw_RegularEarnedMessage" />
+      </row> -->
+      <!-- End BZ62206  -->
+    </section>
+    
+    <section name="cawLoyaltyPrintEndYouCouldSavedMessageEqual">
+      <condition class="caw.pos.common.rcpt.CawRegularEqualsClubPriceInTransCondition"/>
+      <condition class="caw.pos.common.rcpt.CawNotClubPriceInTransCondition"/>
+      <!-- <condition class="caw.pos.docbuilding.conditions.CawCheckIsClubMemberShipExpiredCondition"/> BZ53503 remove this line -->
+      <condition class="caw.pos.common.rcpt.CawIsSaleTransCondition"/>
+      <condition class="caw.pos.common.rcpt.CawLoyaltyEnableRcptCondition"/><!-- BZ54776 -->
+      
+      <row align="C">
+        <condition class="dtv.pos.docbuilding.conditions.TaxExemptCondition" inverted="true"/>
+        <field text="********************************************" style="BOLD" />
+      </row>
+    </section>
+    
+    <section name="cawLoyaltyYouCouldSavedMessage">
+      <condition class="caw.pos.common.rcpt.CawTotalAmountCouldSavedMsgCondition" />
+      <condition class="caw.pos.common.rcpt.CawNotClubPriceInTransCondition"/>
+      <condition class="caw.pos.common.rcpt.CawIsSaleTransCondition"/>
+      
+      <row align="C">
+        <field text="********************************************" style="BOLD" />
+      </row>
+      <row align="C">
+        <field text="_caw_messagesave" />
+      </row>
+      <!-- Begin BZ61159 -->
+      <row align="C">
+        <field text="_cawAGIS_totalPointCouldSaved" />
+        <field formatter="Quantity">
+          <aggregate class="caw.pos.common.rcpt.CawAGISTotalPointCouldSavedDocBuilderField" />
+        </field>
+        <sp />
+        <field text="_cawAGIS_totalAmountCouldSaved" />
+      </row>
+      <row align="C">
+          <field text="_cawAGIS_totalAmountSavedMess" />
+          <field formatter="Money">
+            <aggregate class="caw.pos.common.rcpt.CawTotalAmountCouldSavedDocBuilderField" />
+          </field>
+      </row>
+      <!-- End BZ61159 -->
+      <!-- <sectionref>cawYouCouldEarnedMessage</sectionref> --> <!-- BZ62206 -->
+    </section>
+    
+    <section name="cawYouCouldEarnedMessage">
+      <condition class="caw.pos.common.rcpt.CawTotalAmountCouldSavedMsgCondition" />
+      <condition class="caw.pos.common.rcpt.CawNotClubPriceInTransCondition"/>
+      <!-- <condition class="caw.pos.docbuilding.conditions.CawCheckIsClubMemberShipExpiredCondition"/> BZ53503 remove this line -->
+      <condition class="caw.pos.common.rcpt.CawIsSaleTransCondition"/>
+      <condition class="caw.pos.common.rcpt.CawLoyaltyEnableRcptCondition"/><!-- BZ54776 -->
+      
+      <row align="C">
+      	<field text="_caw_earnedMessage" />
+      </row>
+    </section>
+    
+    <section name="cawLoyaltyPrintEndYouCouldSavedMessage">
+      <condition class="caw.pos.common.rcpt.CawTotalAmountCouldSavedMsgCondition" />
+      <condition class="caw.pos.common.rcpt.CawNotClubPriceInTransCondition"/>
+      <condition class="caw.pos.common.rcpt.CawIsSaleTransCondition"/>
+      
+      <row align="C">
+        <condition class="dtv.pos.docbuilding.conditions.TaxExemptCondition" inverted="true"/>
+        <field text="********************************************" style="BOLD" />
+      </row>
+    </section>
+    
+    <!-- print loyalty point section-->
+   
+    <section name="cawLoyaltyPoint">
+     <iterator class="caw.pos.common.rcpt.CawCheetahPointIterator">
+       <row>
+        <field>
+        	<aggregate class="caw.pos.common.rcpt.CawCheetahLoyaltyPointDescriptionDocBuilderField" />
+        </field>
+        <field align="R" loc="-5">
+            <aggregate class="caw.pos.common.rcpt.CawCheetahLoyaltyPointsDocBuilderField" />
+        </field> 
+      </row>
+      </iterator>
+     
+    </section>
+
+   </sections>
+</ReceiptDefinitions>

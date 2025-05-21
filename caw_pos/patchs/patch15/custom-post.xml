@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Scope/Bug ID#     ddMMyy        Description
+ * BZ22710           080917        Xenvironment does NOT start automatically when completing installation.
+ * BZ24110           080917        Multiple brand name forXstore
+ * BZ27028           021018        [New Requirement] Move the configuration for Return Merchandise Receipt into the table
+ * BZ27344           301018        Pin Pad Performance is slow when item price is updated by a deal/promo or a manual price adjustment
+ * BZ28265           261118        New Requirement - Migrate Prompting Engine Catalyst calls to the new PE Services for Xstore 2.1
+ * BZ28200           231118        [Oracle patch] Fix for Bug 28506749 (for Critical Patch Update October 2018)
+ * BZ28247           181218        [New Requirement] Move Xstore integration to Card Service version 2
+ * BZ28753           211218        [2.9.7] Install full build xstore error with testUsers.sql
+ * BZ30217           170419        [Prod] Update deployment overwrites Prod URLs to Test and also brand images
+ * BZ30293           220419        [New Requirement] Update Test EBS URLs in Xstore to the new Neuron instances
+ * BZ30316           230419        [Prod] Update deployment overwrites Prod URLs to Test and also brand images
+ * BZ31112           120619        [Prod] Update deployment overwrites Prod URLs (UNSOLVED)
+ * BZ29193           220719        [Internal] Add the customized configurations to Xadmin configurator menu
+ * BZ32399           070819        [Internal] Missing define the URL for Neuron Inventory lookup in xstore.properties
+ * BZ33367           101019        [PROD]Prod's URLs are getting overridden
+ * BZ33595           151119        Scanner/Warranty prompt screen - scanner provides 1 successful beep but desire is to have triple error beep
+ * BZ28036           100220        [New Requirement] Enable the base Functionality available for Customer Purchase History
+ * BZ36625           100720        [New Requirement] Customer Information Pinpad Verification
+ * BZ37023           260820        [Task] Modify Xstore to call ShippingAPI to calculate shipping rate for the Delivery Order
+ * BZ37177           020920        [Task] Enable Order Function in Xstore
+ * BZ38102           051020        [Task] Apply New Camping World Logo for Receipts
+ * BZ37396           051020        Tax value calculation issue in Order transactions
+ * BZ44528           130821        Electric World & Mobile POS Implementation (Phase 1)
+ * BZ44917           110921        [New Requirement] IDS Payment Integration with Xstore
+ * BZ42307           200921        [Requirement] Add ability to reject at the item level for BOPIS
+ * BZ45995           141021        [New requirement] Email capture when good sam membership is sold
+ * BZ46381           110821        IDS Payment - Should be able to scan a barcode of IDS Customer Number and IDS WO Number when doing a RV Service Payment Search in Xstore
+ *===================================================================
+ */ 
+-->
+<project name="custom post-install tasks" default="run-tasks" basedir=".">
+
+    <import file="${basedir}/common/init.xml" />
+    <import file="${basedir}/common/poscommon.xml" />
+
+    <!-- Properties required for Country Specific DB Script to run -->
+    <!-- ========================================================= -->
+
+    <target name="run-tasks" description="Master target that calls other targets in order.">
+        <antcall target="update-version1-configPath-base-xstore-properties" /> <!-- BZ29193 -->
+        <antcall target="caw-run-specific-inst-type" />
+        <antcall target="caw-apply-critical-patch-update" />
+    </target>
+
+    <target name="caw-run-specific-inst-type" description="Install Country Specific Data Scripts">
+        <echo message="... install.type=${install.type}" />
+        <if>
+            <equals arg1="INSTALL" arg2="${install.type}" casesensitive="false" trim="true" />
+            <then>
+                <antcall target="update-brand-config" />
+                <antcall target="caw-update-log4j-file" />
+                <antcall target="check-environment" />
+            </then>
+            <elseif>
+                <equals arg1="UPGRADE" arg2="${install.type}" casesensitive="false" trim="true" />
+                <then>
+                    <antcall target="res-folder-restore" />
+                    <antcall target="check-environment" />
+                    <antcall target="caw-update-log4j-file" />
+                    <antcall target="update-xstore-properties-qas-parameters" />
+                    <antcall target="update-xstore-properties-ufa-parameters" />
+                    <antcall target="update-xstore-properties-card-service-parameters" />
+                    <antcall target="update-xstore-properties-customer-parameters" />
+                    <antcall target="update-xstore-properties-promotion-parameters" />
+                    <antcall target="update-xstore-properties-work-order-parameters" />
+                    <antcall target="update-xstore-properties-for-environment" />
+                    <antcall target="update-pe-catalyst-service-request-results-url" />
+                	<antcall target="update-shipping-rate-service-url" /> <!-- BZ37023 -->
+                	<antcall target="update-tax-api-service-url" /> <!-- BZ37396 -->
+                    <antcall target="update-xstore-properties-item-parameter" /> <!-- BZ32399 -->
+                    <antcall target="run-caw-configure" />
+                    <antcall target="graphics-folder-restore" /><!-- BZ30316 -->
+                    <antcall target="update-system-properties-scanner" /><!-- BZ33595 -->
+                    <antcall target="update-system-properties-customer-verification-timeout" /><!-- BZ36625 -->
+                	<antcall target="update-order-broker-config" /><!-- BZ-37177 -->
+                	
+                	<!--BEGIN PATCH 14 -->
+                    <!-- BEGIN BZ44528-->
+                    <antcall target="caw-update-log4j-file" />
+                    <antcall target="update-xstore-properties-wondersign-parameter" />
+                    <!-- END BZ44528: Phase 1 -->
+                    <!--END PATCH 14 -->
+                    
+                    <!--BEGIN PATCH 15 -->
+                    <antcall target="update-system-properties-rv-service-payment" /><!--BZ44917-->
+                    <antcall target="update-xstore-properties-rv-payment-prefix" /><!--BZ46381-->
+                    <!--END PATCH 15 -->
+                    
+                    <!--BEGIN PATCH 16 -->
+                    <!--<antcall target="update-xstore-properties-allow-split-order" />--><!--BZ42307-->
+                    <!--END PATCH 16 -->
+                        
+                    <!--BEGIN PATCH 17 -->
+                    <!--<antcall target="update-xstore-properties-email-validation-url" /> --><!--BZ45995-->
+                    <!--END PATCH 17 -->
+                </then>
+            </elseif>
+            <elseif>
+                <equals arg1="UPDATE" arg2="${install.type}" casesensitive="false" trim="true" />
+                <then>
+                    <antcall target="check-environment" />
+                    <antcall target="update-xstore-properties-qas-parameters" />
+                    <antcall target="update-xstore-properties-ufa-parameters" />
+                    <antcall target="update-xstore-properties-card-service-parameters" />
+                    <antcall target="update-xstore-properties-customer-parameters" />
+                    <antcall target="update-xstore-properties-promotion-parameters" />
+                    <antcall target="update-xstore-properties-work-order-parameters" />
+                    <antcall target="update-xstore-properties-for-environment" />
+                    <antcall target="update-pe-catalyst-service-request-results-url" />
+                	<antcall target="update-shipping-rate-service-url" /> <!-- BZ37023 -->
+                	<antcall target="update-tax-api-service-url" /> <!-- BZ37396 -->
+                    <antcall target="update-xstore-properties-item-parameter" /> <!-- BZ32399 -->
+                    <antcall target="run-caw-configure" />
+                    <antcall target="graphics-folder-restore" /><!-- BZ30316 -->
+                    <antcall target="update-system-properties-scanner" /><!-- BZ33595 -->
+                    <antcall target="update-system-properties-customer-verification-timeout" /><!-- BZ36625 -->
+                	<antcall target="update-order-broker-config" /><!-- BZ-37177 -->
+                	
+                	<!--BEGIN PATCH 14 -->
+                    <!-- BEGIN BZ44528-->
+                    <antcall target="caw-update-log4j-file" />
+                    <antcall target="update-xstore-properties-wondersign-parameter" />
+                    <!-- END BZ44528: Phase 1 -->
+                    <!--END PATCH 14 -->
+                    
+                    <!--BEGIN PATCH 15 -->
+                    <antcall target="update-system-properties-rv-service-payment" /><!--BZ44917-->
+                    <antcall target="update-xstore-properties-rv-payment-prefix" /><!--BZ46381-->
+                    <!--END PATCH 15 -->
+                    
+                    <!--BEGIN PATCH 16 -->
+                    <!--<antcall target="update-xstore-properties-allow-split-order" />--><!--BZ42307-->
+                    <!--END PATCH 16 -->
+                        
+                    <!--BEGIN PATCH 17 -->
+                    <!--<antcall target="update-xstore-properties-email-validation-url" /> --><!--BZ45995-->
+                    <!--END PATCH 17 -->
+                </then>
+            </elseif>
+            <elseif>
+                <equals arg1="PATCH" arg2="${install.type}" casesensitive="false" trim="true" />
+                  <then>
+                    <antcall target="check-environment" />
+                    <antcall target="update-xstore-properties-qas-parameters" />
+                    <antcall target="update-xstore-properties-ufa-parameters" />
+                    <antcall target="update-xstore-properties-card-service-parameters" />
+                    <antcall target="update-xstore-properties-customer-parameters" />
+                    <antcall target="update-xstore-properties-promotion-parameters" />
+                    <antcall target="update-xstore-properties-work-order-parameters" />
+                    <antcall target="update-xstore-properties-for-environment" />
+                    <antcall target="update-xstore-properties-item-parameter" /> <!-- BZ32399 -->
+                  	<!-- BEGIN BZ36625: Temporary comment to create patch 6.0 4.0.0-->
+                    <!--<antcall target="graphics-folder-restore" />--><!-- BZ33304 -->
+                  	<!--<antcall target="update-system-properties-scanner" />--><!-- BZ33595 -->
+                    <antcall target="update-system-properties-customer-verification-timeout" /><!-- BZ36625 -->
+                  	<!-- END BZ36625: Temporary comment to create patch 6.0 4.0.0-->
+                  	<antcall target="remove-patch-42630" /> <!-- BZ-42630 -->
+                  	
+                  	<!--BEGIN PATCH 14 -->
+                  	<!-- BEGIN BZ44528-->
+                  	<antcall target="caw-update-log4j-file" />
+                  	<antcall target="update-xstore-properties-wondersign-parameter" />
+                  	<!-- END BZ44528: Phase 1 -->
+                  	<!--END PATCH 14 -->
+                  	
+                  	<!--BEGIN PATCH 15 -->
+                  	<antcall target="update-system-properties-rv-service-payment" /><!--BZ44917-->
+                  	<antcall target="update-xstore-properties-rv-payment-prefix" /><!--BZ46381-->
+                  	<!--END PATCH 15 -->
+                  	
+                  	<!--BEGIN PATCH 16 -->
+                  	<!--<antcall target="update-xstore-properties-allow-split-order" />--><!--BZ42307-->
+                  	<!--END PATCH 16 -->
+                  		
+                  	<!--BEGIN PATCH 17 -->
+                  	<!--<antcall target="update-xstore-properties-email-validation-url" /> --><!--BZ45995-->
+                  	<!--END PATCH 17 -->
+                  	
+                  	<antcall target="run-caw-configure" />
+                  </then>
+             </elseif>
+        </if>
+    </target>
+	
+	<!-- Begin BZ-bug 42630 -->
+    <target name="remove-patch-42630" description="bug 42630">
+        <property name="patchXstoreDir" location="${install.dir}/lib/patch" />
+        <if>
+            <available file="${patchXstoreDir}/patch_251784591434664_prevent_delivery_order.jar"/>
+            <then>
+                <delete file="${patchXstoreDir}/patch_251784591434664_prevent_delivery_order.jar"/>
+            </then>
+        </if>
+    </target>
+	<!-- End BZ-bug 42630 -->
+
+    <target name="update-brand-config" description="Update brands based on install.brand. Default is GO">
+        <echo message="... install.brand=${install.brand}" />
+        <if>
+            <equals arg1="CW" arg2="${install.brand}" casesensitive="false" trim="true" />
+            <then>
+                <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+                    <entry key="dtv.config.path.1111" default=":version1/brand/CW"/>
+                </propertyfile>
+                <propertyfile file="${install.dir}/updates/base-xstore.properties" comment="base-xstore.properties">
+                    <entry key="dtv.config.path" default=":version1/brand/CW:version1/patch"/>
+                </propertyfile>
+                <propertyfile file="${install.dir}/system.properties" comment="xstore.properties">
+                    <entry key="dtv.config.path" default=":version1/brand/CW:version1/patch"/>
+                    <entry key="dtv.config.path.1111" default=":version1/brand/CW"/>
+                </propertyfile>
+            </then>
+            <elseif>
+                <equals arg1="OV" arg2="${install.brand}" casesensitive="false" trim="true" />
+                <then>
+                    <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+                        <entry key="dtv.config.path.1111" default=":version1/brand/OV"/>
+                    </propertyfile>
+                    <propertyfile file="${install.dir}/updates/base-xstore.properties" comment="base-xstore.properties">
+                        <entry key="dtv.config.path" default=":version1/brand/OV:version1/patch"/>
+                    </propertyfile>
+                    <propertyfile file="${install.dir}/system.properties" comment="xstore.properties">
+                        <entry key="dtv.config.path" default=":version1/brand/OV:version1/patch"/>
+                        <entry key="dtv.config.path.1111" default=":version1/brand/OV"/>
+                    </propertyfile>
+                </then>
+            </elseif>
+            <else>
+                <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+                    <entry key="dtv.config.path.1111" default=":version1/brand/GO"/>
+                </propertyfile>
+                <propertyfile file="${install.dir}/updates/base-xstore.properties" comment="base-xstore.properties">
+                    <entry key="dtv.config.path" default=":version1/brand/GO:version1/patch"/>
+                </propertyfile>
+                <propertyfile file="${install.dir}/system.properties" comment="system.properties">
+                    <entry key="dtv.config.path" default=":version1/brand/GO:version1/patch"/>
+                    <entry key="dtv.config.path.1111" default=":version1/brand/GO"/>
+                </propertyfile>
+            </else>
+        </if>
+    </target>
+    
+    <!-- BEGIN BZ29193 -->
+    <target name="update-version1-configPath-base-xstore-properties" description="Update version1 configPath in base-xstore properties file">
+        <property file="${install.dir}/updates/base-xstore.properties"/>
+        <echo message="Current classpath ${dtv.config.path}"/>
+
+        <property name="config.path.global"  value="${dtv.config.path}"/>
+
+        <echo message="${config.path.global}" file="tmp.file" />
+        <loadfile property="load.tmp.file" srcFile="tmp.file">
+            <filterchain>
+                <tokenfilter>
+                    <replaceregex pattern="\:version1\:" replace="\:" flags="g"/>
+                </tokenfilter>
+            </filterchain>
+        </loadfile>
+        <echo message="${load.tmp.file}" />
+
+        <propertyfile file="${install.dir}/updates/base-xstore.properties">
+            <entry key="dtv.config.path" value="${load.tmp.file}"/>
+        </propertyfile>
+        
+        <runBaseConfigureProcess installDir="${install.dir}" />
+    </target>
+    <!-- END BZ29193 -->
+	
+	<!-- Begin BZ-37177 -->
+    <target name="update-order-broker-config" description="Update Locate configuration.">
+        <echo message="Update Order Broker configuration" />
+        <propertyfile file="${install.dir}/updates/base-xstore.properties" comment="base-xstore.properties">
+            <entry key="dtv.locate.WsdlLocation" default="https://cwii-stage-rob-rob.oracleindustry.com/Locate/LocateServices?wsdl"/>
+        	<entry key="dtv.locate.ServiceTimeout" default="30"/>
+        	<entry key="dtv.locate.XstoreSystemCode" default="XSTORE"/>
+        	<entry key="dtv.locate.Destination" default="Locate"/>
+        	<entry key="oracle.retail.xstore.locate.username" default="Pj4+MAAAAAD2C3FFXArjVFaUY0SKfr2g2i+rmbp6t/fuw86vVea12u4U429PmAQ1SW8IEUiy9EU="/>
+        	<entry key="oracle.retail.xstore.locate.password" default="Pj4+MAAAAACJeYgHkKKxe9uOlW4Tl9Y2XOIYAgGBvjNxDf3pPhQ6OVL0e2bN0St0a0MDU68r/2E="/>
+        </propertyfile>
+    </target>
+	<!-- End BZ-37177 -->
+
+    <target name="check-ebs-config">
+        <available file="${user.dir}/custom.properties" property="ebs.existed" />
+        <echo message="... Check ebs-config!!!" />
+    </target>
+
+    <target name="load-ebs-config-file" depends="check-ebs-config" if="ebs.existed">
+        <property file="${user.dir}/custom.properties"/>
+        <echo message="... Loading ebs config file sucessfully!!!" />
+    </target>
+
+    <target name="update-ebs-parameters" depends="load-ebs-config-file" if="ebs.existed" description="Update EBS URL parameters">
+        <echo message="... ebs config file is existed!!!" />
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.customer.template.url" default="${caw.pos.customer.template.url}"/>
+            <entry key="caw.pos.customer.search.url" default="${caw.pos.customer.search.url}"/>
+            <entry key="caw.pos.customer.lookup.url" default="${caw.pos.customer.lookup.url}"/>
+            <entry key="caw.pos.customer.upsert.url" default="${caw.pos.customer.upsert.url}"/>
+            <entry key="caw.pos.customer.neuron.user" default="${caw.pos.customer.neuron.user}"/>
+            <entry key="caw.pos.customer.neuron.key" default="${caw.pos.customer.neuron.key}"/>
+            <entry key="caw.pos.promotion.api.url" default="${caw.pos.promotion.api.url}"/>
+            <entry key="caw.pos.promotion.reserve.url" default="${caw.pos.promotion.reserve.url}"/>
+            <entry key="caw.pos.promotion.reset.url" default="${caw.pos.promotion.reset.url}"/>
+            <entry key="caw.pos.catalyst.request.url" default="${caw.pos.catalyst.request.url}"/>
+            <entry key="caw.pos.catalyst.results.url" default="${caw.pos.catalyst.results.url}"/>
+            <entry key="caw.pos.madeoffer.request.url" default="${caw.pos.madeoffer.request.url}"/>
+            <entry key="caw.pos.caretaker.request.url" default="${caw.pos.caretaker.request.url}"/>
+            <entry key="olps.app.username" default="${olps.app.username}"/>
+            <entry key="olps.app.password" default="${olps.app.password}"/>
+            <entry key="caw.pos.membership.validate.request.url" default="${caw.pos.membership.validate.request.url}"/>
+            <!-- BEGIN BZ30217 -->
+            <entry key="caw.pos.ufa.search.url" default="${caw.pos.ufa.search.url}"/>
+            <entry key="caw.pos.card.services.submit.request" default="${caw.pos.card.services.submit.request}"/>
+            <entry key="caw.pos.card.services.status.request" default="${caw.pos.card.services.status.request}"/>
+            <entry key="caw.pos.work.order.search.request.url" default="${caw.pos.work.order.search.request.url}"/>
+            <entry key="caw.pos.work.order.lookup.request.url" default="${caw.pos.work.order.lookup.request.url}"/>
+            <entry key="caw.pos.work.order.update.status.request.url" default="${caw.pos.work.order.update.status.request.url}"/>
+            <!-- END BZ30217 -->
+            <entry key="caw.pos.inventory.search.request.url" default="${caw.pos.inventory.search.request.url}" /> <!-- BZ32399 -->
+            <!-- BEGIN BZ28036 -->
+            <entry key="caw.pos.customer.purchase.history.url" default="${caw.pos.customer.purchase.history.url}"/>
+            <entry key="caw.pos.customer.purchase.history.detail.url" default="${caw.pos.customer.purchase.history.detail.url}"/>
+            <!-- END BZ28036 -->
+        	<!-- BEGIN BZ44528 -->
+        	<entry key="caw.pos.wondersign.cart.search.url" default="${caw.pos.wondersign.cart.search.url}" />
+        	<entry key="caw.pos.wondersign.cart.search.page.size" default="${caw.pos.wondersign.cart.search.page.size}" />
+        	<entry key="caw.pos.wondersign.skip.product.availability.api" default="${caw.pos.wondersign.skip.product.availability.api}" />
+        	<entry key="caw.pos.wondersign.skip.order.submit.api" default="${caw.pos.wondersign.skip.order.submit.api}" />
+        	<!-- END BZ44528 -->
+        	<!--BEGIN BZ46381-->
+        	<entry key="caw.rv.payment.barcode.cust.prefix" default="${caw.rv.payment.barcode.cust.prefix}" />
+        	<entry key="caw.rv.payment.barcode.wo.prefix" default="${caw.rv.payment.barcode.wo.prefix}" />
+        	<!--END BZ46381-->
+        	
+        </propertyfile>
+    </target>
+    <target name="caw-update-log4j-file" description="Copy overwrite log4j2.xml into config folder">
+        <copy file="${basedir}/custom/update/log4j2.xml" todir="${install.dir}/config" overwrite="true" force="true" verbose="true"/>
+    </target>
+
+    <target name="run-caw-configure" depends="update-ebs-parameters" description="run configure processes as needed">
+      <runCawConfigureProcess installDir="${install.dir}" />
+    </target>
+
+    <target name="insert-caw-test-users" depends="update-orgid-storeid" description="Insert test users into database">
+    <!-- run scripts using appropriate functionality -->
+      <if>
+        <not>
+          <isset property="no.local.db.present" />
+        </not>
+        <then>
+        <!-- load properties from base-xstore.properties for DB upgrades -->
+        <!-- NOTE: This is not handled by the earlier load from the same file because these properties may not be set yet at that point. -->
+          <loadproperties prefix="BASEXDBPROPS" srcFile="${local.base.xstore.properties.file}" />
+          <property name="caw.test.users" location="${dbsql.dir}/local/testUsers.sql" description="Test users scripts" />
+          <insertuserstest username="${BASEXDBPROPS.owner.db.user}" password="${BASEXDBPROPS.owner.db.pwd}" sqlfile="${caw.test.users}" />
+        </then>
+      </if>
+    </target>
+
+    <target name="update-orgid-storeid" description="Check install environment PROD/TEST base on dtv.CustomerId.salt">
+      <copy file="${basedir}/custom/update/testUsers.sql" todir="${dbsql.dir}/local"/>
+      <replace file="${dbsql.dir}/local/testUsers.sql" token="$(OrgID)" value="${BASEXPROPS.dtv.location.OrganizationId}"/>
+      <replace file="${dbsql.dir}/local/testUsers.sql" token="$(StoreID)" value="${BASEXPROPS.dtv.location.StoreNumber}"/>
+    </target>
+
+    <macrodef name="insertuserstest">
+      <attribute name="username" />
+      <attribute name="password" />
+      <attribute name="sqlfile" />
+      <sequential>
+        <echo level="info" message="Applying SQL file @{sqlfile} to database ${INSTALLERPROP.local.db.name}." />
+        <local name="install.cipher.directory" />
+        <property name="install.cipher.directory" location="${install.dir}/res/keys" description="Normalize the ciper file directory for this platform." />
+        <java fork="true" failonerror="true" classname="dtv.util.exec.sql.SqlFileExecutor">
+          <classpath>
+            <fileset dir="${install.dir}/lib" includes="*.jar" />
+            <fileset dir="${install.dir}/lib/ext" includes="*.jar" />
+          </classpath>
+          <sysproperty key="dtv.util.crypto.SecretKeyCipherManager.keyStoreDirectory" value="${install.cipher.directory}"/>
+          <sysproperty key="dtv.util.crypto.DtvKeyStoreManager.keyStoreDirectory" value="${install.cipher.directory}"/>
+          <sysproperty key="dtv.CustomerId" value="${customer.id}"/>
+          <sysproperty key="dtv.CustomerId.salt" value="${BASEXDBPROPS.dtv.CustomerId.salt}"/>
+          <arg value="${platform.db}"/>
+          <arg value="localhost"/>
+          <arg value="${INSTALLERPROP.local.db.name}"/>
+          <arg value="@{username}"/>
+          <arg value="@{password}"/>
+          <arg value="@{sqlfile}"/>
+        </java>
+      </sequential>
+    </macrodef>
+
+    <macrodef name="runCawConfigureProcess">
+      <attribute name="installDir" />
+      <attribute name="configureProcessPrefix" default="" />
+      <sequential>
+        <local name="baseconfigure.script.file" />
+        <local name="configure.script.file" />
+        <property name="configure.script.file" location="@{installDir}/@{configureProcessPrefix}configure${os.ext}" />
+        <if>
+          <available file="${configure.script.file}" />
+          <then>
+            <exec dir="@{installDir}" executable="${configure.script.file}" />
+          </then>
+        </if>
+      </sequential>
+    </macrodef>
+    
+    <macrodef name="runBaseConfigureProcess">
+      <attribute name="installDir" />
+      <attribute name="configureProcessPrefix" default="" />
+      <sequential>
+        <local name="baseconfigure.script.file" />
+        <property name="baseconfigure.script.file" location="@{installDir}/@{configureProcessPrefix}baseconfigure${os.ext}" />
+        <if>
+          <available file="${baseconfigure.script.file}" />
+          <then>
+            <exec dir="@{installDir}" executable="${baseconfigure.script.file}" />
+          </then>
+        </if>
+      </sequential>
+    </macrodef>
+
+    <target name="get-computer-name">
+        <exec executable="hostname" outputproperty="computer.hostname"/>
+        <echo level="info">${computer.hostname}</echo>
+        <property name="computer.name" value="${computer.hostname}"/>
+    </target>
+
+    <scriptdef name="substring" language="javascript">
+        <attribute name="text" />
+        <attribute name="start" />
+        <attribute name="end" />
+        <attribute name="property" />
+        <![CDATA[
+       var text = attributes.get("text");
+       var start = attributes.get("start");
+       var end = attributes.get("end") || text.length();
+       project.setProperty(attributes.get("property"), text.substring(start, end));
+     ]]>
+    </scriptdef>
+
+    <target  name="check-environment" depends="get-computer-name">
+        <substring text="${computer.name}" start="0" end="3" property="subtext" />
+        <echo message="threeChars = ${subtext}" />
+        <property name="threeChars" value="${subtext}"/>
+        <substring text="${computer.name}" start="3" end="4" property="subtext" />
+        <echo message="nextchar = ${subtext}" />
+        <property name="nextchar" value="${subtext}"/>
+        <if>
+            <and>
+                <equals arg1="${threeChars}" arg2="Pos"/>
+                <not>
+                    <equals arg1="${nextchar}" arg2="8"/>
+                </not>
+                <not>
+                    <equals arg1="${nextchar}" arg2="9"/>
+                </not>
+            </and>
+            <then>
+                <echo message="This is PROD environment" />
+            </then>
+            <!-- BZ28753: Because the data of TestUsers.sql has been included in ClientData.sql, so we don't need to call insert-caw-test-users to execute it again for all mode-->
+        <!--
+            <else>
+                <echo message="This is DEV/TEST environment" />
+                <echo message="Test users will be inserted into the database for testing" />
+                <antcall target="insert-caw-test-users" />
+            </else>
+         -->
+        </if>
+    </target>
+
+    <target name="caw-rerun-configure" description="run configure/baseconfigure processes as needed">
+      <runConfigureProcess installDir="${install.dir}" />
+    </target>
+
+    <target name="res-folder-restore" description="Restore ssl and keys folder">
+        <property name="bkXstoreDir" location="${external.file.root}/BACKUPXstore" />
+        <property name="backup.res.folder" location="${bkXstoreDir}/res" />
+        <property name="xenv.ssl.folder" location="${install.dir}/res/ssl" />
+        <property name="xenv.keys.folder" location="${install.dir}/res/keys" />
+        <echo message="Copy 2 folders: ssl and keys xenvironment folder" />
+
+        <copy todir="${xenv.ssl.folder}" overwrite="true" force="true" verbose="true">
+            <fileset dir="${backup.res.folder}/ssl"/>
+        </copy>
+        <copy todir="${xenv.keys.folder}" overwrite="true" force="true" verbose="true">
+            <fileset dir="${backup.res.folder}/keys"/>
+        </copy>
+        <delete dir="${bkXstoreDir}"/>
+    </target>
+
+    <!--BZ30293: updated URL 'ky-esb-i-stg-01.freedomroads.local:44501' to 'ky-cw-esbstg'-->
+    <target name="update-xstore-properties-qas-parameters" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.address.picklist.entry.limit" default="100"/>
+            <entry key="qas.targetNamespace" default="http://www.qas.com/web-2013-12"/>
+            <entry key="qas.wsdlLocation" default="http://ky-bgr-qas-dev:2021/proweb.wsdl"/> <!-- BZ33367 -->
+            <entry key="qas.engine.timeout" default="10000"/>
+            <entry key="qas.engine.threshold" default="30"/>
+        </propertyfile>
+    </target>
+
+    <!--BZ30293: updated URL 'ky-esb-i-stg-01.freedomroads.local:44501' to 'ky-cw-esbstg'-->
+    <target name="update-xstore-properties-ufa-parameters" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.ufa.search.url" default="https://ky-cw-esbstg/CAMPINGWORLD/item/ufa"/> <!-- BZ31112 -->
+        </propertyfile>
+    </target>
+
+    <!--BEGIN BZ28247 -->
+    <!--BZ30293: updated URL 'ky-esb-i-stg-01.freedomroads.local:44501' to 'ky-cw-esbstg'-->
+    <target name="update-xstore-properties-card-service-parameters" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.card.services.submit.request" default="https://ky-cw-esbstg/CAMPINGWORLD/card/olps/submit"/> <!-- BZ31112 -->
+            <entry key="caw.pos.card.services.status.request" default="https://ky-cw-esbstg/CAMPINGWORLD/card/olps/status"/> <!-- BZ31112 -->
+            <entry key="caw.pos.madeoffer.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/card/mo"/> <!-- BZ31112 -->
+            <entry key="caw.pos.caretaker.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/card/status"/> <!-- BZ31112 -->
+            <entry key="caw.pos.madeoffer.v2.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/card/mo"/> <!-- BZ31112 -->
+            <entry key="caw.pos.caretaker.v2.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/card/status"/> <!-- BZ31112 -->
+        </propertyfile>
+    </target>
+    <!--END BZ28247 -->
+    
+    <!--BZ30293: updated URL 'ky-esb-i-stg-01.freedomroads.local:44501' to 'ky-cw-esbstg'-->
+    <target name="update-xstore-properties-customer-parameters" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.customer.template.url" default="https://ky-cw-esbstg/CAMPINGWORLD/customer/template"/> <!-- BZ31112 -->
+            <entry key="caw.pos.customer.search.url" default="https://ky-cw-esbstg/CAMPINGWORLD/customer/search"/> <!-- BZ31112 -->
+            <entry key="caw.pos.customer.lookup.url" default="https://ky-cw-esbstg/CAMPINGWORLD/customer?accountNumber={accountNumber}&amp;locationCode={locationCode}"/> <!-- BZ31112 -->
+            <entry key="caw.pos.customer.upsert.url" default="https://ky-cw-esbstg/CAMPINGWORLD/customer"/> <!-- BZ31112 -->
+            <entry key="caw.pos.membership.validate.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/membership/validate"/> <!-- BZ31112 -->
+            <!-- BEGIN BZ28036 -->
+            <entry key="caw.pos.customer.purchase.history.url" default="https://ky-cw-esbstg/CAMPINGWORLD/order/history"/>
+            <entry key="caw.pos.customer.purchase.history.detail.url" default="https://ky-cw-esbstg/CAMPINGWORLD/order/detail"/>
+            <!-- END BZ28036 -->
+        </propertyfile>
+    </target>
+    
+    <!--BZ30293: updated URL 'ky-esb-i-stg-01.freedomroads.local:44501' to 'ky-cw-esbstg'-->
+    <target name="update-xstore-properties-promotion-parameters" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.promotion.api.url" default="https://ky-cw-esbstg/CAMPINGWORLD/promotion"/> <!-- BZ31112 -->
+            <entry key="caw.pos.promotion.reserve.url" default="https://ky-cw-esbstg/CAMPINGWORLD/promotion/reserve"/> <!-- BZ31112 -->
+            <entry key="caw.pos.promotion.reset.url" default="https://ky-cw-esbstg/CAMPINGWORLD/promotion/reset"/> <!-- BZ31112 -->
+        </propertyfile>
+    </target>
+
+    <!--BZ30293: updated URL 'ky-esb-i-stg-01.freedomroads.local:44501' to 'ky-cw-esbstg'-->
+    <target name="update-xstore-properties-work-order-parameters" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.work.order.search.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/wo/search"/> <!-- BZ31112 -->
+            <entry key="caw.pos.work.order.lookup.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/wo/lookup"/> <!-- BZ31112 -->
+            <entry key="caw.pos.work.order.update.status.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/wo/status"/> <!-- BZ31112 -->
+        </propertyfile>
+    </target>
+
+    <target name="update-xstore-properties-for-environment">
+        <if>
+            <os family="windows"/>
+            <then>
+                <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+                    <entry key="caw.close.marker.location" default="c:/environment/marker"/>
+                    <entry key="caw.version.location" default="c:/environment/version.properties"/>
+                    <entry key="caw.password.location" default="c:/updates/inbox/passwds/passwds"/>
+                    <entry key="caw.pos.miraserv.config" default="/opt/Eigen/miraserv.ini"/>
+                </propertyfile>
+                <propertyfile file="${install.dir}/system.properties" comment="system.properties">
+                    <entry key="caw.pos.miraserv.config" default="C:/Program Files (x86)/Eigen/Miraserv/MiraServ.ini"/>
+                </propertyfile>
+                <copy file="${basedir}/custom/update/jmsrso.jar" todir="${install.dir}/lib/ext" overwrite="true" force="true" verbose="true"/>
+            </then>
+        </if>
+    </target>
+
+    <target name="update-xstore-properties-send-request-to-pinpad" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.scheduled.send.request.to.pinpad.initial.delay" default="250"/>
+            <entry key="caw.pos.scheduled.send.request.to.pinpad.fixed.delay" default="120"/>
+        </propertyfile>
+    </target>
+
+    <!--BZ30293: updated URL 'ky-esb-i-stg-01.freedomroads.local:44501' to 'ky-cw-esbstg'-->
+    <target name="update-pe-catalyst-service-request-results-url" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.catalyst.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/pe/catalyst"/> <!-- BZ31112 -->
+            <entry key="caw.pos.catalyst.results.url" default="https://ky-cw-esbstg/CAMPINGWORLD/pe/results"/> <!-- BZ31112 -->
+        </propertyfile>
+    </target>
+	
+    <!--BZ 37023: updated URL for shipping rate-->
+    <target name="update-shipping-rate-service-url" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.shippingrate.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/shipping/rates"/> <!-- BZ37023 -->
+        </propertyfile>
+    </target>
+
+    <!-- BZ-37396: added tax API Url -->
+    <target name="update-tax-api-service-url" description="Properties on system.properties doesn't exists on xstore.properties">
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.tax.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/tax/calculate"/> <!-- BZ37396 -->
+        </propertyfile>
+    </target>
+
+    <!--Begin BZ28200 -->
+    <target name="caw-apply-critical-patch-update" description="remove older ackson-annotations/jackson-databind library">
+        <property name="extXstoreDir" location="${install.dir}/lib/ext" />
+        <property name="extEvironmentDir" location="/opt/environment/lib/ext" />
+        <!--xstore/lib/ext -->
+        <if>
+            <available file="${extXstoreDir}/jackson-databind-2.9.6.jar"/>
+            <then>
+                <delete file="${extXstoreDir}/jackson-databind-2.8.11.jar"/>
+            </then>
+        </if>
+        <if>
+            <available file="${extXstoreDir}/jackson-annotations-2.9.6.jar"/>
+            <then>
+                <delete file="${extXstoreDir}/jackson-annotations-2.8.9.jar"/>
+            </then>
+        </if>
+        
+        <!--environment/lib/ext -->
+        <if>
+            <available file="${extEvironmentDir}/jackson-databind-2.9.6.jar"/>
+            <then>
+                <delete file="${extEvironmentDir}/jackson-databind-2.8.11.jar"/>
+                <delete file="${extEvironmentDir}/jackson-databind-2.8.7.jar"/>
+            </then>
+            <else>
+                <copy file="${extXstoreDir}/jackson-databind-2.9.6.jar" todir="${extEvironmentDir}" overwrite="true" force="true" verbose="true"/>
+                <if>
+                    <available file="${extEvironmentDir}/jackson-databind-2.9.6.jar"/>
+                    <then>
+                        <delete file="${extEvironmentDir}/jackson-databind-2.8.11.jar"/>
+                        <delete file="${extEvironmentDir}/jackson-databind-2.8.7.jar"/>
+                    </then>
+                </if>
+            </else>
+        </if>
+        <if>
+            <available file="${extEvironmentDir}/jackson-annotations-2.9.6.jar"/>
+            <then>
+                <delete file="${extEvironmentDir}/jackson-annotations-2.8.9.jar"/>
+                <delete file="${extEvironmentDir}/jackson-annotations-2.8.7.jar"/>
+            </then>
+            <else>
+                <copy file="${extXstoreDir}/jackson-annotations-2.9.6.jar" todir="${extEvironmentDir}" overwrite="true" force="true" verbose="true"/>
+                <if>
+                    <available file="${extEvironmentDir}/jackson-annotations-2.9.6.jar"/>
+                    <then>
+                        <delete file="${extEvironmentDir}/jackson-annotations-2.8.9.jar"/>
+                        <delete file="${extEvironmentDir}/jackson-annotations-2.8.7.jar"/>
+                    </then>
+                </if>
+            </else>
+        </if>
+    </target>
+    <!--End BZ28200 -->
+
+    <!--BEGIN BZ30316 -->
+    <target name="graphics-folder-restore" description="Restore ssl and keys folder">
+        <property name="bkXstoreDir" location="${external.file.root}/BACKUPXstoreGraphics" />
+        <property name="backup.graphics.folder" location="${bkXstoreDir}/res/graphics" />
+        <property name="xstore.res.graphics" location="${install.dir}/res/graphics" />
+        <echo message="Copy graphics folder OV,GO,CW" />
+
+        <copy todir="${xstore.res.graphics}/OV" overwrite="true" force="true" verbose="true">
+            <fileset dir="${backup.graphics.folder}/OV">
+            	<exclude name="**/logo.bmp"/> <!-- BZ-38102 -->
+            	<exclude name="**/logo.gif"/> <!-- BZ-38102 -->
+            </fileset>
+        </copy>
+        <copy todir="${xstore.res.graphics}/GO" overwrite="true" force="true" verbose="true">
+            <fileset dir="${backup.graphics.folder}/GO">
+            	<exclude name="**/logo.bmp"/> <!-- BZ-38102 -->
+            	<exclude name="**/logo.gif"/> <!-- BZ-38102 -->
+            </fileset>
+        </copy>
+        <copy todir="${xstore.res.graphics}/CW" overwrite="true" force="true" verbose="true">
+            <fileset dir="${backup.graphics.folder}/CW">
+            	<exclude name="**/logo.bmp"/> <!-- BZ-38102 -->
+            	<exclude name="**/logo.gif"/> <!-- BZ-38102 -->
+            </fileset>
+        </copy>
+        <delete dir="${bkXstoreDir}"/>
+    </target>
+    <!--END BZ30316 -->
+    
+    <!-- BEGIN BZ32399 -->
+    <target name="update-xstore-properties-item-parameter" description="Update xstore properties file">
+        <echo message="Update customize properties for ${install.dir}/updates/xstore.properties" />
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">  
+            <entry key="caw.pos.inventory.search.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/item/inventory" />
+        </propertyfile>
+    </target>
+    <!-- END BZ32399 -->
+    
+    <!-- Begin BZ33595 -->
+    <target name="update-system-properties-scanner" description="Update system properties for scanner">
+        <echo message="Update customize properties for ${install.dir}/system.properties" />
+        <propertyfile file="${install.dir}/system.properties" comment="xstore.properties">
+            <entry key="caw.beep.value" default="17"/>
+        </propertyfile>
+    </target>
+    <!-- End BZ33595   -->
+
+    <!-- Begin BZ36625 -->
+    <target name="update-system-properties-customer-verification-timeout" description="Update system properties customer verification timeout">
+        <echo message="Update customize properties for ${install.dir}/system.properties" />
+        <propertyfile file="${install.dir}/system.properties" comment="xstore.properties">
+            <entry key="caw.customer.verification.timeout" default="30"/>
+        </propertyfile>
+    </target>
+    <!-- End BZ36625 -->
+	
+	<!-- BEGIN BZ44528: Phase 1 -->
+    <target name="update-xstore-properties-wondersign-parameter" description="Update xstore properties file">
+        <echo message="Update customize properties for ${install.dir}/updates/xstore.properties" />
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">  
+            <entry key="caw.pos.wondersign.cart.search.url" default="https://ky-cw-esbstg/CAMPINGWORLD/carts" />
+            <entry key="caw.pos.wondersign.cart.search.page.size" default="5" />
+        	<entry key="caw.pos.wondersign.skip.product.availability.api" default="true" />
+        	<entry key="caw.pos.wondersign.skip.order.submit.api" default="true" />
+        </propertyfile>
+    </target>
+    <!-- END BZ44528: Phase 1 -->
+	
+	<!--BEGIN BZ44917-->
+    <target name="update-system-properties-rv-service-payment" description="Update system properties rv service payment">
+        <echo message="Update customize properties for ${install.dir}/updates/xstore.properties" />
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+            <entry key="caw.pos.rv.payment.request.url" default="https://ky-cw-esbstg/CAMPINGWORLD/wo/payments"/>
+        </propertyfile>
+    </target>
+	<!--END BZ44917-->
+	
+	<!--BEGIN BZ42307-->
+    <target name="update-xstore-properties-allow-split-order" description="Update xstore properties allow split order">
+        <echo message="Update customize properties for ${install.dir}/updates/xstore.properties" />
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+          <entry key="caw.locate.allow.split.order" default="true"/>
+        </propertyfile>
+    </target>
+	<!--END BZ42307-->
+	
+	<!--BEGIN BZ45995-->
+    <target name="update-xstore-properties-email-validation-url" description="Update the URL for email vaildation API">
+        <echo message="Update customize properties for ${install.dir}/updates/xstore.properties" />
+        <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+          <entry key="caw.pos.email.validation.url" default="https://ky-cw-esbstg/CAMPINGWORLD/customer/isEmailValid"/>
+        </propertyfile>
+    </target>
+	<!--END BZ45995-->
+	<!--BEGIN BZ46381-->
+	<target name="update-xstore-properties-rv-payment-prefix" description="Update prefix for rv payment">
+		<echo message="Update customize properties for ${install.dir}/updates/xstore.properties" />
+	    <propertyfile file="${install.dir}/updates/xstore.properties" comment="xstore.properties">
+	    	<entry key="caw.rv.payment.barcode.cust.prefix" default="IDSCU"/>
+	    	<entry key="caw.rv.payment.barcode.wo.prefix" default="IDSWO"/>
+	    </propertyfile>
+	</target>
+	<!--END BZ46381-->
+</project>

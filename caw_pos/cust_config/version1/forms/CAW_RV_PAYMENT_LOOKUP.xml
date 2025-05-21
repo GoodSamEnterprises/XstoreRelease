@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ44917              110921    [New Requirement] IDS Payment Integration with Xstore
+ * BZ46258              150921    [Internal] IDS Payment - Xstore should return to Sale screen with all payments selected in the view port after clicking Back on the RV Service Payment search form.
+ *===================================================================
+ */
+-->
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+    
+  <Form name="CAW_RV_PAYMENT_LOOKUP" type="POPUP_VIEW_PANEL">
+    <Page name="idsPaymentLookup">
+        <Panel startX="0" startY="0" width="100" height="100" fieldLayoutRef="rvPaymentLookupLayout" />
+    </Page>
+    <ActionGroup name="DEFAULT">
+      <!-- BEGIN BZ46258 -->
+      <Action name="CANCEL_EXIT" category="" keywords="exclude" dataKey="EXIT" text="_back" keyStroke="Escape" />
+      <!-- END BZ46258 -->
+      <Action ref="CAW_CUST_SEARCH_PROCESS"/>
+    </ActionGroup>
+  </Form>
+    
+</FormSet>

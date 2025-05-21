@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ47440              071221    [Internal patch 7.0.16] Order Complete Receipt - Deposit/Payments and Balance Due printed incorrectly when picking up an BOPIS that contained cancelled item
+ *===================================================================
+ */ 
+-->
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+  
+  
+  <bean id="ORDER_FULFILLMENTS" class="dtv.xst.xom.locate.impl.order.lookup.OrderFulfillmentsHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="orderFulfillmentsExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.req.OrderFulfillmentsRequestPreparer">
+        <property name="parameters">
+          <map>
+            <entry key="argRetailLocationId" value="setLocationId" />
+          </map>
+        </property>
+      </bean>
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.lookup.req.XstoreQueryParamToLocateFulfillmentsAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.OrderFulfillmentsResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.LocateOrdersToXstoreOrdersAdapter">
+          <property name="preparer">
+            <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.OrderResponsePreparer" />
+          </property>
+          <property name="adapters">
+            <list value-type="dtv.servicex.IAdapter">
+              <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.LocateFulfillmentToXstoreOrderAdapter" />
+              <bean class="caw.xst.xom.locate.impl.order.lookup.resp.CawLocateFulfillmentItemDetailsToXstoreOrderLinesAdapter" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="ORDER_RETRIEVE" class="dtv.xst.xom.locate.impl.order.lookup.OrderRetrieveHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="orderRetrieveExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.req.OrderRetrieveRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.lookup.req.XstoreRetrieveToLocateStatusRequestAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.OrderRetrieveResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="caw.xst.xom.locate.impl.order.lookup.resp.CawLocateStatusRequestToXstoreRetrieveAdapter" />
+      </list>
+    </property>
+  </bean>
+</beans>

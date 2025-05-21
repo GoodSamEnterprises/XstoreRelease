@@ -1,0 +1,108 @@
+
+init-os-details:
+
+app-logging:
+     [echo] 
+     [echo] **************************************************************
+     [echo] *    InstallX: Oracle Retail | Xstore POS Patch
+     [echo] *     Version: 16.0.5.0.38 - 7.0.36 - 1.53
+     [echo] *                                                             
+     [echo] *      Run By: ajeet.singh
+     [echo] *         JVM: Oracle Corporation v25.202-b08
+     [echo] *          OS: Windows 10 amd64 v10.0
+     [echo] *                                                             
+     [echo] *    CUSTOMER: CAW | INSTALL DIR: c:\xstore
+     [echo] *        TYPE: patch | OS: windows_64 | DB: oracle
+     [echo] *     STARTED: Friday, September 27, 2024 09:41:41 AM CDT
+     [echo] **************************************************************
+     [echo] 
+
+add-exec-pre:
+
+custom-pre:
+
+common-process-start:
+
+prep-installx-properties-and-db-filters:
+     [echo] Loading installer property values from 'c:\xstore\updates\installx.install.properties'
+     [echo] Proceeding with the following installer property values:
+[echoproperties] #Ant properties
+[echoproperties] #Fri Sep 27 09:41:42 CDT 2024
+[echoproperties] INSTALLERPROP.advanced.installation=none
+[echoproperties] INSTALLERPROP.local.db.name=xstore
+[echoproperties] INSTALLERPROP.local.db.present=true
+[echoproperties] INSTALLERPROP.training.db.name=xstore
+
+apply-patch-file:
+
+update-appversion-file:
+     [copy] Copying 1 file to c:\xstore
+
+update-orgid-storeid:
+
+patch-update-database:
+     [echo] Applying SQL file C:\WIP-Xstore_Delta-main\caw_pos\resources\db\oracle\ClientPatchData.sql to database xstore.
+     [java] ERROR StatusLogger No log4j2 configuration file found. Using default configuration: logging only errors to the console.
+     [echo] Applying SQL file C:\WIP-Xstore_Delta-main\caw_pos\resources\db\oracle\db-update.sql to database xstore.
+     [java] ERROR StatusLogger No log4j2 configuration file found. Using default configuration: logging only errors to the console.
+
+custom-post:
+
+run-tasks:
+
+caw-order-disable:
+
+caw-order-replace-key:
+     [echo] Replace replace: caw.pos.order.enable=false
+
+remove-patch-caw-order-enable:
+     [echo] Delete enable order patch successfully
+
+caw-order-new-key:
+
+update-xstore-properties-loyalty-url:
+     [echo] Update customize properties for c:\xstore/updates/xstore.properties
+[propertyfile] Updating property file: c:\xstore\updates\xstore.properties
+
+run-caw-configure:
+     [exec] Sep 27, 2024 9:41:48 AM dtv.installer.util.PropertyMerge <init>
+     [exec] INFO: Base dir: c:\xstore\updates
+     [exec] Sep 27, 2024 9:41:48 AM dtv.installer.util.PropertyMerge <init>
+     [exec] INFO: Merging properties from: updates/prop-map.xml
+     [exec] Sep 27, 2024 9:41:49 AM dtv.installer.util.PropertyMerge main
+     [exec] INFO: PROPERTY MERGE SUCCESS [true]
+
+add-exec-post:
+
+app-log-complete:
+     [echo] 
+     [echo] **************************************************************
+     [echo] *    InstallX: Oracle Retail | Xstore POS Patch
+     [echo] *     Version: 16.0.5.0.38 - 7.0.36 - 1.53
+     [echo] *                                                             
+     [echo] * Install Dir: c:\xstore
+     [echo] *   Completed: Friday, September 27, 2024 09:41:49 AM CDT
+     [echo] **************************************************************
+     [echo] 
+
+common-process-end:
+
+install-patch:
+
+apply-patch-file:
+
+update-appversion-file:
+     [copy] Copying 1 file to c:\xstore
+
+update-orgid-storeid:
+
+patch-update-database:
+     [echo] Applying SQL file C:\WIP-Xstore_Delta-main\caw_pos\resources\db\oracle\ClientPatchData.sql to database xstore.
+     [java] ERROR StatusLogger No log4j2 configuration file found. Using default configuration: logging only errors to the console.
+     [echo] Applying SQL file C:\WIP-Xstore_Delta-main\caw_pos\resources\db\oracle\db-update.sql to database xstore.
+     [java] ERROR StatusLogger No log4j2 configuration file found. Using default configuration: logging only errors to the console.
+
+update-orgid-storeid:
+BUILD SUCCESSFUL
+
+BUILD SUCCESSFUL

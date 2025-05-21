@@ -1,0 +1,14 @@
+-- 
+-- CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+-- 
+-- Use AND distribution of this code is subject to applicable 
+-- licenses AND the permission of the code owner.  This notice 
+-- does not indicate the actual or intended publication of 
+-- this source code.
+-- 
+-- Portions developed for Camping World by BTM Global Consulting
+-- LLC AND are the property of Camping World.
+-- 
+-- ===== BTM Modification ===========================================
+-- Scope/Bug ID#          ddMMyy             Description
+-- ===================================================================

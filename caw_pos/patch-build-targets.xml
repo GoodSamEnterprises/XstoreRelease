@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<!--
+This build script is run by the InstallX Xstore Patch Installer.
+After prompting the user to answer a series of questions, the 
+appropriate targets in this script will be executed to complete
+the installation process.
+The UI used to gather customer properties to use in this build script
+is defined in the antinstall-patch.xml located in the 
+installgui directory.
+-->
+<project name="InstallX Xstore Patch Install Process" default="" basedir=".">
+  <!-- DECLARE APPLICATION NAME AND DESCRIPTION -->
+  <property name="ix.appname" value="xstorepatch" /> 
+  <property name="ix.appdir" value="xstore" /> 
+  <property name="ix.appdesc" value="Xstore POS Patch" />
+  
+  <import file="./common/init.xml" />
+  <import file="./common/poscommon.xml" />
+  
+  <target name="install-patch" depends="common-process-start,prep-installx-properties-and-db-filters,apply-patch-file,update-appversion-file,patch-update-database,common-process-end" />
+  <!--<target name="install-patch" depends="common-process-start,prep-installx-properties-and-db-filters,apply-patch-file,common-process-end" />-->
+  <target name="apply-patch-file">
+    <copy todir="${install.dir}/lib/patch" failonerror="true" overwrite="true" >
+      <fileset dir="${basedir}">
+        <include name="*.jar" />
+      </fileset>
+    </copy>
+  	
+  	<copy file="${basedir}/custom/prop-map.xml" todir="${install.dir}/updates/" failonerror="false"/>
+	<!-- 
+  	<copy file="${basedir}/custom/update/log4j2.xml" todir="${install.dir}/config" overwrite="true" force="true" verbose="true"/>
+  	-->
+  </target>
+
+  <target name="update-appversion-file">
+    <copy todir="${install.dir}" failonerror="true" overwrite="true" >
+      <fileset dir="${basedir}/create-patches">
+        <include name="appversion.properties" />
+      </fileset>
+    </copy>
+  </target>
+  <target name="patch-update-database" depends="update-orgid-storeid" description="Insert test users into database">
+  <!-- run scripts using appropriate functionality -->
+    <if>
+      <not>
+        <isset property="no.local.db.present" />
+      </not>
+      <then>
+        <!-- load properties from base-xstore.properties for DB upgrades -->
+        <!-- NOTE: This is not handled by the earlier load from the same file because these properties may not be set yet at that point. -->
+        <loadproperties prefix="BASEXDBPROPS" srcFile="${local.base.xstore.properties.file}" />
+        <property name="caw.patch.update.db" location="${dbsql.dir}/ClientPatchData.sql" description="Update database script" />
+        <runSqlInsertData username="${BASEXDBPROPS.owner.db.user}" password="${BASEXDBPROPS.owner.db.pwd}" sqlfile="${caw.patch.update.db}" />
+        <property name="update.version.db" location="${dbsql.dir}/db-update.sql" description="Update database script" />
+        <runSqlInsertData username="${BASEXDBPROPS.owner.db.user}" password="${BASEXDBPROPS.owner.db.pwd}" sqlfile="${update.version.db}" />
+      </then>
+    </if>
+  </target>
+
+  <target name="update-orgid-storeid" description="Update OrgID and StoreID into SQL file">
+    <copy file="${basedir}/database/ClientPatchData.sql" todir="${dbsql.dir}" failonerror="false"/>
+    <replace file="${dbsql.dir}/ClientPatchData.sql" token="$(OrgID)" value="${BASEXPROPS.dtv.location.OrganizationId}"/>
+    <replace file="${dbsql.dir}/ClientPatchData.sql" token="$(StoreID)" value="${BASEXPROPS.dtv.location.StoreNumber}"/>
+    <replace file="${dbsql.dir}/ClientPatchData.sql" token="$(DbSchema)" value="dtv"/>
+    <replace file="${dbsql.dir}/db-update.sql" token="$(OrgID)" value="${BASEXPROPS.dtv.location.OrganizationId}"/>
+  </target>
+  
+  <macrodef name="runSqlInsertData">
+    <attribute name="username" />
+    <attribute name="password" />
+    <attribute name="sqlfile" />
+    <sequential>
+      <echo level="info" message="Applying SQL file @{sqlfile} to database ${INSTALLERPROP.local.db.name}." />
+      <local name="install.cipher.directory" />
+      <property name="install.cipher.directory" location="${install.dir}/res/keys" description="Normalize the ciper file directory for this platform." />
+        <java fork="true" failonerror="true" classname="dtv.util.exec.sql.SqlFileExecutor">
+        <classpath>
+          <fileset dir="${install.dir}/lib" includes="*.jar" />
+          <fileset dir="${install.dir}/lib/ext" includes="*.jar" />
+        </classpath>
+        <sysproperty key="dtv.util.crypto.SecretKeyCipherManager.keyStoreDirectory" value="${install.cipher.directory}"/>
+        <sysproperty key="dtv.util.crypto.DtvKeyStoreManager.keyStoreDirectory" value="${install.cipher.directory}"/>
+        <sysproperty key="dtv.CustomerId" value="${customer.id}"/>
+        <sysproperty key="dtv.CustomerId.salt" value="${BASEXDBPROPS.dtv.CustomerId.salt}"/>
+        <arg value="${platform.db}"/>
+        <arg value="localhost"/>
+        <arg value="${INSTALLERPROP.local.db.name}"/>
+        <arg value="@{username}"/>
+        <arg value="@{password}"/>
+        <arg value="@{sqlfile}"/>
+      </java>
+    </sequential>
+  </macrodef>
+
+</project>

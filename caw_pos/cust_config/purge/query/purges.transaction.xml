@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Scope/Bug ID#     ddMMyy        Description
+ * BZ56866           150623        Xymon [452027] pos646term6.freedomroads.local:disk CRITICAL (RED).
+ *===================================================================
+ */ 
+-->
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <!-- ***************************************************************** -->
+  <!-- ROOTS -->
+  <!-- ***************************************************************** -->
+  <Query name="trn_trans">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM trn_trans c
+          WHERE organization_id = ?
+            AND business_date < ?
+            AND rownum <= 50000
+            AND NOT EXISTS
+                  (Select p.* From cat_cust_item_acct_activity p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.rtl_loc_id
+                      And p.wkstn_id = c.wkstn_id
+                      And p.business_date = c.business_date
+                      And p.trans_seq = c.trans_seq)
+            AND NOT EXISTS
+                  (Select p.* From civc_invoice_xref p 
+                    Where p.organization_id = c.organization_id
+                      And p.trans_rtl_loc_id = c.rtl_loc_id
+                      And p.trans_wkstn_id = c.wkstn_id
+                      And p.trans_business_date = c.business_date
+                      And p.trans_trans_seq = c.trans_seq)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+      <Expression trigger="argType"><![CDATA[/*UPPER*/ trans_typcode = ?]]></Expression>
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- trn_trans <<< * -->
+  <!-- ************************************************ -->
+  <Query name="trn_trans.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND rownum <= 50000
+            AND NOT EXISTS
+                  (Select p.* From trn_trans p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.rtl_loc_id
+                      And p.wkstn_id = c.wkstn_id
+                      And p.business_date = c.business_date
+                      And p.trans_seq = c.trans_seq)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <Query name="itm_warranty_journal">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_warranty_journal c
+          WHERE organization_id = ?
+            AND rownum <= 50000
+            AND (NOT EXISTS
+                  (Select p.* From trn_trans p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.trans_rtl_loc_id
+                      And p.wkstn_id = c.trans_wkstn_id
+                      And p.business_date = c.trans_business_date
+                      And p.trans_seq = c.trans_trans_seq) 
+             OR NOT EXISTS
+                  (Select p.* From trn_trans p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.warranty_line_rtl_loc_id
+                      And p.wkstn_id = c.warranty_line_wkstn_id
+                      And p.business_date = c.warranty_line_business_date
+                      And p.trans_seq = c.warranty_line_trans_seq)
+             OR NOT EXISTS
+                  (Select p.* From trn_trans p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.covered_line_rtl_loc_id
+                      And p.wkstn_id = c.covered_line_wkstn_id
+                      And p.business_date = c.covered_line_business_date
+                      And p.trans_seq = c.covered_line_trans_seq))]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <Query name="trl_lineitm_assoc_mod">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM trl_lineitm_assoc_mod c
+          WHERE organization_id = ?
+            AND rownum <= 50000
+            AND (NOT EXISTS
+                  (Select p.* From trn_trans p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.parent_rtl_loc_id
+                      And p.wkstn_id = c.parent_wkstn_id
+                      And p.business_date = c.parent_business_date
+                      And p.trans_seq = c.parent_trans_seq)
+             OR NOT EXISTS
+                  (Select p.* From trn_trans p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.child_rtl_loc_id
+                      And p.wkstn_id = c.child_wkstn_id
+                      And p.business_date = c.child_business_date
+                      And p.trans_seq = c.child_trans_seq))]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+</QuerySet>

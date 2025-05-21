@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ23340              280917    Customer ID should be displayed instead of Account# on Contact information screen when adding a new Customer
+ * BZ23666              021017    HDE prompt display when pressing "Item Details" button at Purchase History of customer maintenance
+ * BZ23724              041017    Edit Credit Limit button should be disabled
+ * BZ24188              261017   'Blank error' screen is displayed when selecting 'Print Balance Receipt' button on Accounts tab
+ * BZ25358              130318    Enhancements to QAS Integration with POS
+ * BZ26575              190618    [QAS] Update address verification flow to reduce the number of click in the QAS process
+ * BZ26727              280618    [Internal] First and Last names can be edited incorrectly for Wholesale and Crew members
+ * BZ26289              110718    New Requirement - Enable A/R Payment Functionality in Xstore
+ * BZ28665              141218    [BZ27339] The Club Cards box is no longer expanded in the Accounts tab under the Customer Detail screen. 
+ *===================================================================
+ */
+-->
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+    
+  <Form name="CUSTOMER_MAINTENANCE" type="MULTI_PURPOSE_VIEW" formLayoutRef="TOP_TO_BOTTOM_TRANSPARENT">
+    <Header viewAction="CANCEL_EXIT_TOUCH" editAction="ABORT_CHANGES_TOUCH">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="cawCustomerMaintHeader" verticalAlignment="Center" padding="0, 0, 0, 10"/>
+    </Header>
+    
+    <Page name="custMaintenanceDashboard" text="_formCustomerDashboardTab" displayOrder="5">
+      <Panel startX="0" width="15" startY="0" height="35" fieldLayoutRef="customerInfoImageLayout" />
+      <Panel startX="15" width="35" startY="0" height="15" fieldLayoutRef="customerBadgeLayout" padding="10, 10, 10, 10" />
+      <Panel startX="15" width="35" startY="15" height="35" fieldLayoutRef="custDashboradCustInfo" padding="0, 2, 2, 0" />
+      <Panel startX="50" width="50" startY="0" height="50" fieldLayoutRef="custWishListDashboard" padding="0, 0, 2, 2" />
+      <Panel startX="0" width="50" startY="50" height="50" fieldLayoutRef="custHistoryStatTabLayout" padding="2, 2, 0, 0" />
+      <Panel startX="50" width="50" startY="50" height="50" fieldLayoutRef="custHistoryGraphTabLayout" padding="2, 0, 0, 2" />
+      
+      <ActionGroups view="CUST_INFO_VIEW_ACTIONS" edit="CUST_INFO_EDIT_EXT_ACTIONS" />
+    </Page>
+    
+    <Page name="CustContactInformation" text="_formCustomerDataTab" displayOrder="10">
+      <Panel startX="0" width="15" startY="0" height="35" fieldLayoutRef="customerInfoImageLayout" />
+      <Panel startX="15" width="85" startY="5" height="8" fieldLayoutRef="customerNameLayout" /> 
+      <Panel startX="15" width="85" startY="13" height="32" fieldLayoutRef="customerAddressInformationLayout" />
+      <Panel startX="0" width="100" startY="45" height="55" fieldLayoutRef="custContactInformationLayout" />
+      
+      <ActionGroups view="CUST_INFO_VIEW_ACTIONS" edit="CUST_INFO_EDIT_EXT_WITH_ADDRESS_LOOKUP_ACTIONS" />
+    </Page>
+    
+    <Page name="CustomerDetail" text="_formCustomerDetailTab" conditionRef="viewEditCustGroupsAccCheck" displayOrder="20">
+      <Panel startX="0" width="50" startY="0" height="70" fieldLayoutRef="customerGroupLayout" padding="0, 4, 4, 0" />
+      <Panel startX="50" width="50" startY="0" height="35" fieldLayoutRef="customerAttributesLayout" padding="0, 0, 4, 4" />
+      <Panel startX="50" width="50" startY="35" height="35" fieldLayoutRef="customerSegmentsLayout" padding="4, 0, 4, 4" />
+      <Panel startX="0" width="100" startY="70" height="30" fieldLayoutRef="taxExemptionListLayout" padding="4, 0, 0, 0" />
+      
+      <ActionGroups view="CUST_INFO_VIEW_ACTIONS" edit="CUST_INFO_EDIT_ACTIONS" />
+    </Page>
+    
+    <Page name="CustomerHistory" text="_customerHistoryTabText" displayOrder="30">
+      <Panel startX="0" width="68" startY="0" height="100" fieldLayoutRef="custPurchHistListLayout" />
+      <Panel startX="70" width="30" startY="0" height="65" fieldLayoutRef="custPurchHistItemImage" />
+      <Panel startX="70" width="30" startY="67" height="33" fieldLayoutRef="custPurchHistItemInfo" />
+      
+      <ActionGroups view="CUST_HISTORY_VIEW_ACTIONS" edit="CUST_HISTORY_EDIT_ACTIONS" />
+    </Page>
+    
+    <Page name="CustomerAccount" text="_customerAccountTabText" displayOrder="40">
+      <!-- Begin BZ28665-->
+      <Panel startX="0" width="100" startY="0" height="34" fieldLayoutRef="custLoyaltyCardSummaryLayout" padding="0, 0, 4, 0" />
+      <Panel startX="0" width="100" startY="34" height="33" fieldLayoutRef="custLoyaltyAwardsLayout" padding="4, 0, 4, 0" />
+      <Panel startX="0" width="100" startY="66" height="33" fieldLayoutRef="custAccountHistoryLayout" padding="4, 0, 0, 0" />
+      <!-- End BZ28665-->
+      <ActionGroups view="CUSTOMER_ACCOUNT_VIEW_ACTIONS" edit="CUSTOMER_ACCOUNT_EDIT_ACTIONS" />
+    </Page>
+    
+    <Page name="Tasks" text="_customerTaskDetails" displayOrder="50">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="custTaskLayout" />
+      
+      <ActionGroups view="TASKS_VIEW_ACTIONS" edit="CUST_INFO_EDIT_ACTIONS" />
+    </Page>
+    
+    <Page name="CustomerComments" text="_customerCommentsTabText" displayOrder="60">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="custCommentsLayout" />
+      
+      <ActionGroups view="CUSTOMER_COMMENTS_VIEW_ACTIONS" edit="CUST_INFO_EDIT_ACTIONS" />
+    </Page>
+    
+    <Page name="CustomerAddress" text="_customerAddressesTabText" conditionRef="multipleAddressCheck" displayOrder="70">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="custAddressListLayout" />
+      
+      <ActionGroups view="CUST_INFO_VIEW_ACTIONS" edit="CUSTOMER_ADDRESSES_EDIT_ACTIONS" />
+    </Page>
+    
+    <Page name="HouseAccout" text="_customerHouseAccountTabText" conditionRef="customerHasHouseAcct" displayOrder="80">
+      <Panel startX="0" width="100" startY="0" height="30" fieldLayoutRef="custHouseAcctDetailLayout" />
+      <Panel startX="0" width="100" startY="30" height="70" fieldLayoutRef="custHouseAcctLists" />
+      
+      <ActionGroups view="HOUSE_ACCOUNT_VIEW_ACTIONS" edit="HOUSE_ACCOUNT_EDIT_ACTIONS" />
+    </Page>
+    
+    <Page name="CustomerWishList" text="_customerWishListTabText" conditionRef="customerWishListEnabledRule" displayOrder="90">
+      <Panel startX="0" width="68" startY="0" height="100" fieldLayoutRef="custWishList" />
+      <Panel startX="70" width="30" startY="0" height="65" fieldLayoutRef="custWishListItemImage" />
+      <Panel startX="70" width="30" startY="67" height="33" fieldLayoutRef="custWishListItemInfo" />
+      
+      <ActionGroups view="CUSTOMER_WISH_LIST_VIEW_ACTIONS" edit="CUSTOMER_WISH_LIST_EDIT_ACTIONS" />
+    </Page>
+    
+    <ActionGroup name="CUST_HISTORY_VIEW_ACTIONS">
+      <Action ref="CANCEL_EXIT" />
+      <Action ref="CUSTOMER::ADD_TO_TRANSACTION" />
+      <Action dataKey="EDIT" text="_editCustomer" keyStroke="F3" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+        <VisibilityRule class="caw.pos.address.search.CawQASEditVisibilityRule"/><!-- BZ26727 -->
+      </Action>
+      <Action ref="CUSTOMER::ADDITIONAL_OPTIONS" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+      <!-- <Action ref="ITEM::VIEW_SUMMARY" /> --> <!-- BZ23666 -->
+    </ActionGroup>
+    
+    <ActionGroup name="CUST_HISTORY_EDIT_ACTIONS">
+      <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ACCEPT_SAVE" >
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+      <!-- <Action ref="ITEM::VIEW_SUMMARY" /> --> <!-- BZ23666 -->
+    </ActionGroup>
+    
+    <ActionGroup name="CUSTOMER_WISH_LIST_EDIT_ACTIONS">
+      <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+      <Action chainKey="PRINT_WISH_LIST_ITEM" chainType="STACK" text="_customerPrintItemAction" keyStroke="F9">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.WishListItemButtonsVisibilityRule" />
+      </Action>
+      <!-- <Action ref="ITEM::VIEW_SUMMARY" /> --> <!-- BZ23666 -->
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUSTOMER_WISH_LIST_VIEW_ACTIONS">
+      <Action ref="CANCEL_EXIT" />
+      <Action ref="CUSTOMER::ADD_TO_TRANSACTION" />
+      <Action dataKey="EDIT" text="_editCustomer" keyStroke="F3" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+        <VisibilityRule class="caw.pos.address.search.CawQASEditVisibilityRule"/><!-- BZ26727 -->
+      </Action>
+      <Action ref="CUSTOMER::ADDITIONAL_OPTIONS" />
+      <Action ref="CUSTOMER::ADD_WISH_LIST_ITEM" />
+      <Action ref="CUSTOMER::DELETE_WISH_LIST_ITEM" />
+      <Action ref="CUSTOMER::PURCHASE_WISH_LIST_ITEM" />
+      <Action ref="ORDER::ORDER_WISH_LIST_ITEM" />
+      <Action ref="CUSTOMER::PRINT_WISH_LIST_ITEMS" />
+      <!-- <Action ref="ITEM::VIEW_SUMMARY" /> --> <!-- BZ23666 -->
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!-- Begin BZ23724 -->
+    <ActionGroup name="HOUSE_ACCOUNT_VIEW_ACTIONS">
+      <Action ref="CANCEL_EXIT" />
+      <Action dataKey="EDIT_STATUS" text="_custMaintHouseAccountEditStatus" keyStroke="F2">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="HOUSE_ACCOUNT_CHANGE_CREDITLIMIT" text="_custMaintEditCreditLimitAction" keyStroke="F3" >
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="ADD_BUYER" text="_custMaintHouseAccountNewBuyer" keyStroke="F4">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="EDIT_BUYER" text="_custMaintHouseAccountEditBuyer" keyStroke="F5">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="DEACTIVATE_BUYER" text="_custMaintHouseAccountDeactivateBuyer" keyStroke="F6">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="SET_PRIMARY_BUYER" text="_custMaintHouseAccountSetPrimaryBuyer" keyStroke="F7">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="HOUSE_ACCOUNT_EDIT_ACTIONS">
+      <Action dataKey="ABORT_CHANGES" text="_cancel" keyStroke="Escape" />
+      <Action dataKey="EDIT_STATUS" text="_custMaintHouseAccountEditStatus" keyStroke="F2">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="HOUSE_ACCOUNT_CHANGE_CREDITLIMIT" text="_custMaintEditCreditLimitAction" keyStroke="F3" >
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="ADD_BUYER" text="_custMaintHouseAccountNewBuyer" keyStroke="F4">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="EDIT_BUYER" text="_custMaintHouseAccountEditBuyer" keyStroke="F5">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="DEACTIVATE_BUYER" text="_custMaintHouseAccountDeactivateBuyer" keyStroke="F6">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action dataKey="SET_PRIMARY_BUYER" text="_custMaintHouseAccountSetPrimaryBuyer" keyStroke="F7">
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableHouseAccountButton" />
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!-- End BZ23724 --> 
+    <ActionGroup name="CUSTOMER_ADDRESSES_EDIT_ACTIONS">
+      <Action dataKey="ABORT_CHANGES" text="_custMaintUndoChanges" keyStroke="Escape" />
+      <Action chainKey="ADD_CUSTOMER_ADDRESS" chainType="STACK" text="_custMaintAddAddressAction" keyStroke="F3" />
+      <Action ref="CUSTOMER::EDIT_CUSTOMER_ADDRESS" />
+      <Action ref="CUSTOMER::CHANGE_PRIMARY_ADDRESS" />
+      <Action ref="CUSTOMER::DELETE_CUSTOMER_ADDRESS" />
+      <Action ref="ACCEPT_SAVE" >
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUSTOMER_COMMENTS_VIEW_ACTIONS">
+      <Action ref="CANCEL_EXIT" />
+      <Action ref="CUSTOMER::ADD_TO_TRANSACTION" />
+      <Action dataKey="EDIT" text="_editCustomer" keyStroke="F3" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+        <VisibilityRule class="caw.pos.address.search.CawQASEditVisibilityRule"/><!-- BZ26727 -->
+      </Action>
+      <Action ref="CUSTOMER::ADDITIONAL_OPTIONS" />
+      <Action chainKey="ADD_CUSTOMER_COMMENT" text="_timecardMenu5" keyStroke="F5" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+     
+    <ActionGroup name="TASKS_VIEW_ACTIONS">
+      <Action ref="CANCEL_EXIT" />
+      <Action ref="CUSTOMER::ADD_TO_TRANSACTION" />
+      <Action dataKey="EDIT" text="_editCustomer" keyStroke="F3" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+        <VisibilityRule class="caw.pos.address.search.CawQASEditVisibilityRule"/><!-- BZ26727 -->
+      </Action>
+      <Action ref="CUSTOMER::ADDITIONAL_OPTIONS" />
+      <Action chainKey="NEW_ASSOCIATE_TASK_CUST" text="_assocTaskAddAction" chainType="STACK" />
+      <Action ref="CUSTOMER::EDIT_TASK" />
+      <Action ref="CUSTOMER::ADD_TASK_NOTE" />
+      <Action ref="CUSTOMER::VIEW_TASK_NOTES" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUSTOMER_OPTIONS">
+      <Action chainKey="CREATE_CUSTOMER" chainType="START" text="_createCustomerKey" privilege="CREATE_CUSTOMER" />
+      <Action chainKey="PRINT_CUSTOMER" chainType="STACK" text="_printCustomer" privilege="PRINT_CUSTOMER" />
+      <Action chainKey="CUST_MAINT_TAX_EXEMPTIONS" chainType="STACK" text="_customerTaxExemptionsAction" />
+      <Action chainKey="CUST_MAINT_HOUSE_ACCOUNT_NEW" chainType="STACK" text="_custMaintHouseAccountCreateNew">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CorporateHouseAccountVisibilityRule" />
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerHasNoHouseAccountVisibilityRule" />
+        <VisibilityRule class="caw.pos.shared.visibilityrules.CawDisableCreateNewHouseAccountVisibilityRule" /><!-- BZ26289 -->
+      </Action>
+    </ActionGroup>
+    
+    <ActionGroup name="CUST_INFO_VIEW_ACTIONS">
+      <Action ref="CANCEL_EXIT" />
+      <Action ref="CUSTOMER::ADD_TO_TRANSACTION" />
+      <Action dataKey="EDIT" text="_editCustomer" keyStroke="F3" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+        <VisibilityRule class="caw.pos.address.search.CawQASEditVisibilityRule"/><!-- BZ26727 -->
+      </Action>
+      <Action ref="CUSTOMER::ADDITIONAL_OPTIONS" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUST_INFO_EDIT_ACTIONS">
+      <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ACCEPT_SAVE" >
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUST_INFO_EDIT_WITH_ADDRESS_LOOKUP_ACTIONS">
+      <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+      <!-- <Action ref="ADDRESS_FIND"/> --> <!-- BZ25358 --><!-- BZ26575 -->
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ACCEPT_SAVE" >
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUST_INFO_EDIT_EXT_ACTIONS">
+      <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ACCEPT_SAVE" >
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUST_INFO_EDIT_EXT_WITH_ADDRESS_LOOKUP_ACTIONS">
+      <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+      <!-- <Action ref="ADDRESS_FIND" chainType="STACK"/> --><!-- BZ26575 -->
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ACCEPT_SAVE" >
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUST_COMMENT_VIEW_ACTIONS">
+        <Action ref="CANCEL_EXIT" />
+        <Action ref="CUSTOMER::ADD_TO_TRANSACTION" />
+        <Action dataKey="EDIT" text="_editCustomer" keyStroke="F3" privilege="EDIT_CUSTOMER">
+          <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+          <VisibilityRule class="caw.pos.address.search.CawQASEditVisibilityRule"/><!-- BZ26727 -->
+        </Action>
+        <Action ref="CUSTOMER::ADDITIONAL_OPTIONS" />
+        <Action dataKey="ADD_COMMENT" text="_timecardMenu5" keyStroke="F5">
+          <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+        </Action>
+        <Action ref="PREVIOUS_TAB" />
+        <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUST_COMMENT_EDIT_ACTIONS">
+        <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+        <Action ref="CHANGE_COUNTRY" />
+        <Action ref="ACCEPT_SAVE" >
+      </Action>
+        <Action ref="PREVIOUS_TAB" />
+        <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <!-- Begin BZ24188 -->
+    <!-- Please ref to config.jar/loyalty.forms/CUSTOMER_MAINTENANCE.xml -->
+    <ActionGroup name="CUSTOMER_ACCOUNT_VIEW_ACTIONS">
+      <Action ref="CANCEL_EXIT" />
+      <Action dataKey="CONTINUE" text="_addCustomerKey">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AddCustomerToTranVisibilityRule" />
+      </Action>
+      <Action dataKey="EDIT" text="_editCustomer" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+        <VisibilityRule class="caw.pos.address.search.CawQASEditVisibilityRule"/><!-- BZ26727 -->
+      </Action>
+      <Action formOptionsKey="CUSTOMER_OPTIONS" text="_customerOptionsAction" />
+      <Action ref="CUSTOMER::LOYALTY_CARD_HISTORY" keyStroke="F5" />
+      <!-- <Action dataKey="HISTORY_RECEIPT_PRINT" text="_loyaltyAccountHistoryBalanceReceipt" keyStroke="F6" /> -->
+      <Action chainKey="LOYALTY_HISTORY_PRINT" chainType="STACK" text="_loyaltyAccountHistoryPrint" keyStroke="F7" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUSTOMER_ACCOUNT_EDIT_ACTIONS">
+      <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+      <Action ref="ACCEPT_SAVE" >
+      </Action>
+      <Action ref="CUSTOMER::LOYALTY_CARD_HISTORY" keyStroke="F5" />
+      <!-- <Action dataKey="HISTORY_RECEIPT_PRINT" text="_loyaltyAccountHistoryBalanceReceipt" keyStroke="F6" /> -->
+      <Action dataKey="LOYALTY_HISTORY_PRINT" text="_loyaltyAccountHistoryPrint" keyStroke="F7" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!-- End BZ24188 -->
+  </Form>
+    
+</FormSet>

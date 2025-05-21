@@ -1,0 +1,427 @@
+##===================================================================
+## CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+## 
+## Use and distribution of this code is subject to applicable 
+## licenses and the permission of the code owner. This notice 
+## does not indicate the actual or intended publication of 
+## this source code.
+## 
+## Portions developed for Camping World by BTM Global Consulting
+## LLC and are the property of Camping World.
+## 
+## ===== BTM Modification ===========================================
+## Scope/Bug ID#          ddMMyy             Description
+## BZ22793                090817             Remove config.path of Relate and Locate
+## BZ23052                120917             Implement Advanced Prompting
+## BZ23232                190917             Define Xstore Timeout
+## BZ23478                200917             [Prompting] Update Catalyst = 1 request
+## BZ23479                220917             Add new parameter (EBS_ENABLE) to ON/OFF call to EBS Web Service
+## BZ23596                270917             'Make offer' request doesn't send to EBS when selecting 'NO' on Pre-screen
+## BZ23637                280917             [Prompting Engine] - Changes required to keep the customer from being prompted multiple times for GSC membership
+## BZ23372                280917             Printing a special receipt to attach to returned items to aid disposition/restocking
+## BZ23707                031017             [Payment]Eigen Feedback: Remove D7 field on Financial Transaction Request
+## BZ23372                101017             [DEV] Printing a special receipt to attach to 
+##                                           returned items to aid disposition/restocking
+## BZ23890                101017             [GSVS] Apply discount $10 when apply GSVS for the current transaction.
+## BZ23976                121017             Need to send the ADS result to CareTaker after the credit application completes
+## BZ24029                161017             Please Load Sigcap Images on MX925
+## BZ24158                231017             Recall the code changed for loading the image to pinpad as the images are loaded from the Eigen portal
+## BZ23958                251017             Xstore needs to prompt for membership # when customer joins 
+## BZ24582                221117             Need to specify the unique terminal Station ID in the MiraServ requests
+## BZ24307                241117            [Xstore] Xstore displays "Please Wait" for about 12 seconds before displaying prompt to enter or swipe gift card
+## BZ23405                160118            [QAS] There are problem when integrate Xstore with QAS service of Camping World 
+## BZ25270                160118            [PROD] Store 639 Problem with State Journal Sequence Numbers Error
+## BZ25358                130318            Enhancements to QAS Integration with POS
+## BZ25640                052518            New Requirement - Used Firearm System Process Redesign
+## BZ26410                300518            [Technical] Move QAS URL from system.properties to ServiceHandlers.xml
+## BZ25435                160718            New Requirement - Xstore changes to call the CardServices API instead of the Prompting Engine
+## BZ26207                190718            New Requirement - Enable Work Order Functionality
+## BZ26629                300718            [New Requirement] Add a prompt to capture discount code when the Retail Coupon discount reason is selected
+## BZ27010                080818            [PROD][1.5.0]Returned Merchandise Receipt is printing incorrectly for all reason codes
+## BZ27028                021018            [New Requirement] Move the configuration for Return Merchandise Receipt into the table
+## BZ27344                301018            Pin Pad Performance is slow when item price is updated by a deal/promo or a manual price adjustment
+## BZ28265                261118            New Requirement - Migrate Prompting Engine Catalyst calls to the new PE Services for Xstore 2.1
+## BZ28247                181218            [New Requirement] Move Xstore integration to Card Service version 2
+## BZ28012                180219            [New Requirement] Reprocess the ApplicationStatus calls if first attempt is unsuccessful
+## BZ30293                220419            [New Requirement] Update Test EBS URLs in Xstore to the new Neuron instances
+## BZ30922                210619            [New Requirement] Price Check and Inventory Lookup
+## BZ31558                080719            [INTERNAL] RUN SQL was disabled by default in 16.0.5 for dataloader
+## BZ33595                151119            Scanner/Warranty prompt screen - scanner provides 1 successful beep but desire is to have triple error beep
+## BZ28036                050220            [New Requirement] Enable the base Functionality available for Customer Purchase History
+## BZ36625                100720            [New Requirement] Customer Information Pinpad Verification
+## BZ37177                150720            [Task] Enable Order Function in Xstore
+## BZ37023                120820            [Task] Modify Xstore to call ShippingAPI to calculate shipping rate for the Delivery Order
+## BZ37396                051020            Tax value calculation issue in Order transactions
+## BZ42889                110521            [Prod] Order cancellation with pricing turned on, tries to force a return with a refund. The refund should be happening in Oracle.
+## BZ44528                130821            Electric World & Mobile POS Implementation (Phase 1)
+## BZ44917                110921            [New Requirement] IDS Payment Integration with Xstore
+## BZ42307                200921            [Requirement] Add ability to reject at the item level for BOPIS
+## BZ45995                141021            [New requirement] Email capture when good sam membership is sold
+## BZ42019				  171121			Replace QAS with EAVS2
+## BZ48690                160222            [Task] - Xstore will make a call to New Service instead of existing Neuron API to get search result.
+##===================================================================
+
+#!include root/system.properties
+
+dtv.CustomerId=CAW
+dtv.CustomerId.salt=CAW
+dtv.keystore.password=
+
+#--------------------------------------------------------------------------------------------
+# SYSTEM IDENTITY
+#--------------------------------------------------------------------------------------------
+dtv.location.organizationId=1000
+dtv.location.storeNumber=110
+dtv.location.terminalNumber=1
+
+# dtv.update.config.path.from.Xcenter, if the name is unclear, is a flag that controls whether or not Xstore
+# will attempt to contact Xcenter to obtain information about the config path to use.
+dtv.update.configpath.from.Xcenter=false
+
+#--------------------------------------------------------------------------------------------
+# CONFIGURATION PATHS
+#--------------------------------------------------------------------------------------------
+# Paths are prioritized in descending order as follows:
+# (1)  Base Features                          dtv.config.path.base
+# (2)  Platform Identification                [ 10-99 ]
+# (3)  Application Identification             [100-199]
+# (5)  Service Provider Identification        [300-399]
+# (6)  Profile Identification                 [400-499]
+# (8)  Local Customization                    [ 1000  ]
+# (10) Xcenter Admin Configurator             [ 9500  ]
+
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+# (1) Base Features
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+#********************************
+# -- CRM
+#********************************
+#   Customer Only OR
+#   Customer + Registry OR
+#   Customer + Loyalty OR
+#   Customer + Loyalty + Awards OR
+#   Customer + Loyalty + Awards + Registry
+#dtv.base.config.path=:cust
+#dtv.base.config.path=:cust:cust/registry
+dtv.base.config.path=:cust:cust/loyalty
+#dtv.base.config.path=:cust:cust/loyalty:cust/loyalty/award
+#dtv.base.config.path=:cust:cust/loyalty:cust/loyalty/award:cust/registry
+
+#********************************
+# -- X-channel Returns
+#********************************
+# Serenade-sourced Returns
+# dtv.config.path.-500=:crosschannelreturn
+
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+# (2) Platform Identification                [ 10-99 ]
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+#********************************
+# -- Database
+#********************************
+# -- Oracle --
+dtv.datasource.connectionfactory=oracle.jdbc.pool.OracleDataSource
+# -- MS SQL Server --
+#dtv.datasource.connectionfactory=com.microsoft.sqlserver.jdbc.SQLServerDataSource
+#dtv.config.path.-1000=:dtv/sql/mssql
+
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+# (5) Service Provider Identification        [300-399]
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+
+#********************************
+# -- CRM
+#********************************
+#Begin BZ22793
+# -- Relate --
+dtv.config.path.-400=
+dtv.relate.Auth=
+
+#********************************
+# -- Order Management
+#********************************
+# -- Locate --
+#Begin BZ37177
+dtv.config.path.-390=:order:locate
+#End BZ37177
+dtv.locate.XstoreSystemCode=XSTORE
+#End BZ22793
+
+#********************************
+# -- Authorization Processors
+#********************************
+# -- Fdms --
+#dtv.config.path.-350=:authprocessor/fdms
+# -- Fdms with TransArmor encryption --
+#dtv.config.path.-350=:authprocessor/fdms:authprocessor/fdms/transarmor
+# -- Merchant Warehouse --
+#dtv.config.path.-350=:authprocessor/merchantwarehouse
+# -- MerchantLink --
+#dtv.config.path.-350=:authprocessor/merchantlink
+# -- Paymentech --
+#dtv.config.path.-350=:authprocessor/paymentech
+#dtv.config.path.-350=:authprocessor/paymentech:authprocessor/paymentech/terminalcap
+# -- Tender Retail --
+#dtv.config.path.-350=:authprocessor/tenderretail
+# -- AJB --
+#dtv.config.path.-350=:authprocessor/ajb
+# -- EFT LINK --
+#dtv.config.path.-350=:authprocessor/eftlink
+
+# -- PayPal --
+#dtv.config.path.-340=:paypal:authprocessor/paypal:version1/paypal
+#dtv.config.path.-340=:paypal:version1/paypal
+
+#********************************
+# -- Other
+#********************************
+# -- Opera (Guest Services) --
+#dtv.config.path.-330=:opera:version1/provider/opera
+
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+# (6) Profile Identification                 [400-499]
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+#********************************
+# -- Devices
+#********************************
+# -- Handheld --
+#dtv.config.path.-330=:hh:version1/profile/device/hh
+
+#dtv.config.path.-329=:cust/loyalty/hh
+
+#dtv.pos.ui.overrideScreenSize.enabled=true
+#dtv.pos.ui.overrideScreenSize.width=240
+#dtv.pos.ui.overrideScreenSize.height=320
+#dtv.pos.ui.useFrame=true
+
+#********************************
+# -- Localized Settings
+#********************************
+
+#********************************
+# -- Store Stereotypes
+#********************************
+# Enable for Disaster Recovery testing using StoreBackup replication
+#dtv.config.path.-320=:version1/profile/store/disaster
+
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+# (8) Local Customization                    [ 1000  ]
+#----------------------------------------------------------------
+#----------------------------------------------------------------
+# Local overrides
+#
+dtv.config.path.1000=:local
+
+#--------------------------------------------------------------------------------------------
+# Miscellaneous
+#--------------------------------------------------------------------------------------------
+dtv.config.path.1001=:version1/patch
+
+twitter4j.debug=true
+twitter4j.http.prettyDebug=true
+
+# Uncomment the following line to change the default barcode format
+# Reference the dtv.hardware.barcode.TranBarcodeFormatVX files, where X matches
+# the version number specified below.
+# Use version 3 to allow for up to 5 characters for retail store ID 
+dtv.hardware.barcode.BarcodeTranslator.version=3
+
+# Use the flat file to drive address mappings.  Specify the location of address data:
+dtv.util.address.DataSource=dtv.util.address.datasource.FileAddressDataSource
+dtv.util.address.FileLocation=res/address/
+# Use the database to drive address mappings instead:
+#dtv.util.address.DataSource=dtv.xst.address.DtxAddressDataSource
+
+#specify the store calender strategy to use
+dtv.pos.storecalendar.StoreCalendar=dtv.pos.storecalendar.BasicStoreCalendar
+#dtv.pos.storecalendar.StoreCalendar=dtv.pos.storecalendar.SystemClockStoreCalendar
+#dtv.pos.storecalendar.StoreCalendar=dtv.pos.storecalendar.FourFiveFourCalendar
+#dtv.pos.storecalendar.StoreCalendar=dtv.pos.storecalendar.fiscal.FiscalCalendar
+
+# Customer Update API
+# BEGIN BZ30293: updated URL
+caw.pos.customer.template.url=https://ky-cw-esbstg/CAMPINGWORLD/customer/template
+caw.pos.customer.search.url=https://ky-cw-esbstg/CAMPINGWORLD/customer/search
+caw.pos.customer.lookup.url=https://ky-cw-esbstg/CAMPINGWORLD/customer?accountNumber={accountNumber}&locationCode={locationCode}
+caw.pos.customer.upsert.url=https://ky-cw-esbstg/CAMPINGWORLD/customer
+caw.pos.customer.neuron.user=XSTORE-DEV
+caw.pos.customer.neuron.key=yQBe53ng(K79j4[n
+# END BZ30293
+
+###Promotion
+# BEGIN BZ30293: updated URL
+caw.pos.promotion.api.url=https://ky-cw-esbstg/CAMPINGWORLD/promotion
+caw.pos.promotion.reserve.url=https://ky-cw-esbstg/CAMPINGWORLD/promotion/reserve
+caw.pos.promotion.reset.url=https://ky-cw-esbstg/CAMPINGWORLD/promotion/reset
+# END BZ30293
+
+## Begin BZ23052/BZ28265/BZ30293: updated URL
+caw.pos.catalyst.request.url=https://ky-cw-esbstg/CAMPINGWORLD/pe/catalyst
+caw.pos.catalyst.results.url=https://ky-cw-esbstg/CAMPINGWORLD/pe/results
+## End BZ23052/BZ28265/BZ30293
+
+## QAS/AVS
+dtv.config.path.-425=:qas
+dtv.config.path.-450=:avs
+oracle.retail.xstore.avs.password=
+
+## Xstore Timeout (milliseconds)
+## BZ23707: leave blank to don't send D7 field to Eigen
+caw.eigen.timeout=
+
+## Begin BZ23478
+olps.app.username=XSTORE-DEV
+olps.app.password=vjeB5MsgHp2ZrNXC
+## End BZ23478
+
+## Begin BZ23479
+EBS_ENABLE=true
+## End BZ23479
+
+## Begin BZ23637, BZ69515
+caw.good.sam.club=CLUB
+caw.customer.group.type.retl.old.name=retail
+caw.customer.group.type.retl.new.name=RETL
+caw.customer.group.type.club.old.name=club
+caw.customer.group.type.club.new.name=CLUB
+caw.customer.group.type.crew.old.name=crew
+caw.customer.group.type.crew.new.name=CREW
+caw.customer.group.type.whsl.old.name=whsl
+caw.customer.group.type.whsl.new.name=WHSL
+## End BZ23637, BZ69515
+
+## Begin BZ23958/BZ30293: updated URL
+caw.pos.membership.validate.request.url=https://ky-cw-esbstg/CAMPINGWORLD/membership/validate
+## End BZ23958/BZ30293
+
+## Begin BZ24582
+caw.pos.miraserv.config=/opt/Eigen/miraserv.ini
+## End BZ24582
+
+## Start BZ24307
+dtv.hardware.IHardwareMgr = caw.hardware.service.CawHardwareMgr
+## End BZ24307
+
+
+#Begin BZ25270
+dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck.forceRepair=true
+#End BZ25270
+
+# -- Change brand
+# -- Valid values below:
+# -- CW / GO / OV
+# -- CW: Camping World
+# -- GO: Gander Outdoors
+# -- OV: Overton's
+dtv.config.path.1111=\:version1/brand/GO
+dtv.config.path=\:version1/brand/GO\:version1/patch
+
+# Begin BZ25358 used in business logic
+caw.pos.address.picklist.entry.limit=100
+# End BZ25358
+
+# Begin BZ25640/BZ30293: updated URL
+caw.pos.ufa.search.url=https://ky-cw-esbstg/CAMPINGWORLD/item/ufa
+# End BZ25640/BZ30293
+
+# Begin BZ25435/BZ30293: updated URL
+# BEGIN BZ28257
+caw.pos.card.services.submit.request=https://ky-cw-esbstg/CAMPINGWORLD/card/olps/submit
+caw.pos.card.services.status.request=https://ky-cw-esbstg/CAMPINGWORLD/card/olps/status
+## Begin BZ23596 
+caw.pos.madeoffer.request.url=https://ky-cw-esbstg/CAMPINGWORLD/card/mo
+## End BZ23596
+## Begin BZ23976
+caw.pos.caretaker.request.url=https://ky-cw-esbstg/CAMPINGWORLD/card/status
+## End BZ23976
+# END BZ28247
+# End BZ25435/BZ30293
+
+# BZ26207 Begin Work Order Session/BZ30293: updated URL
+caw.pos.work.order.search.request.url = https://ky-cw-esbstg/CAMPINGWORLD/wo/search
+caw.pos.work.order.lookup.request.url = https://ky-cw-esbstg/CAMPINGWORLD/wo/lookup
+caw.pos.work.order.update.status.request.url = https://ky-cw-esbstg/CAMPINGWORLD/wo/status
+# BZ26207 End Work Order Session/BZ30293
+
+# Begin BZ27344
+caw.pos.scheduled.send.request.to.pinpad.initial.delay=250
+caw.pos.scheduled.send.request.to.pinpad.fixed.delay=120
+# End BZ27344
+# BEGIN BZ28012
+CAW_ESB_QUEUE_PATH=esbqueue
+# END BZ28012
+#BEGIN BZ30922
+caw.pos.inventory.search.request.url = https://ky-cw-esbstg/CAMPINGWORLD/item/inventory
+#END BZ30922
+#BEGIN BZ31558
+dtv.dataloader.enableRunSql=true
+#END BZ31558
+
+#BEGIN BZ33595
+caw.beep.value=17
+#END BZ33595
+
+#BEGIN BZ28036
+caw.pos.customer.purchase.history.url = https://ky-cw-esbstg/CAMPINGWORLD/order/history
+caw.pos.customer.purchase.history.detail.url = https://ky-cw-esbstg/CAMPINGWORLD/order/detail
+#END BZ28036
+
+#BEGIN 36625
+caw.customer.verification.timeout=30
+#END BZ36625
+# BEGIN BZ37023
+caw.pos.shippingrate.request.url=https://ky-cw-esbstg/CAMPINGWORLD/shipping/rates
+# END BZ37023
+
+# Begin BZ37396
+caw.pos.tax.request.url=https://ky-cw-esbstg/CAMPINGWORLD/tax/calculate
+# End BZ37396
+## BEGIN BZ42889
+CAW_POS_OMNI_REFUND=OMNI_REFUND:YES
+## END BZ42889
+
+##BEGIN BZ44528: Phase 1
+caw.pos.wondersign.cart.search.url = https://ky-cw-esbstg/CAMPINGWORLD/carts
+caw.pos.wondersign.enable=true
+caw.pos.wondersign.cart.search.page.size=5
+caw.pos.wondersign.skip.product.availability.api= true
+caw.pos.wondersign.skip.order.submit.api= true
+##END BZ44528: Phase 1
+
+## BEGIN BZ44917
+caw.pos.rv.payment.request.url=https://ky-cw-esbstg/CAMPINGWORLD/wo/payments
+## END BZ44917
+
+#BEGIN BZ42307
+caw.locate.allow.split.order=true
+#END BZ42307
+
+## BEGIN BZ45995
+caw.pos.email.validation.url=https://ky-cw-esbstg/CAMPINGWORLD/customer/isEmailValid
+## END BZ45995
+
+## BEGIN BZ42019
+caw.pos.mailing.validation.url=https://ky-cw-esbstg/CAMPINGWORLD/customer/address
+## END BZ42019
+# BEGIN BZ48690: new service
+caw.pos.cheetah.token.url = https://pos.dev.backends.cwgscloud.local/oauth2/token
+caw.pos.cheetah.client.id = oBXkv6GzpUEshPpeqlvmUD4SQdRR7gvs
+caw.pos.cheetah.client.secret = 6sRqujKsfNME5WaOJJ6HlxaQJP0lTMWA
+caw.pos.cheetah.grant.type = client_credentials
+caw.pos.cheetah.contingency.time = 60
+
+caw.pos.customer.search.url.token = https://pos.dev.backends.cwgscloud.local/pos/v1/customers
+caw.pos.customer.lookup.url.token = https://pos.dev.backends.cwgscloud.local/pos/v1/customers/{accountNumber}/{locationCode}?loyaltySearch=true
+caw.pos.cheetah.promorewards.api.url.token = https://pos.dev.backends.cwgscloud.local/pos/v1/members/{memberId}/promorewards
+caw.pos.cheetah.reward.api.url.token = https://pos.dev.backends.cwgscloud.local/pos/v1/members/{memberId}/reward
+caw.pos.cheetah.earnings.api.url.token = https://pos.dev.backends.cwgscloud.local/pos/v1/members/{memberId}/submitOrder
+# END BZ48690

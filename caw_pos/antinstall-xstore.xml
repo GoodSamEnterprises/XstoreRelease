@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- UI for the InstallX Xstore POS Installer -->
+<installer xmlns="http://oracle.com/retail/xstore/antinstall" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://oracle.com/retail/xstore/antinstall ../../installer/doc/antinstall-xst.xsd" 
+  ui="swing,text,swing-auto,text-auto" loadDefaults="true" verbose="true" debug="false"
+  lookAndFeel="greymetal" name="InstallX Xstore POS Installer"
+  windowIcon="/icons/app-icon-16.png|/icons/app-icon-32.png|/icons/app-icon-64.png|/icons/app-icon-128.png"
+  defaultImageResource="/resources/xstore-banner.png" high="430:20" wide="520:220" minJavaVersion="1.7" version="1.0" finishButtonText="Install Xstore">
+
+  <page name="intro" type="input" displayText="Installing Xstore...">
+    <!-- Welcome page with instructions -->
+
+    <comment displayText="The following prompts will gather information needed to complete your Xstore installation." />
+    <comment displayText="Click the Next button on each prompt to continue." />
+
+  </page>
+  <page name="install-brand" type="input" displayText="Install Brand" target="apply-xstore">
+    <!-- Select install location -->
+    <comment displayText="Select the brands that will be used." />
+    <select property="install.brand" defaultValue="GO" displayText="Brand: ">
+      <option text="Gander Outdoor" value="GO" />
+      <option text="Camping World" value="CW" />
+      <option text="Overton's" value="OV" />
+    </select>
+  </page>
+  
+  <page name="install-directory" type="input" displayText="Install Location" target="apply-xstore">
+    <!-- Select install location -->
+
+    <directory property="installDir" defaultValue="/opt/xstore" defaultValueWin="${env.SystemDrive}\xstore"
+      displayText="Select an installation directory" create="true" />
+    <directory property="dbInstallDir" defaultValue="/opt/xstoredb" defaultValueWin="${env.SystemDrive}\xstoredb"
+      displayText="Select a database installation directory" create="true" />
+    <select property="localDbEnabled" defaultValue="true" displayText="Local database present?">
+      <option text="Yes" value="true" />
+      <option text="No" value="false" />
+      <option text="Replication Only" value="replonly" />
+    </select>
+    <select property="install.env" defaultValue="PROD" displayText="Environment">
+      <option text="Production (No test data)" value="PROD" />
+      <option text="Test (Includes test data)" value="TEST" />
+    </select>
+    <!-- <checkbox property="xstore.mobile" displayText="Install Xstore Mobile" defaultValue="false" /> -->
+    <select property="advanced.installation" defaultValue="none" displayText="Advanced installation option">
+      <option text="None" value="none" />
+      <option text="Grocery Lane" value="xfg" />
+      <option text="Xstore Mobile" value="mobile" />
+    </select>
+  </page>
+
+  <page name="location" type="input" displayText="Location Settings">
+    <!-- Enter location settings (org, store, register) -->
+
+    <comment displayText="These settings are used to customize the brand, store and register numbers for the POS." />
+    <comment displayText=" " />
+
+    <text property="orgId" defaultValue="1" displayText="Organization Id" />
+    <text property="rtlLocId" defaultValue="301" displayText="Store #" />
+    <text property="terminalId" defaultValue="1" displayText="Register #" />
+
+    <text property="countryId" defaultValue="US" displayText="Country Id" />
+    <text property="currencyId" defaultValue="USD" displayText="Currency Id" />
+    <text property="regionId" defaultValue="" displayText="Region Id" />
+  </page>
+
+  <page name="misc" type="input" displayText="Miscellaneous Settings">
+    <!-- Enter misc settings -->
+
+    <comment displayText="These settings are used to customize various store specific values for the POS." />
+    <comment displayText=" " />
+
+    <large-select property="payrollOt" defaultValue="WEEKLYOVER40" displayText="Payroll/OT Rule">
+      <option text="Weekly Over 40" value="WEEKLYOVER40" />
+      <option text="Daily Over 8" value="DAILYOVER8" />
+      <option text="Daily Over 12 DT" value="DAILY_OVER12_DT" />
+    </large-select>
+
+    <large-select property="sendSaleTax" defaultValue="DESTINATION" displayText="Send Sale Tax Type">
+      <option text="Destination Location" value="DESTINATION" />
+      <option text="Selling Location" value="SELLING" />
+      <option text="Destination Unless In-State" value="DEST_INSTATE" />
+    </large-select>
+
+    <text property="customerId.salt" defaultValue="" displayText="Salt" />
+
+    <text property="dataloader.FileEncoding" defaultValue="UTF-8" displayText="Dataloader File Encoding" />
+  </page>
+
+  <page name="xstore-mobile" type="input" displayText="Xstore Mobile Settings" ifProperty="${advanced.installation}==mobile">
+    <comment displayText="Enter system information for Xstore Mobile." />
+    <directory property="mobileInstallDir" defaultValue="/opt/xstore-mobile" defaultValueWin="${env.SystemDrive}\xstore-mobile"
+      displayText="Xstore Mobile install dir" create="true" />
+
+    <text property="mobile.path.config" defaultValue=":dtv/sql/mssql:version1:version1/patch" displayText="Configurations" />
+    <text property="handheldTerminalId" defaultValue="1" displayText="Handheld Server Register #" />
+    <text property="tabletTerminalId" defaultValue="1" displayText="Tablet Server Register #" />
+    <text property="mobileKeyAlias" defaultValue="" displayText="Server Key Alias" />
+    <text property="mobileKeystorePassword" defaultValue="" displayText="Server Keystore Password (OBF)" />
+    <checkbox property="mobileStartDisabled" displayText="Disable Mobile startup?" defaultValue="false" />
+    <checkbox property="tabletStartDisabled" displayText="Disable Tablet startup?" defaultValue="false" />
+    <text property="mobileRsaPrivateKeyFilePath" defaultValue="" displayText="RSA Private Key Path" />
+    <text property="mobileRsaPrivateKeyPassword" defaultValue="" displayText="RSA Private Key Password" />    
+  </page>
+
+  <page name="xfg" type="input" displayText="Xstore for Grocery Settings" ifProperty="${advanced.installation}==xfg"> 
+    <comment displayText="Enter system information for Xstore for Grocery." />
+    <comment displayText=" " />
+
+    <text property="regmodel" defaultValue="" displayText="Register Model" />
+    <text property="macroLibrary" defaultValue="" displayText="Velocity MacroLibrary" />
+  </page>
+
+  <page name="email-server" type="input" displayText="Email Server">
+    <!-- Enter misc settings -->
+
+    <comment displayText="These settings are used to customize the email server used by the POS." />
+    <comment displayText=" " />
+
+    <text property="email.host" defaultValue="localhost" displayText="Mail Server Host" />
+    <text property="email.port" defaultValue="25" displayText="Mail Server Port" />
+    <checkbox property="email.smtp.debug" displayText="SMTP Debug?" defaultValue="false" />
+    <comment displayText=" " />
+    <checkbox property="email.smtp.auth" displayText="SMTP Auth?" defaultValue="false" />
+    <text property="email.user" defaultValue="" displayText="Mail Server Username" />
+    <text property="email.password" defaultValue="" displayText="Mail Server Password" />
+    <text property="email.default.sender" defaultValue="Xstore" displayText="Mail Default Sender" />
+
+  </page>
+
+  <page name="configpath" type="input" displayText="Xstore Configuration Path">
+    <!-- Set config paths -->
+
+    <comment displayText="This path is used to determine the loading order of base and custom " />
+    <comment displayText="configurations and resources." />
+    <comment displayText=" " />
+
+    <text property="path.config" defaultValue=":dtv/sql/mssql:version1:version1/patch" displayText="Configurations" />
+  </page>
+  <page name="datasources" type="input" displayText="Data Sources">
+    <!-- Select data sources -->
+
+    <comment displayText="Select the data sources that will be used." />
+
+    <checkbox property="db.relate" displayText="Customer Engagement" defaultValue="false" />
+    <checkbox property="db.sim" displayText="SIM" defaultValue="false" />
+    <checkbox property="db.rxm" displayText="RXM" defaultValue="false" />
+    <checkbox property="db.avs" displayText="AVS" defaultValue="false" />
+    <checkbox property="db.locate" displayText="Order Broker" defaultValue="false" />
+    <checkbox property="db.xcenter" displayText="Xcenter" defaultValue="false" />
+    <checkbox property="db.storeprimary" displayText="StorePrimary" defaultValue="true" force="true" />
+    <checkbox property="db.storebackup" displayText="StoreBackup" defaultValue="false" />
+    <checkbox property="db.repl" displayText="Replication" defaultValue="true" force="true" />
+    <checkbox property="db.training" displayText="Training" defaultValue="true" force="true" />
+    <checkbox property="db.opera" displayText="Opera" defaultValue="false" />
+  </page>
+
+  <page name="relate-host" type="input" displayText="Customer Engagement Data Source Settings" ifProperty="${db.relate}==true">
+    <!-- Customer Engagement data source -->
+
+    <comment displayText="Enter connection information for Customer Engagement" />
+    <comment displayText=" " />
+
+    <text property="relate.protocol" defaultValue="http" displayText="Customer Engagement Protocol" />
+    <text property="relate.host" defaultValue="localhost" displayText="Customer Engagement Host" />
+    <text property="relate.port" defaultValue="8084" displayText="Customer Engagement Port" />
+    <text property="relate.companyName" defaultValue="xst" displayText="Customer Engagement Customer Name" />
+    <text property="relate.ServiceTimeout" defaultValue="30" displayText="Customer Engagement Service Timeout" />
+    <text property="relate.LoyaltyCardPrefix" defaultValue="12345" displayText="Customer Engagement Loyalty Card Prefix" />
+    <text property="relate.LoyaltyCardSeries" defaultValue="01" displayText="Customer Engagement Loyalty Card Series" />
+    <text property="relate.Auth" defaultValue="" displayText="Customer Engagement Authentication" />
+    <text property="relate.AuthTokenName" defaultValue="" displayText="Customer Engagement Authentication Token Name" />
+
+  </page>
+
+  <page name="sim-host" type="input" displayText="SIM Data Source Settings" ifProperty="${db.sim}==true">
+
+    <comment displayText="Enter connection information for SIM." />
+    <comment displayText=" " />
+
+    <text property="sim.protocol" defaultValue="http" displayText="SIM Protocol" />
+    <text property="sim.host" defaultValue="localhost" displayText="SIM Host" />
+    <text property="sim.port" defaultValue="17015" displayText="SIM Port" />
+    <text property="sim.username" defaultValue="" displayText="SIM Username" />
+    <text property="sim.password" defaultValue="" displayText="SIM Password" />
+    <text property="sim.ServiceTimeout" defaultValue="30" displayText="SIM Service Timeout" />
+    <text property="sim.ProcessTransRetryInterval" defaultValue="15" displayText="SIM Process Transaction Retry Interval" />
+  </page>
+  
+  <page name="rxm-host" type="input" displayText="RXM Data Source Settings" ifProperty="${db.rxm}==true">
+
+    <comment displayText="Enter connection information for RXM." />
+    <comment displayText=" " />
+
+    <text property="rxm.protocol" defaultValue="http" displayText="RXM Protocol" />
+    <text property="rxm.host" defaultValue="localhost" displayText="RXM Host" />
+    <text property="rxm.port" defaultValue="17015" displayText="RXM Port" />
+    <text property="rxm.container.username" defaultValue="" displayText="RXM Container Username" />
+    <text property="rxm.container.password" defaultValue="" displayText="RXM Container Password" />
+    <text property="rxm.application.username" defaultValue="" displayText="RXM Application Username" />
+    <text property="rxm.application.password" defaultValue="" displayText="RXM Application Password" />
+    <text property="rxm.siteId" defaultValue="" displayText="RXM Site ID" />
+    <text property="rxm.ServiceTimeout" defaultValue="30" displayText="RXM Service Timeout" />
+  </page>
+
+  <page name="avs-host" type="input" displayText="AVS Data Source Settings" ifProperty="${db.avs}==true">
+    <!-- AVS data source -->
+
+    <comment displayText="Enter connection information for AVS." />
+    <comment displayText=" " />
+
+    <text property="avs.protocol" defaultValue="https" displayText="AVS Protocol" />
+    <text property="avs.host" defaultValue="localhost" displayText="AVS Host" />
+    <text property="avs.port" defaultValue="443" displayText="AVS Port" />
+    <text property="avs.password" defaultValue="" displayText="AVS Password" />
+    <text property="avs.ServiceTimeout" defaultValue="30" displayText="AVS Service Timeout" />
+  </page>
+
+  <page name="locate-integration" type="input" displayText="Order Broker Integration Settings" ifProperty="${db.locate}==true">
+    <!-- Order Broker data source -->
+
+    <comment displayText="Enter connection information for Order Broker." />
+    <comment displayText=" " />
+
+    <text property="locate.WsdlLocation" defaultValue="http://localhost/Locate/Service/Locate.asmx?WSDL"
+      displayText="Order Broker Service WSDL Location" />
+    <text property="locate.username" defaultValue="" displayText="Order Broker Username" />
+    <text property="locate.password" defaultValue="" displayText="Order Broker Password" />
+    <text property="locate.ServiceTimeout" defaultValue="30" displayText="Order Broker Service Timeout" />
+    <text property="locate.XstoreSystemCode" defaultValue="XSTORE" displayText="Order Broker-Xstore System Code" />
+    <text property="locate.Destination" defaultValue="Locate" displayText="Order Broker Destination" />
+
+  </page>
+  <page name="xcenter-host" type="input" displayText="Xcenter Application Server Settings" ifProperty="${db.xcenter}==true">
+    <!-- Xcenter data source -->
+
+    <comment displayText="Enter connection information for the Xcenter App Server." />
+    <comment displayText=" " />
+
+    <text property="xcenter.host" defaultValue="localhost" displayText="App Server Host" />
+    <validated property="xcenter.port" defaultValue="8080" regex="^[0-9]+$" displayText="App Server Port" />
+    <text property="xcenter.db.user" defaultValue="pos" displayText="App Server Username" />
+    <text property="xcenter.db.pwd" defaultValue="pos" displayText="App Server Password" />
+
+    <text property="xcenter.keystorePwd" defaultValue="" displayText="Keystore Pwd" />
+    <text property="xcenter.truststorePwd" defaultValue="" displayText="Truststore Pwd" />
+  </page>
+
+  <page name="storeprimary-host" type="input" displayText="StorePrimary Data Source Settings" ifProperty="${db.storeprimary}==true">
+    <!-- StorePrimary data source -->
+
+    <comment displayText="Enter connection information for the Store Primary DB." />
+    <comment displayText=" " />
+
+    <text property="storeprimary.host" defaultValue="" displayText="Store Primary Host" />
+    <text property="storeprimary.db" defaultValue="xstore" displayText="Store Primary Database" />
+    <text property="storeprimary.db.user" defaultValue="pos" displayText="Database Username" />
+    <text property="storeprimary.db.pwd" defaultValue="pos" displayText="Database Password" />
+
+  </page>
+
+  <page name="storebackup-host" type="input" displayText="StoreBackup Data Source Settings" ifProperty="${db.storebackup}==true">
+    <!-- StoreBackup data source -->
+
+    <comment displayText="Enter connection information for the Store Backup DB." />
+    <comment displayText=" " />
+
+    <text property="storebackup.host" defaultValue="" displayText="Store Backup Host" />
+    <text property="storebackup.db" defaultValue="xstore" displayText="Store Backup Database" />
+    <text property="storebackup.db.user" defaultValue="pos" displayText="Database Username" />
+    <text property="storebackup.db.pwd" defaultValue="pos" displayText="Database Password" />
+
+  </page>
+
+  <page name="local-host" type="input" displayText="Local Data Source Settings">
+    <!-- Local data source -->
+
+    <comment displayText="Enter connection information for the Local/Offline DB." />
+    <comment displayText=" " />
+
+    <text property="local.host" defaultValue="localhost" displayText="Local/Offline Host" />
+    <text property="local.db" defaultValue="xstore" displayText="Local/Offline Database" />
+    <text property="local.db.user" defaultValue="pos" displayText="Database Username" />
+    <text property="local.db.pwd" defaultValue="pos" displayText="Database Password" />
+
+  </page>
+
+  <page name="repl-host" type="input" displayText="Replication Data Source Settings" ifProperty="${db.repl}==true">
+    <!-- Local data source -->
+
+    <comment displayText="Enter connection information for the Replication DB." />
+    <comment displayText=" " />
+
+    <text property="repl.host" defaultValue="localhost" displayText="Replication Host" />
+    <text property="repl.db" defaultValue="xstorereplication" displayText="Replication Database" />
+    <text property="repl.db.user" defaultValue="pos" displayText="Database Username" />
+    <text property="repl.db.pwd" defaultValue="pos" displayText="Database Password" />
+
+  </page>
+
+  <page name="other-host" type="input" displayText="Other Data Source Settings">
+    <!-- Master data source -->
+    <comment displayText="Enter connection information for the Master DB." />
+    <text property="master.db.user" defaultValue="pos" displayText="Database Username" />
+    <text property="master.db.pwd" defaultValue="pos" displayText="Database Password" />
+    
+    <!--  empty space -->
+    <comment displayText=" " />
+    
+    <!-- Schema Owner data source -->
+    <comment displayText="Enter connection information for the Schema Owner." />
+    <text property="owner.db.user" defaultValue="pos" displayText="Database Username" />
+    <text property="owner.db.pwd" defaultValue="pos" displayText="Database Password" />
+  </page>
+  <page name="training-host" type="input" displayText="Training Data Source Settings" ifProperty="${db.training}==true">
+    <!-- Local data source -->
+
+    <comment displayText="Enter connection information for the Training DB." />
+    <comment displayText=" " />
+
+    <text property="training.host" defaultValue="localhost" displayText="Training Host" />
+    <text property="training.db" defaultValue="training" displayText="Training Database" />
+    <text property="training.db.user" defaultValue="pos" displayText="Database Username" />
+    <text property="training.db.pwd" defaultValue="pos" displayText="Database Password" />
+
+  </page>
+
+  <page name="opera-host" type="input" displayText="Opera Data Source Settings" ifProperty="${db.opera}==true">
+    <!-- Opera data source -->
+
+    <comment displayText="Enter connection information for Opera." />
+    <comment displayText=" " />
+
+    <text property="opera.ConnectionURL" defaultValue="http://localhost:4400/Operajserv/Ifc8ws/Ifcws"
+      displayText="Opera Connection URL" />
+    <text property="opera.ConnectionString" defaultValue="jdbc/ifcoperads" displayText="Opera Connection String" />
+    <text property="opera.Timeout" defaultValue="30" displayText="Opera Timeout" />
+    <text property="opera.Resort" defaultValue="LSDH" displayText="Opera Resort" />
+    <text property="opera.RowId" defaultValue="3620" displayText="Opera Row ID" />
+
+  </page>
+
+  <page name="services" type="input" displayText="Select Services">
+    <!-- Select services to be used with this install -->
+    <comment displayText="Which services should be turned on for this install?" bold="true" />
+
+    <select property="svc.replication" defaultValue="ON" displayText="Replication">
+      <option text="On" value="ON" />
+      <option text="Off" value="OFF" />
+    </select>
+    <select property="svc.auth" defaultValue="ON" displayText="Authorizations">
+      <option text="On" value="ON" />
+      <option text="Off" value="OFF" />
+    </select>
+  </page>
+
+  <page name="auth-host" type="input" displayText="Authorization Platforms" ifProperty="${svc.auth}==ON">
+    <!-- Auth Service Selection -->
+    <comment displayText="Select the primary authorization platform." />
+    <select property="auth.platform" defaultValue="eft-link" displayText="Auth Platform">
+      <option text="EFT Link" value="eft-link" />
+      <option text="Tender Retail" value="tender-retail" />
+    </select>
+  </page>
+
+  <page name="auth-xpay-host" type="input" displayText="Xpay Host and Processor" ifProperty="(${svc.auth}==ON) AND (${auth.platform}==xpay)">
+    <!-- Xpay Auth Host + Processor -->
+    <comment displayText="Select the authorization hosts and processor to be used for Xpay." />
+    <text property="xpay.Host1" defaultValue="https://localhost:9092/soap;timeout=60000;urn=uri:xpay"
+      displayText="Xpay Host #1 URL" />
+    <text property="xpay.Host2" defaultValue="https://localhost:9092/soap;timeout=60000;urn=uri:xpay"
+      displayText="Xpay Host #2 URL" />
+    <text property="xpay.ReceiveTimeout" defaultValue="60000" displayText="Receive Timeout (Millis)" />
+    <text property="xpay.ConnectionUserName" defaultValue="" displayText="Xpay Connection Username" />
+    <text property="xpay.ConnectionPassword" defaultValue="" displayText="Xpay Connection Password" />
+
+    <select property="auth.xpay.type" defaultValue="xpay-ptech" displayText="Xpay Processor">
+      <option text="Xpay+FDMS" value="xpay-fdms" />
+      <option text="Xpay+MerchantLink" value="xpay-mlink" />
+      <option text="Xpay+MerchantWarehouse" value="xpay-mwhse" />
+      <option text="Xpay+Paymentech" value="xpay-ptech" />
+    </select>
+  </page>
+
+  <page name="auth-xpay-fdms" type="input" displayText="Xpay+FDMS Settings"
+    ifProperty="(${svc.auth}==ON) AND (${auth.platform}==xpay) AND (${auth.xpay.type}==xpay-fdms)">
+    <!-- Enter Xpay+Paymentech settings -->
+    <comment displayText="These settings are used to customize Xpay+FDMS." />
+    <comment displayText=" " />
+
+    <text property="xpay.fdms.credit.merchant" defaultValue="" displayText="Credit Merchant Number" />
+    <text property="xpay.fdms.credit.datawire" defaultValue="" displayText="Credit Datawire ID" />
+    <text property="xpay.fdms.credit.terminal" defaultValue="" displayText="Credit Terminal ID" />
+
+    <text property="xpay.fdms.debit.merchant" defaultValue="" displayText="Debit Merchant Number" />
+    <text property="xpay.fdms.debit.datawire" defaultValue="" displayText="Debit Datawire ID" />
+    <text property="xpay.fdms.debit.terminal" defaultValue="" displayText="Debit Terminal ID" />
+
+    <text property="xpay.fdms.giftcard.merchant" defaultValue="" displayText="Gift Card Merchant Number" />
+  </page>
+
+  <page name="auth-xpay-mlink" type="input" displayText="Xpay+MerchantLink Settings"
+    ifProperty="(${svc.auth}==ON) AND (${auth.platform}==xpay) AND (${auth.xpay.type}==xpay-mlink)">
+    <!-- Enter Xpay+MerchantLink. settings -->
+    <comment displayText="These settings are used to customize Xpay+MerchantLink." />
+    <comment displayText=" " />
+
+    <text property="xpay.mlink.credit.terminal" defaultValue="" displayText="Credit Terminal Number" />
+    <text property="xpay.mlink.credit.orgname" defaultValue="" displayText="Credit Org Name" />
+    <text property="xpay.mlink.credit.site" defaultValue="" displayText="Credit Site ID" />
+
+    <text property="xpay.mlink.debit.terminal" defaultValue="" displayText="Debit Terminal Number" />
+    <text property="xpay.mlink.debit.orgname" defaultValue="" displayText="Debit Org Name" />
+    <text property="xpay.mlink.debit.site" defaultValue="" displayText="Debit Site ID" />
+  </page>
+
+  <page name="auth-xpay-mwhse" type="input" displayText="Xpay+MerchantWarehouse Settings"
+    ifProperty="(${svc.auth}==ON) AND (${auth.platform}==xpay) AND (${auth.xpay.type}==xpay-mwhse)">
+    <!-- Enter Xpay+MerchantWarehouse settings -->
+    <comment displayText="These settings are used to customize Xpay+MerchantWarehouse." />
+    <comment displayText=" " />
+
+    <text property="xpay.mwhse.credit.merchant" defaultValue="" displayText="Credit Merchant Number" />
+    <text property="xpay.mwhse.credit.orgname" defaultValue="" displayText="Credit Org Name" />
+    <text property="xpay.mwhse.credit.site" defaultValue="" displayText="Credit Site ID" />
+
+    <text property="xpay.mwhse.debit.merchant" defaultValue="" displayText="Debit Merchant Number" />
+    <text property="xpay.mwhse.debit.orgname" defaultValue="" displayText="Debit Org Name" />
+    <text property="xpay.mwhse.debit.site" defaultValue="" displayText="Debit Site ID" />
+  </page>
+
+  <page name="auth-xpay-ptech" type="input" displayText="Xpay+Paymentech Settings"
+    ifProperty="(${svc.auth}==ON) AND (${auth.platform}==xpay) AND (${auth.xpay.type}==xpay-ptech)">
+    <!-- Enter Xpay+Paymentech settings -->
+    <comment displayText="These settings are used to customize Xpay+Paymentech." />
+    <comment displayText=" " />
+
+    <text property="xpay.ptech.credit.merchant" defaultValue="" displayText="Credit Merchant Number" />
+    <text property="xpay.ptech.credit.terminal" defaultValue="" displayText="Credit Terminal ID" />
+    <text property="xpay.ptech.credit.client" defaultValue="" displayText="Credit Client ID" />
+
+    <text property="xpay.ptech.debit.merchant" defaultValue="" displayText="Debit Merchant Number" />
+    <text property="xpay.ptech.debit.terminal" defaultValue="" displayText="Debit Terminal ID" />
+    <text property="xpay.ptech.debit.client" defaultValue="" displayText="Debit Client ID" />
+
+    <text property="xpay.ptech.gc.merchant" defaultValue="" displayText="Giftcard Merchant Number" />
+    <text property="xpay.ptech.gc.terminal" defaultValue="" displayText="Giftcard Terminal ID" />
+    <text property="xpay.ptech.gc.client" defaultValue="" displayText="Giftcard Client ID" />
+  </page>
+
+  <page name="auth-tender-retail" type="input" displayText="Tender Retail Settings" ifProperty="(${svc.auth}==ON) AND (${auth.platform}==tender-retail)">
+    <!-- Enter Tender Retail settings -->
+    <comment displayText="These settings are used to customize authorization processing for Tender Retail." />
+    <comment displayText=" " />
+
+    <text property="tender-retail.host" defaultValue="socket://localhost:3858;timeout=1000" displayText="Tender Retail Dial Host URL" />
+    <text property="tender-retail.merchant" defaultValue="" displayText="Merchant Number" />
+    <text property="tender-retail.terminal" defaultValue="" displayText="Terminal ID" />
+  </page>
+
+  <page name="auth-eft-link" type="input" displayText="EFT Link Settings" ifProperty="(${svc.auth}==ON) AND (${auth.platform}==eft-link)">
+    <!-- Enter EFT Link settings -->
+    <comment displayText="These settings are used to customize authorization processing for EFT Link." />
+    <comment displayText=" " />
+
+    <text property="eft-link.channel0" defaultValue="socket://localhost:10100;timeout=1000" displayText="EFT Link Channel 0" />
+    <text property="eft-link.channel1" defaultValue="socket://localhost:10101" displayText="EFT Link Channel 1" />
+  </page>
+  
+  <page name="nfeIntegration" type="input" displayText="NFE Integration" ifProperty="${countryId}==BR">
+    <!-- Nfe integration settings -->
+    <directory property="nfeIntegrationDir" defaultValue="/opt/Inventti/NFCePack/NFCePackAgente" defaultValueWin="C:\Inventti\NFCePack\NFCePackAgente"
+      displayText="Select the NFE integration dir" />
+  </page>
+
+  <page name="progress" type="progress" displayText="Installation progress" showTargets="true" target="archive-log">
+  </page>
+</installer>

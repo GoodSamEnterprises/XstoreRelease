@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * INT-020              120417    EMV
+ * BZ23267              120917    UI issues on Customer Search prompt screen
+ * BZ24225              261017    [Xstore] Changes to functions keys on CUSTOMER SEARCH screen
+ * BZ24414              091117    When Adding New Customer for Warranty Item New 'Logoff' Button Appears
+ * BZ26313              210518    [QAS] Undo change button should be an Esc button.
+ * BZ27339              031018    [New Requirement] Display Membership Information on Xstore POS Information tab
+ *===================================================================
+ */ 
+-->
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+
+  <Form name="CUSTOMER_SEARCH" type="POPUP_VIEW_PANEL">
+    <Page name="CustomerSearch">
+      <Panel startX="0" width="100" startY="0" height="93" fieldLayoutRef="customerSearchLayout"  /> <!-- BZ23267 -->
+    </Page>
+    
+    <ActionGroup name="DEFAULT">
+      <Action ref="CANCEL_BACK"/><!-- BZ 24414 -->
+      <Action ref="CAW_CUST_SEARCH_CLEAR" /><!-- BZ27339 -->
+      <Action ref="CAW_CUST_SEARCH_SKIP" />
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="CAW_CUST_SEARCH_PROCESS" privilege="VIEW_CUSTOMER" />
+    </ActionGroup>
+    
+    <ActionGroup name="NO_SKIP">
+      <Action ref="CANCEL_BACK" dataKey="CANCEL_QAS"/><!-- BZ BZ26313 -->
+      <Action ref="CAW_CUST_SEARCH_CLEAR" /><!-- BZ27339 -->
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="CAW_CUST_SEARCH_PROCESS" privilege="VIEW_CUSTOMER" />
+    </ActionGroup>
+    
+    <ActionGroup name="AUDIT">
+      <Action ref="CANCEL_BACK"/><!-- BZ 24414 -->
+      <Action ref="CAW_CUST_SEARCH_CLEAR" /><!-- BZ27339 -->
+      <Action ref="CAW_CUST_SEARCH_SKIP" />
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="CAW_CUST_SEARCH_PROCESS" privilege="VIEW_CUSTOMER" />
+    </ActionGroup>
+  </Form>
+  
+</FormSet>

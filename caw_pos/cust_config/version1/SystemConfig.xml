@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#       ddMMyy      Description
+ * BZ22462           270717      CW - Config Files from Oracle Demo
+ * BZ22663           020817      Email receipt functionality isn't working
+ * BZ22753           080817      Please Change Config for Special Order Deposit
+ * BZ22838           270717      Update menu button
+ * BZ22935           170817      Turn off Commissioned Associate prompt when log-in to register
+ * BZ22989           170817      Remove associate name out of items when performing sale transaction
+ * BZ23192           050917      Need to view customer detail when only one customer is returned
+ * BZ23147           070917      Implement Serialized coupon
+ * BZ23339           180917      Implement Gift card Authorization
+ * BZ23339           260917      Implement Gift card Authorization
+ * BZ23199           091017      Name of associated sale person, John Smith, is changed to "Default system user" text
+ * BZ24224           261017      [Xstore] Remove Help/F1 function button from all screens in Xstore BO and POS
+ * BZ24368           061117      Please Update E-Receipt Config with The Following
+ * BZ24450           131117      Please Change the Following Configuration
+ * BZ24490           151117      Please Change Config to Prompt for Reason Codes for Cancelled Transactions
+ * BZ24260           171117      Xstore allows close store successfully without required Closed register
+ * BZ24417           201117      No action is displayed when pressing 'Back' on Dashboard screen in BO
+ * BZ24350           201117      Receipts need to print Tax code summary
+ * BZ24659           011217      [Xstore] Serial Number Length Requirement for Serialized Items
+ * BZ24742           081217      New Requirement Change Config To Prompt for Birth Date
+ * BZ24818           121217      Change System to use Login id instead of employee_id
+ * BZ24892           191217      Should be changed config to allow only 1 commissioned associate is assigned at the line item level.
+ * BZ24817           191217      [PROD][Xstore] Enable the ability to sell not on file items
+ * BZ25036           050118      [Security] Close Store with suspended transactions privilege
+ * BZ25033           050118      [PROD] Security Privilege & Config Change for Tender Exchange
+ * BZ25790           270318      [Update_Security] Need set amount threshold as $49.99 in systemconfig for Blind returns.
+ * BZ25957           160518      New Requirement - Options to prevent the ability to open the store for a past or future business date
+ * BZ26679           250618      [New Requirement]Change option to skip prompt at the close process
+ * BZ25674           040718      New Requirement - Add security override for employee/crew member sales
+ * BZ26270           060718      New Requirement - Display UPC on both Xstore screens and on receipts
+ * BZ26207           190718      New Requirement - Enable Work Order Functionality
+ * BZ27069           060818      [1.5.0] Configuration Change - Set Proportion Deal Amt off for returns
+ * BZ27208           160818      [Updated Requirement] Update Work Order Deposit Minimum to one cent (0.01) instead of zero (0.00)
+ * BZ27670           210918      [Prod] Options to auto unlock users/Display actual reason for failed log in attempts in Xstore
+ * BZ27812           221018      [New Requirement] Add cash as a tender option for Web Orders
+ * BZ29206           280119      [Port 29195 to release 3.0] Max number of work orders to display on WORK ORDER SEARCH RESULTS screen
+ * BZ29545           030519      [Prod] Email receipts error
+ * BZ30922           210619      [New Requirement] Price Check and Inventory Lookup
+ * BZ26188           220719      Change value of RtlLocCycleFromPrimaryWSOnly parameter
+ * BZ33586           291019      [New Requirement] Remove customer warranty prompt
+ * BZ37177           100820      Enable Order Function in Xstore
+ * BZ36988           170820      [TASK] Xstore OB Configuration
+ * BZ38035           220920      [Task] Update Xstore Config to allow Orders to be Mixed with Sales and Returns
+ * BZ38549           141020      [Task] CW's request about updating configuration for DefaultLocateItemDistance and "Miles" field on LOCATE ITEM (
+ * BZ41476           290321      [PROD] Penny due on BOPIS order
+ * BZ50905           060722      [PROD] Xstore shows the error message “Error invalid return price exceeds maximum return Price of $5000” when doing verified return.
+ * BZ52811           290321      Enabling TLS for Email in 7.1 Release of XStore
+ *===================================================================
+ */ 
+-->
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <RegisterConfig dtype="Default">
+    <Location dtype="Default">
+      <!-- OvertimeRuleType available: Please see PayrollOvertimeConfig -->
+      <OvertimeRuleType dtype="String">WEEKLYOVER40</OvertimeRuleType>
+    </Location>
+    <OpenClose dtype="Default">
+      <RequireWSClosed dtype="Boolean">true</RequireWSClosed> <!-- BZ24260 -->
+      <!-- Begin BZ24450 -->
+      <CaptureUserMsg dtype="Boolean">false</CaptureUserMsg>
+      <DisplayUserCapturedMsg dtype="Boolean">false</DisplayUserCapturedMsg>
+      <ValidateSuspendedTransactionsAtClose dtype="Boolean">true</ValidateSuspendedTransactionsAtClose><!-- BZ 25036 -->
+      <!-- End BZ24450 -->
+      <!-- BEGIN BZ25957 -->
+      <AllowUserChangeBusinessDate dtype="Boolean">false</AllowUserChangeBusinessDate>
+      <!-- END BZ25957 -->
+      <!-- BEGIN BZ26679 -->
+      <PromptToInitiateClose dtype="Boolean">false</PromptToInitiateClose>
+      <!-- END BZ26679 -->
+      <RtlLocCycleFromPrimaryWSOnly dtype="Boolean">false</RtlLocCycleFromPrimaryWSOnly> <!-- BZ26188 -->
+    </OpenClose>
+    
+    <!-- Begin BZ22935-->
+    <CommissionedAssociates dtype="Default">
+      <PromptForCommissionedAssociates dtype="Boolean">false</PromptForCommissionedAssociates>
+      <PromptPerItem dtype="Boolean">false</PromptPerItem>
+      <DisplayPerItemOnSale dtype="Boolean">false</DisplayPerItemOnSale> <!-- BZ22989 -->
+      <DisplayPerItemOnReturn dtype="Boolean">false</DisplayPerItemOnReturn>
+      <!-- Whether or not we prompt for commissioned associates as a multi-select list (true) or as a focus bar
+        (text) prompt (false).
+        Acceptable values: true/false -->
+      <PromptWithList dtype="Boolean">true</PromptWithList>
+      <DefaultCashierAsFirstCommissionedAssociate dtype="Boolean">true</DefaultCashierAsFirstCommissionedAssociate>
+      <AllowCashierAsCommissionedAssociate dtype="Boolean">true</AllowCashierAsCommissionedAssociate>
+      <!-- The default commission method.  Acceptable values are CURRENT_CASHIER or HOUSE_ACCOUNT.  Any other values
+           or no value will result in no commission being recorded.  This configuration only applies when prompting
+           for commissioned associates (PromptForCommissionedAssociates) is turned off (false). -->
+      <DefaultCommissionMethod dtype="String">CURRENT_CASHIER</DefaultCommissionMethod>
+      <MinCommissionedAssociatesAllowed dtype="PositiveInteger">1</MinCommissionedAssociatesAllowed>
+      <!-- The maximum number of commissioned associates allowed to be assigned to a sale. -->
+      <MaxCommissionedAssociatesAllowed dtype="PositiveInteger">1</MaxCommissionedAssociatesAllowed><!-- BZ 24892 -->
+      <RcptIncludeFirstName dtype="Boolean">true</RcptIncludeFirstName>
+      <RcptIncludeLastName dtype="Boolean">true</RcptIncludeLastName>
+      <RcptNewLineBetween dtype="Boolean">true</RcptNewLineBetween>
+    </CommissionedAssociates>
+    <!-- End BZ22935-->
+  </RegisterConfig>
+
+  <SystemConfig dtype="Default">
+    <SendSale dtype="Default">
+      <!-- Check SendTaxType for valid values (DESTINATION,SELLING,DEST_INSTATE -->
+      <SendTaxType dtype="String">DESTINATION</SendTaxType>
+    </SendSale>
+
+    <Order dtype="Default">
+      <DownloadInterval dtype="Integer">15</DownloadInterval>
+      <StatusRequestInterval dtype="Integer">30</StatusRequestInterval>
+      <!-- BEGIN BZ37177 -->
+      <!-- Set Deposit fee to 100% -->
+      <DepositValue dtype="BigDecimal">100</DepositValue>
+      <!-- END BZ37177 -->
+      <!-- Begin BZ36988 -->
+      <CreateReceivingDocument dtype="Boolean">false</CreateReceivingDocument>
+      <PromptOrdersOnStoreOpen dtype="Boolean">true</PromptOrdersOnStoreOpen>
+      <ProcessDeliveryOrdersFirst dtype="Boolean">false</ProcessDeliveryOrdersFirst>
+      <!-- End BZ36988 -->
+      <DefaultLocateItemDistance dtype="BigDecimal">5000</DefaultLocateItemDistance> <!-- BZ-38549 -->
+      <RoundTaxTotalAtPickup dtype="Boolean">false</RoundTaxTotalAtPickup> <!-- BZ-41476 -->
+    </Order>
+
+    <RainCheck dtype="Default">
+      <FeatureEnabled dtype="Boolean">true</FeatureEnabled>
+    </RainCheck>
+
+    <!-- Begin BZ22663 -->
+    <Email dtype="Default">
+      <DefaultMailHost dtype="String">xchange.freedomroads.local</DefaultMailHost><!-- BZ29545 -->
+      <DefaultMailPort dtype="PositiveInteger">25</DefaultMailPort>
+      <UseSmtpAuth dtype="Boolean">false</UseSmtpAuth>
+      <UseTLS dtype="Boolean">true</UseTLS><!-- BZ52811 -->
+      <DefaultMailUser dtype="String"></DefaultMailUser>
+      <DefaultMailPassword dtype="String"></DefaultMailPassword>
+      <SmtpDebug dtype="Boolean">false</SmtpDebug>
+      <DefaultSender dtype="String">receipts@campingworld.com</DefaultSender><!-- BZ29545 -->
+      <!-- This needs to be modified to reflect the valid email address of (usually) a store manager. -->
+      <DefaultRecipient dtype="String">storeManager@thisOrg.com</DefaultRecipient>
+      <!-- When UseTestingMode = true, only email addresses containing any of the strings in the comma-
+      separated value of TestingModeAddressFilter will be targeted for emails.  
+      When UseTestingMode = false, all emails will be delivered regardless of the target email address. -->
+      <UseTestingMode dtype="Boolean">false</UseTestingMode>
+      <TestingModeAddressFilter dtype="String">@oracle.com, @micros.com, @micros-retail.com, @micros-retail.at, @datavantagecorp.com, @btmglobal.com</TestingModeAddressFilter>
+      <Receipt dtype="Default">
+        <SendEmailReceipts dtype="Boolean">true</SendEmailReceipts>
+        <AlwaysPromptToEmail dtype="Boolean">true</AlwaysPromptToEmail>
+        <SaveUpdatedEmailAddressToCustomer dtype="Boolean">true</SaveUpdatedEmailAddressToCustomer>
+        <Subject dtype="Translatable">_receiptEmailSubject</Subject>
+        <From dtype="String">receipts@ganderoutdoors.com</From> <!-- BZ24368 -->
+        <LineStyle dtype="String">Courier New</LineStyle>
+      </Receipt>
+    </Email>
+    <!-- End BZ22663 -->
+
+    <Airside dtype="Default">
+      <Enabled dtype="Boolean">false</Enabled>
+    </Airside>
+
+    <LocalCurrencyId dtype="String">USD</LocalCurrencyId>
+
+    <!-- Begin BZ22753 -->
+    <SpecialOrder dtype="Default">
+      <!-- ApplyDealAtSetup: 
+          true=system only apply deals to special order item at setup. The pickup price will be the same as setup.
+          false=system only apply deals to special order item at pickup. -->
+      <ApplyDealAtSetup dtype="Boolean">true</ApplyDealAtSetup>
+      <MinimalOrderMode dtype="Boolean">false</MinimalOrderMode>
+      <SpecOrderItemNotOnFileDefaultId dtype="String">999999066</SpecOrderItemNotOnFileDefaultId>
+      <AutoGenerateReceivingDoc dtype="Boolean">true</AutoGenerateReceivingDoc>
+      <AutoGenerateSpecOrderId dtype="Boolean">true</AutoGenerateSpecOrderId>
+      <AllowItemNotOnFileSpecOrder dtype="Boolean">false</AllowItemNotOnFileSpecOrder>
+      <MaxItems dtype="Integer">20</MaxItems>
+      <MinTotalItemPrice dtype="BigDecimal">100</MinTotalItemPrice><!-- BZ22838-->
+      <PromptForExpectedDate dtype="Boolean">false</PromptForExpectedDate><!-- BZ22838-->
+      <ForceStorePickup dtype="Boolean">false</ForceStorePickup>
+      <AllowPartialPickups dtype="Boolean">true</AllowPartialPickups>
+      <AutoAdjustItemPriceAtPickup dtype="Boolean">false</AutoAdjustItemPriceAtPickup>
+      <!-- service fee type "TRANSACTION" or "ITEM" -->
+      <ServiceFeeType dtype="String">ITEM</ServiceFeeType>
+      <ServiceFeeAmount dtype="BigDecimal">0</ServiceFeeAmount>
+      <ServiceFeePercentage dtype="BigDecimal">5</ServiceFeePercentage>
+      <!-- deposit fee type "TRANSACTION" or "ITEM" -->
+      <DepositFeeType dtype="String">TRANSACTION</DepositFeeType>
+      <DepositFixedAmount dtype="BigDecimal">0</DepositFixedAmount>
+      <DepositPercentage dtype="BigDecimal">20</DepositPercentage><!-- BZ22838-->
+      <ShipCalcType dtype="String">PER_TRANSACTION</ShipCalcType>
+      <!-- restocking fee type "AMT" or "PCT" -->
+      <RestockingFeeType dtype="String">PCT</RestockingFeeType>
+      <RestockingFeeFixedAmount dtype="BigDecimal">0</RestockingFeeFixedAmount>
+      <RestockingFeePercentage dtype="BigDecimal">2.5</RestockingFeePercentage>
+      <BookAsSaleOnSetup dtype="Boolean">true</BookAsSaleOnSetup><!-- BZ22838-->
+      <MinDaysBeforeEscrowAllowed dtype="Integer">90</MinDaysBeforeEscrowAllowed>
+      <AllowEscrowDayOfPayment dtype="Boolean">false</AllowEscrowDayOfPayment>
+      <DisplaySoldItemCount dtype="Boolean">false</DisplaySoldItemCount>
+    </SpecialOrder>
+    <!-- End BZ22753 -->
+
+    <!-- BEGIN BZ22838-->
+    <ItemReturn dtype="Default">
+      <PromptForCustomer dtype="Boolean">true</PromptForCustomer>
+      <CustomerRecordRequired dtype="Boolean">true</CustomerRecordRequired>
+      <CreditCommissionedAsscMethod dtype="Default">
+        <!-- ORIGINAL_COMMISSIONED_ASSC, CURRENT_CASHIER, CURRENT_COMMISSIONED_ASSC, HOUSE_ACCOUNT -->
+        <!-- BEGIN BZ23199 -->
+        <CreditBlindReturnSaleCommissionMethod dtype="String">CURRENT_COMMISSIONED_ASSC</CreditBlindReturnSaleCommissionMethod>
+        <CreditUnverifiedReturnSaleCommissionMethod dtype="String">CURRENT_COMMISSIONED_ASSC</CreditUnverifiedReturnSaleCommissionMethod>
+        <CreditVerifiedReturnSaleCommissionMethod dtype="String">CURRENT_COMMISSIONED_ASSC</CreditVerifiedReturnSaleCommissionMethod>
+        <!-- END BZ23199 -->
+      </CreditCommissionedAsscMethod>
+      <AllowItemNotOnFileBlindReturn dtype="Boolean">false</AllowItemNotOnFileBlindReturn>
+      <!--  BZ27812 set AlwaysPromptForItemPriceUponUnverifiedReturn to true -->
+      <AlwaysPromptForItemPriceUponUnverifiedReturn dtype="Boolean">true</AlwaysPromptForItemPriceUponUnverifiedReturn>
+      <AlwaysPromptForItemPriceUponBlindReturn dtype="Boolean">false</AlwaysPromptForItemPriceUponBlindReturn>
+      <PriceHistory dtype="Default">
+        <LookupPriceHistory dtype="Boolean">true</LookupPriceHistory>
+        <AutoCalculateHistoryPrice dtype="Boolean">false</AutoCalculateHistoryPrice>
+        <LookupVerifiedPriceHistory dtype="Boolean">false</LookupVerifiedPriceHistory>
+        <PriceHistoryLookupPreviousNumberOfDays dtype="PositiveInteger">30</PriceHistoryLookupPreviousNumberOfDays>
+      </PriceHistory>
+      <HouseAccountEmployeeId dtype="String">0</HouseAccountEmployeeId>
+      <RestockingFee dtype="Default">
+        <PromptApplyRestockingFeeMessage dtype="Boolean">true</PromptApplyRestockingFeeMessage>
+      </RestockingFee>
+      <ReturnVerification dtype="Default">
+        <ReturnVerificationRequired dtype="Boolean">true</ReturnVerificationRequired>
+      </ReturnVerification>
+      <CrossChannelReturnsEnabled dtype="Boolean">false</CrossChannelReturnsEnabled>
+      <CrossBorderReturnsEnabled dtype="Boolean">true</CrossBorderReturnsEnabled>
+      <CrossStateReturnsEnabled dtype="Boolean">true</CrossStateReturnsEnabled>
+      <CrossStoreReturnsEnabled dtype="Boolean">true</CrossStoreReturnsEnabled>
+      <MaxTotalTransactionRefundThreshold dtype="BigDecimal">10000</MaxTotalTransactionRefundThreshold>
+      <MinimumReturnItemPrice dtype="BigDecimal">0</MinimumReturnItemPrice>
+      <MaximumReturnItemPrice dtype="BigDecimal">7500</MaximumReturnItemPrice><!-- BZ50905 -->
+      <MaxDaysAfterPurchase dtype="PositiveInteger">90</MaxDaysAfterPurchase><!-- BZ22838-->
+      <ValidateReturnSerialNumberAgainstOriginalTrans dtype="Boolean">true</ValidateReturnSerialNumberAgainstOriginalTrans>
+      <PromptTndrAmtForOriginalCreditCardTender dtype="Boolean">true</PromptTndrAmtForOriginalCreditCardTender>
+      <Discounts dtype="Default">
+        <AllowDiscountsOnBlindReturn dtype="Boolean">true</AllowDiscountsOnBlindReturn>
+        <AllowDiscountsOnUnverifiedReturn dtype="Boolean">true</AllowDiscountsOnUnverifiedReturn>
+        <AllowDiscountsOnVerifiedReturn dtype="Boolean">true</AllowDiscountsOnVerifiedReturn>
+      </Discounts>
+      <!-- Valid values: DAY, MONTH -->
+      <ProrationTimeUnit dtype="String">DAY</ProrationTimeUnit>
+      <ProRatedDiscountReturnsDisabled dtype="Boolean">false</ProRatedDiscountReturnsDisabled>
+      <ProRatedTaxOnReturnsDisabled dtype="Boolean">true</ProRatedTaxOnReturnsDisabled>
+      <CustomerHistoryReturn dtype="Default">
+        <EnableCustomerHistoryLookup dtype="Boolean">true</EnableCustomerHistoryLookup>
+        <PromptBeforeNotInHistoryReturn dtype="Boolean">true</PromptBeforeNotInHistoryReturn>
+      </CustomerHistoryReturn>
+      <BlindReturns dtype="Default">
+        <!--BEGIN BZ25790 -->
+        <AmountThresholdEnabled dtype="Boolean">true</AmountThresholdEnabled> 
+        <AmountThreshold dtype="BigDecimal">49.99</AmountThreshold> 
+        <!--END BZ25790 -->
+        <LowestPriceReturnEnabled dtype="Boolean">true</LowestPriceReturnEnabled>
+      </BlindReturns>
+      <PromptOriginalTransactionListUponEntry dtype="Boolean">true</PromptOriginalTransactionListUponEntry>
+      <PromptGiftRcptForVerifiedReturnBarcodeScan dtype="Boolean">false</PromptGiftRcptForVerifiedReturnBarcodeScan>
+    </ItemReturn>
+
+    <CheckTender dtype="Default">
+      <PromptForBirthday dtype="Boolean">false</PromptForBirthday><!-- BZ22838-->
+      <MinimumCheckNumber dtype="Integer">1</MinimumCheckNumber>
+    </CheckTender>
+    
+    <GiftCard dtype="Default">
+      <MaximumGiftCardBalance dtype="BigDecimal">500.00</MaximumGiftCardBalance><!-- BZ23339-->
+      <MaximumTenderExchangeBalance dtype="BigDecimal">500.00</MaximumTenderExchangeBalance><!-- BZ25033-->
+    </GiftCard>
+
+    <Tender dtype="Default">
+      <ManualEnteredCreditCardImprint dtype="Boolean">false</ManualEnteredCreditCardImprint><!-- BZ22838-->
+      <BlindCouponTenderId dtype="String">COUPON</BlindCouponTenderId>
+      <!-- CAW: START BZ 23147 -->
+      <AllowCouponTenderIssueAnotherCard dtype="Boolean">false</AllowCouponTenderIssueAnotherCard>
+      <!-- CAW: END BZ 23147 -->
+      <!-- If for some reason the system cannot find the valid change tender, use this default change tender id -->
+      <DefaultChangeTenderIdIfNoneFound dtype="String">ISSUE_STORE_CREDIT</DefaultChangeTenderIdIfNoneFound>
+      <CashSuggestionButtonsEnabled dtype="Boolean">true</CashSuggestionButtonsEnabled>
+      <CashSuggestionButtonsMinDenominationFactor dtype="BigDecimal">1</CashSuggestionButtonsMinDenominationFactor>
+    </Tender>
+    
+    <ShowCustomerListIfOne dtype="Boolean">true</ShowCustomerListIfOne><!-- BZ22838--> <!-- BZ23192 -->
+
+    <PrintStoreCopyWithSigCaptured dtype="Boolean">false</PrintStoreCopyWithSigCaptured><!-- BZ22838-->
+
+    <InventoryCount dtype="Default">
+      <EnableCountSheetMode dtype="Boolean">false</EnableCountSheetMode><!-- BZ22838-->
+      <PhysicalCount dtype="Default">
+        <AllowCreate dtype="Boolean">false</AllowCreate><!-- BZ22838-->
+        <AllowSearchable dtype="Boolean">false</AllowSearchable><!-- BZ22838-->
+        <AutoRecountUnmatchedItems dtype="Boolean">false</AutoRecountUnmatchedItems><!-- BZ22838-->
+        <MaximumCountCycles dtype="Integer">4</MaximumCountCycles>
+      </PhysicalCount>
+      <CycleCount dtype="Default">
+        <AllowCreate dtype="Boolean">false</AllowCreate><!-- BZ22838-->
+        <AllowSearchable dtype="Boolean">false</AllowSearchable><!-- BZ22838-->
+        <AutoRecountUnmatchedItems dtype="Boolean">false</AutoRecountUnmatchedItems><!-- BZ22838-->
+        <MaximumCountCycles dtype="Integer">4</MaximumCountCycles>
+        <InventoryBucket dtype="String">ON_HAND</InventoryBucket>
+      </CycleCount>
+      <SupplyCount dtype="Default">
+        <AllowCreate dtype="Boolean">false</AllowCreate><!-- BZ22838-->
+        <AllowSearchable dtype="Boolean">false</AllowSearchable><!-- BZ22838-->
+        <AutoRecountUnmatchedItems dtype="Boolean">false</AutoRecountUnmatchedItems><!-- BZ22838-->
+        <MaximumCountCycles dtype="Integer">4</MaximumCountCycles>
+        <InventoryBucket dtype="String">ON_HAND</InventoryBucket>
+        <MerchLevelForCount dtype="String">SUPPLIES</MerchLevelForCount>
+      </SupplyCount>
+      <ValidateSectionExistsForBucket dtype="Boolean">false</ValidateSectionExistsForBucket>
+      <ItemsPerCountSheetPage dtype="Integer">30</ItemsPerCountSheetPage>
+      <ItemsPerCountSheetSecondary dtype="Integer">200</ItemsPerCountSheetSecondary>
+      <RequirePrintedCountSheet dtype="Boolean">false</RequirePrintedCountSheet>
+      <AllowEnterCountsBeforeInitiating dtype="Boolean">true</AllowEnterCountsBeforeInitiating>
+      <DaysBeforeBeginDateInitiateAllowed dtype="Integer">3</DaysBeforeBeginDateInitiateAllowed>
+      <DaysAfterBeginDateInitiateAllowed dtype="Integer">1</DaysAfterBeginDateInitiateAllowed>
+      <EnforceInitiateCountDate dtype="Boolean">true</EnforceInitiateCountDate>
+      <BlankLinesPerPrintedCountSheet dtype="Integer">10</BlankLinesPerPrintedCountSheet>
+      <PrintBlankLinesAfterPrimaryCycle dtype="Boolean">false</PrintBlankLinesAfterPrimaryCycle>
+    </InventoryCount>
+
+    <LoginSecurity dtype="Default">
+      <IdType dtype="String">login_id</IdType> <!--BZ2818 -->
+      <PasswordHistoryLength dtype="PositiveInteger">4</PasswordHistoryLength>
+      <AccountLockout dtype="Default">
+        <Enabled dtype="Boolean">true</Enabled>
+        <Retries dtype="PositiveInteger">3</Retries>
+      </AccountLockout>
+      <PasswordExpiration dtype="Default">
+        <Enabled dtype="Boolean">true</Enabled>
+        <Days dtype="PositiveInteger">90</Days>
+      </PasswordExpiration>
+      <ChallengeQuestionsEnabled dtype="Boolean">false</ChallengeQuestionsEnabled><!-- BZ22838-->
+      <NumberOfChallengeQuestions dtype="Integer">3</NumberOfChallengeQuestions>
+      <ChallengeQuestionRetries dtype="Integer">3</ChallengeQuestionRetries>
+
+      <!-- time interval in seconds to run the UnlockUserWorker -->
+      <UnlockUserRepeatInterval dtype="Integer">300</UnlockUserRepeatInterval>
+
+      <!-- the elapse time in minutes from the locked_out_timestamp before unlocking the user -->
+      <LapseTimeBeforeUnlockingUser dtype="Integer">15</LapseTimeBeforeUnlockingUser> <!-- BZ27670 changed 30 to 15 -->
+    </LoginSecurity>
+    <!-- END BZ22838-->
+    <CustomerSearch dtype="Default">
+      <SelectButtonEnabled dtype="Boolean">true</SelectButtonEnabled>
+      <NameSeparator dtype="String">,</NameSeparator>
+      <MaxNumberOfCustomers dtype="Integer">50</MaxNumberOfCustomers>
+    </CustomerSearch>
+    
+    <!-- Begin BZ24224 -->
+    <!-- <Help dtype="Default">
+      <HelpKey dtype="String"></HelpKey> Ref to: SystemConfigMetadata.properties (HelpKey.description) so that how to disable Help function
+      <HelpFilePath dtype="Url"></HelpFilePath>
+      <HelpMenu dtype="String">ADMIN::HELP</HelpMenu>
+    </Help> -->
+    <!-- End BZ24224 -->
+    <!-- Begin BZ24490 -->
+    <Transaction dtype="Default">
+      <PromptForCancelReasonCode dtype="Boolean">true</PromptForCancelReasonCode>
+      <DisplayFeesLine dtype="Boolean">true</DisplayFeesLine>
+      <CachePriceOfItemsAddedToTheTransaction dtype="Boolean">false</CachePriceOfItemsAddedToTheTransaction>
+      <!-- Begin BZ26270 Added -->
+      <DisplayUPCLine dtype="Boolean">true</DisplayUPCLine>
+      <!-- End BZ26270 -->
+    </Transaction>
+    <!-- End BZ24490 -->
+    <!-- Begin BZ24350 -->
+     <Tax dtype="Default">
+      <PromptForTaxChangeReason dtype="Boolean">true</PromptForTaxChangeReason>
+      <PromptForTaxExemptReason dtype="Boolean">true</PromptForTaxExemptReason>
+      <AllowExemptAllTaxLines dtype="Boolean">true</AllowExemptAllTaxLines>
+      <ChangeIndividualTaxLines dtype="Boolean">true</ChangeIndividualTaxLines>
+      <TaxGroupLines dtype="Integer">1</TaxGroupLines>
+      <CompoundTaxIncludeOtherCompTaxAmt dtype="Boolean">false</CompoundTaxIncludeOtherCompTaxAmt>
+      <EnableTaxCodeDisplayAndPrint dtype="Boolean">true</EnableTaxCodeDisplayAndPrint>
+      <EnableVatTaxSummaryPrint dtype="Boolean">true</EnableVatTaxSummaryPrint>
+      <DisableChangeTaxAmount dtype="Boolean">false</DisableChangeTaxAmount>
+      <SelectTaxPercentFromList dtype="Boolean">false</SelectTaxPercentFromList>
+      <IgnoreTaxGroups dtype="String"></IgnoreTaxGroups>
+    </Tax>
+    <!-- End BZ24350 -->
+    <!-- BZ 24659 Start -->
+     <ItemSale dtype="Default">
+      <MinItemIdLength dtype="PositiveInteger">1</MinItemIdLength>
+      <MaxItemIdLength dtype="PositiveInteger">20</MaxItemIdLength>
+      <MinItemSerialLength dtype="PositiveInteger">2</MinItemSerialLength>
+      <MaxItemSerialLength dtype="PositiveInteger">50</MaxItemSerialLength>
+      <MaxItemPrice dtype="BigDecimal">999999</MaxItemPrice>
+      <UseItemTableAsPrimary dtype="Boolean">true</UseItemTableAsPrimary>
+      <AllowItemNotOnFile dtype="Boolean">true</AllowItemNotOnFile>
+      <NotifyForItemNotOnFile dtype="Boolean">true</NotifyForItemNotOnFile>
+      <ItemNotOnFileDefaultId dtype="String">0600</ItemNotOnFileDefaultId><!-- BZ 24817 -->
+      <PromptUserForSaleCompletion dtype="Boolean">true</PromptUserForSaleCompletion>
+      <RequireItemVoidReasonCode dtype="Boolean">true</RequireItemVoidReasonCode>
+      <PromptForBirthDate dtype="Boolean">true</PromptForBirthDate> <!--BZ24742-->
+      <!-- This is only for XstoreMobile (...for now).  See metadata for details. -->
+      <ShowItemImages dtype="Boolean">true</ShowItemImages>
+    </ItemSale>
+    <!-- BZ 24659 End -->
+    <!-- BZ25674 Start -->
+    <EmployeeSale dtype="Default">
+      <AllowSelfSale dtype="Boolean">true</AllowSelfSale>
+    </EmployeeSale>
+    <!-- BZ25674 End -->
+    <!-- BZ26207 Begin Work Order Session -->
+    <WorkOrder dtype="Default">
+      <MaxNumberOfResults dtype="String">50</MaxNumberOfResults><!--  BZ29206 -->
+      <BatchShipMode dtype="Boolean">false</BatchShipMode>
+      <UseCategoryServiceLocations dtype="Boolean">false</UseCategoryServiceLocations>
+      <DefaultLeadDays dtype="PositiveInteger">10</DefaultLeadDays>
+      <AutoGenerateWorkOrderId dtype="Boolean">true</AutoGenerateWorkOrderId>
+      <AllowMultipleItemsPerWorkOrder dtype="Boolean">true</AllowMultipleItemsPerWorkOrder>
+      <RequireDeposit dtype="Boolean">true</RequireDeposit>
+      <MinimumDepositAmount dtype="BigDecimal">0.01</MinimumDepositAmount>   <!-- BZ27208 -->
+      <DepositPercentage dtype="BigDecimal">100</DepositPercentage>
+      <!-- ALWAYS - always prompt for serial number, even if item is not serialized, 
+           SERIALIZED - prompt only if item is serialized, 
+           SERIALIZEDDUMMY - prompt if item is serialized or a dummy sku -->
+      <WorkItemSerialPromptMethod dtype="String">SERIALIZED</WorkItemSerialPromptMethod>
+    </WorkOrder>
+    <!-- BZ26207 End Work Order Session -->
+
+    <!-- BZ27069 Begin: Copied from base to set Proportion Deal Amt off for returns -->
+     <Deals dtype="Default">
+      <!-- DisplayProportionDealAmt true: System proportionally break down the deal discount among the sale line items that belongs to this deal.
+           EX: BOGO deal "Buy X get X free" X is $20. When buy 2 X, system will display $10 for each item.
+           DisplayProportionDealAmt false: System display sale line item amount as it described in the deal.
+           EX: BOGO deal "Buy X get X free" X is $20. When buy 2 X, system will display $20 for first X and $0 for the second X.  -->
+      <DisplayProportionDealAmt dtype="Boolean">false</DisplayProportionDealAmt>
+      <DisplayProportionDealAmtOnReturn dtype="Boolean">false</DisplayProportionDealAmtOnReturn>
+      <DisplayNegative dtype="Boolean">false</DisplayNegative>
+    </Deals>
+    <!-- BZ27069 End -->
+    <!-- BEGIN BZ30922 -->
+    <InventoryLookup dtype="Default">
+        <IsProximitySearch dtype="Boolean">true</IsProximitySearch>
+    </InventoryLookup>
+    <!-- END BZ30922 -->
+
+    <!-- Begin BZ33586 -->
+    <Warranty dtype="Default">
+      <CustomerAcceptancePrompted dtype="Boolean">false</CustomerAcceptancePrompted>
+    </Warranty>
+    <!-- End BZ33586 -->
+
+    <!-- BEGIN BZ38035 -->
+    <MixedTransactionSettings dtype="Default">
+      <AllowNegativeTotalInExchangeTransaction dtype="Boolean">true</AllowNegativeTotalInExchangeTransaction>
+      <!-- Assiging a value which is less than or equal to zero will disable the mixing rule below. -->
+      <MaximumAllowedTotal dtype="BigDecimal">0</MaximumAllowedTotal>
+      <AllowSaleItemTypeInMixedTransaction dtype="Default">
+        <!-- What this section really means is the inverse of "Must this item type be exclusive in a 
+             transaction?" For example, if SALE is set to false, then SALE type items only can be 
+             added to transactions with no items or with other SALE type items. -->
+        <SALE dtype="Boolean">true</SALE>
+        <RETURN dtype="Boolean">true</RETURN>
+        <LAYAWAY dtype="Boolean">true</LAYAWAY>
+        <SPECIALORDER dtype="Boolean">true</SPECIALORDER>
+        <ORDER dtype="Boolean">true</ORDER>
+        <SENDSALE dtype="Boolean">true</SENDSALE>
+        <WORKORDER dtype="Boolean">true</WORKORDER>
+      </AllowSaleItemTypeInMixedTransaction>
+    </MixedTransactionSettings>
+    <!-- END BZ38035 -->
+  </SystemConfig>
+</Store>

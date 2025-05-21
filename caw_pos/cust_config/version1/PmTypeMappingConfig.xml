@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * INT-020              120417    EMV
+ * INT-92               260817    Customer Integration
+ * BZ23367              160917    Club# doesn't display on Account tab when searching the customer has memberships number
+ * BZ24601              221217    Price of customer is changed from RETL to CLUB unexpectedly when sending catalyst=1 request
+ * BZ27064              060818    [1.6.4] WO Help Desk error when complete the WO Deposit
+ * BZ27028              021018    [New Requirement] Move the configuration for Return Merchandise Receipt into the table
+ * BZ28356              161118    [Internal] Remove the Vendor Cost Attribute from Transaction Receipts for 0500/500 item
+ * BZ29625              080419    [New Requirement] - Auto-Renewal Item Specific Receipts
+ * BZ28014              310519    [New Requirement] Xstore needs to allow stackability for/Allow multiple Merchant Certificates in a transaction
+ * BZ31793              250719    [INTERNAL] serializedCoupon field in OS log is returned same serial numbers for each Merchant Certificate coupon
+ * BZ47440              071221    [Internal patch 7.0.16] Order Complete Receipt - Deposit/Payments and Balance Due printed incorrectly when picking up an BOPIS that contained cancelled item
+ *===================================================================
+ */ 
+-->
+
+<PmTypeMappingSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PmTypeMappingConfig.xsd">
+
+  <!-- =================================================================================================== -->
+  <!-- ==                 PLEASE MAINTAIN ALPHABETICAL ORDER WHEN ADDING NEW TYPES                      == -->
+  <!-- =================================================================================================== -->
+  
+  <PmTypeMapping ObjectId="dtv.xst.dao.crm.PartyIdCrossReferencePropertyId"
+        PmType="CUSTOMER_CRM" />
+  <!-- Begin BZ23367 -->
+  <PmTypeMapping ObjectId="dtv.xst.dao.cat.CustomerLoyaltyAccountPropertyId"
+        PmType="CUSTOMER_CRM" />
+  <!-- End BZ23367 -->
+  <!-- Begin BZ24601 -->
+  <!-- <PmTypeMapping ObjectId="dtv.xst.dao.cat.CustomerAccountId"
+        PmType="CUSTOMER_CRM" /> BZ27064 removed out-->
+  <!-- End BZ24601 -->
+  <!-- Begin BZ27028 -->
+  <PmTypeMapping ObjectId="dtv.xst.dao.com.ReasonCodeId" PmType="CODES" LoadProperties="true"/>
+  <PmTypeMapping ObjectId="dtv.xst.dao.com.ReasonCodePropertyId" PmType="CODES" />
+  <!-- End BZ27028 -->
+  
+  <!-- Begin BZ28356 -->
+  <PmTypeMapping ObjectId="dtv.xst.dao.itm.ItemPromptPropertyId"  PmType="ITEM" LoadProperties="true"/>
+  <PmTypeMapping ObjectId="dtv.xst.dao.itm.ItemPromptPropertyPropertyId"  PmType="ITEM" />
+  <!-- End BZ28356 -->
+  
+   <!-- BEGIN BZ29625 -->
+  <PmTypeMapping ObjectId="dtv.xst.dao.com.CodeValueId" PmType="CODES" LoadProperties="true"/>
+  <PmTypeMapping ObjectId="dtv.xst.dao.com.CodeValuePropertyId" PmType="CODES" />
+
+  <PmTypeMapping ObjectId="dtv.xst.dao.itm.ItemMessageId" PmType="ITEM" LoadProperties="true"/>
+  <PmTypeMapping ObjectId="dtv.xst.dao.itm.ItemMessagePropertyId" PmType="ITEM" />
+
+  <PmTypeMapping ObjectId="dtv.xst.dao.itm.ItemMessageCrossReferenceId" PmType="ITEM" LoadProperties="true"/>
+  <PmTypeMapping ObjectId="dtv.xst.dao.itm.ItemMessageCrossReferencePropertyId" PmType="ITEM" />
+  <!-- END BZ29625 -->
+  
+  <!-- BEGIN BZ28014 -->
+  <PmTypeMapping ObjectId="dtv.xst.dao.prc.DealId"  PmType="DEALS" LoadProperties="true"/>
+  <PmTypeMapping ObjectId="dtv.xst.dao.prc.DealPropertyId"  PmType="DEALS"/>
+  <!-- END BZ28014 -->
+
+  <!-- BEGIN BZ31793 -->
+  <PmTypeMapping ObjectId="dtv.xst.dao.trl.RetailPriceModifierId"  PmType="TRANSACTION" LoadProperties="true"/>
+  <PmTypeMapping ObjectId="dtv.xst.dao.trl.RetailPriceModifierPropertyId"  PmType="TRANSACTION"/>
+  <!-- END BZ31793 -->
+  <!-- BEGIN BZ47440 -->
+  <PmTypeMapping ObjectId="dtv.xst.dao.xom.OrderLinePropertyId" PmType="ORDER" />
+  <PmTypeMapping ObjectId="dtv.xst.dao.xom.OrderLineId" PmType="ORDER" LoadProperties="true"/>
+  <!-- END BZ47440 -->
+</PmTypeMappingSet>

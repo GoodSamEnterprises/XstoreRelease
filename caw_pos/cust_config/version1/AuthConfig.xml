@@ -1,0 +1,923 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ23164              080917    [DEV] Implement EMV Payment Integration
+ * BZ23359              270917    Gift cards can't be swiped at screen
+ * BZ23609              270917    [Tender] The gift card decline message is incorrect
+ * BZ23641              290917    Call referral screen displayed incorrect when timeout transaction
+ * BZ23635              290917    [Payments] Fix text for offline response on the TENDER AUTHORIZATION screen
+ * BZ23359              021017    Gift cards can't be swiped at screen
+ * BZ23689              031017    [Xstore] Fix text that displays in POS when customer cancels on pin pad
+ * BZ23726              041017    [Payment] Missing dialog message when cancels the gift card tender
+ * BZ23629              051017    [Xstore] Help Desk Error after submitting ADD COMMENT screen during receipt return
+ * BZ23435              161017    [EMV] Clean VFP code out of Camping World
+ * BZ24151              261017    Missing Auth#/Currency/Device ID/TID/RRN in receipt when performing return transaction with Good SAM Visa- EMV credit card.
+ * BZ24854              151217    [PROD] Return to GSVS transaction failed in order service with error "Tender.authorization is required for Credit tenders."
+ * BZ29590              010319    [Internal] PLCC/CO-BRAND-Good Sam Visa should be displayed on receipt instead of Credit/Card when using authorized token tender of Credit application to tender.
+ * BZ29950              040419    [Internal][Xstore log] Error statement is thrown into log each using PLCC token tender amount.
+ * BZ37305              260820    [New Requirement] Prompting Engine call before customer information gets displayed on the PinPad.      
+ *===================================================================
+ */
+  -->
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AuthConfig.xsd">
+  <!-- BEGIN BZ29950 -->
+  <!-- ***** AuthProcess XPAY_HOST *************************************** -->
+  <AuthProcess name="XPAY_HOST" Abstract="true">
+    <Parameter name="communicatorHosts">
+      <param_value dtype="List">
+        <!-- the timeout value in the host string is the connect timeout -->
+        <IPHost dtype="String">http://127.0.0.1:9092/soap;timeout=60000;urn=uri:xpay</IPHost>
+      </param_value>
+    </Parameter>
+    <!-- following setting can be used to indicate the -->
+    <!-- processor is offline permenantly (or for a long time anyway) -->
+    <Parameter name="connectionEnabled" value="true" />
+    <Parameter name="communicatorReceiveTimeoutMillis" value="60000" />
+    <Parameter name="partialApprovals" value="Y" />
+    <!-- Set "trackBalance" to "true" if remaining balances reported by Xpay should be captured. -->
+    <Parameter name="trackBalance" value="false" />
+    <Parameter name="manualAuthValidation.length.maximum" value="30" />
+  
+    <!-- this credential enables HTTP basic authentication. User name and password here is admin/admin
+         This is intended to be change as part of the script that takes values from base-xstore.properties 
+     -->
+    <Parameter name="connectionUserName">
+      <param_value dtype="EncryptedString" encrypted="" />
+    </Parameter>
+    <Parameter name="connectionPassword">
+       <param_value dtype="EncryptedString" encrypted="" /> 
+    </Parameter>
+  </AuthProcess>
+  <!-- END BZ29950 -->
+  <!-- ***** AuthProcess MIRA_HOST **************************************** -->
+  <AuthProcess name="MIRA_HOST" Abstract="true">
+    <AuthProcessClass dtype="Class">caw.tender.impl.mira.CawMiraAuthProcess</AuthProcessClass>
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-IN-MIRA_HOST" />
+    <!-- following setting can be used to indicate the -->
+    <!-- processor is offline permenantly (or for a long time anyway) -->
+    <Parameter name="connectionEnabled" value="true" />
+    <!--<Parameter name="communicatorReceiveTimeoutMillis" value="300000" />-->
+    <Parameter name="communicatorReceiveTimeoutMillis" value="180000" />
+    <Parameter name="manualAuthValidation.length.maximum" value="30" />
+  </AuthProcess>
+  <!-- ***** AuthProcess MIRA ********************************************* -->
+  <AuthProcess name="MIRA" extends="MIRA_HOST" Abstract="true">
+    <!-- +++++ MIRA communication parameters +++++ -->
+    <Parameter name="communicator" value="caw.tender.impl.mira.CawMiraCommunicator" />
+    <AuthProcessClass dtype="Class">caw.tender.impl.mira.CawMiraAuthProcess</AuthProcessClass>
+    <!-- the following (communicatorProgress...) control the progress bar -->
+    <!-- progress timing that work well with an IP connection -->
+    <Parameter name="communicatorProgressConnectMillis" value="500" />
+    <Parameter name="communicatorProgressSendingMillis" value="500" />
+    <Parameter name="communicatorProgressWaitMillis" value="6000" />
+    <Parameter name="communicatorProgressReceiveMillis" value="500" />
+    <!-- progress timings that work well with a dial-up connection -->
+    <!-- +++++ MIRA message-java marshalling parameters +++++ -->
+    <Parameter name="requestConverter" value="caw.tender.impl.mira.request.CawMiraRequestConverter" />
+    <Parameter name="responseConverter" value="caw.tender.impl.mira.response.CawMiraResponseConverter" />
+    <!-- +++++ MIRA auth record parameters +++++ -->
+    <Parameter name="manualAuthSuccessAdjucationCode" value="AUTHORIZED" />
+    <Parameter name="abortedAuthSuccessAdjucationCode" value="ABORTED" />
+    <!-- +++++ MIRA action map -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given RTS result code -->
+      <param_value dtype="Map">
+         <!--  BZ 16479 Fix start -->
+          <MapEntry key="DECLINED">
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+         <!--  BZ 16479 Fix End -->
+         <MapEntry key="CARD_NUM_ERROR">
+          <!-- CAR NUM ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN RTS IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE_CANT_PROCESS_TYPE">
+          <!-- WHEN RTS IS OFFLINE_CANT_PROCESS -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="CARD_NUM_ERROR">
+              <!-- CAR NUM ERROR BZ23629-->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+        <MapEntry key="TIMEOUT">
+          <!-- WHEN RTS IS TIMEOUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- WHEN A BAD NUMBER IS ENTERED BY THE CASHIER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="BALANCE_INQUIRY_OFFLINE">
+          <!-- WHEN MIRA IS OFFLINE for a BALANCE_INQUIRY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="DEVICE_TIME_OUT">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="VOICE_APPROVAL">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="ERROR_NOT_SUPPORT">
+          <!-- NOT SUPPORT REQUEST-->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess MIRA_CREDIT ************************************** -->
+  <AuthProcess name="MIRA_CREDIT" extends="MIRA" Abstract="true">
+    <AuthProcessClass dtype="Class">caw.tender.impl.mira.CawMiraAuthProcess</AuthProcessClass>
+    <!-- not specifying a value will value cause it to be cleared to null -->
+    <Parameter name="clearTrack2With" value="" />
+    <!-- +++++ MIRA_CREDIT message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various aciton codes -->
+      <param_value dtype="Map">
+         <!--  BZ 16479 Fix start -->
+         <MapEntry key="DECLINED">
+           <!-- message shown for RTS result 1 (decline) -->
+           <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgDECLINE">
+             <Parameter dtype="EvaluatedFormattable" method="getRequest.getLineItem.getLineDescription" />
+             <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+             <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+           </value>
+         </MapEntry>
+        <!--  BZ 16479 Fix End -->
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getAuthorizationResponse" />
+          </value>
+        </MapEntry>
+        <!-- BEGIN BZ23641 -->
+        <MapEntry key="OFFLINE">
+         <!--  message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_cawXpayCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCreditOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="TIMEOUT">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_cawXpayCreditAuthProcessFailedOffline">
+          </value>
+        </MapEntry>
+        <!-- END BZ23641 -->
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="CID_REENTRY">
+          <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+        </MapEntry>
+                <MapEntry key="USER_CANCEL"><!-- BZ23726 -->
+                    <!-- message displayed when the user selects cancel -->
+                    <value dtype="ParameterizedFormattable" TranslationKey="_authUserCancelled" />
+                </MapEntry>
+        <MapEntry key="MESSAGE_CODE_USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_cawCreditAuthUserCancelled" /><!-- BZ23689 -->
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_DECLINED">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE::INQUIRE_BALANCE">
+         <!--  message displayed when RTS is offline -->
+         <!-- BEGIN BZ29590 -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_cawCreditMsgUNKNOWN"><!-- BZ23635 -->
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+         <!-- END BZ29590 -->
+          </value>
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_DECLINED_BALANCE_INQUIRY">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_declinedGiftCardMsg" />
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_Invalid_BALANCE_INQUIRY_INVALID_CARD_TYPE">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_invalidGiftCardTypeMess" />
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_DECLINED_BALANCE_INQUIRY_INVALID_FORMAT">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_invalidGiftCardFormatMess" />
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_Undefined_BALANCE_INQUIRY">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_employeeFingerprintScanNotCompleted" />
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_CARD_NUM_ERROR">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgCARD_NUM_ERROR">
+          </value>
+        </MapEntry>
+    <MapEntry key="CARD_NUM_ERROR"><!-- BZ23629 -->
+        <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+        <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgCARD_NUM_ERROR">
+        </value>
+    </MapEntry>
+        <MapEntry key="MESSAGE_CODE_OFFLINE_CANT_PROCESS_TYPE">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgOFFLINE_CANT_PROCESS_TYPE">
+          </value>
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_OFFLINE_RETURN">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgOFFLINE_CANT_PROCESS_TYPE">
+          </value>
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_TIMEOUT">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_ERROR_NOT_SUPPORT">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgNOTSUPPORT">
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_DEVICE_TIME_OUT">
+          <!-- message shown for RTS result 10 (DEVICE TIME OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgDEVICE_TIME_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="MESSAGE_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_cawCreditMsgUNKNOWN"><!-- BZ23635 -->
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthRequestMap MIRA_CREDIT ************************ -->
+  <AuthRequestMap name="MIRA_CREDIT">
+    <AuthRequest key="CREDIT_APP" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true" />
+    <AuthRequest key="TENDER" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true">
+      <Parameter name="RequestType" value="01" />
+      <Parameter name="isThrowEvent" value="TRUE" />
+      <Parameter name="SendType" value="MULTI_THREAD" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true">
+      <Parameter name="RequestType" value="04" />
+      <Parameter name="isThrowEvent" value="TRUE" />
+      <Parameter name="SendType" value="MULTI_THREAD" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true">
+      <Parameter name="RequestType" value="03" />
+      <Parameter name="isThrowEvent" value="TRUE" />
+      <Parameter name="SendType" value="MULTI_THREAD" />
+    </AuthRequest>
+    <AuthRequest key="VOID_REFUND_TENDER" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true">
+      <Parameter name="RequestType" value="06" />
+      <Parameter name="isThrowEvent" value="TRUE" />
+      <Parameter name="SendType" value="MULTI_THREAD" />
+    </AuthRequest>
+  </AuthRequestMap>
+  <!-- ***** AuthProcess MIRA_CREDIT_STORE_SETTINGS************************ -->
+  <AuthProcess name="MIRA_CREDIT_STORE_SETTINGS" extends="MIRA_CREDIT" Abstract="true">
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-IN-MIRA_STORE_SETTINGS" />
+    <Parameter name="isManualAuthAmountEditable" value="false" />
+  </AuthProcess>
+  <!-- ***** AuthProcesses that extend MIRA_CREDIT_STORE_SETTINGS ********* -->
+  <!-- ***** AuthProcess MIRA_VISA **************************************** -->
+  <AuthProcess name="MIRA_VISA" extends="MIRA_CREDIT_STORE_SETTINGS" />
+  <AuthProcess name="EIGEN" extends="MIRA_CREDIT_STORE_SETTINGS" />
+  <AuthProcess name="SHOPPING_PASS" extends="MIRA_CREDIT_STORE_SETTINGS" /><!-- BZ24151 -->
+  <AuthProcess name="GSVISA" extends="MIRA_CREDIT_STORE_SETTINGS" /><!-- BZ 24854 -->
+  <AuthProcess name="GSPLCC" extends="MIRA_CREDIT_STORE_SETTINGS" /> <!-- BZ29590 -->
+  <AuthProcess name="MIRA_CHECK" extends="MIRA_CREDIT_STORE_SETTINGS" />
+
+    <AuthRequestMap name="MIRA_CREDIT">
+        <AuthRequest key="CREDIT_APP" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true" />
+        <AuthRequest key="TENDER" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true">
+          <Parameter name="RequestType" value="01" />
+          <Parameter name="isThrowEvent" value="TRUE" />
+          <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="REFUND_TENDER" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true">
+          <Parameter name="RequestType" value="04" />
+          <Parameter name="isThrowEvent" value="TRUE" />
+          <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="VOID_TENDER" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true">
+          <Parameter name="RequestType" value="03" />
+          <Parameter name="isThrowEvent" value="TRUE" />
+          <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="VOID_REFUND_TENDER" class="caw.tender.impl.mira.request.CawMiraRequest" enabled="true">
+          <Parameter name="RequestType" value="06" />
+          <Parameter name="isThrowEvent" value="TRUE" />
+          <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <!-- BEGIN BZ37305 -->
+        <AuthRequest key="DISPLAY_CUSTOMER" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+          <Parameter name="RequestType" value="93" />
+          <Parameter name="isThrowEvent" value="TRUE" />
+          <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <!--END BZ37305 -->
+    </AuthRequestMap>
+    
+    <AuthProcess name="MIRA" extends="XPAY_GIFT_CARD_RELATE" />
+    <AuthRequestMap name="XPAY_GIFT_CARD_RELATE">
+        <AuthRequest key="ISSUE" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+            <Parameter name="RequestType" value="21" />
+            <Parameter name="isThrowEvent" value="TRUE" />
+            <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="VOID_ACTIVATE" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+            <Parameter name="RequestType" value="22" />
+            <Parameter name="isThrowEvent" value="TRUE" />
+            <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="INQUIRE_BALANCE" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+            <Parameter name="RequestType" value="28" />
+            <Parameter name="isThrowEvent" value="TRUE" />
+            <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="TENDER" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+          <Parameter name="RequestType" value="25" />
+          <Parameter name="isThrowEvent" value="TRUE" />
+          <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="VOID_TENDER" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+          <Parameter name="RequestType" value="26" />
+          <Parameter name="isThrowEvent" value="TRUE" />
+          <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="RELOAD" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+            <Parameter name="RequestType" value="24" />
+            <Parameter name="isThrowEvent" value="TRUE" />
+            <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="VOID_RELOAD" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+            <Parameter name="RequestType" value="35" />
+            <Parameter name="isThrowEvent" value="TRUE" />
+            <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="CASH_OUT" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+            <Parameter name="RequestType" value="CASH_OUT" />
+            <Parameter name="isThrowEvent" value="TRUE" />
+            <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+        <AuthRequest key="VOID_CASH_OUT" class="caw.tenderauth.impl.eigen.request.CawMiraGiftCardRequest" enabled="true">
+            <Parameter name="RequestType" value="26" />
+            <Parameter name="isThrowEvent" value="TRUE" />
+            <Parameter name="SendType" value="MULTI_THREAD" />
+        </AuthRequest>
+    </AuthRequestMap>
+    
+    <AuthProcess name="XPAY_GIFT_CARD_RELATE" extends="XPAY_GIFT_CARD_RELATE_STORE_SETTINGS">
+        <!-- +++++ MIRA communication parameters +++++ -->
+        <Parameter name="communicator" value="caw.tender.impl.mira.CawMiraCommunicator" />
+        <AuthProcessClass dtype="Class">caw.tender.impl.mira.CawMiraAuthProcess</AuthProcessClass>
+        <!-- the following (communicatorProgress...) control the progress bar -->
+        <!-- progress timing that work well with an IP connection -->
+        <Parameter name="communicatorProgressConnectMillis" value="500" />
+        <Parameter name="communicatorProgressSendingMillis" value="500" />
+        <Parameter name="communicatorProgressWaitMillis" value="6000" />
+        <Parameter name="communicatorProgressReceiveMillis" value="500" />
+        <!-- progress timings that work well with a dial-up connection -->
+        <!-- +++++ MIRA message-java marshalling parameters +++++ -->
+        <Parameter name="requestConverter" value="caw.tender.impl.mira.request.CawMiraRequestConverter" />
+        <Parameter name="responseConverter" value="caw.tender.impl.mira.response.CawMiraResponseConverter" />
+
+        <Parameter name="disallowManualAuth.forRequestType.ISSUE" value="ISSUE" />
+        <Parameter name="disallowManualAuth.forRequestType.RELOAD" value="RELOAD" />
+        <Parameter name="disallowManualAuth.forRequestType.INQUIRE_BALANCE" value="INQUIRE_BALANCE" />
+        <Parameter name="disallowManualAuth.forRequestType.CASH_OUT" value="CASH_OUT" />
+        <Parameter name="disallowManualAuth.forRequestType.TENDER" value="TENDER" />
+        <Parameter name="disallowManualAuth.forRequestType.VOID_ACTIVATE" value="VOID_ACTIVATE" />
+        <Parameter name="disallowManualAuth.forRequestType.VOID_RELOAD" value="VOID_RELOAD" />
+        <Parameter name="disallowManualAuth.forRequestType.VOID_CASH_OUT" value="VOID_CASH_OUT" />
+        <Parameter name="disallowManualAuth.forRequestType.VOID_TENDER" value="VOID_TENDER" />
+        
+        <!-- +++++ MIRA auth record parameters +++++ -->
+        <Parameter name="manualAuthSuccessAdjucationCode" value="AUTHORIZED" />
+        <Parameter name="abortedAuthSuccessAdjucationCode" value="ABORTED" />
+        <!-- +++++ MIRA action map -->
+        <Parameter name="actionMap">
+          <!-- a map of available action buttons for a given RTS result code -->
+          <param_value dtype="Map">
+             <!--  BZ 16479 Fix start -->
+              <MapEntry key="DECLINED">
+              <!-- DECLINE -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+              </value>
+            </MapEntry>
+             <!--  BZ 16479 Fix End -->
+             <MapEntry key="CARD_NUM_ERROR">
+              <!-- CAR NUM ERROR -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="OFFLINE">
+              <!-- WHEN RTS IS OFFLINE -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="OFFLINE_CANT_PROCESS_TYPE">
+              <!-- WHEN RTS IS OFFLINE_CANT_PROCESS -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="TIMEOUT">
+              <!-- WHEN RTS IS TIMEOUT -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+              <!-- WHEN A BAD NUMBER IS ENTERED BY THE CASHIER -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="USER_CANCEL">
+              <!-- WHEN USER SELECTS CANCEL -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="EXCEPTION">
+              <!-- IF FATAL ERROR IN XSTORE CODE -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="BALANCE_INQUIRY_OFFLINE">
+              <!-- WHEN MIRA IS OFFLINE for a BALANCE_INQUIRY -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="DEVICE_TIME_OUT">
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="VOICE_APPROVAL">
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="ERROR_NOT_SUPPORT">
+              <!-- NOT SUPPORT REQUEST-->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="Undefined_ACTIVE">
+              <!-- UNDEFINED ERROR ACTIVE GIFT CARD-->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="DECLINED_ACTIVE">
+              <!-- DECLINED ACTIVE GIFT CARD-->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+            <MapEntry key="OFFLINE::ISSUE">
+              <!-- WHEN RTS IS OFFLINE -->
+              <value dtype="AuthFailedActionTypes">
+                <FailedActionType dtype="String">CANCEL</FailedActionType>
+                <FailedActionType dtype="String">RETRY</FailedActionType>
+              </value>
+            </MapEntry>
+          </param_value>
+        </Parameter>
+        <Parameter name="authMessageMap">
+          <!-- a map of messages to display to the user for various aciton codes -->
+          <param_value dtype="Map">
+             <!--  BZ 16479 Fix start -->
+             <MapEntry key="DECLINED">
+               <!-- message shown for RTS result 1 (decline) -->
+               <!-- BEGIN BZ23609 -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_cawXpayCreditMsgDECLINE">
+                 <Parameter dtype="EvaluatedFormattable" method="getRequest.getLineItem.getLineDescription" />
+                 <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+                 <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+               </value>
+             </MapEntry>
+             <!-- END BZ23609 -->
+            <!--  BZ 16479 Fix End -->
+            <MapEntry key="MANUAL">
+              <!-- message displayed for a manual authorization -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+                <Parameter dtype="EvaluatedFormattable" method="getAuthorizationResponse" />
+              </value>
+            </MapEntry>
+            <MapEntry key="OFFLINE">
+              <!-- message displayed when RTS is offline -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthProcessFailedOffline">
+                <Parameter dtype="Translatable" name="_authCreditOffline" bundle="dtv.pos.i18n.phone" />
+              </value>
+            </MapEntry>
+            <MapEntry key="TIMEOUT">
+              <!-- message displayed when RTS is offline -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditAuthProcessFailedTimeOut">
+              </value>
+            </MapEntry>
+            <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+              <!-- message displayed when an invalid manual auth number is entered -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditAuthInvalidManualAuthNumber">
+                <Parameter dtype="EvaluatedFormattable" method="toString" />
+              </value>
+            </MapEntry>
+            <MapEntry key="CID_REENTRY">
+              <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_USER_CANCEL">
+              <!-- message displayed when the user selects cancel -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_cawCreditAuthUserCancelled" /><!-- BZ23689 -->
+            </MapEntry>
+            <MapEntry key="EXCEPTION">
+              <!-- message displayed if a fatal error in the XStore code occurs -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthFatalError" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_DECLINED">
+              <!-- message shown for RTS result 1 (decline) -->
+                    <!-- BEGIN BZ23609 -->
+               <value dtype="ParameterizedFormattable" TranslationKey="_cawXpayCreditMsgDECLINE">
+                <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+              </value>
+              <!-- END BZ23609 -->
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_CARD_NUM_ERROR">
+              <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgCARD_NUM_ERROR">
+              </value>
+            </MapEntry>
+            <MapEntry key="CARD_NUM_ERROR"><!-- BZ23629 -->
+              <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgCARD_NUM_ERROR">
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_OFFLINE_CANT_PROCESS_TYPE">
+              <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_cawXpayCreditMsgDECLINE">
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_OFFLINE_RETURN">
+              <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_cawXpayCreditMsgDECLINE">
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_TIMEOUT">
+              <!-- message shown for RTS result 10 (TIMED OUT) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_timeoutTenderGCMsg">
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_ERROR_NOT_SUPPORT">
+              <!-- message shown for action codes not mapped to other messages -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgNOTSUPPORT">
+                <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_DEVICE_TIME_OUT">
+              <!-- message shown for RTS result 10 (DEVICE TIME OUT) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgDEVICE_TIME_OUT">
+                <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_DECLINED_ACTIVE">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_declinedGiftCardMsg" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_DECLINED_ACTIVE_ACCT_ALREADY_ACTIVE">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_issueGiftCardAlreadyActivedMess" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_DECLINED_ACTIVE_INVALID_FORMAT">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_invalidGiftCardFormatMess" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_Invalid_ACTIVE">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_invalidGiftCardTypeMess" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_DECLINED_BALANCE_INQUIRY">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_declinedGiftCardMsg" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_DECLINED_BALANCE_INQUIRY_INVALID_CARD_TYPE">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_invalidGiftCardTypeMess" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_Invalid_BALANCE_INQUIRY_INVALID_CARD_TYPE">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_invalidGiftCardTypeMess" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_DECLINED_BALANCE_INQUIRY_INVALID_FORMAT">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_invalidGiftCardFormatMess" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_Undefined_BALANCE_INQUIRY">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_employeeFingerprintScanNotCompleted" />
+            </MapEntry>
+            <MapEntry key="USER_CANCEL">
+              <!-- message shown for RTS result 1 (decline) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_authUserCancelled" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_OTHER">
+              <!-- message shown for action codes not mapped to other messages -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_employeeFingerprintScanNotCompleted">
+              </value>
+            </MapEntry>
+          </param_value>
+        </Parameter>
+      </AuthProcess>
+  
+    <AuthProcess name="MIRA_GIFT_CARD" extends="MIRA_CREDIT_STORE_SETTINGS">
+      <Parameter name="authMessageMap">
+           <!-- a map of messages to display to the user for various aciton codes -->
+           <param_value dtype="Map">
+             <MapEntry key="MESSAGE_CODE_DECLINED">
+               <!-- message shown for RTS result 1 (decline) -->
+               <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgDECLINE">
+                 <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+                 <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+                 <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+               </value>
+             </MapEntry>
+            <MapEntry key="MANUAL">
+              <!-- message displayed for a manual authorization -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+                <Parameter dtype="EvaluatedFormattable" method="getAuthorizationResponse" />
+              </value>
+            </MapEntry>
+            <MapEntry key="OFFLINE">
+              <!-- message displayed when RTS is offline -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthProcessFailedOffline">
+                <Parameter dtype="Translatable" name="_authCreditOffline" bundle="dtv.pos.i18n.phone" />
+              </value>
+            </MapEntry>
+            <MapEntry key="TIMEOUT">
+              <!-- message displayed when RTS is offline -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditAuthProcessFailedTimeOut">
+              </value>
+            </MapEntry>
+            <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+              <!-- message displayed when an invalid manual auth number is entered -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditAuthInvalidManualAuthNumber">
+                <Parameter dtype="EvaluatedFormattable" method="toString" />
+              </value>
+            </MapEntry>
+            <MapEntry key="CID_REENTRY">
+              <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+            </MapEntry>
+               <MapEntry key="USER_CANCEL"><!-- BZ23726 -->
+                    <!-- message displayed when the user selects cancel -->
+                    <value dtype="ParameterizedFormattable" TranslationKey="_authUserCancelled" />
+                </MapEntry>
+            <MapEntry key="MESSAGE_CODE_USER_CANCEL">
+              <!-- message displayed when the user selects cancel -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_cawCreditAuthUserCancelled" /><!-- BZ23689 -->
+            </MapEntry>
+            <MapEntry key="EXCEPTION">
+              <!-- message displayed if a fatal error in the XStore code occurs -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthFatalError" />
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_CARD_NUM_ERROR">
+              <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgCARD_NUM_ERROR">
+              </value>
+            </MapEntry>
+            <MapEntry key="CARD_NUM_ERROR"><!-- BZ23629 -->
+              <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgCARD_NUM_ERROR">
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_OFFLINE_CANT_PROCESS_TYPE">
+              <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgOFFLINE_CANT_PROCESS_TYPE">
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_OFFLINE_RETURN">
+              <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgOFFLINE_CANT_PROCESS_TYPE">
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_TIMEOUT">
+              <!-- message shown for RTS result 10 (TIMED OUT) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTIMED_OUT">
+                <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_ERROR_NOT_SUPPORT">
+              <!-- message shown for action codes not mapped to other messages -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgNOTSUPPORT">
+                <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_DEVICE_TIME_OUT">
+              <!-- message shown for RTS result 10 (DEVICE TIME OUT) -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgDEVICE_TIME_OUT">
+                <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+              </value>
+            </MapEntry>
+            <MapEntry key="MESSAGE_CODE_OTHER">
+              <!-- message shown for action codes not mapped to other messages -->
+              <value dtype="ParameterizedFormattable" TranslationKey="_miraCreditMsgUNKNOWN">
+                <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+                <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+              </value>
+            </MapEntry>
+          </param_value>
+        </Parameter>
+      <Parameter name="actionMap">
+        <param_value dtype="Map">
+          <MapEntry key="DECLINED">
+          <!-- CAR NUM ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN RTS IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE_CANT_PROCESS_TYPE">
+          <!-- WHEN RTS IS OFFLINE_CANT_PROCESS -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="TIMEOUT">
+          <!-- WHEN RTS IS TIMEOUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+           </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- WHEN A BAD NUMBER IS ENTERED BY THE CASHIER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+           </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+           </value>
+        </MapEntry>
+        <MapEntry key="BALANCE_INQUIRY_OFFLINE">
+          <!-- WHEN MIRA IS OFFLINE for a BALANCE_INQUIRY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+           </value>
+        </MapEntry>
+        <MapEntry key="DEVICE_TIME_OUT">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+         </value>
+        </MapEntry>
+        <MapEntry key="VOICE_APPROVAL">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="ERROR_NOT_SUPPORT">
+          <!-- NOT SUPPORT REQUEST-->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+    </param_value>
+    </Parameter>
+    </AuthProcess>
+</AuthConfig>

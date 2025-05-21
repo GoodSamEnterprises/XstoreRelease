@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#       ddMMyy      Description
+ * PAYMENT           070917      Payment-Item Display
+ * BZ23265           200917      Implement issue "Create Good Sam Visa" card function
+ * BZ24324           021117      Membership validation prompt should be distinguish when joining in GS club and GS RS (Roadside assistance)
+ * BZ24307           241117      [Xstore] Xstore displays "Please Wait" for about 12 seconds before displaying prompt to enter or swipe gift card
+ * BZ25115           270218      New Requirement - Add a Member Price Override Function to the POS Sale screen
+ * BZ26410           300518      [Technical] Move QAS URL from system.properties to ServiceHandlers.xml
+ * BZ26629           300718      [New Requirement] Add a prompt to capture discount code when the Retail Coupon discount reason is selected
+ * BZ27344           301018      Pin Pad Performance is slow when item price is updated by a deal/promo or a manual price adjustment
+ * BZ29292           140219      [Internal] Need to fix the text on the PLCC Shopping Pass to match ADS Requirements
+ * BZ28012           180219      [New Requirement] Reprocess the ApplicationStatus calls if first attempt is unsuccessful
+ * BZ29580           280219      [New Requirement] Change GUI verbiage for the terminated employee notification
+ * BZ30754           160519      [PORT 30531 to 5.0] [Prod] Unable to complete the WO if WO deposit is created in xstore offline mode
+ * BZ42630           170521      [Requirement] What is the effort and timeline to suppress the display of delivery orders from appearing in other areas of Xstore?
+ * BZ63225           230424      Issue with refunds from Work Order Completes
+ *===================================================================
+ */ 
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd"
+  default-init-method="init">
+
+  <!-- Spring beans that are singletons or framework beans can be defined in this file. Any realm-specific beans 
+    (validations, services, workers, etc) should be defined in their relevant Spring file that should be in the same 
+    directory as this file. -->
+
+  <context:annotation-config />
+
+  <beans profile="xstore">
+    <bean id="CawEigenMgr" class="caw.tenderauth.impl.eigen.CawEigenMgr" lazy-init="default"/>
+    <bean id="CawEigenHelper" class="caw.tenderauth.impl.eigen.CawEigenHelper" lazy-init="default"/> <!-- BZ-23265 -->
+    <bean id="CawMembershipActivityHelper" class="caw.pos.advance.prompting.CawMembershipActivityHelper" lazy-init="default"/><!-- BZ24324 -->
+    <!-- Begin BZ24307 -->
+    <bean id="hardwareMgr" class="caw.hardware.service.CawHardwareMgr" factory-method="getCurrentHardwareMgr" />
+    <!-- End BZ24307 -->
+    <bean id="cawMemberPriceOverrideHelper" class="caw.pos.register.sale.CawMemberPriceOverrideHelper" lazy-init="default"/> <!-- BZ25115 -->
+
+    <!-- Begin BZ26410 Must use getInstance and init methods-->
+    <bean id="CawQASConfigHandler" class="caw.pos.address.search.CawQASConfigHandler" factory-method="getInstance" init-method="init">
+              <property name="serviceId" value="CAW_QAS_PROWEB" />
+              <property name="serviceConfigHelper" ref="serviceConfigHelper" />
+    </bean>
+    <!-- End BZ26410 -->
+    
+    <!-- Begin BZ26629 -->
+     <bean id="cawDiscountCouponHelper" class="caw.pos.pricing.discount.CawDiscountCouponHelper" scope="transaction"/>
+    <!-- End BZ26629 -->
+    
+    <!-- Begin BZ27344 -->
+    <bean id="cawPinpadItemModelTaks" class="caw.tenderauth.impl.eigen.CawPinpadItemModelTaks" />
+    <task:scheduled-tasks scheduler="springTaskScheduler">
+      <task:scheduled ref="cawPinpadItemModelTaks" method="run" initial-delay="#{cawPinpadItemModelTaks.getInitialDelay()}" fixed-delay="#{cawPinpadItemModelTaks.getFixedDelay()}" />
+      <!-- Begin BZ28012 -->
+      <task:scheduled ref="cawRetryApplicationStatusTimes" method="run" initial-delay="250" fixed-delay="900000" />
+      <!-- End BZ28012 -->
+    </task:scheduled-tasks>
+    <!-- End BZ27344 -->
+    
+    <!-- Begin BZ29292 -->
+    <bean id="cawShoppingPassHelper" class="caw.tenderauth.impl.eigen.goodsam.op.CawShoppingPassHelper" />
+    <!-- End BZ29292 -->
+    
+    <!-- Begin BZ28012 -->
+    <bean id="cawRetryApplicationStatusTimes" class="caw.pos.startup.CawRetryApplicationStatusTimes" />
+    <!-- End BZ28012 -->
+    <!-- BEGIN BZ29580 -->
+    <bean id="authenticationModules" class="org.springframework.beans.factory.config.ListFactoryBean" scope="prototype">
+      <property name="sourceList">
+        <list value-type="dtv.pos.iframework.security.IAuthenticationModule">
+          <bean class="caw.pos.security.CawDatabaseAuthenticationModule" />
+        </list>
+      </property>
+    </bean>
+    <!-- END BZ29580 -->
+    
+    <bean id="transactionSearchHelper" class="caw.pos.ejournal.CawTransactionSearchHelper" /> <!-- BZ30754 -->
+    
+    <bean id="orderUtil" class="caw.pos.order.CawOrderUtil" /> <!-- BZ42630 -->
+    
+    <bean id="tenderHelper" class="caw.pos.tender.CawTenderHelper" /> <!-- BZ63225 -->
+  </beans>
+</beans>

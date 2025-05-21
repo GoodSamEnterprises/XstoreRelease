@@ -1,0 +1,558 @@
+<?xml version="1.0"?>
+<!--
+
+InstallX Common Initialization Targets and Properties
+
+-->
+<project name="installx-common-functionality" default="" basedir=".">
+  <!-- load plugins -->
+  <path id="ix.cp">
+    <fileset dir="./lib" includes="*.jar" />
+  </path>
+  <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="ix.cp" />
+  <!-- Warnings will be reported in Eclipse because of this file's location. This is normal, and should not cause issues in installer jars. -->
+  <taskdef name="failurelistener" classname="dtv.installx.ant.taskdefs.FailureListener" classpathref="ix.cp" /> 
+  <typedef name="containsproperty" classname="dtv.installx.ant.taskdefs.ContainsProperty" classpathref="ix.cp" />
+  <typedef name="generatepassword" classname="dtv.installx.ant.taskdefs.GeneratePassword" classpathref="ix.cp" />
+
+  <!-- load ant.install.properties from the gui and xstore.install.properties from the jar -->
+  <property file="${basedir}/ant.install.properties" />
+  <property file="${basedir}/xstore.install.properties" />
+  
+  <!-- Determine the installation directory -->
+  <condition property="default.dir" value="c:\${ix.appdir}" else="/opt/${ix.appdir}">
+    <os family="windows" />
+  </condition>
+  <condition property="install.dir" value="${installDir}" else="${default.dir}">
+    <!-- If this is an install of any type, an upgrade of the dataloader, or a poslog generator install of any type, use the installdir from the ant.install.properties file -->
+    <or>
+      <contains string="${install.type}" substring="install" />
+      <equals arg1="${ix.appname}" arg2="poslog" trim="true" casesensitive="false" />
+      <and>
+        <equals arg1="${ix.appname}" arg2="dataloader" trim="true" casesensitive="false" />
+        <contains string="${install.type}" substring="upgrade" />
+      </and>
+    </or>
+  </condition>
+  
+  <!-- set properties to control conditional steps -->
+  <condition property="isInstall"><contains string="${install.type}" substring="install" /></condition>
+  <condition property="isUpgrade"><contains string="${install.type}" substring="upgrade" /></condition>
+  <condition property="isUpdate"><contains string="${install.type}" substring="update" /></condition>
+  <condition property="isPatch"><contains string="${install.type}" substring="patch" /></condition>
+  <condition property="isInstallOrUpgrade">
+    <or>
+      <contains string="${install.type}" substring="install" />
+      <contains string="${install.type}" substring="upgrade" />
+    </or>
+  </condition>
+
+  <!-- XFG properties-->
+  <condition property="xstore.xfg"><equals arg1="${advanced.installation}" arg2="xfg" /></condition>
+
+  <!-- Xstore Mobile properties-->
+  <condition property="xstore.mobile"><equals arg1="${advanced.installation}" arg2="mobile" /></condition>
+
+  <!-- DB platform properties -->
+  <condition property="ismssql"><equals arg1="${platform.db}" arg2="mssql" trim="true" casesensitive="false" /></condition>
+  <condition property="ismssqlunicode"><equals arg1="${platform.db}" arg2="mssql-unicode" trim="true" casesensitive="false" /></condition>
+  <condition property="ismssqlormssqlunicode">
+    <or>
+      <equals arg1="${platform.db}" arg2="mssql" trim="true" casesensitive="false" />
+      <equals arg1="${platform.db}" arg2="mssql-unicode" trim="true" casesensitive="false" />
+    </or>
+  </condition>
+  <condition property="isoracle"><equals arg1="${platform.db}" arg2="oracle" trim="true" casesensitive="false" /></condition>
+  <condition property="isoraclepdb"><equals arg1="${platform.db}" arg2="oraclepdb" trim="true" casesensitive="false" /></condition>
+  <condition property="isoracleororaclepdb">
+    <or>
+      <equals arg1="${platform.db}" arg2="oracle" trim="true" casesensitive="false" />
+      <equals arg1="${platform.db}" arg2="oraclepdb" trim="true" casesensitive="false" />
+    </or>
+  </condition>
+  <condition property="db.vendor" value="oracle" else="mssql">
+    <istrue value="${isoracleororaclepdb}" />
+  </condition>
+  <property name="oracle.database.driver.classname" value="oracle.jdbc.pool.OracleDataSource" />
+  <property name="oracle.datasource.port" value="1521" />
+  <property name="mssql.database.driver.classname" value="com.microsoft.sqlserver.jdbc.SQLServerDataSource" />
+  <property name="mssql.datasource.port" value="1433" />
+  
+  <!-- set generic installer variables -->
+  <property name="ixlog.dir" value="${install.dir}/installx/log" />
+  <property name="dbroot.dir" location="${basedir}/resources/db" />
+  <property name="dbsql.dir" location="${dbroot.dir}/${platform.db}" />
+  
+  <!-- identify the root location that will be used for subdirectories that will store temporary files and backups -->
+  <property environment="env" />
+  <condition property="external.file.sub.dir" value="${ix.subdir}/" else="">
+    <length string="${ix.subdir}" when="greater" length="0" />
+  </condition>
+  <condition property="external.file.root" value="${env.SystemDrive}/${external.file.sub.dir}" else="${env.HOME}/${external.file.sub.dir}">
+    <os family="windows" />
+  </condition>
+  
+  <!-- detect the OS -->
+  <condition property="not.windows.os">
+    <not>
+      <os family="windows" />
+    </not>
+  </condition>
+  
+  <!-- CURRENT DATE/TIMESTAMP -->
+  <tstamp>
+    <format property="now.long" pattern="EEEE, MMMM d, yyyy hh:mm:ss aa zzz" />
+  </tstamp>
+
+  <!-- SCRIPT FILE EXTENSION BY OS -->
+  <condition property="os.ext" value=".bat" else=".sh">
+    <os family="windows" />
+  </condition>
+
+  <!-- CHECK TO SEE IF A BRAND WAS SET -->
+  <condition property="has.brand" value="-${customer.brand}" else="">
+    <length string="${customer.brand}" when="greater" length="0" />
+  </condition>
+
+  <!-- refuse to continue if the salt value is not set properly -->
+  <fail message="FATAL: An invalid customerId.salt value of '${customerId.salt}' was detected.  The customerId.salt value must be defined and must be greater than or equal to 3 characters in length.">
+    <condition>
+      <and>
+        <length string="${customerId.salt}" when="less" length="3" />
+        <or>
+          <contains string="${install.type}" substring="install" />
+          <equals arg1="${ix.appname}" arg2="builder" trim="true" casesensitive="false" />
+        </or>
+      </and>
+    </condition>
+  </fail>
+
+  <!-- detect add-exec and custom scripts -->
+  <available file="${basedir}/resources/add-exec-pre.xml" property="add.exec.pre" />
+  <available file="${basedir}/custom/custom-post.xml" property="custom.post" />
+  <available file="${basedir}/resources/add-exec-post.xml" property="add.exec.post" />
+  <available file="${basedir}/custom/custom-pre.xml" property="custom.pre" />
+  
+  <!-- determine whether or not backups should be performed -->
+  <condition property="donot.backup.app">
+    <istrue value="${run.from.xenvironment}" />
+  </condition>
+  
+  <!-- define a set of patterns for extracting platform-appropriate files -->
+  <patternset id="platform.appropriate.files">
+    <exclude name="linux/**" unless="linux32bit" />
+    <exclude name="lib/linux/**" unless="linux32bit" />
+    <exclude name="linux_64/**" unless="linux64bit" />
+    <exclude name="lib/linux_64/**" unless="linux64bit" />
+    <exclude name="windows/**" unless="windows32bit" />
+    <exclude name="lib/windows/**" unless="windows32bit" />
+    <exclude name="windows_64/**" unless="windows64bit" />
+    <exclude name="lib/windows_64/**" unless="windows64bit" />
+    <exclude name="*.bat" unless="windows" />
+    <exclude name="*.sh" unless="linux" />
+  </patternset>
+  
+  <target name="common-process-start" depends="init-logging,init-os-details,app-logging,add-exec-pre,custom-pre" />
+  
+  <target name="init-logging" description="begins the recording of a log file">
+    <record name="${basedir}/installx-${ix.appname}.log" />
+  </target>
+	
+	<target name="init-os-details" description="Detects the operating system and JRE bits.">
+		 <!-- make sure that the environment is set up properly -->
+		  <condition property="jre.dir" value="c:\jre" else="/opt/jre">
+		    <os family="windows" />
+		  </condition>
+		  <property name="jre.bin.dir" location="${jre.dir}/bin" />
+		  <fail message="Expected to find a JRE at ${jre.dir} but did not find one there.">
+		    <condition>
+		      <not>
+		        <available file="${jre.bin.dir}" />
+		      </not>
+		    </condition>
+		  </fail>
+		  
+		  <!-- get the platform from PlatformDetector -->
+		  <condition property="jre.executable.name" value="java.exe" else="java">
+		    <os family="windows" />
+		  </condition>
+		  <property name="jre.executable" location="${jre.bin.dir}/${jre.executable.name}" />
+		  <exec executable="${jre.executable}" outputproperty="platform.os" logError="true" failonerror="true">
+		    <arg value="-jar"/>
+		    <arg value="lib/platformdetector.jar"/>
+		  </exec>
+		
+		  <!-- abort if installation is impossible -->
+		  <fail message="Platform was detected to be ${platform.os} but support for that platform was not included in this installer.  Installation cannot continue.">
+		    <condition>
+		      <or>
+		        <and>
+		          <equals arg1="${platform.os}" arg2="linux" forcestring="true" />
+              <istrue value="${disable.32bit.linux}" />
+		        </and>
+            <and>
+              <equals arg1="${platform.os}" arg2="linux_64" forcestring="true" />
+              <istrue value="${disable.64bit.linux}" />
+            </and>
+            <and>
+              <equals arg1="${platform.os}" arg2="windows" forcestring="true" />
+              <istrue value="${disable.32bit.windows}" />
+            </and>
+            <and>
+              <equals arg1="${platform.os}" arg2="windows_64" forcestring="true" />
+              <istrue value="${disable.64bit.windows}" />
+            </and>
+		      </or>
+		    </condition>
+	    </fail>
+		  
+		  <!-- Operating system properties -->
+		  <condition property="linux">
+		    <contains string="${platform.os}" substring="linux"/>
+		  </condition>
+		  <condition property="windows">
+		    <contains string="${platform.os}" substring="windows"/>
+		  </condition>
+		  <condition property="linux32bit">
+		    <equals arg1="${platform.os}" arg2="linux" forcestring="true"/>
+		  </condition>
+		  <condition property="windows32bit">
+		    <equals arg1="${platform.os}" arg2="windows" forcestring="true"/>
+		  </condition>
+		  <condition property="linux64bit">
+		    <equals arg1="${platform.os}" arg2="linux_64" forcestring="true"/>
+		  </condition>
+		  <condition property="windows64bit">
+		    <equals arg1="${platform.os}" arg2="windows_64" forcestring="true"/>
+		  </condition>
+	</target>
+  
+  <target name="app-logging" depends="init-logging,init-os-details" description="log a message at the beginning of the install and run pre processes">
+    <echo message="" />
+    <echo message="**************************************************************" />
+    <echo message="*    InstallX: Oracle Retail | ${ix.appdesc}" />
+    <echo message="*     Version: ${x.version} - ${cust.version} - ${patch.version}" />
+    <echo message="*                                                             " />
+    <echo message="*      Run By: ${user.name}" />
+    <echo message="*         JVM: ${java.vm.vendor} v${java.vm.version}" />
+    <echo message="*          OS: ${os.name} ${os.arch} v${os.version}" />
+    <echo message="*                                                             " />
+    <echo message="*    CUSTOMER: ${customer.id} | INSTALL DIR: ${install.dir}" />
+    <echo message="*        TYPE: ${install.type} | OS: ${platform.os} | DB: ${platform.db}" />
+    <if>
+      <and>
+        <equals arg1="${ix.appname}" arg2="pos" trim="true" casesensitive="false" />
+        <contains string="${install.type}" substring="install" />
+      </and>
+      <then>
+        <echo message="*  CREATE DB?: ${db.create} | LOCAL DB ENABLED?: ${localDbEnabled}" />
+      </then>
+    </if>
+    <echo message="*     STARTED: ${now.long}" />
+    <echo message="**************************************************************" />
+    <echo message="" />
+  </target>
+  
+  <target name="common-process-end" depends="custom-post,add-exec-post,app-log-complete" description="run post processes and log the completion of the install" />
+  
+  <target name="app-log-complete" description="log the completion of the install">
+    <!-- log complete message -->
+    <tstamp>
+      <format property="finish.time" pattern="EEEE, MMMM d, yyyy hh:mm:ss aa zzz" />
+    </tstamp>
+    <echo message="" />
+    <echo message="**************************************************************" />
+    <echo message="*    InstallX: Oracle Retail | ${ix.appdesc}" />
+    <echo message="*     Version: ${x.version} - ${cust.version} - ${patch.version}" />
+    <echo message="*                                                             " />
+    <echo message="* Install Dir: ${install.dir}" />
+    <if>
+      <isset property="xstore.mobile.install" />
+      <then>
+        <echo message="* Mobile Install Dir: ${xstore.mobile.install}" />
+      </then>
+    </if>
+    <echo message="*   Completed: ${finish.time}" />
+    <echo message="**************************************************************" />
+    <echo message="" />
+  </target>
+
+  <target name="app-backup" unless="donot.backup.app" description="application backup process">
+    <backupAppInstall installDir="${install.dir}" />
+  </target>
+
+  <target name="app-install" unless="use.custom.install" description="APPLICATION INSTALL PROCESS">
+    <!-- delete old install directory contents, tolerating errors on non-install types -->
+    <condition property="fail.on.deletion.error" value="true" else="false">
+      <contains string="${install.type}" substring="install" />
+    </condition>
+    <condition property="fail.on.not.exists" value="false" else="true">
+      <contains string="${install.type}" substring="install" />
+    </condition>
+    <delete includeemptydirs="true" failonerror="${fail.on.deletion.error}">
+      <fileset dir="${install.dir}" includes="**/*" erroronmissingdir="${fail.on.not.exists}" />
+    </delete>
+
+    <!-- extract the new install -->
+    <unzipandmovescripts src="xstore-${ix.appname}.zip" dest="${install.dir}" />
+    
+    <!-- make temp directory if it isn't present -->
+    <mkdir dir="${install.dir}/tmp"/>
+  </target>
+
+  <target name="app-prop-replace" description="Replace tokens in config files">
+    <!-- SET THE BASEDIR, customerId, and configRoot IN PROP_MAP.XML -->
+    <replace dir="${install.dir}/updates" summary="true">
+      <include name="*prop-map.xml" />
+      <replacefilter token="@baseDir@" value="${install.dir}" />
+      <replacefilter token="@customerId@" value="${customer.id.lc}" />
+      <replacefilter token="@custId@" value="${customer.id.lc}" />
+    </replace>
+  </target>
+
+  <target name="fix-line-feeds-and-file-permission" description="Fix line feeds and file permissions on linux systems">
+    <if>
+      <isset property="not.windows.os" />
+    	<then>
+    		<!-- fix line feeds in shell scripts -->
+        <fixcrlf srcdir="${install.dir}" includes="**/*.sh" eol="lf" eof="remove" />
+  	    <fixcrlf srcdir="${basedir}/resources" includes="**/*.sh" eol="lf" eof="remove" />
+
+ 		    <setFilePermissionForLinux installDir="${install.dir}" />
+        <!-- fix line feeds and make install scripts executable for mobile if appropriate -->
+ 		    <if>
+ 		    	<isset property="xstore.mobile.install" />
+          <then>
+   	        <fixcrlf srcdir="${xstore.mobile.install}" includes="**/*.sh" eol="lf" eof="remove" />
+ 		        <setFilePermissionForLinux installDir="${xstore.mobile.install}" />
+          </then>
+    		</if>
+    	</then>	
+    	<else>
+    	  <java fork="true" failonerror="yes" classname="dtv.util.fileio.FilePermissionSetter">
+    	    <arg value="${install.dir}" />
+    	    <classpath>
+    	      <pathelement location="${install.dir}/lib/dtv-util.jar" />
+    	      <fileset dir="${install.dir}/lib/ext" includes="commons-io-*.jar,log4j-*.jar" />
+    	      <pathelement location="${basedir}/resources/logj.xml" />
+    	    </classpath>
+    	  </java>
+    	  <if>
+    	    <isset property="xstore.mobile.install" />
+    	      <then>
+    	        <java fork="true" failonerror="yes" classname="dtv.util.fileio.FilePermissionSetter">
+    	          <arg value="${xstore.mobile.install}" />
+    	          <classpath>
+    	            <pathelement location="${install.dir}/lib/dtv-util.jar" />
+    	    	    <fileset dir="${install.dir}/lib/ext" includes="commons-io-*.jar,log4j-*.jar" />
+    	          	<pathelement location="${basedir}/resources/logj.xml" />
+    	          </classpath>
+    	        </java>
+    	      </then>
+    	  </if>   
+    	</else>
+    </if>
+  	
+  	
+  </target>
+
+  <!-- if download files were included, create an archive of those files and run the dataloader -->
+  <target name="dataloader" if="isInstall">
+    <fileset id="download.files" dir="${install.dir}/download">
+      <exclude name="readme.txt" />
+    </fileset>
+    <pathconvert property="downloadFilesFound" setonempty="false" pathsep=" ">
+      <fileset refid="download.files" />
+    </pathconvert>
+
+    <if>
+      <isset property="downloadFilesFound" />
+      <then>
+        <if>
+          <available file="${install.dir}/download/${countryId}" type="dir" />
+          <then>
+            <echo message="Copying data for country ${countryId} to download directory." />
+            <copy verbose="true" todir="${install.dir}/download" >
+              <fileset includes="**/*" dir="${install.dir}/download/${countryId}" />
+              <globmapper from="*" to="COUNTRY_${countryId}_*"/>
+            </copy>
+          </then>
+        </if>
+        <echo message="Deleting country specific data." />
+        <delete includeemptydirs="true" verbose="true">
+          <fileset includes="??/**/*" dir="${install.dir}/download" />
+          <dirset includes="??" dir="${install.dir}/download" />
+        </delete>
+        <if>
+          <isfalse value="${copy.test.data}" />
+          <then>
+            <echo message="Production environment selected. Deleting test data." />
+            <delete verbose="true">
+              <fileset includes="**/*test*.mnt" casesensitive="false" dir="${install.dir}/download" />
+            </delete>
+          </then>
+        </if>
+      </then>
+    </if>
+
+    <fileset id="download.files2" dir="${install.dir}/download">
+      <exclude name="readme.txt" />
+    </fileset>
+    <pathconvert property="downloadFilesFound2" setonempty="false" pathsep=" ">
+      <fileset refid="download.files2" />
+    </pathconvert>
+
+    <if>
+      <isset property="downloadFilesFound2" />
+      <then>
+        <zip destfile="${install.dir}/database/installx/download.zip">
+          <fileset refid="download.files" />
+        </zip>
+        <echo message="Found download files. The dataloader will be invoked." />
+        <exec dir="${install.dir}" executable="${install.dir}/dataloader2${os.ext}" />
+      </then>
+      <else>
+         <echo message="No download files were provided.  The dataloader will not be invoked." />
+      </else>
+    </if>
+  </target>
+
+  <target name="add-exec-pre" if="add.exec.pre" description="Execute a custom Ant script before installation">
+   <ant antfile="${basedir}/resources/add-exec-pre.xml" />
+  </target>
+  <target name="add-exec-post" if="add.exec.post" description="Execute a custom Ant script after installation">
+   <ant antfile="${basedir}/resources/add-exec-post.xml" />
+  </target>
+  <target name="custom-pre" if="custom.pre" description="Execute a customer specific Ant script before installation">
+   <ant antfile="${basedir}/custom/custom-pre.xml" />
+  </target>
+  <target name="custom-post" if="custom.post" description="Execute a customer specific Ant script after installation">
+   <ant antfile="${basedir}/custom/custom-post.xml" />
+  </target>
+
+  <target name="archive-log" description="places install logs into ixlog.dir">
+    <mkdir dir="${ixlog.dir}"/>
+    <copy todir="${ixlog.dir}">
+      <fileset dir="${basedir}">
+        <include name="*.log"/>
+        <include name="ant.install.properties"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="configure" description="run configure/baseconfigure processes as needed">
+    <runConfigureProcess installDir="${install.dir}" />
+  </target>  
+  
+  <macrodef name="runConfigureProcess">
+    <attribute name="installDir" />
+    <attribute name="configureProcessPrefix" default="" />
+    <sequential>
+      <local name="baseconfigure.script.file" />
+      <local name="configure.script.file" />
+      <property name="baseconfigure.script.file" location="@{installDir}/@{configureProcessPrefix}baseconfigure${os.ext}" />
+      <property name="configure.script.file" location="@{installDir}/@{configureProcessPrefix}configure${os.ext}" />
+      <if>
+        <available file="${baseconfigure.script.file}" />
+        <then>
+          <exec dir="@{installDir}" executable="${baseconfigure.script.file}" />
+        </then>
+      </if>
+      <if>
+        <available file="${configure.script.file}" />
+        <then>
+          <exec dir="@{installDir}" executable="${configure.script.file}" />
+        </then>
+      </if>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="backupAppInstall">
+    <attribute name="installDir" />
+    <attribute name="appModule" default="" />
+    <sequential>
+      <if>
+        <available file="@{installDir}/system.properties" />
+        <then>
+          <!-- create teh backup directory if it doesn'e exist -->
+          <property name="bkdir" location="${external.file.root}/BACKUPxstore" />
+          <mkdir dir="${bkdir}" />
+          <echo message="INSTALLX BACKUP DIRECTORY - ${bkdir}" />
+
+          <!-- delete previous installation backup if it exists -->
+          <delete failonerror="false">
+            <fileset file="${bkdir}/xstore-${ix.appname}@{appModule}-backup*.zip" />
+          </delete>
+
+          <!-- zip the existing installation, exclude archives downloads and log files to conserve space -->
+          <zip destfile="${bkdir}/xstore-${ix.appname}@{appModule}-backup.zip">
+            <zipfileset dir="@{installDir}" casesensitive="false">
+              <exclude name="download/archive/**" />
+              <exclude name="log/**" />
+            </zipfileset>
+          </zip>
+        </then>
+      </if>
+    </sequential>
+  </macrodef>
+  
+  <macrodef name="set-custom-install-mode">
+    <sequential>
+      <property name="use.custom.install" value="true" />
+    </sequential>
+  </macrodef>
+	
+  <macrodef name="setFilePermissionForLinux">
+    <attribute name="installDir" />
+      <sequential>
+	    <chmod perm="640">
+          <fileset dir="@{installDir}" />
+	  	</chmod>  
+	  	
+	  	<chmod perm="750">
+	  	  <fileset dir="@{installDir}" includes="*sh" />
+	      <fileset dir="@{installDir}/${platform.os}/bin" />
+	      <fileset dir="@{installDir}/lib" />
+  	      <fileset dir="@{installDir}/wrapper/lib" includes="*" />
+	  	</chmod>
+	    
+	    <chmod perm="600">
+	      <fileset dir="@{installDir}/res/ssl" erroronmissingdir="false" includes="*" />
+	      <fileset dir="@{installDir}/res/keys" erroronmissingdir="false" includes="*" />
+    	</chmod>
+		</sequential>
+	</macrodef>
+  
+  <macrodef name="updateDriverInProperties">
+    <attribute name="file" />
+    <sequential>
+      <local name="property.upgrade.database.classname"/>
+      <condition property="property.upgrade.database.classname" value="${mssql.database.driver.classname}" else="${oracle.database.driver.classname}">
+        <istrue value="${ismssqlormssqlunicode}" />
+      </condition>
+
+      <echo message="If missing, adding driver entry for ${property.upgrade.database.classname} to @{file}." />
+      <propertyfile file="@{file}">
+        <entry key="dtv.datasource.connectionfactory" default="${property.upgrade.database.classname}" />
+      </propertyfile>
+
+    </sequential>
+  </macrodef>
+
+  <macrodef name="unzipandmovescripts">
+    <attribute name="src" />
+    <attribute name="dest" />
+    <sequential>
+      <!-- unzip files appropriate for this platform -->
+      <unzip src="@{src}" dest="@{dest}">
+        <patternset refid="platform.appropriate.files" />
+      </unzip>
+      
+      <!-- move scripts to the root and remove the scripts directory -->
+      <move todir="@{dest}">
+        <fileset dir="@{dest}/${platform.os}/script" includes="*" excludes="*.txt"  />
+      </move>
+      <delete quiet="true" dir="@{dest}/${platform.os}/script" />
+    </sequential>
+  </macrodef>
+</project>
