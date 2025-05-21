@@ -1,0 +1,838 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Scope/Bug ID#          ddMMyy       Description
+ * BZ32128                200919       [Internal] Review and remove all unused libraries in Order Service
+ *===================================================================
+ */ 
+-->
+
+<project name="caw_orderservice-from-maven" default="package" basedir=".">
+
+  <!-- ====================================================================== -->
+  <!-- Build environment properties                                           -->
+  <!-- ====================================================================== -->
+
+  <property file="${user.home}/.m2/maven.properties"/>
+  <property file="maven-build.properties"/>
+
+  <property name="maven.build.finalName" value="caw_orderservice-4.9.3"/>
+  <property name="maven.build.dir" value="target"/>
+  <property name="maven.build.outputDir" value="${maven.build.dir}/classes"/>
+  <property name="maven.build.srcDir.0" value="src"/>
+  <property name="maven.build.resourceDir.0" value="src/main/resources"/>
+  <property name="maven.build.testOutputDir" value="${maven.build.dir}/test-classes"/>
+  <property name="maven.build.testDir.0" value="src/test/java"/>
+  <property name="maven.build.testResourceDir.0" value="src/test/resources"/>
+  <property name="maven.test.reports" value="${maven.build.dir}/test-reports"/>
+  <property name="maven.reporting.outputDirectory" value="${maven.build.dir}/site"/>
+
+  <property name="maven.repo.local" value="repository"/>
+  <property name="maven.settings.offline" value="false"/>
+  <property name="maven.settings.interactiveMode" value="true"/>
+
+  <!-- ====================================================================== -->
+  <!-- Defining classpaths                                                    -->
+  <!-- ====================================================================== -->
+
+  <path id="build.classpath">
+    <pathelement location="${maven.repo.local}/org/springframework/spring-core/4.3.11.RELEASE/spring-core-4.3.11.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-context/4.3.11.RELEASE/spring-context-4.3.11.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-aop/4.3.11.RELEASE/spring-aop-4.3.11.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-beans/4.3.11.RELEASE/spring-beans-4.3.11.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-web/4.3.1.RELEASE/spring-web-4.3.1.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-expression/4.3.11.RELEASE/spring-expression-4.3.11.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-webmvc/4.3.1.RELEASE/spring-webmvc-4.3.1.RELEASE.jar"/>
+    <!--<pathelement location="${maven.repo.local}/org/springframework/spring-orm/4.1.4.RELEASE/spring-orm-4.1.4.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-jdbc/4.1.4.RELEASE/spring-jdbc-4.1.4.RELEASE.jar"/>-->
+    <pathelement location="${maven.repo.local}/org/springframework/spring-tx/4.1.4.RELEASE/spring-tx-4.1.4.RELEASE.jar"/>
+    <!--<pathelement location="${maven.repo.local}/org/hibernate/hibernate-core/4.3.8.Final/hibernate-core-4.3.8.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/jboss/logging/jboss-logging/3.1.3.GA/jboss-logging-3.1.3.GA.jar"/>
+    <pathelement location="${maven.repo.local}/org/jboss/logging/jboss-logging-annotations/1.2.0.Beta1/jboss-logging-annotations-1.2.0.Beta1.jar"/>
+    <pathelement location="${maven.repo.local}/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.0.0.Final/jboss-transaction-api_1.2_spec-1.0.0.Final.jar"/>
+    <pathelement location="${maven.repo.local}/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
+    <pathelement location="${maven.repo.local}/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar"/>
+    <pathelement location="${maven.repo.local}/org/hibernate/common/hibernate-commons-annotations/4.0.5.Final/hibernate-commons-annotations-4.0.5.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/hibernate/javax/persistence/hibernate-jpa-2.1-api/1.0.0.Final/hibernate-jpa-2.1-api-1.0.0.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/javassist/javassist/3.18.1-GA/javassist-3.18.1-GA.jar"/>
+    <pathelement location="${maven.repo.local}/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
+    <pathelement location="${maven.repo.local}/org/jboss/jandex/1.1.0.Final/jandex-1.1.0.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/hibernate/hibernate-entitymanager/4.3.8.Final/hibernate-entitymanager-4.3.8.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/hibernate/hibernate-c3p0/4.3.8.Final/hibernate-c3p0-4.3.8.Final.jar"/>
+    <pathelement location="${maven.repo.local}/com/mchange/c3p0/0.9.2.1/c3p0-0.9.2.1.jar"/>
+    <pathelement location="${maven.repo.local}/com/mchange/mchange-commons-java/0.2.3.4/mchange-commons-java-0.2.3.4.jar"/>-->
+    <pathelement location="${maven.repo.local}/com/oracle/ojdbc6/11.2.0.3/ojdbc6-11.2.0.3.jar"/>
+    <pathelement location="${maven.repo.local}/com/fasterxml/jackson/core/jackson-databind/2.8.7/jackson-databind-2.8.7.jar"/>
+  	<!--<pathelement location="${maven.repo.local}/com/fasterxml/jackson/core/jackson-annotations/2.8.7/jackson-annotations-2.8.7.jar"/>-->
+    <pathelement location="${maven.repo.local}/com/fasterxml/jackson/core/jackson-core/2.8.7/jackson-core-2.8.7.jar"/>
+    <!--<pathelement location="${maven.repo.local}/org/quartz-scheduler/quartz/2.2.3/quartz-2.2.3.jar"/>
+    <pathelement location="${maven.repo.local}/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar"/>
+    <pathelement location="${maven.repo.local}/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar"/>
+    <pathelement location="${maven.repo.local}/org/quartz-scheduler/quartz-jobs/2.2.3/quartz-jobs-2.2.3.jar"/>-->
+    <pathelement location="${maven.repo.local}/log4j/log4j/1.2.17/log4j-1.2.17.jar"/>
+    <pathelement location="${maven.repo.local}/dtv/util/dtv-util/16.0.0.1.848/dtv-util-16.0.0.1.848.jar"/>
+    <pathelement location="${maven.repo.local}/dtv/i18n/16.0.1.0.25/i18n-16.0.1.0.25.jar"/>
+    <pathelement location="${maven.repo.local}/com/google/guava/guava/19.0.0/guava-19.0.0.jar"/>
+    <!--<pathelement location="${maven.repo.local}/dtv/data2/16.0.1.0.25/data2-16.0.1.0.25.jar"/>
+    <pathelement location="${maven.repo.local}/dtv/dtx/16.0.1.0.25/dtx-16.0.1.0.25.jar"/>-->
+    <pathelement location="${maven.repo.local}/twitter4j/core/4.0.4/core-4.0.4.jar"/>
+    <pathelement location="${maven.repo.local}/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar"/>
+    <pathelement location="${maven.repo.local}/com/sun/mail/javax.mail/1.5.6/javax.mail-1.5.6.jar"/>
+  	<!--<pathelement location="${maven.repo.local}/javax/activation/activation/1.1/activation-1.1.jar"/>-->
+  </path>
+  <path id="build.test.classpath">
+    <pathelement location="${maven.repo.local}/junit/junit/3.8.1/junit-3.8.1.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-core/4.3.11.RELEASE/spring-core-4.3.11.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-context/4.3.11.RELEASE/spring-context-4.3.11.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-aop/4.3.11.RELEASE/spring-aop-4.3.11.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-beans/4.3.11.RELEASE/spring-beans-4.3.11.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-web/4.3.1.RELEASE/spring-web-4.3.1.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-expression/4.3.11.RELEASE/spring-expression-4.3.11.RELEASE.jar"/>
+  	<!--<pathelement location="${maven.repo.local}/org/springframework/spring-webmvc/4.3.1.RELEASE/spring-webmvc-4.3.1.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-orm/4.1.4.RELEASE/spring-orm-4.1.4.RELEASE.jar"/>
+    <pathelement location="${maven.repo.local}/org/springframework/spring-jdbc/4.1.4.RELEASE/spring-jdbc-4.1.4.RELEASE.jar"/>-->
+    <pathelement location="${maven.repo.local}/org/springframework/spring-tx/4.1.4.RELEASE/spring-tx-4.1.4.RELEASE.jar"/>
+    <!--<pathelement location="${maven.repo.local}/org/hibernate/hibernate-core/4.3.8.Final/hibernate-core-4.3.8.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/jboss/logging/jboss-logging/3.1.3.GA/jboss-logging-3.1.3.GA.jar"/>
+    <pathelement location="${maven.repo.local}/org/jboss/logging/jboss-logging-annotations/1.2.0.Beta1/jboss-logging-annotations-1.2.0.Beta1.jar"/>
+    <pathelement location="${maven.repo.local}/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.0.0.Final/jboss-transaction-api_1.2_spec-1.0.0.Final.jar"/>
+    <pathelement location="${maven.repo.local}/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar"/>
+    <pathelement location="${maven.repo.local}/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar"/>
+    <pathelement location="${maven.repo.local}/org/hibernate/common/hibernate-commons-annotations/4.0.5.Final/hibernate-commons-annotations-4.0.5.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/hibernate/javax/persistence/hibernate-jpa-2.1-api/1.0.0.Final/hibernate-jpa-2.1-api-1.0.0.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/javassist/javassist/3.18.1-GA/javassist-3.18.1-GA.jar"/>
+    <pathelement location="${maven.repo.local}/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
+    <pathelement location="${maven.repo.local}/org/jboss/jandex/1.1.0.Final/jandex-1.1.0.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/hibernate/hibernate-entitymanager/4.3.8.Final/hibernate-entitymanager-4.3.8.Final.jar"/>
+    <pathelement location="${maven.repo.local}/org/hibernate/hibernate-c3p0/4.3.8.Final/hibernate-c3p0-4.3.8.Final.jar"/>
+    <pathelement location="${maven.repo.local}/com/mchange/c3p0/0.9.2.1/c3p0-0.9.2.1.jar"/>
+    <pathelement location="${maven.repo.local}/com/mchange/mchange-commons-java/0.2.3.4/mchange-commons-java-0.2.3.4.jar"/>-->
+    <pathelement location="${maven.repo.local}/com/oracle/ojdbc6/11.2.0.3/ojdbc6-11.2.0.3.jar"/>
+    <pathelement location="${maven.repo.local}/com/fasterxml/jackson/core/jackson-databind/2.8.7/jackson-databind-2.8.7.jar"/>
+    <!--<pathelement location="${maven.repo.local}/com/fasterxml/jackson/core/jackson-annotations/2.8.7/jackson-annotations-2.8.7.jar"/>-->
+    <pathelement location="${maven.repo.local}/com/fasterxml/jackson/core/jackson-core/2.8.7/jackson-core-2.8.7.jar"/>
+    <!--<pathelement location="${maven.repo.local}/org/quartz-scheduler/quartz/2.2.3/quartz-2.2.3.jar"/>
+    <pathelement location="${maven.repo.local}/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar"/>
+    <pathelement location="${maven.repo.local}/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar"/>
+    <pathelement location="${maven.repo.local}/org/quartz-scheduler/quartz-jobs/2.2.3/quartz-jobs-2.2.3.jar"/>-->
+    <pathelement location="${maven.repo.local}/log4j/log4j/1.2.17/log4j-1.2.17.jar"/>
+    <pathelement location="${maven.repo.local}/dtv/util/dtv-util/16.0.0.1.848/dtv-util-16.0.0.1.848.jar"/>
+    <pathelement location="${maven.repo.local}/dtv/i18n/16.0.1.0.25/i18n-16.0.1.0.25.jar"/>
+    <pathelement location="${maven.repo.local}/com/google/guava/guava/19.0.0/guava-19.0.0.jar"/>
+    <!--<pathelement location="${maven.repo.local}/dtv/data2/16.0.1.0.25/data2-16.0.1.0.25.jar"/>
+    <pathelement location="${maven.repo.local}/dtv/dtx/16.0.1.0.25/dtx-16.0.1.0.25.jar"/>-->
+    <pathelement location="${maven.repo.local}/twitter4j/core/4.0.4/core-4.0.4.jar"/>
+    <pathelement location="${maven.repo.local}/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar"/>
+    <pathelement location="${maven.repo.local}/com/sun/mail/javax.mail/1.5.6/javax.mail-1.5.6.jar"/>
+    <!--<pathelement location="${maven.repo.local}/javax/activation/activation/1.1/activation-1.1.jar"/>-->
+  </path>
+
+  <!-- ====================================================================== -->
+  <!-- Cleaning up target                                                     -->
+  <!-- ====================================================================== -->
+
+  <target name="clean" description="Clean the output directory">
+    <delete dir="${maven.build.dir}"/>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Compilation target                                                     -->
+  <!-- ====================================================================== -->
+
+  <target name="compile" depends="get-deps" description="Compile the code">
+    <mkdir dir="${maven.build.outputDir}"/>
+    <javac destdir="${maven.build.outputDir}" 
+           nowarn="false" 
+           debug="true" 
+           optimize="false" 
+           deprecation="true" 
+           target="1.8" 
+           verbose="false" 
+           fork="false" 
+           source="1.8">
+      <src>
+        <pathelement location="${maven.build.srcDir.0}"/>
+      </src>
+      <classpath refid="build.classpath"/>
+    </javac>
+    <copy todir="${maven.build.outputDir}">
+      <fileset dir="${maven.build.resourceDir.0}"/>
+    </copy>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Test-compilation target                                                -->
+  <!-- ====================================================================== -->
+
+  <target name="compile-tests" 
+          depends="compile" 
+          description="Compile the test code" 
+          unless="maven.test.skip">
+    <mkdir dir="${maven.build.testOutputDir}"/>
+    <javac destdir="${maven.build.testOutputDir}" 
+           nowarn="false" 
+           debug="true" 
+           optimize="false" 
+           deprecation="true" 
+           target="1.8" 
+           verbose="false" 
+           fork="false" 
+           source="1.8">
+      <src>
+        <pathelement location="${maven.build.testDir.0}"/>
+      </src>
+      <classpath>
+        <path refid="build.test.classpath"/>
+        <pathelement location="${maven.build.outputDir}"/>
+      </classpath>
+    </javac>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Run all tests                                                          -->
+  <!-- ====================================================================== -->
+
+  <target name="test" 
+          depends="compile-tests, junit-missing" 
+          unless="junit.skipped" 
+          description="Run the test cases">
+    <mkdir dir="${maven.test.reports}"/>
+    <junit printSummary="yes" haltonerror="true" haltonfailure="true" fork="true" dir=".">
+      <sysproperty key="basedir" value="."/>
+      <formatter type="xml"/>
+      <formatter type="plain" usefile="false"/>
+      <classpath>
+        <path refid="build.test.classpath"/>
+        <pathelement location="${maven.build.outputDir}"/>
+        <pathelement location="${maven.build.testOutputDir}"/>
+      </classpath>
+      <batchtest todir="${maven.test.reports}" unless="test">
+        <fileset dir="${maven.build.testDir.0}">
+          <include name="**/Test*.java"/>
+          <include name="**/*Test.java"/>
+          <include name="**/*TestCase.java"/>
+          <exclude name="**/*Abstract*Test.java"/>
+        </fileset>
+      </batchtest>
+      <batchtest todir="${maven.test.reports}" if="test">
+        <fileset dir="${maven.build.testDir.0}">
+          <include name="**/${test}.java"/>
+          <exclude name="**/*Abstract*Test.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="test-junit-present">
+    <available classname="junit.framework.Test" property="junit.present" classpathref="build.test.classpath"/>
+  </target>
+
+  <target name="test-junit-status" 
+          depends="test-junit-present">
+    <condition property="junit.missing">
+      <and>
+        <isfalse value="${junit.present}"/>
+        <isfalse value="${maven.test.skip}"/>
+      </and>
+    </condition>
+    <condition property="junit.skipped">
+      <or>
+        <isfalse value="${junit.present}"/>
+        <istrue value="${maven.test.skip}"/>
+      </or>
+    </condition>
+  </target>
+
+  <target name="junit-missing" 
+          depends="test-junit-status" 
+          if="junit.missing">
+    <echo>=================================== WARNING ===================================</echo>
+    <echo> JUnit is not present in the test classpath or your $ANT_HOME/lib directory. Tests not executed.</echo>
+    <echo>===============================================================================</echo>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Javadoc target                                                         -->
+  <!-- ====================================================================== -->
+
+  <target name="javadoc" description="Generates the Javadoc of the application">
+    <javadoc sourcepath="${maven.build.srcDir.0}" 
+             packagenames="*" 
+             destdir="${maven.reporting.outputDirectory}/apidocs" 
+             access="protected" 
+             old="false" 
+             verbose="false" 
+             version="true" 
+             use="true" 
+             author="true" 
+             splitindex="false" 
+             nodeprecated="false" 
+             nodeprecatedlist="false" 
+             notree="false" 
+             noindex="false" 
+             nohelp="false" 
+             nonavbar="false" 
+             serialwarn="false" 
+             charset="ISO-8859-1" 
+             linksource="false" 
+             breakiterator="false"/>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- Package target                                                         -->
+  <!-- ====================================================================== -->
+
+  <target name="package" depends="compile,test" description="Package the application">
+    <mkdir dir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/springframework/spring-core/4.3.11.RELEASE/spring-core-4.3.11.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/commons-logging/commons-logging/1.2/commons-logging-1.2.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/springframework/spring-context/4.3.11.RELEASE/spring-context-4.3.11.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/springframework/spring-aop/4.3.11.RELEASE/spring-aop-4.3.11.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/springframework/spring-beans/4.3.11.RELEASE/spring-beans-4.3.11.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/springframework/spring-web/4.3.1.RELEASE/spring-web-4.3.1.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/springframework/spring-expression/4.3.11.RELEASE/spring-expression-4.3.11.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/springframework/spring-webmvc/4.3.1.RELEASE/spring-webmvc-4.3.1.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <!--<copy file="${maven.repo.local}/org/springframework/spring-orm/4.1.4.RELEASE/spring-orm-4.1.4.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/springframework/spring-jdbc/4.1.4.RELEASE/spring-jdbc-4.1.4.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>-->
+    <copy file="${maven.repo.local}/org/springframework/spring-tx/4.1.4.RELEASE/spring-tx-4.1.4.RELEASE.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <!--<copy file="${maven.repo.local}/org/hibernate/hibernate-core/4.3.8.Final/hibernate-core-4.3.8.Final.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/jboss/logging/jboss-logging/3.1.3.GA/jboss-logging-3.1.3.GA.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/jboss/logging/jboss-logging-annotations/1.2.0.Beta1/jboss-logging-annotations-1.2.0.Beta1.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.0.0.Final/jboss-transaction-api_1.2_spec-1.0.0.Final.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/hibernate/common/hibernate-commons-annotations/4.0.5.Final/hibernate-commons-annotations-4.0.5.Final.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/hibernate/javax/persistence/hibernate-jpa-2.1-api/1.0.0.Final/hibernate-jpa-2.1-api-1.0.0.Final.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/javassist/javassist/3.18.1-GA/javassist-3.18.1-GA.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/antlr/antlr/2.7.7/antlr-2.7.7.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/jboss/jandex/1.1.0.Final/jandex-1.1.0.Final.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/hibernate/hibernate-entitymanager/4.3.8.Final/hibernate-entitymanager-4.3.8.Final.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/hibernate/hibernate-c3p0/4.3.8.Final/hibernate-c3p0-4.3.8.Final.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/com/mchange/c3p0/0.9.2.1/c3p0-0.9.2.1.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/com/mchange/mchange-commons-java/0.2.3.4/mchange-commons-java-0.2.3.4.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>-->
+    <copy file="${maven.repo.local}/com/oracle/ojdbc6/11.2.0.3/ojdbc6-11.2.0.3.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/com/fasterxml/jackson/core/jackson-databind/2.8.7/jackson-databind-2.8.7.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <!--<copy file="${maven.repo.local}/com/fasterxml/jackson/core/jackson-annotations/2.8.7/jackson-annotations-2.8.7.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>-->
+    <copy file="${maven.repo.local}/com/fasterxml/jackson/core/jackson-core/2.8.7/jackson-core-2.8.7.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <!--<copy file="${maven.repo.local}/org/quartz-scheduler/quartz/2.2.3/quartz-2.2.3.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/quartz-scheduler/quartz-jobs/2.2.3/quartz-jobs-2.2.3.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>-->
+    <copy file="${maven.repo.local}/log4j/log4j/1.2.17/log4j-1.2.17.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/dtv/util/dtv-util/16.0.0.1.848/dtv-util-16.0.0.1.848.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/dtv/i18n/16.0.1.0.25/i18n-16.0.1.0.25.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/com/google/guava/guava/19.0.0/guava-19.0.0.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <!--<copy file="${maven.repo.local}/dtv/data2/16.0.1.0.25/data2-16.0.1.0.25.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/dtv/dtx/16.0.1.0.25/dtx-16.0.1.0.25.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>-->
+    <copy file="${maven.repo.local}/twitter4j/core/4.0.4/core-4.0.4.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <copy file="${maven.repo.local}/com/sun/mail/javax.mail/1.5.6/javax.mail-1.5.6.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+    <!--<copy file="${maven.repo.local}/javax/activation/activation/1.1/activation-1.1.jar" 
+          todir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>-->
+    <war destfile="${maven.build.dir}/${maven.build.finalName}.war" 
+         compress="true" 
+         webxml="src/main/webapp/WEB-INF/web.xml">
+      <lib dir="${maven.build.dir}/${maven.build.finalName}/WEB-INF/lib"/>
+      <classes dir="${maven.build.outputDir}"/>
+      <fileset dir="src/main/webapp" 
+               excludes="WEB-INF/web.xml"/>
+    </war>
+  </target>
+
+  <!-- ====================================================================== -->
+  <!-- A dummy target for the package named after the type it creates         -->
+  <!-- ====================================================================== -->
+
+  <target name="war" depends="package" description="Builds the war for the application"/>
+
+  <!-- ====================================================================== -->
+  <!-- Download dependencies target                                           -->
+  <!-- ====================================================================== -->
+
+  <target name="test-offline">
+    <condition property="maven.mode.offline">
+      <equals arg1="${maven.settings.offline}" arg2="true"/>
+    </condition>
+  </target>
+
+  <target name="get-deps" 
+          depends="test-offline" 
+          description="Download all dependencies" 
+          unless="maven.mode.offline">
+    <mkdir dir="${maven.repo.local}"/>
+    <mkdir dir="${maven.repo.local}/junit/junit/3.8.1"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/junit/junit/3.8.1/junit-3.8.1.jar" 
+         dest="${maven.repo.local}/junit/junit/3.8.1/junit-3.8.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/junit/junit/3.8.1/junit-3.8.1.jar" 
+         dest="${maven.repo.local}/junit/junit/3.8.1/junit-3.8.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/springframework/spring-core/4.3.11.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-core/4.3.11.RELEASE/spring-core-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-core/4.3.11.RELEASE/spring-core-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-core/4.3.11.RELEASE/spring-core-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-core/4.3.11.RELEASE/spring-core-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/commons-logging/commons-logging/1.2"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/commons-logging/commons-logging/1.2/commons-logging-1.2.jar" 
+         dest="${maven.repo.local}/commons-logging/commons-logging/1.2/commons-logging-1.2.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar" 
+         dest="${maven.repo.local}/commons-logging/commons-logging/1.2/commons-logging-1.2.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/springframework/spring-context/4.3.11.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-context/4.3.11.RELEASE/spring-context-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-context/4.3.11.RELEASE/spring-context-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-context/4.3.11.RELEASE/spring-context-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-context/4.3.11.RELEASE/spring-context-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/springframework/spring-aop/4.3.11.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-aop/4.3.11.RELEASE/spring-aop-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-aop/4.3.11.RELEASE/spring-aop-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-aop/4.3.11.RELEASE/spring-aop-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-aop/4.3.11.RELEASE/spring-aop-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/springframework/spring-beans/4.3.11.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-beans/4.3.11.RELEASE/spring-beans-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-beans/4.3.11.RELEASE/spring-beans-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-beans/4.3.11.RELEASE/spring-beans-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-beans/4.3.11.RELEASE/spring-beans-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/javax/servlet/javax.servlet-api/3.1.0"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" 
+         dest="${maven.repo.local}/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" 
+         dest="${maven.repo.local}/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/springframework/spring-web/4.3.1.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-web/4.3.1.RELEASE/spring-web-4.3.1.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-web/4.3.1.RELEASE/spring-web-4.3.1.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-web/4.3.1.RELEASE/spring-web-4.3.1.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-web/4.3.1.RELEASE/spring-web-4.3.1.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/springframework/spring-expression/4.3.11.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-expression/4.3.11.RELEASE/spring-expression-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-expression/4.3.11.RELEASE/spring-expression-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-expression/4.3.11.RELEASE/spring-expression-4.3.11.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-expression/4.3.11.RELEASE/spring-expression-4.3.11.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/springframework/spring-webmvc/4.3.1.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-webmvc/4.3.1.RELEASE/spring-webmvc-4.3.1.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-webmvc/4.3.1.RELEASE/spring-webmvc-4.3.1.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/4.3.1.RELEASE/spring-webmvc-4.3.1.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-webmvc/4.3.1.RELEASE/spring-webmvc-4.3.1.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <!--<mkdir dir="${maven.repo.local}/org/springframework/spring-orm/4.1.4.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-orm/4.1.4.RELEASE/spring-orm-4.1.4.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-orm/4.1.4.RELEASE/spring-orm-4.1.4.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-orm/4.1.4.RELEASE/spring-orm-4.1.4.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-orm/4.1.4.RELEASE/spring-orm-4.1.4.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>-->
+    <!--<mkdir dir="${maven.repo.local}/org/springframework/spring-jdbc/4.1.4.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-jdbc/4.1.4.RELEASE/spring-jdbc-4.1.4.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-jdbc/4.1.4.RELEASE/spring-jdbc-4.1.4.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-jdbc/4.1.4.RELEASE/spring-jdbc-4.1.4.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-jdbc/4.1.4.RELEASE/spring-jdbc-4.1.4.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>-->
+    <mkdir dir="${maven.repo.local}/org/springframework/spring-tx/4.1.4.RELEASE"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/springframework/spring-tx/4.1.4.RELEASE/spring-tx-4.1.4.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-tx/4.1.4.RELEASE/spring-tx-4.1.4.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/springframework/spring-tx/4.1.4.RELEASE/spring-tx-4.1.4.RELEASE.jar" 
+         dest="${maven.repo.local}/org/springframework/spring-tx/4.1.4.RELEASE/spring-tx-4.1.4.RELEASE.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <!--<mkdir dir="${maven.repo.local}/org/hibernate/hibernate-core/4.3.8.Final"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/hibernate/hibernate-core/4.3.8.Final/hibernate-core-4.3.8.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/hibernate-core/4.3.8.Final/hibernate-core-4.3.8.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/hibernate/hibernate-core/4.3.8.Final/hibernate-core-4.3.8.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/hibernate-core/4.3.8.Final/hibernate-core-4.3.8.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/jboss/logging/jboss-logging/3.1.3.GA"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/jboss/logging/jboss-logging/3.1.3.GA/jboss-logging-3.1.3.GA.jar" 
+         dest="${maven.repo.local}/org/jboss/logging/jboss-logging/3.1.3.GA/jboss-logging-3.1.3.GA.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging/3.1.3.GA/jboss-logging-3.1.3.GA.jar" 
+         dest="${maven.repo.local}/org/jboss/logging/jboss-logging/3.1.3.GA/jboss-logging-3.1.3.GA.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/jboss/logging/jboss-logging-annotations/1.2.0.Beta1"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/jboss/logging/jboss-logging-annotations/1.2.0.Beta1/jboss-logging-annotations-1.2.0.Beta1.jar" 
+         dest="${maven.repo.local}/org/jboss/logging/jboss-logging-annotations/1.2.0.Beta1/jboss-logging-annotations-1.2.0.Beta1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/jboss/logging/jboss-logging-annotations/1.2.0.Beta1/jboss-logging-annotations-1.2.0.Beta1.jar" 
+         dest="${maven.repo.local}/org/jboss/logging/jboss-logging-annotations/1.2.0.Beta1/jboss-logging-annotations-1.2.0.Beta1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.0.0.Final"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.0.0.Final/jboss-transaction-api_1.2_spec-1.0.0.Final.jar" 
+         dest="${maven.repo.local}/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.0.0.Final/jboss-transaction-api_1.2_spec-1.0.0.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.0.0.Final/jboss-transaction-api_1.2_spec-1.0.0.Final.jar" 
+         dest="${maven.repo.local}/org/jboss/spec/javax/transaction/jboss-transaction-api_1.2_spec/1.0.0.Final/jboss-transaction-api_1.2_spec-1.0.0.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/dom4j/dom4j/1.6.1"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar" 
+         dest="${maven.repo.local}/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar" 
+         dest="${maven.repo.local}/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/xml-apis/xml-apis/1.0.b2"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" 
+         dest="${maven.repo.local}/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" 
+         dest="${maven.repo.local}/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/hibernate/common/hibernate-commons-annotations/4.0.5.Final"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/hibernate/common/hibernate-commons-annotations/4.0.5.Final/hibernate-commons-annotations-4.0.5.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/common/hibernate-commons-annotations/4.0.5.Final/hibernate-commons-annotations-4.0.5.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/hibernate/common/hibernate-commons-annotations/4.0.5.Final/hibernate-commons-annotations-4.0.5.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/common/hibernate-commons-annotations/4.0.5.Final/hibernate-commons-annotations-4.0.5.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/hibernate/javax/persistence/hibernate-jpa-2.1-api/1.0.0.Final"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/hibernate/javax/persistence/hibernate-jpa-2.1-api/1.0.0.Final/hibernate-jpa-2.1-api-1.0.0.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/javax/persistence/hibernate-jpa-2.1-api/1.0.0.Final/hibernate-jpa-2.1-api-1.0.0.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/hibernate/javax/persistence/hibernate-jpa-2.1-api/1.0.0.Final/hibernate-jpa-2.1-api-1.0.0.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/javax/persistence/hibernate-jpa-2.1-api/1.0.0.Final/hibernate-jpa-2.1-api-1.0.0.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/javassist/javassist/3.18.1-GA"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/javassist/javassist/3.18.1-GA/javassist-3.18.1-GA.jar" 
+         dest="${maven.repo.local}/org/javassist/javassist/3.18.1-GA/javassist-3.18.1-GA.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/javassist/javassist/3.18.1-GA/javassist-3.18.1-GA.jar" 
+         dest="${maven.repo.local}/org/javassist/javassist/3.18.1-GA/javassist-3.18.1-GA.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/antlr/antlr/2.7.7"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/antlr/antlr/2.7.7/antlr-2.7.7.jar" 
+         dest="${maven.repo.local}/antlr/antlr/2.7.7/antlr-2.7.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/antlr/antlr/2.7.7/antlr-2.7.7.jar" 
+         dest="${maven.repo.local}/antlr/antlr/2.7.7/antlr-2.7.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/jboss/jandex/1.1.0.Final"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/jboss/jandex/1.1.0.Final/jandex-1.1.0.Final.jar" 
+         dest="${maven.repo.local}/org/jboss/jandex/1.1.0.Final/jandex-1.1.0.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/jboss/jandex/1.1.0.Final/jandex-1.1.0.Final.jar" 
+         dest="${maven.repo.local}/org/jboss/jandex/1.1.0.Final/jandex-1.1.0.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/hibernate/hibernate-entitymanager/4.3.8.Final"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/hibernate/hibernate-entitymanager/4.3.8.Final/hibernate-entitymanager-4.3.8.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/hibernate-entitymanager/4.3.8.Final/hibernate-entitymanager-4.3.8.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/hibernate/hibernate-entitymanager/4.3.8.Final/hibernate-entitymanager-4.3.8.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/hibernate-entitymanager/4.3.8.Final/hibernate-entitymanager-4.3.8.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/hibernate/hibernate-c3p0/4.3.8.Final"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/hibernate/hibernate-c3p0/4.3.8.Final/hibernate-c3p0-4.3.8.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/hibernate-c3p0/4.3.8.Final/hibernate-c3p0-4.3.8.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/hibernate/hibernate-c3p0/4.3.8.Final/hibernate-c3p0-4.3.8.Final.jar" 
+         dest="${maven.repo.local}/org/hibernate/hibernate-c3p0/4.3.8.Final/hibernate-c3p0-4.3.8.Final.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/com/mchange/c3p0/0.9.2.1"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/com/mchange/c3p0/0.9.2.1/c3p0-0.9.2.1.jar" 
+         dest="${maven.repo.local}/com/mchange/c3p0/0.9.2.1/c3p0-0.9.2.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/com/mchange/c3p0/0.9.2.1/c3p0-0.9.2.1.jar" 
+         dest="${maven.repo.local}/com/mchange/c3p0/0.9.2.1/c3p0-0.9.2.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/com/mchange/mchange-commons-java/0.2.3.4"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/com/mchange/mchange-commons-java/0.2.3.4/mchange-commons-java-0.2.3.4.jar" 
+         dest="${maven.repo.local}/com/mchange/mchange-commons-java/0.2.3.4/mchange-commons-java-0.2.3.4.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/com/mchange/mchange-commons-java/0.2.3.4/mchange-commons-java-0.2.3.4.jar" 
+         dest="${maven.repo.local}/com/mchange/mchange-commons-java/0.2.3.4/mchange-commons-java-0.2.3.4.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>-->
+    <mkdir dir="${maven.repo.local}/com/oracle/ojdbc6/11.2.0.3"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/com/oracle/ojdbc6/11.2.0.3/ojdbc6-11.2.0.3.jar" 
+         dest="${maven.repo.local}/com/oracle/ojdbc6/11.2.0.3/ojdbc6-11.2.0.3.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/com/oracle/ojdbc6/11.2.0.3/ojdbc6-11.2.0.3.jar" 
+         dest="${maven.repo.local}/com/oracle/ojdbc6/11.2.0.3/ojdbc6-11.2.0.3.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/com/fasterxml/jackson/core/jackson-databind/2.8.7"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/com/fasterxml/jackson/core/jackson-databind/2.8.7/jackson-databind-2.8.7.jar" 
+         dest="${maven.repo.local}/com/fasterxml/jackson/core/jackson-databind/2.8.7/jackson-databind-2.8.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.8.7/jackson-databind-2.8.7.jar" 
+         dest="${maven.repo.local}/com/fasterxml/jackson/core/jackson-databind/2.8.7/jackson-databind-2.8.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <!--<mkdir dir="${maven.repo.local}/com/fasterxml/jackson/core/jackson-annotations/2.8.7"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/com/fasterxml/jackson/core/jackson-annotations/2.8.7/jackson-annotations-2.8.7.jar" 
+         dest="${maven.repo.local}/com/fasterxml/jackson/core/jackson-annotations/2.8.7/jackson-annotations-2.8.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.8.7/jackson-annotations-2.8.7.jar" 
+         dest="${maven.repo.local}/com/fasterxml/jackson/core/jackson-annotations/2.8.7/jackson-annotations-2.8.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>-->
+    <mkdir dir="${maven.repo.local}/com/fasterxml/jackson/core/jackson-core/2.8.7"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/com/fasterxml/jackson/core/jackson-core/2.8.7/jackson-core-2.8.7.jar" 
+         dest="${maven.repo.local}/com/fasterxml/jackson/core/jackson-core/2.8.7/jackson-core-2.8.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.8.7/jackson-core-2.8.7.jar" 
+         dest="${maven.repo.local}/com/fasterxml/jackson/core/jackson-core/2.8.7/jackson-core-2.8.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <!--<mkdir dir="${maven.repo.local}/org/quartz-scheduler/quartz/2.2.3"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/quartz-scheduler/quartz/2.2.3/quartz-2.2.3.jar" 
+         dest="${maven.repo.local}/org/quartz-scheduler/quartz/2.2.3/quartz-2.2.3.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz/2.2.3/quartz-2.2.3.jar" 
+         dest="${maven.repo.local}/org/quartz-scheduler/quartz/2.2.3/quartz-2.2.3.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/c3p0/c3p0/0.9.1.1"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar" 
+         dest="${maven.repo.local}/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar" 
+         dest="${maven.repo.local}/c3p0/c3p0/0.9.1.1/c3p0-0.9.1.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/slf4j/slf4j-api/1.7.7"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar" 
+         dest="${maven.repo.local}/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar" 
+         dest="${maven.repo.local}/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/quartz-scheduler/quartz-jobs/2.2.3"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/quartz-scheduler/quartz-jobs/2.2.3/quartz-jobs-2.2.3.jar" 
+         dest="${maven.repo.local}/org/quartz-scheduler/quartz-jobs/2.2.3/quartz-jobs-2.2.3.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/quartz-scheduler/quartz-jobs/2.2.3/quartz-jobs-2.2.3.jar" 
+         dest="${maven.repo.local}/org/quartz-scheduler/quartz-jobs/2.2.3/quartz-jobs-2.2.3.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>-->
+    <mkdir dir="${maven.repo.local}/log4j/log4j/1.2.17"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/log4j/log4j/1.2.17/log4j-1.2.17.jar" 
+         dest="${maven.repo.local}/log4j/log4j/1.2.17/log4j-1.2.17.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar" 
+         dest="${maven.repo.local}/log4j/log4j/1.2.17/log4j-1.2.17.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/dtv/util/dtv-util/16.0.0.1.848"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/dtv/util/dtv-util/16.0.0.1.848/dtv-util-16.0.0.1.848.jar" 
+         dest="${maven.repo.local}/dtv/util/dtv-util/16.0.0.1.848/dtv-util-16.0.0.1.848.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/dtv/util/dtv-util/16.0.0.1.848/dtv-util-16.0.0.1.848.jar" 
+         dest="${maven.repo.local}/dtv/util/dtv-util/16.0.0.1.848/dtv-util-16.0.0.1.848.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/dtv/i18n/16.0.1.0.25"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/dtv/i18n/16.0.1.0.25/i18n-16.0.1.0.25.jar" 
+         dest="${maven.repo.local}/dtv/i18n/16.0.1.0.25/i18n-16.0.1.0.25.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/dtv/i18n/16.0.1.0.25/i18n-16.0.1.0.25.jar" 
+         dest="${maven.repo.local}/dtv/i18n/16.0.1.0.25/i18n-16.0.1.0.25.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/com/google/guava/guava/19.0.0"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/com/google/guava/guava/19.0.0/guava-19.0.0.jar" 
+         dest="${maven.repo.local}/com/google/guava/guava/19.0.0/guava-19.0.0.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/com/google/guava/guava/19.0.0/guava-19.0.0.jar" 
+         dest="${maven.repo.local}/com/google/guava/guava/19.0.0/guava-19.0.0.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <!--<mkdir dir="${maven.repo.local}/dtv/data2/16.0.1.0.25"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/dtv/data2/16.0.1.0.25/data2-16.0.1.0.25.jar" 
+         dest="${maven.repo.local}/dtv/data2/16.0.1.0.25/data2-16.0.1.0.25.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/dtv/data2/16.0.1.0.25/data2-16.0.1.0.25.jar" 
+         dest="${maven.repo.local}/dtv/data2/16.0.1.0.25/data2-16.0.1.0.25.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/dtv/dtx/16.0.1.0.25"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/dtv/dtx/16.0.1.0.25/dtx-16.0.1.0.25.jar" 
+         dest="${maven.repo.local}/dtv/dtx/16.0.1.0.25/dtx-16.0.1.0.25.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/dtv/dtx/16.0.1.0.25/dtx-16.0.1.0.25.jar" 
+         dest="${maven.repo.local}/dtv/dtx/16.0.1.0.25/dtx-16.0.1.0.25.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>-->
+    <mkdir dir="${maven.repo.local}/twitter4j/core/4.0.4"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/twitter4j/core/4.0.4/core-4.0.4.jar" 
+         dest="${maven.repo.local}/twitter4j/core/4.0.4/core-4.0.4.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/twitter4j/core/4.0.4/core-4.0.4.jar" 
+         dest="${maven.repo.local}/twitter4j/core/4.0.4/core-4.0.4.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/org/apache/commons/commons-lang3/3.4"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar" 
+         dest="${maven.repo.local}/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar" 
+         dest="${maven.repo.local}/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <mkdir dir="${maven.repo.local}/com/sun/mail/javax.mail/1.5.6"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/com/sun/mail/javax.mail/1.5.6/javax.mail-1.5.6.jar" 
+         dest="${maven.repo.local}/com/sun/mail/javax.mail/1.5.6/javax.mail-1.5.6.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/com/sun/mail/javax.mail/1.5.6/javax.mail-1.5.6.jar" 
+         dest="${maven.repo.local}/com/sun/mail/javax.mail/1.5.6/javax.mail-1.5.6.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <!--<mkdir dir="${maven.repo.local}/javax/activation/activation/1.1"/>
+    <get src="https://code.lds.org/nexus/content/groups/main-repo/javax/activation/activation/1.1/activation-1.1.jar" 
+         dest="${maven.repo.local}/javax/activation/activation/1.1/activation-1.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>
+    <get src="https://repo.maven.apache.org/maven2/javax/activation/activation/1.1/activation-1.1.jar" 
+         dest="${maven.repo.local}/javax/activation/activation/1.1/activation-1.1.jar" 
+         usetimestamp="false" 
+         ignoreerrors="true"/>-->
+  </target>
+
+</project>

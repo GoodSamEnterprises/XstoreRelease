@@ -1,0 +1,40 @@
+create or replace TRIGGER TSN_TNDR_CONTROL_TRANS_INSERT
+AFTER INSERT
+   ON TSN_TNDR_CONTROL_TRANS
+   FOR EACH ROW
+DECLARE intCount INTEGER :=0;
+BEGIN
+  IF :NEW.TYPCODE = 'PAID_IN' OR :NEW.TYPCODE = 'PAID_OUT' THEN
+    SELECT COUNT(1) INTO intCount 
+    FROM TRN_TRANS 
+    WHERE TRANS_SEQ = :NEW.TRANS_SEQ 
+      AND RTL_LOC_ID = :NEW.RTL_LOC_ID 
+      AND WKSTN_ID = :NEW.WKSTN_ID 
+      AND BUSINESS_DATE = :NEW.BUSINESS_DATE 
+      AND TRANS_STATCODE = 'COMPLETE';
+    IF (intCount) > 0 THEN
+      INSERT INTO CAW_TRN_ORD_SER
+       ( TRANS_SEQ,
+         RTL_LOC_ID,
+         WKSTN_ID,
+         BUSINESS_DATE,
+         STATUS,
+         RESPONSE_CODE,
+       RESPONSE_MESSAGE,
+       RESPONSE_DESC,
+         CREATE_DATE
+      )
+       VALUES
+       ( :NEW.TRANS_SEQ,
+         :NEW.RTL_LOC_ID,
+         :NEW.WKSTN_ID,
+         :NEW.BUSINESS_DATE,
+         0,
+       null,
+       null,
+         null,
+         SYSTIMESTAMP
+       );
+      END IF;
+   END IF;
+END;
