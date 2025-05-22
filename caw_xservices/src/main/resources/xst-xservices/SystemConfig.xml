@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <RegisterConfig dtype="Default">
+    <Terminal dtype="Default">
+      <PrimaryTerminalId dtype="String">1</PrimaryTerminalId>
+    </Terminal>    	  
+    <CommissionedAssociates dtype="Default">
+      <PromptForCommissionedAssociates dtype="Boolean">${xservices.config.promptForCommissionedAssociates}</PromptForCommissionedAssociates>
+      <PromptPerItem dtype="Boolean">${xservices.config.promptPerItem}</PromptPerItem>
+      <MaxCommissionedAssociatesAllowed dtype="PositiveInteger">3</MaxCommissionedAssociatesAllowed>
+      <MinCommissionedAssociatesAllowed dtype="PositiveInteger">1</MinCommissionedAssociatesAllowed>
+    </CommissionedAssociates>
+    <OpenClose dtype="Default">
+    	<!-- For Register Accountability only, QuickTransferNoTillCount true:during store open and close, system doesn't prompt for till count assuming no cash invovle and move all tender amount from register/hand held to store bank. -->
+      	<QuickTransferNoTillCount dtype="Boolean">true</QuickTransferNoTillCount>
+    </OpenClose>
+  </RegisterConfig>
+  <SystemConfig dtype="Default">
+  	<PriceProvider dtype="Default">
+      <HierarchicalPriceProvider dtype="Default">
+        <LevelCode dtype="String">STORE</LevelCode>
+        <LevelValue dtype="String">${xservices.rtl_location.id}</LevelValue>
+      </HierarchicalPriceProvider>
+    </PriceProvider>
+    <LoginSecurity dtype="Default">
+      <IdType dtype="String">employee_id</IdType>
+      <DetailedFailureMessage dtype="Boolean">true</DetailedFailureMessage>
+	  <StrongPassword dtype="Boolean">false</StrongPassword>
+	  <PasswordHistoryLength dtype="PositiveInteger">4</PasswordHistoryLength>
+      <AccountLockout dtype="Default">
+        <Enabled dtype="Boolean">true</Enabled>
+        <Retries dtype="PositiveInteger">5</Retries>
+      </AccountLockout>
+      <PasswordExpiration dtype="Default">
+        <Enabled dtype="Boolean">false</Enabled>
+        <Days dtype="PositiveInteger">90</Days>
+      </PasswordExpiration>
+    </LoginSecurity>
+    <Email dtype="Default">
+      <DefaultMailHost dtype="String">${xservices.email.host}</DefaultMailHost>
+      <DefaultMailPort dtype="PositiveInteger">${xservices.email.port}</DefaultMailPort>
+      <UseSmtpAuth dtype="Boolean">${xservices.email.useSmtpAuth}</UseSmtpAuth>
+      <DefaultMailUser dtype="String">${xservices.email.user}</DefaultMailUser>
+      <DefaultMailPassword dtype="String">${xservices.email.password}</DefaultMailPassword>
+      <SmtpDebug dtype="Boolean">true</SmtpDebug>
+      <Receipt dtype="Default">
+        <Watermark dtype="String"></Watermark>
+        <SendEmailReceipts dtype="Boolean">${xservices.config.emailReceiptEnabled}</SendEmailReceipts>
+      </Receipt>
+    </Email>
+    <ItemSale dtype="Default">
+      <AllowItemNotOnFile dtype="Boolean">${xservices.config.allowItemNotOnFile}</AllowItemNotOnFile>
+      <NotifyForItemNotOnFile dtype="Boolean">${xservices.config.notifyForItemNotOnFile}</NotifyForItemNotOnFile>
+    </ItemSale>
+    <Transaction dtype="Default">
+      <PromptForCancelReasonCode dtype="Boolean">${xservices.config.promptForCancelReasonCode}</PromptForCancelReasonCode>
+    </Transaction>
+    <AutoLogout dtype="Default">
+      <Enabled dtype="Boolean">${xservices.config.autoLogoutEnabled}</Enabled>
+      <WaitSeconds dtype="PositiveInteger">${xservices.config.autoLogoutWaitSeconds}</WaitSeconds>
+    </AutoLogout>
+    <Loyalty dtype="Default">
+      <RegistrationMode dtype="String">${xservices.config.loyaltyRegistrationMode}</RegistrationMode>  
+      <AwardRedemptionMode dtype="String">${xservices.config.loyaltyAwardRedemptionMode}</AwardRedemptionMode>
+    </Loyalty>
+    <Receiving dtype="Default">
+      <Blind dtype="Boolean">${xservices.config.blindReceiving}</Blind>
+    </Receiving>
+    <SendSale dtype="Default">
+      <!-- AutoGenerateShippingFee dtype="Boolean">true</AutoGenerateShippingFee>
+      <ShipCalcType dtype="String">PER_TRANSACTION</ShipCalcType>
+      <GenerateWeightedShippingFee dtype="Boolean">false</GenerateWeightedShippingFee>
+      <DefaultStoreOrignatorCode dtype="String">STORE</DefaultStoreOrignatorCode>
+      <RequireCustomer dtype="Boolean">false</RequireCustomer>
+      <CustomerIsDefaultDestination dtype="Boolean">true</CustomerIsDefaultDestination-->      
+      <!-- Check SendTaxType for valid values (DESTINATION,SELLING,DEST_INSTATE -->
+      <!--SendTaxType dtype="String">DESTINATION</SendTaxType>
+      <UseThisStoreAsFailOverTaxRate dtype="Boolean">true</UseThisStoreAsFailOverTaxRate-->
+      <PrintSendSaleMerchandiseTicketPerItem dtype="Boolean">${xservices.config.printSendSaleMerchandiseTicketPerItem}</PrintSendSaleMerchandiseTicketPerItem>
+    </SendSale>
+   </SystemConfig>
+   <XcenterServiceConfig dtype="Default">
+    <PromptJoinLoyaltyAccount dtype="Boolean">${xservices.config.promptJoinLoyaltyAccount}</PromptJoinLoyaltyAccount>
+    <EnabledAwardRedemption dtype="Boolean">${xservices.config.enabledAwardRedemption}</EnabledAwardRedemption>
+    <SendSaleEnabled dtype="Boolean">${xservices.config.sendSaleEnabled}</SendSaleEnabled>
+    <SendSaleAllowMultipleAddress dtype="Boolean">${xservices.config.sendSaleAllowMultipleAddress}</SendSaleAllowMultipleAddress>
+    <LookupCustomerThroughRelate dtype="Boolean">${xservices.config.LookupCustomerThroughRelate}</LookupCustomerThroughRelate>
+   </XcenterServiceConfig>
+</Store>
+

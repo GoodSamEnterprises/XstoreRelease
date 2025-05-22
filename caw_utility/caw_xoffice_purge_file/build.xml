@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project purge_file with Jar-in-Jar Loader">
+	<!--this file was created by Eclipse Runnable JAR file Export Wizard-->
+	<!--ANT 1.7 is required-->
+	<!--define folder properties-->
+	<property name="dir.buildfile" value="."/>
+	<property name="dir.workspace" value="${dir.buildfile}/.."/>
+	<property name="dir.jarfile" value="${dir.buildfile}/build"/>
+	
+	<tstamp>
+		  <format property="TODAY_MY" pattern="yyyy-MM-dd" locale="en,UK" />
+	</tstamp>
+	<tstamp>
+	      <format pattern="yyyy-MM-dd" property="build-date-time" locale="en,UK"/>
+	</tstamp>
+	
+	<target name="create_run_jar" depends="clean, copy_config_file">
+		<jar destfile="${dir.jarfile}/caw_xoffice_purge_file.jar">
+			<manifest>
+				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+				<attribute name="Rsrc-Main-Class" value="caw.purge.app.CawAppPurgeFile"/>
+				<attribute name="Class-Path" value="."/>
+				<attribute name="Rsrc-Class-Path" value="./ ojdbc8.jar commons-io-2.6.jar commons-configuration-1.10.jar commons-lang-2.6.jar commons-logging-1.1.1.jar jackrabbit-webdav-2.2.5.jar org.apache.commons.httpclient.jar slf4j-api-1.7.13.jar log4j-1.2.17.jar logback-core-1.2.3.jar commons-codec-1.10.jar"/>
+			</manifest>
+			<zipfileset src="jar-in-jar-loader.zip"/>
+			<fileset dir="${dir.buildfile}/bin"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="ojdbc8.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="commons-io-2.6.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="commons-configuration-1.10.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="commons-lang-2.6.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="commons-logging-1.1.1.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="jackrabbit-webdav-2.2.5.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="org.apache.commons.httpclient.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="slf4j-api-1.7.13.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="log4j-1.2.17.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="logback-core-1.2.3.jar"/>
+			<zipfileset dir="${dir.buildfile}/lib" includes="commons-codec-1.10.jar"/>
+		</jar>
+		<zip destfile="${dir.jarfile}\caw_xoffice_purge_file_${TODAY_MY}.zip" basedir="${dir.jarfile}" />
+		<delete>
+			  <fileset dir="${dir.jarfile}" includes="caw_xoffice_purge_file.jar, caw_xoffice_purge_file.sh, config.properties, log4j.properties, README.txt" />
+		</delete>
+	</target>
+	<target name="clean">
+		<echo>=== Clean build folder ===</echo>
+		<delete failonerror="false">
+			<fileset dir="${dir.jarfile}" includes="**/*"/>
+		</delete>
+	</target>
+
+	<target name="copy_config_file">
+		<copy file="config.properties" tofile="${dir.jarfile}/config.properties" overwrite="true" />
+		<copy file="log4j.properties" tofile="${dir.jarfile}/log4j.properties" overwrite="true" />
+		<copy file="caw_xoffice_purge_file.sh" tofile="${dir.jarfile}/caw_xoffice_purge_file.sh" overwrite="true" />
+		<copy file="README.txt" tofile="${dir.jarfile}/README.txt" overwrite="true" />
+	</target>
+	 
+</project>
