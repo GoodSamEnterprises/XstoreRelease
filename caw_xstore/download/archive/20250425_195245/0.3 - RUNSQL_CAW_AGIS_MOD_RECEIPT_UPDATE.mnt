@@ -1,0 +1,29 @@
+<Header target_org_node="OPENLOCATIONS" deployment_name="ReceiptAGISUpdate" download_time="IMMEDIATE" apply_immediately="true" />
+
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_MEM_RECEIPT'
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_ROAD_RECEIPT'
+
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_MEM_QR_HEADER'
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_MEM_QR_LINK'
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_MEM_QR_FOOTER_1'
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_MEM_QR_FOOTER_2'
+
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_ROAD_QR_HEADER'
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_ROAD_QR_LINK'
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_ROAD_QR_FOOTER_1'
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_ROAD_QR_FOOTER_2'
+RUN_SQL|DELETE com_receipt_text WHERE organization_id = '1000' AND text_code= 'CAW_AGIS_TEMP_ROAD_QR_FOOTER_3'
+
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_MEM_RECEIPT','DEFAULT',0,'*','TEMPORARY MEMBERSHIP CARD',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_ROAD_RECEIPT','DEFAULT',0,'*','TEMPORARY ROADSIDE CARD',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_MEM_QR_HEADER','DEFAULT',0,'*','View all your benefits online at the Rewards Center',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_MEM_QR_LINK','DEFAULT',0,'*','https://www.goodsam.com/rewards',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_MEM_QR_FOOTER_1','DEFAULT',0,'*',' Access your benefits with your phone number ending in XXXX ',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_MEM_QR_FOOTER_2','DEFAULT',0,'*',' or your ID, XXXX',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_ROAD_QR_HEADER','DEFAULT',0,'*','View your Roadside Assistance plan benefits here',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_ROAD_QR_LINK','DEFAULT',0,'*','https://www.goodsam.com/rewards/benefits',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_ROAD_QR_FOOTER_1','DEFAULT',0,'*','Call 800-842-5351 to receive Roadside benefits. ',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_ROAD_QR_FOOTER_2','DEFAULT',0,'*',' Access your benefits with your phone number ending in XXXX ',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)
+RUN_SQL|INSERT INTO com_receipt_text (organization_id,text_code,text_subcode,text_seq,config_element,receipt_text,reformat_flag,line_format,create_date,create_user_id,update_date,update_user_id,record_state) VALUES ('1000','CAW_AGIS_TEMP_ROAD_QR_FOOTER_3','DEFAULT',0,'*',' or your ID, XXXX',1,'CENTERED',SYSDATE,'BASEDATA',SYSDATE,'BASEDATA',null)

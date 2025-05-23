@@ -1,0 +1,1 @@
+vfQueryUpdate.exe /argfile=args.xml

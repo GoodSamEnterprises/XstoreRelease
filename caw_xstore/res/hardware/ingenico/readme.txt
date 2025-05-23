@@ -1,0 +1,1 @@
+This folder contains files and information that can be used to prepare Ingenico devices for use with Xstore.  For further instructions, please see the readme file in the subdirectory that is appropriate for your device.
