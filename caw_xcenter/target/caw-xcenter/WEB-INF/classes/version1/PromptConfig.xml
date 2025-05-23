@@ -1,0 +1,1142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * INT-92               260817    Customer Integration
+ * BZ23052              120917    Implement Advanced Prompting
+ * BZ23302              130917    Displayed message to inform for customer the maximum of Coupon amount
+ * BZ23265              200917    Implement issue "Create Good Sam Visa" card function
+ * BZ23481              220917    No response when pressing Yes on "Item not File" prompt with advanced 
+ *                                prompting trigger "First name = cat and last name = directives"
+ * BZ23339              210917    [DEV] Implement Gift card authorization
+ * BZ23339              250917    [DEV] Implement Gift card authorization
+ * BZ23562              260917    Instant Credit Approval or Decline message does not display in Xstore after application is complete
+ * BZ23263              250917    Implement House Account
+ * BZ23406              280917    Implement tender by "Create Good Sam Visa" card function
+ * BZ23359              270917    Gift cards can't be swiped at screen
+ * BZ23359              021017    Gift cards can't be swiped at screen
+ * BZ23359              091017    Gift cards can't be swiped at screen
+ * B23735               051017    Duplicate property name: _catalystprompttitle in translations.properties
+ * BZ23865              091017    Should be disable 'Disable Device' button on Insert Check/Remove Check/MICR read error screen when performing with Check tender
+ * BZ23563              101017    [Payments] Xstore needs to confirm selected 
+ *                                customer before sending command to pin pad for instant credit
+ * BZ23951              171017    Customer Search Screen Needs to Include Membership#, Expiration Date
+ * BZ24150              251017    [DEV] Serialized Merchandise certificate (coupon) applied to transaction subtotal
+ * BZ23958              251017    Xstore needs to prompt for membership # when customer joins
+ * BZ24218              261017    'Back' should be replaced by 'Cancel' button on Franking error screen when let timed out in 'Insert franking document screen. 
+ * BZ24187              261017    HDE is displayed when pressing "GS Visa Apply Now" button
+ * BZ24317              011117    Membership validate response data from EBS should be displayed instead of Xstore messages in case the customer has already membership ID
+ * BZ24324              021117    Membership validation prompt should be distinguish when joining in GS club and GS RS (Roadside assistance)
+ * BZ24326              021117    "Credit Card tender is required" prompt should be trigger after fee selected "Auto-renew" joining in GS RA added into sale screen
+ * BZ24356              031117    [Advance Prompting] Xstore needs to return to Membership Info prompt after a failed membership validation response
+ * BZ24561              221117    Should be displayed message to indicate EBS is offlined when doing AR/Third-party tender in offline cases
+ * BZ24631              291117    [Order service] Selling Price Variance value displayed incorrect in order service log
+ * BZ24877              221217    When Selling Memberships, Store Associates Are Not Prompted for Membership#
+ * BZ24945              281217    AR tender is disable on Return tender option screen when performing return transaction by scanning trans on Sell item screen
+ * BZ23405              160118    [QAS] There are problem when integrate Xstore with QAS service of Camping World
+ * BZ25884              100417    [PROD] New Requirement- Display Good Sam credit application/error message on Pin Pad
+ * BZ25115              180418    New Requirement - Add a Member Price Override Function to the POS Sale screen
+ * BZ25358              130318    Enhancements to QAS Integration with POS
+ * BZ25434              110518    New Requirement - Extend Membership Validation Calls to Include Renewal Items
+ * BZ26284              150518    [25358] No need QAS validation is on Customer result prompt when using WholeSale/AR Tender
+ * BZ26247              150518    [Tenders] Manual entry of checks should be enabled
+ * BZ25640              052518    New Requirement - Used Firearm System Process Redesign
+ * BZ26431              040618    [25590] Should be displayed indicating item cannot sold due to no price instead of pulling ($0.01) after removing membership customer.
+ * BZ26568              061418    [Internal] Can assign a customer without QAS validation address lookup to sale screen after changing another country
+ * BZ26575              140618    [QAS] Update address verification flow to reduce the number of click in the QAS process
+ * BZ26271              090718    New Requirement - Add ability to manually enter or key in SKUs with alpha values
+ * BZ25958              100718    New Requirement - Remove Gift Card transactions from the Pin Pad
+ * BZ26836              170718    [Internal][QAS]There are not consistent result found from QAS validation when doing QAS process via Assign&Continue and Save&Changes with the same address.
+ * BZ26845              180718    [26271] Cannot enter manually or scan barcode an item which has spaces at Returns screen
+ * BZ26289              120718    New Requirement - Enable A/R Payment Functionality in Xstore
+ * BZ26207              190718    New Requirement - Enable Work Order Functionality
+ * BZ26896              260718    [New Requirement] Add security override for Paid Out transaction greater than the configured max
+ * BZ26629              300718    [New Requirement] Add a prompt to capture discount code when the Retail Coupon discount reason is selected
+ * BZ25958              010818    New Requirement - Gift Card User Flow and Receipt Changes
+ * BZ27005              020818    [1.6.2] Should be displayed deposit amount screen instead of WO Options when selecting 'OK' on Overtender screen
+ * BZ27032              030818    Work order - Over ride tender verbiage incorrect
+ * BZ27033              030818    Work Order Cancellation confirmation screen display issue
+ * BZ27051              030818    [1.6.3] Retry/Esc instead of Back/Esc button displays on Word Order Cross Store.
+ * BZ27146              100818    [WO] The function when clicking on RETRY/ESC at Work Order Missing Items prompt is not correct when lookup the WO has not line items.
+ * BZ27193              140818    [Updated Requirement] Work Order Complete button must be enabled for both new and deposit work orders from S&I
+ * BZ27208              160818    [Updated Requirement] Update Work Order Deposit Minimum to one cent (0.01) instead of zero (0.00)
+ * BZ27294              220818    'Issue Store credit' is displayed as refund tender when performing WO complete then remove a line item from WO transaction
+ * BZ27585              200918    [Prod] Store users shouldn't be able to create new users.
+ * BZ27670              210918    [Prod] Options to auto unlock users/Display actual reason for failed log in attempts in Xstore
+ * BZ25761              121018    New Requirement - Acquisition of Private Label Credit Card integration in Xstore
+ * BZ25762              121418    New Requirement - Credit Account Look up integration in Xstore
+ * BZ27973              140119    New Requirement - PLCC Account Payment
+ * BZ29124              290119    Port 29051 to Release 3.0 - Update Xstore to allow only one PO tender per transaction
+ * BZ29134              290119    [Internal] The Account Lookup flow should be aborted after three failed attempts look up a customer hasn't found in system.
+ * BZ29304              130219    [Internal] Need to add an Esc/Back button to all Xstore GSVisa & PLCC screens to allow ability to exit
+ * BZ29379              140219    [Internal] Xstore should display the actual response provided by Eigen MiraServ once returning an unsuccessful GS Account Payment inquiry response
+ * BZ29311              150219    [3.1][Internal] WO deposit is unable to proceed when WO amount due is $0.00
+ * BZ29406              180219    [New Requirement] Xstore must send TC70 Payment Request to Eigen for the account payment transaction
+ * BZ29444              190219    [Internal][Account Payment]Xstore Good Sam Account Payment Account Inquiry Responses incorrectly the content prompt incase unsuccessfully retrieved from ADS/Eigen.
+ * BZ29514              220219    Updated Requirement] ADS Feedback: Instant Credit API â€“ the phone number is not being sent. This is a required field.
+ * BZ29580              280219    [New Requirement] Change GUI verbiage for the terminated employee notification
+ * BZ29635              050319    [Internal] Xstore backs to Sale screen instead of Sale Tender option when hit BACK on Sale Complete for Return transaction used authorized token credit/debit for refund.
+ * BZ29683              080319    [INTERNAL] [4.0.1] Review/Evaluate $20 GSVS on the current build
+ * BZ30010              010419    [PROD] Limit length of PO Number
+ * BZ29625              180419    [New Requirement] - Auto-Renewal Item Specific Receipts
+ * BZ30154              190619    [New Requirement] Xstore capture the Work Order line items' sale associate from S&I and forward it to Order Service as part of item attribute
+ * BZ30378              120619    [New Requirement] Refine QAS result and break out the street number ranges in Xstore
+ * BZ30922              210619    [New Requirement] Price Check and Inventory Lookup
+ * BZ27535              270693    [New Requirement] Tax Exempt Wholesale Customer status not recognized at different stores
+ * BZ31759              050719    Inventory Lookup Error Prompt Change
+ * BZ30530              300719    [New Requirement] Change the message verbiage for work order deposit error
+ * BZ33137              031019    Employee Logins - How to Deactivate
+ * BZ33305              171019    [New Requirement] Need changing about formatting, color, displaying on Current Warranty Plans Screen
+ * BZ33478              211019    [Internal] Lose focus at Warranty Plans Prompt screen when Scan/Press Enter key
+ * BZ34226              271219    [New Requirement] Add Warning beeps for any prompt requiring action
+ * BZ28036              100220    [New Requirement] Enable the base Functionality available for Customer Purchase History 
+ * BZ35513              120320    [NEW REQ] Need option for "No Receipt" as a Receipt Method on Sales Complete screen
+ * BZ35326              120320    [PROD] [NEW REQ] Non-credited Wholesale using Credit / AR and 3rd Party Credit mapped to same Tender Type/Trans Code
+ * BZ35593              170320    [INTERNAL] Cannot Reject Warranty Plans in Return transaction 
+ * BZ36405              030620    Issue with Credit Customer placed on credit hold
+ * BZ37177              100820    Enable Order Function in Xstore
+ * BZ37382              270820    Signature capturing for Order Creation/Pickup transaction
+ * BZ37023              120820    [Task] Modify Xstore to call ShippingAPI to calculate shipping rate for the Delivery Order
+ * BZ37661         		070920    [Requirement] Add new prompt "Please ask the customer to sign the receipt"
+ * BZ37702              110920    [Task] Handling Shipping method/Rate incase Neuron API is down when doing a Delivery-customer
+ * BZ37901              150920    [Internal] Xstore should be displayed exactly message retrieved from Neuron API for restricted shipping items instead of incorrectly offline status
+ * BZ37912              021020    Shipping Fee is being applied to the line item vs transaction level
+ * BZ40740              190221    [PROD]Need ability to disable Create New Order, but enable Manage Orders Functionality in Xstore
+ * BZ41379              022221    Requirement - Disabled Mixed Order Transactions in Xstore
+ * BZ33319              260221    Good Sam Visa Promo Plan - Phase 2/Deferred Financing
+ * BZ44528              130821    Electric World & Mobile POS Implementation (Phase 1)
+ * BZ45863              230821    [Internal] Xstore should notify the user if no items in cart can be added to the Electric World order
+ * BZ44917              110921    [New Requirement] IDS Payment Integration with Xstore
+ * BZ42307              200921    [Requirement] Add ability to reject at the item level for BOPIS
+ * BZ45995          	141021    [New requirement] Email capture when good sam membership is sold
+ * BZ42019              171121    Replace QAS with EAVS2
+ * BZ42307              221121    [Requirement] Add ability to reject at the item level for BOPIS
+ * BZ46743				050122	  Vehicle Identification Number (VIN) Capture for Xstore
+ * BZ54208              261222    [BTM-280] Production Issue | Applying funds onto gift card without charging
+ * BZ57844              080823    Bug 57844 - [Task] Loyalty Phase 2.
+ * BZ59418              181023    Free Tier Opt In Loyalty SKU customization 
+*===================================================================
+ */
+-->
+<PromptSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PromptConfig.xsd">
+    <Prompt name="ERROR_CUST_SEARCH_CRITERIA" type="Notify" title="_customer" message="_promptErrorSearchMessage" >
+    </Prompt>
+    <!-- Begin BZ23052 -->
+    <Prompt name="CAW_CATALYST_MESSAGE_PROMPT" type="Notify" title="_promptingEngineTitle" message="_catalystpromptmessage"><!-- B23735 -->
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+    </Prompt>
+    <Prompt name="CAW_CATALYST_NOTIFY_PROMPT" type="Notify" title="_catalystNotifyPrompttitle" message="_catalystNotifyPromptmessage">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+    </Prompt>
+    <Prompt name="CAW_CATALYST_CREDIT_CARD_REQUIRED" type="Notify" title="{0}" message="{1}" > <!-- BZ24326 -->
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+    </Prompt>
+    <Prompt name="CAW_CATALYST_VOID_TRANSACTION" type="Notify" title="_catalystVoidTransactionTitle" message="_catalystVoidTransactionMessage">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+    </Prompt>
+    <!-- End BZ23052 -->
+    
+    <!-- CAW: START BZ 23302 -->
+    <Prompt name="CAW_CONFIRM_COUPON_AMOUNT" type="NotifyYesNo" title="_confirmCouponAmt" message="_applyCouponAmountValidate">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action ref="ACCEPT_ENTER" text="_yes" keyStroke="Enter" />
+        <Action ref="CANCEL_NO" />
+    </Prompt>
+    <!-- CAW: END BZ 23302 -->
+    
+    <!-- START | GIFT CARD AUTHORIZATION FLOW -->
+    <Prompt name="GIFT_CARD_BALANCE_RECEIPT" type="Notify" title="_giftCardBalanceTitle" message="_balanceInquiryDeclinedTextParams" >
+        <Action ref="CANCEL_BACK" />
+        <Action dataKey="YES" textKey="_loyaltyAccountHistoryBalanceReceipt" keyStroke="Enter" />
+    </Prompt>
+    
+    <Prompt name="INVALID_RELOAD_GC_AMOUNT" type="Notify" title="_reloadGiftCardAmount" message="_reloadGiftCardAmountMess" />
+    <!-- END | GIFT CARD AUTHORIZATION FLOW -->
+    
+    <!-- Begin BZ-23265, BZ25761 -->
+    <Prompt name="CAW.GOOD_SAM_VISA_PRE_SCREEN" type="Notify" title="_countrypack.br.pos.common.notify" message="_cawGoodSamPreScreenPrompt">
+        <Action dataKey="NEXT" textKey="_nextDay" keyStroke="N" />
+    </Prompt>
+    <!-- End BZ-23265, BZ25761 -->
+    
+    <Prompt name="NOT_SELL_ITEM_NOT_ON_FILE_NOTIFY" type="Notify" title="_error" message="_notSellItemNotOnFile" /> <!-- BZ23481 -->
+    
+    <!-- Begin BZ-23562, BZ25761 -->
+    <Prompt name="CAW.GOOD_SAM_VISA_RESPONSE_APPROVE" type="Notify" title="_cawGoodSamResponse" message="_cawGoodSamResponseApproved">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action dataKey="YES" textKey="_closeGSResponse" keyStroke="Enter" />
+    </Prompt>
+    
+    <Prompt name="CAW.GOOD_SAM_VISA_RESPONSE_DECLINE" type="Notify" title="_customer" message="_cawGoodSamResponseDeclined">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action ref="ACCEPT_ENTER" />
+    </Prompt>
+    <!-- End BZ-23562, BZ25761 -->
+    <!-- Begin BZ23263 -->
+    <Prompt name="ENTER_PO_NUMBER" type="Text" title="_poInfo"
+        message="_prompEnterPO">
+        <!-- Begin BZ30010 -->
+        <DataField ref="IDLong" >
+            <Parameter name="maxCharacters">
+                <param_value dtype="Integer"><![CDATA[30]]></param_value>
+            </Parameter>
+        </DataField>
+        <!-- End BZ30010 -->
+        <IconGroup icon="_imagePromptSerial" />
+    </Prompt>
+    <Prompt name="CAW_PROMPT_AR_WARNING" type="Notify"
+        title="ARThirdPartyTitle" message="_msgShowWarningBalanceAMT">
+        <Action dataKey="YES" textKey="_loyaltyAccountHistoryBalanceReceipt"
+            keyStroke="Enter" />
+    </Prompt>
+    <!-- Begin BZ23951 -->
+    <Prompt name="CAW.CUSTOMER_LIST_REGISTER" type="List" title="_customersearch" message="_searchResultsDataSourceMessage" secondary_message="_searchResultsDataSourceMessage">
+    <ListViewType dtype="String">CAW_CUSTOMER_LIST</ListViewType>
+    <IconGroup icon="_imagePromptCustomerSearch" />
+    <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+    <Action dataKey="SELECT" text="_selectAndView" keyStroke="F5" keywords="actionForSelectedListItem" />
+    <Action dataKey="NEW" text="_new" keyStroke="F8" privilege="CREATE_CUSTOMER" />
+    <!-- Also note: Xstore M implicitly assumes that the "ACCEPT" action is tied to a selected
+         item in the list prompt, so no special hints are needed for that. -->
+    <Action dataKey="ACCEPT" text="_selectAndContinue" keyStroke="Enter" /> <!-- BZ26575 -->
+    </Prompt>
+    <!-- End BZ23951 -->
+    <Prompt name="CUSTOMER_LIST_THIRD_PARTY" type="List"
+        title="_customersearch" message="_searchResultsDataSourceMessage"
+        secondary_message="_searchResultsDataSourceMessage">
+        <ListViewType dtype="String">CAW_CUSTOMER_LIST</ListViewType> <!-- BZ23951 -->
+        <IconGroup icon="_imagePromptCustomerSearch" />
+        <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+        <!-- Begin BZ26284 -->
+        <!-- <Action dataKey="SELECT" text="_selectAndView" keyStroke="F5"
+            keywords="actionForSelectedListItem" /> -->
+        <!-- Also note: Xstore M implicitly assumes that the "ACCEPT" action 
+            is tied to a selected item in the list prompt, so no special hints are needed 
+            for that. -->
+        <Action dataKey="ACCEPT" text="_selectAndContinue"
+            keyStroke="Enter" />
+            <!-- End BZ26284 -->
+    </Prompt>
+    <Prompt name="CAW_PROMPT_NO_CUSTOMER_AVAILABLE" type="Notify"
+        title="_customer" message="_promptmsg51">
+        <IconGroup icon="_imagePromptCustomerSearch" />
+        <Action ref="ACCEPT_BACK" />
+    </Prompt>
+    <Prompt name="ENTER_TENDER_AMOUNT" type="Text" title="_tender" message="_promptmsg34" autoDecimalKeyboard="true">
+    <DataField ref="Money" />
+    <IconGroup icon="_imagePromptTender" />
+    <Action dataKey="CANCEL" text="_back" keyStroke="Escape" />
+    <Action ref="ACCEPT_ENTRY" />
+  </Prompt>
+    <Prompt name="CAW_PROMPT_NO_CUSTOMER_THIRD_PARTY_AVAILABLE" type="Notify"
+        title="_customer" message="_prompNoCustThirdParty">
+        <IconGroup icon="_imagePromptCustomerSearch" />
+        <Action ref="ACCEPT_BACK" />
+    </Prompt>
+    <!-- End BZ23263 -->
+    
+    <!-- Begin BZ-23406 -->
+    <Prompt name="CAW_SHOPPING_PASS_NUMBER" type="Text" title="_cawGoodSamVisaTitle" message="_cawGoodSamShoppingPassEnter">
+        <DataField ref="IDLong" />
+    </Prompt>
+    
+    <Prompt name="CAW_SHOPPING_PASS_EXP" type="Text" title="_cawGoodSamVisaTitle" message="_cawGoodSamShoppingPassExpEnter">
+        <DataField ref="IDLong" />
+    </Prompt>
+    
+    <Prompt name="CAW.GOOD_SAM_NEW_VISA_EMPTY" type="Notify" title="_customer" message="_cawNewGoodSamEmpty">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action ref="ACCEPT_ENTER" />
+    </Prompt>
+    <!--End BZ-23406 -->
+    
+    <!-- BEGIN BZ23865 -->
+    <Prompt name="MICR_INSERT_CHECK" type="Notify" title="_micrinsertchecktitle" message="_micrinsertcheckmsg">
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+    <Action visible="false" keyStroke="Enter" keyStrokeKey="Enter" />
+  </Prompt>
+  <Prompt name="MICR_READING" type="Notify" title="_micrreadingtitle" message="_micrreadingmsg">
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+    <Action visible="false" keyStroke="Enter" keyStrokeKey="Enter" />
+  </Prompt>
+  <Prompt name="MICR_REMOVE_CHECK" type="Notify" title="_micrremovechecktitle" message="_micrremovecheckmsg">
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+    <Action visible="false" keyStroke="Enter" keyStrokeKey="Enter" />
+  </Prompt>
+  <Prompt name="MICR_BAD_READ_REMOVE" type="Notify" title="_micrremovechecktitle" message="_micrbadreadmsg">
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+    <Action visible="false" keyStroke="Enter" keyStrokeKey="Enter" />
+  </Prompt>
+  <Prompt name="EJOURNAL_MICR_INSERT_CHECK" type="Notify" title="_micrinsertchecktitle" message="_micrinsertcheckmsg">
+    <Action ref="CANCEL_BACK" />
+    <Action visible="false" keyStroke="Enter" keyStrokeKey="Enter" />
+  </Prompt>
+  <Prompt name="EJOURNAL_MICR_READ_ERROR_NO_DOC" type="Notify" title="_micrerrortitle" message="_micrnodocmsg">
+    <Action dataKey="RETRY" text="_micrretrykey" keyStroke="Enter" />
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+  </Prompt>
+  <Prompt name="EJOURNAL_MICR_READ_ERROR_TIMEOUT" type="Notify" title="_micrerrortitle" message="_ejournalmicrtimeoutmsg">
+    <Action dataKey="RETRY" text="_micrretrykey" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="EJOURNAL_MICR_READ_ERROR" type="Notify" title="_micrerrortitle" message="_micrerrormsg">
+    <Action dataKey="RETRY" text="_micrretrykey" keyStroke="Enter" />
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+  </Prompt>
+  <Prompt name="MICR_READ_ERROR_NO_DOC" type="Notify" title="_micrerrortitle" message="_micrnodocmsg">
+    <Action dataKey="RETRY" text="_micrretrykey" keyStroke="Enter" />
+    <Action dataKey="CANCEL_ACTION" text="_micrentermanual" keyStroke="Escape" />
+  </Prompt>
+  <Prompt name="MICR_READ_ERROR_TIMEOUT" type="Notify" title="_micrerrortitle" message="_micrtimeoutmsg">
+    <Action dataKey="RETRY" text="_micrretrykey" keyStroke="Enter" />
+    <Action dataKey="CANCEL_ACTION" text="_txtManual" keyStroke="Escape" /><!-- BZ26247 -->
+  </Prompt>
+  <Prompt name="MICR_READ_ERROR" type="Notify" title="_micrerrortitle" message="_micrerrormsg">
+    <Action dataKey="RETRY" text="_micrretrykey" keyStroke="Enter" />
+    <Action dataKey="CANCEL_ACTION" text="_txtManual" keyStroke="Escape" /><!-- BZ26247 -->
+  </Prompt>
+  <Prompt name="MICR_READ_ERROR_REMOVING" type="Notify" title="_micrerrortitle" message="_micrerrorremovingmsg">
+    <Action dataKey="CANCEL_ACTION" text="_txtManual" keyStroke="Escape" /><!-- BZ26247 -->
+    <Action dataKey="RETRY" text="_micrretrykey" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="FRANKING_INSERT_DOC" type="Notify" title="_frankinginserttitle" message="_frankinginsertmsg2">
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+    <Action visible="false" keyStroke="Enter" keyStrokeKey="Enter" />
+  </Prompt>
+  <Prompt name="FRANKING_REMOVE_CHECK" type="Notify" title="_micrremovechecktitle" message="_micrremovecheckmsg">
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+    <Action visible="false" keyStroke="Enter" keyStrokeKey="Enter" />
+  </Prompt>
+  <Prompt name="FRANKING_REMOVE_DOC" type="Notify" title="_frankingremovetitle" message="_frankingremovemsg2">
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+    <Action visible="false" keyStroke="Enter" keyStrokeKey="Enter" />
+  </Prompt>
+  <Prompt name="FRANK_ERROR_TIMEOUT" type="Notify" title="_frankingerrortitle" message="_frankingerrortimeoutmsg">
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" /> <!-- BZ24218 -->
+    <Action dataKey="RETRY" text="_frankingretrykey" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="FRANK_ERROR_NO_DOC" type="Notify" title="_frankingerrortitle" message="_frankingerrornodocmsg">
+    <Action dataKey="CANCEL_ACTION" text="_back" keyStroke="Escape" />
+    <Action dataKey="RETRY" text="_frankingretrykey" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="FRANK_ERROR" type="Notify" title="_frankingerrortitle" message="_frankingerrormsg">
+    <Action dataKey="CANCEL_ACTION" text="_cancel" keyStroke="Escape" />
+    <Action dataKey="RETRY" text="_frankingretrykey" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="FRANK_ERROR_REMOVING" type="Notify" title="_frankingerrortitle" message="_frankingerrorremovingmsg">
+    <Action dataKey="CANCEL_ACTION" text="_back" keyStroke="Escape" />
+    <Action dataKey="RETRY" text="_frankingretrykey" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ23865  -->
+  
+  <!-- BEGIN BZ23688 , BZ25761, BZ25762-->
+  <Prompt name="CAW.PRESCREEN_ACCEPTANCE_RESPONSE_DUPLICATE" type="Notify" title="_promptTitleNotify" message="_cawPrescreenResponseDuplicate">
+    <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+    <Action ref="CANCEL"/>
+    <Action chainKey="CAW_GOOD_SAM_ACCOUNT_LOOKUP" chainType="START" text="_cawAccountLookup" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ23688 , BZ25761, BZ25762-->
+  
+  <!-- Start BZ23563 -->
+  <Prompt name="CAW.CONFIRM_CUST_INFO" type="NotifyYesNo" title="_confirmCustInfoTitle" message="_confirmCustInfoMsg">
+    <Action ref="NO" />
+    <Action ref="YES" />
+  </Prompt>
+  <!-- End BZ23563 -->
+  
+  <!-- Begin BZ24150 -->
+  <Prompt name="ENTER_COUPON_SERIAL_SCREEN" type="Text" title="_enterCouponSerialTitle"
+        message="_enterCouponSerialMessage">
+    <DataField ref="IDLong" />
+    <IconGroup icon="_imagePromptSerial" />
+  </Prompt>
+  
+  <Prompt name="CAW_COUPON_ALREADY_USED_MSG" type="Notify" title="_promotionReserveTitle" message="_promotionalReadyUsedeMessage">
+      <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+      <Action dataKey="CANCEL_ACTION" text="_ok" keyStroke="Enter" />
+   </Prompt>
+   
+   <Prompt name="CAW_INVALID_SERIALIZED_COUPON_MSG" type="Notify" title="_promotionReserveTitle" message="_promotionalInvalidSerializedMessage">
+      <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+      <Action dataKey="CANCEL_ACTION" text="_ok" keyStroke="Enter" />
+   </Prompt>
+   
+   <Prompt name="CAW_ERROR_COUPON_MSG" type="Notify" title="_promotionReserveTitle" message="_errorCouponSerialMessage">
+      <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+      <Action dataKey="CANCEL_ACTION" text="_ok" keyStroke="Enter" />
+   </Prompt>
+  <!-- End BZ24150 -->
+  <!-- Begin BZ23958 -->
+  <Prompt name="ENTER_MEMBERSHIP_NUMBER" type="Text" title="{0}"
+        message="{1}"><!-- BZ24324 -->
+        <DataField ref="IDLong" />
+        <IconGroup icon="_imagePromptSerial" />
+  </Prompt>
+  <Prompt name="CAW_ACTIVE_MEMBERSHIP_DECLINED" type="Notify" title="_error" message="_activeMembershipDeclined" />
+  <Prompt name="CAW_ACTIVE_MEMBERSHIP_APPROVED" type="Notify" title="Notify" message="_activeMembershipApproved" />
+  <!-- End BZ23958 -->
+  
+  <!-- BEGIN BZ24187 -->
+  <Prompt name="CAW.CONFIRM_CUST_INFO_ERROR" type="NotifyYesNo"
+    title="_validationErrorPromptTitle" message="_confirmCustInfoErrorMsg">
+      <Action text="_ok" keyStroke="Enter" ref="YES" />
+  </Prompt>
+  <!-- END BZ24187 -->
+  
+  <!-- Begin BZ24317 - BZ24356 -->
+  <Prompt name="CAW_ACTIVE_MEMBERSHIP_MESSAGE" type="Notify" title="{0}" message="{1}" >
+  <Action dataKey="RETRY" text="_retry" keyStroke="Escape" />
+    <Action dataKey="CONTINUE" text="_continue" keyStroke="Enter" />
+  </Prompt>
+  <!-- End BZ24317 - BZ24356 -->
+  <!-- Begin BZ24561 -->
+  <Prompt name="CAW_PROMPT_EBS_OFFLINE" type="Notify"
+        title="_customer" message="_confirmCustInfoErrorMsg">
+        <IconGroup icon="_imagePromptCustomerSearch" />
+        <Action dataKey="BACKTOTENDER" text="_backToTender" keyStroke="Enter" />
+    </Prompt>
+    <!-- End BZ24561 -->
+
+  <!-- START BZ24631 -->
+  <Prompt name="LOWEST_RETURN_PRICE_NOTIFICATION" type="Notify" title="_returnLowestPriceNotificationTitle" message="_returnLowestPriceNotificationMessage">
+    <Action ref="CANCEL_BACK"/>
+<!--     <Action ref="PRICE_OVERRIDE" dataKey="OVERRIDE_RETURN" privilege="OVERRIDE_LOWEST_RETURN_PRICE" /> --><!-- BZ 24631 -->
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <!-- END BZ24631 -->
+  
+  <!-- Begin BZ24594 -->
+  <Prompt name="WILL_SAVED_CONFIRM_PROMPT" type="Notify" title="_willSavedConfirm" message="_willSavedMessage">
+        <Action ref="PROMPTING:JOIN" text="_join" keyStroke="Enter"/>
+        <Action ref="PROMPTING:CANCEL_JOIN"  text="_cancelJoin" keyStroke="Escape" />
+  </Prompt>
+  <!-- End BZ24594 -->
+  <!-- Begin BZ24877 -->
+  <Prompt name="JOIN_GSC_CONFIRM_PROMPT" type="Notify" title="_joinGSCConfirmation" message="_joinGSCMessage">
+        <Action ref="PROMPTING:OK" text="_OK" keyStroke="Enter"/>
+  </Prompt>
+  <!-- End BZ24877 -->
+  <!-- Begin BZ24945 -->
+  <Prompt name="CAW_PROMPT_AR_RETURN_EBS_OFFLINE" type="Notify"
+        title="ARThirdPartyTitle" message="_confirmCustInfoErrorMsg">
+        <Action dataKey="YES" textKey="_loyaltyAccountHistoryBalanceReceipt"
+            keyStroke="Enter" />
+  </Prompt>
+  <!-- BZ24945 -->
+  <!-- Begin BZ23405 -->
+  <Prompt name="CAW_QAS_CHECK_CONNECTION" type="Notify"
+        title="_connectionTitle" message="_connectionFail">
+        <Action text="_ok" dataKey="QAS_OFFLINE" keyStroke="Enter" />
+  </Prompt>
+  <!-- End BZ23405 -->
+
+  <!-- Begin BZ25884 -->
+  <Prompt name="CAW.GOOD_SAM_VISA_RESPONSE_ERROR" type="Notify" title="Notify" message="{0}">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <!-- End BZ25884 -->
+  
+  <!-- Begin BZ25884 -->
+  <Prompt name="CAW.GOOD_SAM_VISA_RESPONSE_ERROR" type="Notify" title="Notify" message="{0}">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <!-- End BZ25884 -->
+  
+  <!-- Begin BZ25115 -->
+  <Prompt name="CAW_MEMBER_PRICE_OVERRIDE_WARNING" type="Notify" title="{0}" message="{1}">
+        <Action text="_ok" keyStroke="Y" ref="YES" />
+  </Prompt>
+  <!-- End BZ25115 -->
+    <!-- Begin BZ25358 -->
+  <Prompt name="ADDRESS_FOUND" type="NotifyYesNo" title="_addressFoundTitle" message="_addressFoundTitleDesc">
+    <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+    <Action ref="NO" />
+    <Action ref="YES" />
+  </Prompt>
+  <Prompt name="COUNTRY_IS_NOT_AVAILABLE" type="Notify" title="_countryIsNotAvailable" message="_countryIsNotAvailableDesc">
+  <Action text="_ok" ref="CANCEL_BACK" />
+  </Prompt>
+  <Prompt name="CAW_QAS_TOO_MANY_RESULTS" type="Notify"
+    title="_messageManyResultsTitle" message="_messageManyAddressResults">
+    <Action ref="ACCEPT_ENTER" text="_OK" /> <!-- BZ30378 -->
+  </Prompt>
+  <Prompt name="NO_CUSTOMER_AVAILABLE" type="Notify" title="_customer" message="_promptmsg51">
+    <IconGroup icon="_imagePromptCustomerSearch" />
+    <Action ref="ACCEPT_BACK" dataKey="BACK"/>
+    <Action dataKey="NEW" text="_new" keyStroke="F8" privilege="CREATE_CUSTOMER" />
+  </Prompt>
+  <!-- End BZ25358 -->
+  
+  <!-- Begin BZ25434 -->
+  <Prompt name="CAW_MEMBERSHIP_IS_EMPTY" type="Notify" title="Notify" message="_cawMembershipIsEmptyMsg"> <!-- BZ34226 -->
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action ref="ACCEPT_ENTER" text="_OK" />
+  </Prompt>
+  <!-- End BZ25434 -->
+  
+   <!-- Begin BZ25640 -->
+  <Prompt name="PAID_OUT_UFA_SCAN" type="Text" title="_caw_ufa_etrackBarcode" message="_caw_ufa_promptmsg01">
+    <DataField ref="IDLong" />
+    <IconGroup icon="_imagePromptSaleItem" />
+    <Action ref="UFA_CLOSE" text="_caw_ufa_cancel" />
+    <Action ref="UFA_ACCEPT_ENTRY" />
+  </Prompt>
+  <Prompt name="PAID_OUT_UFA_NOTIFY" type="Notify" title="_caw_ufa_prompt_title" message="{0}">
+   <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+   <Action ref="UFA_OK" />
+  </Prompt>
+  <Prompt name="PAID_OUT_UFA_INVALID" type="Notify" title="_caw_ufa_prompt_title" message="{0}">
+   <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+   <Action ref="UFA_CLOSE" />
+  </Prompt>
+  <Prompt name="PAID_OUT_UFA_ERROR" type="Notify" title="_caw_ufa_prompt_title" message="_caw_ufa_promptmsg01">
+    <Section type="MESSAGE">
+      <ParameterizedFormattable>
+        <TranslationKey dtype="String">_caw_ufa_promptmsg_notcompleted</TranslationKey>
+      </ParameterizedFormattable>
+    </Section>
+    <Action ref="UFA_CLOSE" />
+  </Prompt>
+  <Prompt name="PAID_OUT_UFA_COMMENT" type="LongText" title="_caw_ufa_prompt_title" message="_promptmsg198"> 
+   <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+   <Action ref="UFA_CLOSE" />
+   <Action ref="UFA_COMMENT_ADD" />
+  </Prompt> 
+  <!-- End BZ25640 --> 
+  
+  <!-- Begin BZ26431 -->
+  <Prompt name="CAW_NO_REGULAR_PRICE_ITEM" type="Notify" title="_CawNoRegularPriceItem" message="_CawNoRegularPriceItemMsg">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action ref="ACCEPT_ENTER" text="_OK" />
+  </Prompt>
+  <!-- End BZ26431 -->
+   
+   <!-- Begin BZ26568 -->
+  <Prompt name="CAW_QAS_VALIDATE_COUNTRY" type="Notify"
+        title="_titlevalCountry" message="_msgvalCountry">
+        <Action text="_ok" dataKey="QAS_OFFLINE" keyStroke="Enter" />
+  </Prompt>
+  <!-- End BZ26568 -->
+  
+  <!-- Begin BZ26575 -->
+  <Prompt name="CAW_CUSTOMER_ADDRESS_NOTIFY" type="Notify" title="_cawAddressNotifyTitle" message="{0}"> <!-- BZ26836 -->
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action ref="ACCEPT_ENTER" text="_OK" />
+  </Prompt>
+  <Prompt name="CAW_CUSTOMER_ADDRESS_CONFIRM" type="Notify" title="_addressFoundTitle" message="_addressFoundTitleDesc">
+        <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+        <Action ref="NO" />
+        <Action ref="YES" />
+  </Prompt>
+  <Prompt name="CAW_QAS_NOT_FOUND" type="Notify"
+        title="_addressNotFoundTitle" message="_addressNotFoundTitleDesc">
+        <Action text="_ok" dataKey="QAS_NOTFOUND" keyStroke="Enter" />
+  </Prompt>
+  <!-- End BZ26575 -->
+
+  <!-- BZ26271 Start: Copied from base-->
+  <Prompt name="SALE_ITEM_SCAN" type="Text" title="_sale" message="_promptmsg14" modal="false">
+    <!-- <DataField ref="IDLong" /> BZ26271 removed out -->
+    <DataField ref="ChallengeAnswer" /> <!-- BZ26271 added -->
+    <IconGroup icon="_imagePromptSaleItem" pressIcon="_imagePromptSaleItemPressed" touch="SALE::ITEM_MATRIX" />
+    <Action ref="CANCEL" text="_cancelSale" />
+    <Action ref="ACCEPT_ENTRY" />
+
+    <!-- Touch actions -->
+    <Action ref="TOUCH::DISPLAY_SELECTED_ITEM" />
+    <Action ref="TOUCH::SALE.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::SALE.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.CHANGE_SALE_LINE_PRICE" />
+    <Action ref="TOUCH::SALE.VOID_LINE" />
+    <Action ref="TOUCH::WORK_ORDER.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::WORK_ORDER.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.VOID_LINE" />
+    <Action ref="TOUCH::LAYAWAY.CHANGE_COMMISSIONED_ASSOCIATES" />
+    <Action ref="TOUCH::SALE.CHANGE_COMMISSIONED_ASSOCIATES" />
+    <Action ref="TOUCH::SPECIAL_ORDER.CHANGE_COMMISSIONED_ASSOCIATES" />
+    <Action ref="ORDER::CHANGE_COMMISSIONED_ASSOCIATES_TOUCH" visible="false" />
+    <Action ref="CUSTOMER::EDIT" visible="false" />
+    <Action ref="CUSTOMER::ATTACH" visible="false" />
+  </Prompt>
+  <!-- BZ26271 End -->
+  <!-- BZ26845 Start: Copied from base-->
+  <Prompt name="RETURN_ITEM_SCAN" type="Text" title="_sale" message="_promptmsg120" modal="false">
+    <DataField ref="ChallengeAnswer" /><!-- BZ26845 -->
+    <IconGroup icon="_imagePromptSaleItem" pressIcon="_imagePromptSaleItemPressed" touch="RETURN::ITEM_MATRIX" />
+    <Action ref="CANCEL" />
+    <Action ref="ACCEPT_ENTRY" />
+
+    <!-- Touch actions -->
+    <Action ref="TOUCH::DISPLAY_SELECTED_ITEM" />
+    <Action ref="TOUCH::SALE.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::SALE.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.CHANGE_SALE_LINE_PRICE" />
+    <Action ref="TOUCH::SALE.VOID_LINE" />
+    <Action ref="TOUCH::WORK_ORDER.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::WORK_ORDER.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.VOID_LINE" />
+    <Action ref="TOUCH::LAYAWAY.CHANGE_COMMISSIONED_ASSOCIATES" />
+    <Action ref="TOUCH::SALE.CHANGE_COMMISSIONED_ASSOCIATES" />
+    <Action ref="TOUCH::SPECIAL_ORDER.CHANGE_COMMISSIONED_ASSOCIATES" />
+    <Action ref="ORDER::CHANGE_COMMISSIONED_ASSOCIATES_TOUCH" visible="false" />
+    <Action ref="CUSTOMER::EDIT" visible="false" />
+  </Prompt>
+  <Prompt name="RETURN_ITEM_SCAN_MULTIPLE_TRANSACTIONS" type="Text" title="_sale" message="_returnItemScanMultipleTransactions">
+    <DataField ref="ChallengeAnswer" /><!-- BZ26845 -->
+    <IconGroup icon="_imagePromptSaleItem" pressIcon="_imagePromptSaleItemPressed" touch="RETURN::ITEM_MATRIX" />
+    <Action ref="CANCEL" />
+    <Action ref="ACCEPT_ENTRY" />
+  </Prompt>
+  <!-- BZ26845 End -->
+  <!-- Begin BZ25958 -->
+  <Prompt name="GIFT_CARD_BALANCE_RELOAD" type="Notify" title="_giftCardBalanceTitle" message="_balanceInquiryDeclinedTextParams" >
+        <Action ref="CANCEL_BACK" />
+        <Action dataKey="ACCEPT" text="_reloadButton" keyStroke="Enter" />
+        <Action dataKey="YES" textKey="_loyaltyAccountHistoryBalanceReceipt" keyStroke="F8" />
+    </Prompt>
+  <!-- End BZ25958 -->
+  <!-- BZ26289 start -->
+  <Prompt name="CAW_PROMPT_HOUSE_ACCOUNT_EBS_OFFLINE" type="Notify"
+        title="_customer" message="_confirmCustInfoErrorMsg">
+        <IconGroup icon="_imagePromptCustomerSearch" />
+        <Action dataKey="BACKTOSELL" text="_backToTender" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_PROMPT_NO_HOUSE_ACCOUNT" type="Notify"
+        title="_customer" message="_promptmsg347">
+        <IconGroup icon="_imagePromptCustomerSearch" />
+        <Action dataKey="BACKTOSELL" text="_backToTender" keyStroke="Enter" />
+  </Prompt>
+    <!-- BZ26289 end -->
+    <!-- BZ26207 Begin Work Order Session -->
+  <Prompt name="CAW_WORK_ORDER_LIST" type="List" title="_woList" message="_woListMsg">
+    <ListViewType dtype="String">CAW_WORK_ORDER_LIST</ListViewType>
+    <Action ref="CANCEL_BACK"/>
+    <Action dataKey="SELECT" text="_selectAndContinue" keyStroke="Enter" />
+  </Prompt>
+  
+  <Prompt name="CAW_WORK_ORDER_NOT_FOUND" type="Notify" title="_woNotFound" message="_woNotFoundMsg">
+    <Action chainKey="CAW_PRE_WORK_ORDER_CHAIN" chainType="START" text="_woRetryBtn" keyStroke="Escape" />
+    <Action chainKey="BACKTO_SALE_ITEM" chainType="START" text="_woContinueBtn" keyStroke="Enter" />
+  </Prompt>
+  
+  <Prompt name="CAW_WORK_ORDER_UNAVAILABLE" type="Notify" title="_woUnavailable" message="_woUnavailableMsg">
+    <Action chainKey="CAW_PRE_WORK_ORDER_CHAIN" chainType="START" text="_woRetryBtn" keyStroke="Escape" />
+    <Action chainKey="BACKTO_SALE_ITEM" chainType="START" text="_woContinueBtn" keyStroke="Enter" />
+  </Prompt>
+  
+  <Prompt name="CAW_WORK_ORDER_OPTIONS" type="Notify" title="_woOptions" message="_woOptionsMsg">
+    <Action dataKey="BACK" text="_back" keyStroke="Escape" />
+    <Action dataKey="COMPLETE" text="_woCompleteBtn" keyStroke="F2" /> <!-- BZ27193 -->
+    <Action dataKey="DEPOSIT" text="_woDepositBtn" keyStroke="F3">
+      <VisibilityRule class="dtv.pos.workorder.account.WorkOrderStatusVisibilityRule">
+        <Parameter name="status" value="NEW" />
+      </VisibilityRule>
+    </Action>
+    <Action dataKey="REFUND" text="_woRefundBtn" keyStroke="F4">
+      <VisibilityRule class="dtv.pos.workorder.account.WorkOrderStatusVisibilityRule">
+        <Parameter name="status" value="READY_TO_PICKUP" />
+      </VisibilityRule>
+    </Action>
+  </Prompt>
+  
+  <Prompt name="CAW_WORK_ORDER_ERROR" type="Notify" title="{0}" message="{1}">
+    <Action chainKey="CAW_WORK_ORDER_RETRY_LOOKUP" chainType="START" text="_woRetryBtn" keyStroke="Escape" /> <!-- BZ27146 -->
+    <Action chainKey="BACKTO_SALE_ITEM" chainType="START" text="_woContinueBtn" keyStroke="Enter" />
+  </Prompt>
+  <!-- Begin BZ27005 -->
+  <!-- Begin BZ27032 -->
+  <Prompt name="CAW_WORK_ORDER_VALIDATION_ERROR_MESSAGE" type="Notify" title="_cawValidationErrorPromptTitle" message="{0}" >  <!-- BZ27208 -->
+    <Action ref="CANCEL_BACK" />
+  </Prompt>
+  <!-- End BZ27032 -->
+  <!-- End BZ27005 -->
+  <!-- Begin BZ27051 -->
+  <Prompt name="CAW_WORK_ORDER_CROSS_STORE" type="Notify" title="{0}" message="{1}">
+    <Action chainKey="CAW_PRE_WORK_ORDER_CHAIN" chainType="START" text="_back" keyStroke="Escape" />
+    <Action chainKey="BACKTO_SALE_ITEM" chainType="START" text="_woContinueBtn" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_WORK_ORDER_INVALID" type="Notify" title="{0}" message="{1}">
+    <Action chainKey="CAW_PRE_WORK_ORDER_CHAIN" chainType="START" text="_back" keyStroke="Escape" />
+  </Prompt>
+  <!-- End BZ27051 -->
+  <!-- BZ26207 End Work Order Session -->
+  
+  <!-- BEGIN BZ26896 -->
+  <Prompt name="PAID_OUT_EXCEEDED" type="Notify" title="_validationErrorPromptTitle" message="_validatemessage13">
+    <Action ref="CANCEL_BACK"/>
+    <Action ref="ACCEPT" privilege="CAW_PAID_OUT_EXCEED_MAX_THRESHOLD" text="_override" />
+  </Prompt>
+  <!-- END BZ26896 -->
+  
+  <!-- Begin BZ26629 -->
+  <Prompt name="CAW_ENTER_COUPON_CODE" type="Text" title="_cawCouponCodeTitle" message="_cawCouponCodeDescription">
+    <DataField ref="Numeric" />
+    <IconGroup icon="_imagePromptSaleItem" />
+  </Prompt>
+  <!-- End BZ26629 -->
+
+   <!-- Begin BZ25958 -->
+  <Prompt name="GIFT_CARD_BALANCE_RECEIPT_WITH_RELOAD" type="Notify" title="_giftCardBalanceTitle" message="_balanceInquiryDeclinedTextParams" >
+        <Action ref="CANCEL_BACK" />
+        <Action dataKey="RELOAD" textKey="_reloadGiftCard" keyStroke="F2" >
+            <VisibilityRule class="caw.pos.shared.visibilityrules.CawBalanceInquiryDisabledReloadRule" />  <!-- BZ54208 -->
+        </Action>
+        <Action dataKey="YES" textKey="_loyaltyAccountHistoryBalanceReceipt" keyStroke="Enter" />
+   </Prompt>
+
+  <Prompt name="GIFT_CARD_SERIAL_NEEDED_BALANCE" type="Text" title="_cawBalanceInquiry" message="_balanceInquiryEnterAccountNumber">
+    <DataField ref="IDLong" />
+    <IconGroup icon="_imagePromptSerial" />
+    <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <!-- End BZ25958 -->
+
+  <!-- Begin BZ27033 -->
+  <Prompt name="CANCEL_WORK_ORDER_CONFIRMATION" type="NotifyYesNo" title="_cancelWorkorder" message="_workorderPromptMsg19" />
+  <!-- End BZ27033 -->
+  
+  <!-- Begin BZ27294 -->
+  <Prompt name="CAW_WORK_ORDER_RETURN::TENDER_OPTIONS" type="Menu" />
+  <!-- End BZ27294 -->
+  
+  <!-- Begin BZ27585 -->
+  <Prompt name="NO_EMPLOYEE_AVAILABLE" type="Notify" title="_employeeSearchTitle" message="_promptmsgNoEmps">
+    <Action dataKey="NEW" privilege="CAW_ADVANCE_EMPLOYEE_MAINTENANCE" text="_new" keyStroke="F8" /> <!-- BZ27585 added privilege-->
+    <Action ref="ACCEPT_BACK" />
+  </Prompt>
+  
+  <Prompt name="EMPLOYEE_NOT_ON_FILE_NOTIFY" type="Notify" title="_menutext146" message="_cawPromptmsgNoEmp"/><!-- BZ30154 -->
+  
+  <Prompt name="EMPLOYEE_LIST" type="List" title="_employeeSearchTitle" message="_searchResultsDataSourceMessage">
+    <ListViewType dtype="String">EMPLOYEE_RESULTS_LIST</ListViewType>
+    <IconGroup icon="_imagePromptCustomerSearch" />
+    <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+    <Action dataKey="NEW" privilege="CAW_ADVANCE_EMPLOYEE_MAINTENANCE" text="_new" keyStroke="F8" /> <!-- BZ27585 added privilege-->
+    <Action ref="ACCEPT_ENTER" text="_selectAndView" />
+  </Prompt>
+  <!-- End BZ27585 -->
+  <Prompt name="LOGIN_IS_LOCKED" type="Notify" title="_login" message="_cawpromptmsg11" /><!-- BZ27670-->
+  
+  <!-- Begin BZ25761 -->
+  <Prompt name="CAW_GOOD_SAM_CANCEL_PROCESS" type="Notify" title="_cawGoodSamCancel" message="{0}">
+    <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+    <Action ref="NO" />
+    <Action ref="YES" />
+  </Prompt>
+  <!-- End BZ25761 -->
+  
+  <!-- Begin BZ25762 -->
+  <!-- Begin BZ29304 -->
+  <Prompt name="CAW_GS_ACCOUNT_LOOKUP" type="Notify" title="_customer" message="_cawGSAccoutLookup" >
+    <Action ref="CANCEL_BACK" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <!-- End BZ29304 -->
+  
+  <Prompt name="CAW_GS_ACCOUNT_CONFIRM" type="NotifyYesNo" title="_confirmCustInfoTitle" message="_cawGSAccountConfirm">
+    <Action ref="NO" />
+    <Action ref="YES" />
+  </Prompt>
+  
+  <Prompt name="CAW_GS_ACCOUNT_NOT_FOUND" type="Notify" title="_customer" message="_cawGSAccountNotFound" />
+  <!-- End BZ25762 -->
+  
+  <!-- BEGIN BZ27973 -->
+  <Prompt name="CAW_GS_ACCOUNT_PAYMENT_CAPTURE" type="Notify" title="_gsAccountPaymentCapture" message="_gsAccountPaymentCaptureMgs" >
+     <Action ref="CANCEL_BACK" />
+     <Action dataKey="CARD_PRESENT" textKey="_cardPresent" keyStroke="Y" />
+     <Action chainKey="CAW_GS_CARD_NOT_PRESENT" chainType="START" textKey="_cardNotPresent" keyStroke="N" />
+  </Prompt>
+  <Prompt name="CAW_GS_ACCOUNT_PAYMENT_AMOUNT" type="Text" title="_gsAccountPaymentAmount" message="_gsAccountPaymentAmountMsg">
+    <DataField ref="Money" />
+    <IconGroup icon="_imagePromptTender" />
+  </Prompt>
+  <Prompt name="CAW_GS_PAYMENT_ACCOUNT_INFO" type="Notify" title="_gsAccountPaymentAmount" message="_gsAccountPaymentAmountInfo">
+    <Action ref="CANCEL_BACK" />
+    <Action ref="ACCEPT_ENTER" text="_continue" />
+  </Prompt>
+   <!-- END BZ27973 -->
+
+    <!-- BEGIN BZ29124 -->
+  <Prompt name="CAW_PROMPT_NOT_ALOW_MULTI_TENDERS" type="Notify"
+        title="_customerValidation" message="_notAllowMultiTenders">
+        <Action dataKey="BACKTOTENDER" text="_backToTender" keyStroke="Escape" />
+    </Prompt>
+  <!-- END BZ29124 -->
+
+  <!-- BEGIN BZ29134 -->
+  <Prompt name="CAW_GS_ACCOUNT_THREE_FAILED_ATTEMPTS_SSN" type="Notify" title="_customer" message="_cawGSAccountThreeFailed" />
+  <!-- END BZ29134 -->
+  
+  <!-- BEGIN BZ29379 -->
+  <Prompt name="CAW_GS_ACCOUNT_PAYMENT_ERROR" type="Notify" title="_gsAPTitle" message="_gsAPMgs">
+    <Action ref="CANCEL_BACK" />
+    <Action chainKey="CAW_GOOD_SAM_ACCOUNT_PAYMENT" chainType="START" textKey="_woRetryBtn" keyStroke="F2" />
+  </Prompt>
+  <!-- END BZ29379 -->
+  <!-- BEGIN BZ29311 -->
+  <!--  BEGIN BZ29635 Removed-->
+  <!--
+  <Prompt name="EMAIL_RECEIPTS" type="Notify" title="_salecompletetitle" message="_emailReceiptsMessage">
+    <Action ref="CANCEL_BACK" />
+    <Action chainKey="EMAIL_RECEIPTS" chainType="STACK" text="_emailKey" keyStroke="F4" />
+    <Action dataKey="PRINT_ONLY" text="_printOnly" keyStroke="F8" />
+  </Prompt>
+  -->
+  <!--  END BZ29635 Removed-->
+  <!-- END BZ29311 -->
+  <!-- BEGIN BZ29406 -->
+  <!-- BZ29444: changed prompt name to CAW_GS_ACCOUNT_PAYMENT_DECLINED -->
+  <Prompt name="CAW_GS_ACCOUNT_PAYMENT_DECLINED" type="Notify" title="_gsAPErrorTitle" message="_gsAPErrorMgs">
+    <Action chainKey="CAW_CANCEL_AP_TRANS" chainType="START" textKey="_cancel" keyStroke="Escape" />
+    <Action chainKey="CAW_SEND_GS_AP_REQUEST" chainType="START" textKey="_woRetryBtn" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ29406 -->
+  <!-- BEGIN BZ29514 -->
+  <Prompt name="CAW_CHECKING_PHONE_NUMBER" type="Notify" title="_customer" message="_cawCheckingPhoneNumberMsg"/>
+  <!-- END BZ29514 -->
+  <!-- BEGIN BZ29580-->
+  <Prompt name="LOGIN_IS_TERMINATED" type="Notify" title="_login" message="_cawterminatedpromptmsg" />
+  <!-- END BZ29580-->
+  
+  <!-- BEGIN BZ29683 -->
+  <Prompt name="TOKEN_ENTER_TENDER_AMOUNT" type="Text" title="_tender" message="_promptmsg34" autoDecimalKeyboard="true">
+    <DataField ref="Money" />
+    <IconGroup icon="_imagePromptTender" />
+    <Action dataKey="PRESSING_BACK" text="_back" keyStroke="Escape" />
+    <Action ref="ACCEPT_ENTRY" />
+  </Prompt>
+  <!-- END BZ29683 -->
+  <!-- Begin BZ29625 -->
+  <Prompt name="CAW_ITEM_MESSAGE" type="Notify" title="_promptTitleNotify" message="{0}">
+    <Action dataKey="ACCEPT_ENTER" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <!-- End BZ29625 -->
+  
+  <!-- BEGIN BZ31759 -->
+  <Prompt name="CAW_INVENTORY_NO_RESULTS_FOUND" type="Notify" title="_inventory" message="_inventoryNoResults">
+        <Action chainKey="GENERIC_ITEM_LOOKUP_NON_INV" chainType="START" textKey="_ok" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_INVENTORY_ERROR" type="Notify" title="_error" message="_inventoryError">
+        <Action chainKey="GENERIC_ITEM_LOOKUP_NON_INV" chainType="START" textKey="_ok" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ31759 -->
+
+  <!-- BEGIN BZ27535 -->
+  <Prompt name="APPLY_TRANS_TAX_EXEMPTION" type="Notify" title="_applyTransTaxExemptionTitle" message="_cawApplyTransTaxExemptionMsg"/>
+  <!-- END BZ27535 -->
+  
+  <!-- BEGIN BZ30530 -->
+  <Prompt name="CAW_WORK_ORDER_DATA_ERROR" type="Notify" title="{0}" message="{1}">
+    <Action chainKey="CAW_PRE_WORK_ORDER_CHAIN" chainType="START" text="_woRetryBtn" keyStroke="Escape" />
+    <Action chainKey="BACKTO_SALE_ITEM" chainType="START" text="_woContinueBtn" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ30530 -->
+  
+  <!-- BEGIN BZ33137-->
+  <Prompt name="LOGIN_EMPLOYEE_INACTIVE" type="Notify" title="_login" message="_cawemployeeinactivepromptmsg" />
+  <!-- END BZ33137-->
+  
+  <!-- BEGIN BZ33305 -->
+  <Prompt name="SELECT_WARRANTY" type="List" title="{1}" message="_warrantySelectPlanDesc">
+    <ListViewType dtype="String">WARRANTY_PLAN</ListViewType>
+    <Action dataKey="CONTINUE" text="_warrantyPlanRejectAction" keyStroke="F4" />
+    <Action dataKey="PLAN_ACCEPT" text="_warrantyPlanAcceptAction" keyStroke="F8"/>
+    <Action dataKey="PLAN_ENTER" keyStroke="Enter" keyStrokeKey="Enter" visible="false"/> <!-- BZ33478 -->
+  </Prompt>
+  
+  <Prompt name="SELECT_WARRANTIES_FOR_RETURN" type="List" title="{0}" message="_warrantySelectWarrantyForReturnDesc">
+    <ListViewType dtype="String">SELECT_WARRANTIES_FOR_RETURN</ListViewType>
+    <DataSelection selectionMode="MULTIPLE" />
+    <!-- BEGIN BZ35593 -->
+    <Action dataKey="CANCEL" text="_warrantyPlanRejectAction" keyStroke="F4" />
+    <Action dataKey="ACCEPT" text="_warrantyPlanAcceptAction" keyStroke="F8"/>
+    <!-- END BZ35593 -->
+  </Prompt>  
+  <!-- END BZ33305 -->
+
+  <!-- BEGIN BZ28036 -->
+  <Prompt name="CAW_ITEM_NO_SLECTED" type="Notify" title="_error" message="_itemNotSelected">
+     <Action dataKey="HISTORY_PURCHASE" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_ITEM_RETURN_NOT_ALOW" type="Notify" title="_error" message="_returnItemNotAlow">
+     <Action dataKey="HISTORY_PURCHASE" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_RETURN_ITEM_NOT_FILE" type="Notify" title="_error" message="_returnItemNotFile">
+     <Action dataKey="HISTORY_PURCHASE" text="_no" keyStroke="No"/>
+     <Action dataKey="CONTINUTE_RETURN" text="_yes" keyStroke="Yes" />
+  </Prompt>
+  <Prompt name="CAW_SELL_ITEM_NOT_FILE" type="Notify" title="_error" message="_notSellItemNotOnFile">
+     <Action dataKey="HISTORY_PURCHASE" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ28036 -->
+  <!-- BEGIN BZ35513: add button "No Receipt" -->
+  <Prompt name="EMAIL_RECEIPTS" type="Notify" title="_salecompletetitle" message="_emailReceiptsMessage">
+    <Action ref="NO_BACK" />
+    <Action dataKey="NO_RECEIPTS" text="_noPrintReceipts" keyStroke="F2" />
+    <Action chainKey="EMAIL_RECEIPTS" chainType="STACK" text="_emailKey" keyStroke="F4" />
+    <Action dataKey="PRINT_ONLY" text="_printOnly" keyStroke="F8" />
+  </Prompt>
+  <!-- END BZ35513 -->
+  <!-- BEGIN BZ35326 -->
+  <Prompt name="CAW_TP_AVAILABLE_BALANCE_VALIDATION" type="Notify" title="_validationErrorPromptTitle" message="_cawTPAvailableBalanceValidation" >
+     <Action dataKey="YES" textKey="_ok" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_TP_AVAILABLE_BALANCE_ZERO_VALIDATION" type="Notify" title="_validationErrorPromptTitle" message="_cawTPAvailableBalanceZeroValidation" >
+     <Action dataKey="YES" textKey="_ok" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ35326 -->
+  <!-- BEGIN BZ36405 -->
+  <Prompt name="CAW_TP_IS_AR_CREDIT_HOLD_VALIDATION" type="Notify" title="_validationErrorPromptTitle" message="_cawTPIsArCreditHoldValidation" >
+     <Action dataKey="YES" textKey="_ok" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ36405 -->
+  <!-- BEGIN BZ37382 -->
+  <Prompt name="CAW_ORDER_BROKER_SIGNATURE_CAPTURE" type="Notify" title="_cawOderBrokerAskeSignatureCaptureTitle" message="_cawCustomerInformation">
+     <Action dataKey="ACCEPT"  textKey="_ok" keyStroke="Enter"/>
+  </Prompt>
+  <!-- END BZ37382 -->
+  <!-- BEGIN BZ37661 -->
+  <Prompt name="CAW_ORDER_BROKER_SIGNATURE_CAPTURE_RECEIPT" type="Notify" title="_cawOderBrokerAskeSignatureCaptureTitle" message="_cawCustomerInformationReceip">
+    <Action dataKey="ACCEPT"  textKey="_ok" keyStroke="Enter"/>
+  </Prompt>
+  <!-- END BZ37661 -->
+  <!-- BEGIN BZ37177 -->
+  <Prompt name="ORDER_TYPE" type="Notify" title="_orderTitle" message="_orderSelectType">
+    <Action dataKey="STANDARD_DELIVERY" text="_orderTypeStandardDelivery" keyStroke="F4" />
+    <Action dataKey="STANDARD_PICKUP" text="_orderTypeStandardPickup" keyStroke="F6" />
+     <!-- Disable "Pickup This Store" (F8) option -->
+    <!-- <Action dataKey="DELAYED_PICKUP" text="_orderTypeDelayedPickup" keyStroke="F8" /> -->
+  </Prompt>
+  <!-- END BZ37177 -->
+  <!-- BEGIN BZ37023, BZ37912 -->
+  <Prompt name="EBS_SHIPPING_OFFLINE" type="Notify" title="_shippingMethodEBS" message="_shippingStatusEBSOffline">
+    <Action chainKey="CAW_ORDER_EBS_OFFLINE"  textKey="_ok" keyStroke="Enter"/> 
+  </Prompt>
+  <!-- END BZ37023, BZ37912 -->
+  <Prompt name="EBS_SHIPPING_HAS_ERROR" type="Notify" title="_shippingMethodHasError" message="_shippingMessageHasError" /><!-- BZ37901 -->
+  <!-- Begin BZ40740 -->
+  <Prompt name="NO_ORDERS_FOUND_REGISTER" type="Notify" title="_orderSearchTitle" message="_orderNoOrdersFound">
+    <Action dataKey="BACK" text="_back" keyStroke="Escape" />
+    <!-- Begin BZ40740
+    <Action chainKey="ORDER_NEW_ORDER" text="_new" keyStroke="F9">
+      <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowMixedInTransWithSaleItemTypeRule">
+        <Parameter name="type" value="ORDER" />
+      </VisibilityRule>
+    </Action>
+    End BZ40740 -->
+  </Prompt>
+  <Prompt name="ORDER_SEARCH_RESULTS_REGISTER" type="List" title="_orderSearchTitle" message="_orderSearchResultsInstructions">
+    <ListViewType dtype="String">ORDER_SEARCH_RESULT</ListViewType>
+    <Action ref="CANCEL_BACK" />
+    <!-- Begin BZ40740
+    <Action chainKey="ORDER_NEW_ORDER" text="_new" keyStroke="F9">
+      <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowMixedInTransWithSaleItemTypeRule">
+        <Parameter value="ORDER" name="Type" />
+      </VisibilityRule>
+    </Action>
+     End BZ40740 -->
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <!-- End BZ40740 -->
+  <!-- BEGIN BZ41379 -->
+  <Prompt name="CAW_ORDER_MIXED_NOT_ALLOWED" type="Notify" title="_orderTitle" message="_oderMixedNotAllowed">
+    <Action ref="CANCEL_BACK" />
+  </Prompt>
+  <!-- END BZ41379 -->
+  <!-- BEGIN BZ33319 -->
+  <Prompt name="CAW_DEFER_FINANCIAL_MIXED_NOT_ALLOWED" type="Notify" title="_deferFinancialTitle" message="_deferFinancialMessage">
+    <Action ref="CANCEL_BACK" />
+  </Prompt>
+  <!-- END BZ33319 -->
+  
+<!-- BEGIN PATCH 14  -->
+  <!-- BEGIN PATCH 18 -->
+  <!-- BEGIN BZ42019 -->
+  <Prompt name="CAW_MAILING_ADDRESS_VALIDATION_PROMPT" type="Notify" title="_cawPromptTitle" message="_cawPromptMsg">
+  	<Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  
+  <Prompt name="CAW_EMAIL_ADDRESS_VALIDATION_PROMPT" type="Notify" title="_cawPromptTitle" message="_cawPromptMsg">
+  	<Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <!-- END BZ42019 -->
+  <!-- BEGIN PATCH 18 -->
+  
+  <!-- BEGIN BZ44528: Phase 1 -->
+  <Prompt name="CAW_WONDER_SIGN_ORDER_TYPE" type="Notify" title="_orderTitle" message="_orderSelectType"><!-- BZ44528 split patch 14-->
+    <Action dataKey="STANDARD_DELIVERY" text="_cawElectricWorld" keyStroke="F2" /><!-- BZ44528 -->
+    <Action dataKey="STANDARD_DELIVERY" text="_orderTypeStandardDelivery" keyStroke="F4" >
+        <VisibilityRule class="caw.pos.order.CawInVisibilityRule" /><!-- BZ44528 -->
+    </Action>
+    <Action dataKey="STANDARD_PICKUP" text="_orderTypeStandardPickup" keyStroke="F6" >
+        <VisibilityRule class="caw.pos.order.CawInVisibilityRule" /><!-- BZ44528 -->
+    </Action>
+  </Prompt>
+  
+  <Prompt name="CAW_WONDERSIGN_CART_SEARCH_RESULT" type="List" title="_cawCartSearchResultTitle" message="_cawCartSearchResultMsg">
+    <ListViewType dtype="String">CART_LIST</ListViewType>
+    <DataSelection selectionMode="SINGLE" />
+    
+    <Action ref="CANCEL_BACK" />
+    <Action ref="CAW_CART_SELECT" />
+  </Prompt>
+  <Prompt name="CAW_WONDERSIGN_CART_ITEMS_RESULT" type="List" title="_cawCartDetailTitle" message="_empty" >
+    <ListViewType dtype="String">CART_ITEM_LIST</ListViewType>
+    <DataSelection selectionMode="UNSELECTABLE" />
+    
+    <Action ref="CANCEL_BACK" />
+    <Action ref="CAW_CART_PROCESS" />
+  </Prompt>
+  <Prompt name="CAW_WONDERSIGN_ITEMS_NOT_ON_FILE" type="Notify" title="_cawWonderSignItemNotOnFileTitle" message="_cawWonderSignItemNotOnFileMsg" >
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="CAW_WONDERSIGN_CART_NOT_FOUND" type="Notify" title="_cawCartNotFoundTitle" message="_cawCartNotFoundMsg">
+    <Action ref="CANCEL_OK" />
+  </Prompt>
+  <Prompt name="CAW_WONDERSIGN_CART_SEARCH_ERROR" type="Notify" title="_cawCartSearchErrorTitle" message="_cawCartSearchErrorMsg">
+    <Action ref="CAW_CART_ERROR_BACK" />
+  </Prompt>
+  <Prompt name="CAW_CONFIRM_EXISTED_SALE_ITEM" type="NotifyYesNo" title="_customerValidation" message="_cawConfirmExistedSaleItemMsg" />
+  <Prompt name="CAW_CONFIRM_EXISTED_ORDER_ITEM" type="NotifyYesNo" title="_customerValidation" message="_cawConfirmExistedOrderItemMsg" />
+  
+  <Prompt name="SALE_ITEM_SCAN_DISABLED" type="Text" title="_selectMenuOptionTitle" message="_saleItemScanDisabledMsg" modal="false">
+    <DataField ref="Disabled" />
+    <Action ref="CANCEL" text="_cancelSale" >
+        <VisibilityRule class="caw.pos.order.CawWonderSignDisableRule"/>
+    </Action>
+    <Action ref="ACCEPT_ENTRY" />
+
+    <!-- Touch actions -->
+    <Action ref="TOUCH::DISPLAY_SELECTED_ITEM" />
+    <Action ref="TOUCH::SALE.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::SALE.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.CHANGE_SALE_LINE_PRICE" />
+    <Action ref="TOUCH::SALE.VOID_LINE" />
+    <Action ref="TOUCH::WORK_ORDER.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::WORK_ORDER.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::CUSTOMER_ACCOUNT.VOID_LINE" />
+    <Action ref="TOUCH::LAYAWAY.CHANGE_COMMISSIONED_ASSOCIATES" />
+    <Action ref="TOUCH::SALE.CHANGE_COMMISSIONED_ASSOCIATES" />
+    <Action ref="TOUCH::SPECIAL_ORDER.CHANGE_COMMISSIONED_ASSOCIATES" />
+    <Action ref="ORDER::CHANGE_COMMISSIONED_ASSOCIATES_TOUCH" visible="false" />
+    <Action ref="CUSTOMER::EDIT" visible="false" />
+    <Action ref="CUSTOMER::ATTACH" visible="false" />
+  </Prompt>
+  <!-- END BZ44528: Phase 1 -->
+  <!-- BEGIN BZ45863 -->
+  <Prompt name="CAW_NO_VALID_ITEM_IN_CART" type="Notify" title="_cawNoValidItemInCartTitle" message="_cawNoValidItemInCartMsg" >
+    <Action ref="CANCEL_OK" />
+  </Prompt>
+  <!-- END BZ45863 -->
+<!-- END PATCH 14  -->
+  
+  <!-- BEGIN PATCH 15 -->
+  <!-- BEGIN BZ44917 -->
+  <Prompt name="CAW_RV_PAYMENT_ITEMS" type="List" title="_cawRVPaymentResultsTitle" message="_cawRVPaymentResultsMessage">
+    <ListViewType dtype="String">CAW_RV_PAYMENT_ITEMS</ListViewType>
+    <Action ref="CANCEL_BACK"/>
+    <Action dataKey="SELECTION_COMPLETE" text="_rvPaymentSelectionCompleteBtn" keyStroke="F8">
+        <VisibilityRule class="caw.pos.register.rvpayment.CawRvPaymentSelectedItemVisibilityRule"/>
+    </Action>
+    <Action dataKey="SELECT" text="_selectAndContinue" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_RV_PAYMENT_NOT_FOUND" type="Notify" title="_rvPaymentNotFoundTitle" message="_rvPaymentNotFoundMessage">
+    <Action keywords="exclude" category="" dataKey="CANCEL" text="_woContinueBtn" keyStroke="Enter"/>
+    <Action keywords="exclude" category="" dataKey="RETRY" text="_woRetryBtn" keyStroke="Escape"/>
+  </Prompt>
+  <Prompt name="CAW_RV_PAYMENT_ERROR" type="Notify" title="_rvPaymentErrorTitle" message="_rvPaymentErrorMessage">
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <!-- END BZ44917 -->
+  <!-- END PATCH 15 -->
+ 
+  <!-- BEGIN PATCH 16 -->
+  <!-- BEGIN BZ42307 -->
+  <!-- Only apply for patch 16 -->
+  <Prompt name="ORDER_ITEMS_CONFIRM_REJECT" type="Notify" title="_orderRejectOrderAction" message="_orderConfirmRejectItems" >
+     <Action ref="NO" />
+     <Action ref="YES" />
+     <Action dataKey="PARTIAL_UPDATE" text="_orderPartialReject" keyStroke="P" >
+         <VisibilityRule class="caw.pos.order.maint.CawPartialUpdateVisibilityRule" />
+     </Action>
+  </Prompt>
+  <!-- END BZ42307 -->
+  <!-- BEGIN BZ42307 - Partial Cancel -->
+  <Prompt name="ORDER_ITEMS_CONFIRM_CANCEL" type="Notify" title="_orderCancelOrderAction" message="_orderConfirmCancelOrder" >
+     <Action ref="NO" />
+     <Action ref="YES" />
+     <Action dataKey="PARTIAL_UPDATE" text="_orderPartialCancel" keyStroke="P" >
+         <VisibilityRule class="caw.pos.order.maint.CawPartialUpdateVisibilityRule" />
+     </Action>
+  </Prompt>
+  <!-- END BZ42307 - Partial Cancel -->
+  <!-- END PATCH 16 -->
+ 
+  <!-- BEGIN PATCH 17 -->
+  <!-- BEGIN BZ45995 -->
+  <Prompt name="CAW_MEMBERSHIP_EMAIL_CAPTURE_EMAIL_INVALID" type="Notify" title="_cawEmailAddressValidationTitle" message="_cawEmailValidationInvalidMsg">
+    <Action dataKey="BACK" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_MEMBERSHIP_EMAIL_CAPTURE_EMAIL_ERROR" type="Notify" title="_cawEmailAddressValidationErrorTitle" message="_cawEmailValidationErrorMsg">
+    <Action dataKey="BACK" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="CAW_MEMBERSHIP_EMAIL_CAPTURE_EMAIL_UNAVAILABLE" type="Notify" title="_cawEmailAddressValidationUnavailableTitle" message="_cawEmailValidationUnavailableMsg">
+    <Action dataKey="OK_UPDATE" text="_ok" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ45995 -->
+  <!-- END PATCH 17 -->
+
+  <!-- BEGIN PATCH 19 -->
+  <!-- BEGIN BZ46743 -->
+  <Prompt name="CAW_VIN_NUMBER_VALIDATION" type="Notify" title="_cawVinNumberValidationTitle" message="_cawVinNumberValidationMsg">
+    <Action ref="CANCEL_BACK" dataKey="VIN_ENTER_NEW"/>
+  </Prompt>
+  
+  <Prompt name="CAW_VIN_ITEM_SCAN" type="Text" title="_cawVinNumberRequestTitle" message="_cawVinNumberRequestMsg" >
+    <DataField>
+      <Parameter name="maxCharacters" value="254" />
+    </DataField>
+    <IconGroup icon="_imagePromptItemProperty" />
+  </Prompt>
+  
+  <Prompt name="CAW_VIN_ITEM_RE_SCAN" type="Text" title="_cawVinNumberVerificationTitle" message="_cawVinNumberVerificationMsg" >
+    <DataField>
+      <Parameter name="maxCharacters" value="254" />
+    </DataField>
+    <IconGroup icon="_imagePromptItemProperty" />
+  </Prompt>
+  <!-- END BZ46743 -->
+  <!-- END PATCH 19 -->
+  <!-- BEGIN BZ57844 -->
+  <Prompt name="CAW.GOOD_SAM_VISA_RESPONSE_APPROVE_ENABLE_LOYALTY" type="Notify" title="_cawGoodSamResponse" message="_cawGoodSamResponseApprovedEnableLoyalty">
+    <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+      <Action dataKey="YES" textKey="_closeGSResponse" keyStroke="Enter" />
+  </Prompt>
+  <!-- END BZ57844 -->
+  <!-- BEGIN BZ59418 -->
+  <Prompt name="CAW_CUSTOMER_NEED_PHONE_NUMBER" type="Notify" title="_itemNeedCustomerPhoneNumberTitle" message="_itemNeedCustomerPhoneNumberMess" >
+     <Action dataKey="CANCEL" text="_back" keyStroke="Escape" />
+     <Action keyStroke="Enter" keywords="customer" text="_viewCustomerMenuItem" chainKey="VIEW_CUSTOMER_IN_TRANSACTION" privilege="EDIT_CUSTOMER"/>
+  </Prompt>
+  <!-- END BZ59418 -->
+</PromptSet>

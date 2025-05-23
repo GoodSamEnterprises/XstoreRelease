@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ48401              210222    [Task] Apply Reward to Redeem in Sales Transaction
+ * BZ48629              250222    [Task] Print Points Balances - Sale transaction
+ * BZ49449              280422    [Internal] - The promotions were removed incorrectly
+ * BZ50181              270522    [Internal] Loyalty - Reward line should be added to the viewport prior to the Prompting Engine GSC RENEW screen
+ * BZ51471          	191022    [NEW] Change the loyalty offers flow and prompts
+ * BZ52130 				211022	  Amount Due is not showing correctly after redeeming points
+ * BZ53547          	161122    [Internal] Loyalty information is not printed on the receipt when tender with Third-Party option.
+ * BZ53626          	181122    [UAT] After voiding loyalty offer, offers tab still shows offer as applied.
+ * BZ53797  			231122    [UAT]Loyalty offers are not removed after Suspend/Resume transaction
+ * BZ53977 				021222 	  [UAT] Xstore is discounting Loyalty offer more than maximum offer amount
+ * BZ54290              160823    [PROD] Points are being earned on S&I PrePay Work Order Transactions
+ * BZ58779				110923	  [Internal][Loyalty] Xstore does not follow the existing process to enroll to GS membership when a free GS membership SKU is auto added.
+ *===================================================================
+ */
+-->
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+  
+  <!-- BEGIN BZ48629 -->
+  <OpChain name="EMAIL_RECEIPTS">
+    <Op class="caw.pos.email.receipt.CawEmailAddressPromptOp" />
+    <Op class="caw.pos.email.receipt.CawUpdateCustomerEmailAddressOp" />
+    <OpChainRoute chainKey="SALE_COMPLETE" />
+  </OpChain>
+  <!-- END BZ48629 -->
+  
+  <!-- BEGIN BZ48401 -->
+  <OpChain name="PRE_TENDERING">
+   <OpChainRoute chainKey="CAW_CALCULATE_ORDER_DELIVERY_TAX" /> <!-- BZ37396 -->    
+   <Op class="caw.pos.hardware.op.CawDisableMSRDeviceOp" /><!-- BZ 24177 -->
+   <ValidationOp validationsBean="cawAttachCustomerToSaleRules" /><!-- BZ25674 -->
+   <ValidationOp validationsBean="cawReturnWarrantyItemPrivileges" /><!-- BZ30269 -->
+   <PromptOp class="caw.pos.advance.prompting.CawWillSavedAmountPromptOp" /><!-- BZ24594 -->
+   <OpChainRoute chainKey="CAW_CARD_SERVICE_STATUS"/>
+   <!-- BEGIN BZ51471-->
+   <!--   <OpChainRoute chainKey="CAW_APPLY_LOYALTY_PROMOTIONS" condition="caw.pos.cheetah.CawApplyPromoRewardsCondition"/> -->
+   <OpChainRoute chainKey="CAW_APPLY_LOYALTY_REWARD" condition="caw.pos.cheetah.CawApplyPromoRewardsCondition" />
+   <OpChainRoute chainKey="SIGNAL_TRANSACTION_MODIFIED" /> <!-- BZ52130 -->
+   <!-- END BZ51471-->
+   <OpChainRoute chainKey="CAW_PROCESS_CATALYST_TRANSACTION_TOTAL"/>
+   <OpChainRoute chainKey="CAW_DISPLAY_GOODSAMVISA_PRESCREEN"/>
+   <!-- End BZ28265 -->
+   <!-- End BZ25435 -->
+   
+   <ValidationOp validationsBean="amountDueRules" />
+   <ValidationOp class="dtv.pos.register.returns.ValidateBlindReturnsAmountOp" validationsBean="returnBlindAmountRules" />
+   <OpChainRoute chainKey="PRE_TENDERING.pre" />
+   <OpChainRoute chainKey="CHARITY" />
+   <!-- Start 183622 -->
+   <Op class="dtv.pos.common.TransactionPropertyPromptOp">
+     <Parameter name="TransactionState" value="PRE_TENDER" />
+   </Op>
+   <!-- End 183622 -->
+   <PromptOp class="dtv.pos.util.crypto.NagAboutBadEncryptionOp" />
+   <OpChainRoute chainKey="PRE_TENDERING.1" />
+   <OpChainRoute chainKey="PRE_TENDERING.2" /> <!-- This additional hook can be helpful for supporting fiscal printers -->
+   <OpChainRoute chainKey="PRE_TENDERING.3" />
+   <OpChainRoute chainKey="REFUND_ORIG_CREDIT_CARD_TENDER" condition="dtv.pos.tender.check.RefundToOrigCreditCardCondition" />
+   <Op class="dtv.pos.hardware.op.SubtotalCustomerDisplayOp" />
+   <OpChainRoute chainKey="PRE_TENDERING.post" />
+  <!--  <Op class="caw.tenderauth.impl.eigen.op.CawGoodSamVisaPreScreenOp" /> BZ-23265 -->
+  <Op class="caw.pos.tender.CawCheckPretenderingOp" /><!-- BZ29743 -->
+   <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="CAW_APPLY_LOYALTY_PROMOTIONS" signal="TransactionModified">
+  	<Op class="caw.pos.cheetah.promotion.CawPreApplyPromotionsOp" /> <!-- BZ51471-->
+    <OpChainRoute chainKey="SIGNAL_TRANSACTION_MODIFIED" />
+    <PromptOp class="caw.pos.cheetah.promotion.CawPromptPromotionsOp"/>
+    <Op class="caw.pos.cheetah.promotion.CawApplyPromotionsOp"/>
+  </OpChain>
+  <!-- BEGIN BZ50181 -->
+  <OpChain name="CAW_APPLY_LOYALTY_REWARD" signal="TransactionModified">
+    <Op class="caw.pos.cheetah.reward.CawPromptRewardOp"/>
+  </OpChain>
+  <!-- END BZ50181 -->
+  <!-- END BZ48401 -->
+  <!-- BEGIN BZ49449 -->
+  <OpChain name="SALE_ITEM_START" contextKey="SALE" rollbackChainKey="ROLLBACK_TRANS_PROMPT" rollbackLevel="10">
+    <OpChainRoute chainKey="CAW_REMOVE_LOYALTY_PROMOTIONS_REWARD" condition="caw.pos.cheetah.CawRemovePromotionsRewardCondition"/>
+    <OpChainRoute chainKey="CAW_REMOVE_THIRD_PARTY_CUSTOMER_INFO" condition="caw.pos.cheetah.CawRemoveThirdPartyCustomerInfoCondition"/> <!-- BZ53547 --> 
+    <Op class="caw.tenderauth.impl.eigen.goodsam.op.CawDisableTokenIsUsedOp" condition="caw.tenderauth.impl.eigen.goodsam.condition.CawDisableTokenIsUsedCondition"/> <!-- BZ58779 -->
+    <Op class="caw.pos.hardware.op.CawDisableMSRDeviceOp" /><!-- BZ 24177 -->
+    <Op class="caw.pos.workorder.payment.CawRefreshDepositAmountDueOp" /> <!-- BZ27256 -->
+    <Op class="caw.pos.customer.CawIsBackCustSearchFormOp" /><!-- BZ 24414 -->
+    <Op class="caw.pos.register.returns.CawClearPurchaseUsedFirearmOp" />
+    <Op class="caw.pos.register.returns.CawReturnWebOrdersDisplayButtonOp" /><!-- BZ25207  -->
+    <!-- Begin BZ23052 -->
+    <OpChainRoute chainKey="CAW_PROCESS_CATALYST_DIRECTIVE_REPSONSE"/> 
+    <!-- End BZ23052 -->
+    <Op class="caw.pos.html.CawCouponTabUpdateOp" /><!-- BZ53626  -->
+    <OpChainRoute chainKey="CAW_DISPLAY_INFO_TAB_MESSAGE" /><!-- BZ27339 -->
+    <Op class="dtv.pos.hardware.op.ItemCustDisplayOp" />
+    <PromptOp class="caw.pos.register.sale.CawPromptItemScanOp" validationsBean="itemIdRules" contextKey="SALE" breakpoint="true" /><!-- BZ-24275 -->
+    <ValidationOp class="dtv.pos.coupon.LookupCouponFromItemIdOp" validationsBean="couponVerificationRules" />
+    <Op class="dtv.pos.document.bounceback.op.LookupBounceBackCouponOp" />
+    <ValidationOp class="caw.pos.register.sale.CawCheckItemNotOnFileOp" validationsBean="itemNotOnFileRules" /> <!-- BZ34226-->
+    <ValidationOp validationsBean="sellingIdGroupRules" />
+    <PromptOp class="caw.pos.register.returns.CawDeferFinancialValidationOp" >
+      <Parameter name="TransType" value="SALE" />
+    </PromptOp><!-- BZ33319 -->
+    <OpChainRoute chainKey="SALE_ITEM_AFTER_LOOKUP" />
+  </OpChain>
+  
+  <OpChain name="CAW_REMOVE_LOYALTY_PROMOTIONS_REWARD" signal="TransactionModified" >
+    <Op class="caw.pos.cheetah.CawRemovePromotionsRewardOp"/>
+  </OpChain>
+  <!-- END BZ49449 -->
+  
+  <!-- BEGIN BZ53547 -->
+  <OpChain name="CAW_REMOVE_THIRD_PARTY_CUSTOMER_INFO">
+    <Op class="caw.pos.cheetah.CawRemoveThirdPartyCustomerInfoOp"/>
+  </OpChain>
+  <!-- END BZ53547 -->
+  
+  
+ <!-- BEGIN BZ53797 -->
+ <OpChain name="SUSPEND_TRANSACTION" signal="TransactionComplete">
+ 	<Op class="caw.pos.cheetah.CawRemoveOfferOp" />
+   <Op class="dtv.pos.common.op.DisablePromptActionsOp" />
+   <ValidationOp validationsBean="suspendTransactionRules" />
+   <Op class="dtv.pos.register.suspendresume.CheckVouchersOnSuspendOp" />
+   <OpChainRoute chainKey="COMPLETE_SUSPEND" />
+   <WorkerOp workersBean="calculateTlogSequenceWorkers" />
+   <Op class="dtv.pos.register.suspendresume.BuildSuspendRcptsOp" />
+   <Op class="dtv.pos.register.suspendresume.PrintSuspendRcptsOp" />
+   <WorkerOp workersBean="saveRcptsWorkers" />
+   <Op class="dtv.pos.common.PersistCurrentTransactionOp" />
+   <Op class="dtv.pos.warranty.common.WarrantyTransIteratingOp">
+     <Parameter name="ChainKey" value="SUSPEND_WARRANTIES" />
+   </Op>
+   <WorkerOp workersBean="addCustAccountPersistableWorkers" />
+   <Op class="dtv.pos.common.PersistObjectsOp" />
+   <WorkerOp workersBean="populateFlashSalesTablesWorkers" />
+   <Op class="dtv.pos.hardware.op.WaitForRcptPrintOp" required="false" />
+   <OpChainRoute chainKey="PRINT_FISCAL_RECEIPTS.local" />
+   <OpChainRoute chainKey="RESET_REGISTER" />
+   <OpChainRoute chainKey="RESET_AFTER_TRANS" chainType="START" />
+ </OpChain>
+ 
+ <OpChain name="SUSPEND_TRANSACTION_BACKOFFICE" signal="TransactionComplete">
+   <Op class="caw.pos.cheetah.CawRemoveOfferOp" />
+   <ValidationOp validationsBean="suspendTransactionRules" />
+   <Op class="dtv.pos.register.suspendresume.CheckVouchersOnSuspendOp" />
+   <WorkerOp workersBean="completeSuspendTransWorkers" />
+   <Op class="dtv.pos.register.suspendresume.BuildSuspendRcptsOp" />
+   <Op class="dtv.pos.register.suspendresume.PrintSuspendRcptsOp" />
+   <WorkerOp workersBean="saveRcptsWorkers" />
+   <WorkerOp workersBean="persistTransAndObjWorkers" />
+   <Op class="dtv.pos.hardware.op.WaitForRcptPrintOp" required="false" />
+   <OpChainRoute chainKey="PRINT_FISCAL_RECEIPTS.local" />
+   <!--OpChainRoute chainKey="RESET_REGISTER" /-->
+   <Op class="dtv.pos.common.ClearStationModelOp" />
+   <Op class="dtv.pos.customer.loyalty.ClearLoyaltyOp" />
+   <Op class="dtv.pos.hardware.op.IdleCustomerDisplayOp" required="false" />
+ </OpChain>
+ 
+ <OpChain name="CAW_REMOVE_LOYALTY_OFFER" signal="TransactionModified" >
+   <Op class="caw.pos.cheetah.CawRemoveOfferOp"/>
+ </OpChain>
+ <!-- END BZ53797 -->
+ 
+ <!-- BEGIN BZ53977 -->
+ <OpChain name="CAW_REFRESH_OFFER_APPLIED">
+   <Op class="caw.pos.cheetah.promotion.CawRemoveOfferChangeQuantityOp" />
+   <Op class="caw.pos.cheetah.promotion.CawApplyPromotionsChangeQuantityOp" /> 
+ </OpChain>
+ 
+ <OpChain name="CHANGE_ITEM_QUANTITY">
+    <PromptOp class="dtv.pos.register.modifyitem.PromptItemQuantityChangeOp" validationsBean="saleItemQuantityRules" />
+    <Op class="dtv.pos.kits.UpdateKitComponentModifiersQtyOp" />
+    <Op class="dtv.pos.kits.inventory.HandleKitComponentInventoryOp" />
+    <Op class="dtv.pos.inventory.op.InventoryLocationChangeWhileOp">
+      <Parameter name="ChainKey" value="SALE_ALLOCATE_QUANTITY_CHANGE" />
+    </Op>
+    <Op class="dtv.pos.register.modifyitem.UpdateChangedQuantityOp" />
+    <Op class="dtv.pos.register.modifyitem.UpdateLineItemAsscModifierQtyOp" />
+    <Op class="dtv.pos.customer.award.AutoVoidAwardDiscountsOp" />
+    <OpChainRoute chainKey="CAW_REFRESH_OFFER_APPLIED" condition="caw.pos.cheetah.promotion.CawRemoveOfferChangeQuantityCondition"/>/>
+    <OpChainRoute chainKey="POST_CHANGE_ITEM_QUANTITY" chainType="START" />
+  </OpChain>
+  <!-- END BZ53977 -->
+  
+  <OpChain name="WO_SALE_ITEM_START" contextKey="WORK_ORDER_COMPLETE" rollbackChainKey="ROLLBACK_TRANS_PROMPT"
+    rollbackLevel="10">
+    <OpChainRoute chainKey="CAW_REMOVE_LOYALTY_PROMOTIONS_REWARD" condition="caw.pos.cheetah.CawRemovePromotionsRewardCondition"/><!-- BZ54290 -->
+    <OpChainRoute chainKey="CAW_DISPLAY_INFO_TAB_MESSAGE" /><!-- BZ27339 -->
+    <Op class="dtv.pos.hardware.op.ItemCustDisplayOp" />
+    <PromptOp class="dtv.pos.register.sale.PromptItemScanOp" validationsBean="itemIdRules" contextKey="WORK_ORDER_COMPLETE" breakpoint="true" />
+    <ValidationOp class="dtv.pos.coupon.LookupCouponFromItemIdOp" validationsBean="couponVerificationRules" />
+    <Op class="dtv.pos.document.bounceback.op.LookupBounceBackCouponOp" />
+    <ValidationOp class="caw.pos.register.sale.CawCheckItemNotOnFileOp" validationsBean="itemNotOnFileRules" />  <!-- BZ34226-->
+    <ValidationOp validationsBean="sellingIdGroupRules" />
+    <OpChainRoute chainKey="SALE_ITEM_AFTER_LOOKUP" />
+  </OpChain>
+</OpChainSet>

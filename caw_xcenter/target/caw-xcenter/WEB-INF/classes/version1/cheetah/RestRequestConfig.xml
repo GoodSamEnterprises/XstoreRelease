@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ49894 				130522    Loyalty Member Get PromoRewards/Reward API - Request changes
+ * BZ50112              240522    [Internal] Loyalty Member Order Submit API - Need to add memberId to the request body
+ * BZ50032          	250522    [Task] Loyalty - Using Oauth2 security to access the new service
+ * BZ50442              130622    Redemption data missing in request
+ * BZ51699              120822    [UAT] Loyalty Information is not printed on the receipt for GSAM Club member.
+ * BZ52874 				181022	  [UAT] Points Redeemed Today does not show redeemed amount in a receipt
+ * BZ51770          	181022    [Task[ Xstore needs to handle these additional updated submit order response from API
+ * BZ53457              111122    [UAT] Return transactions are not flowing to CW backend systems
+ * BZ52837 				101122	  [UAT] Reward and Promo Offer Adjustments need to use unique couponCodes
+ * BZ51771          	161122    [Task] Xstore needs to update request included the 'Loyaltydetail' information as a part of call to order service.
+ * BZ53752              221122    [BTM-255] - Wrong ItemCorrelationKey is being set in OrginalCorrelationKey attribute on returned items in SubmitOrder Request
+ *===================================================================
+ */
+-->
+<RestRequestSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="RestRequestConfig.xsd">
+      <RestRequest name="REQUEST_LOYALTY_MEMBER_PROMOTIONS"> <!-- BZ49894, BZ50112  -->
+        <Body dtype="String"><![CDATA[{
+            "memberId": !{memberID},
+            "theOrder":{
+			  "salesChannel": {
+			    "id": !{id},
+			    "channelType": !{channelType}
+			  },
+			  "items": !{ARRAY_REQUEST_ITEMS_ATTR},
+			  "customer":!{CUSTOMER}
+			  }
+			}
+        ]]>
+        </Body>
+   </RestRequest>
+  
+
+   <!-- Begin BZ49894 -->
+   <RestRequest name="CAW_ATTRIBUTES_ATTR">
+        <Body dtype="String"><![CDATA[{
+            "properties":{
+              "additionalProp1":!{additionalProp1},
+              "additionalProp2":!{additionalProp2},
+              "additionalProp3":!{additionalProp3}
+			  }
+			}
+        ]]>
+        </Body>
+   </RestRequest>
+   
+   <RestRequest name="CAW_WORK_ORDER_DETAIL_ATTR">
+        <Body dtype="String"><![CDATA[{
+            "properties":{
+              "additionalProp1":!{additionalProp1},
+              "additionalProp2":!{additionalProp2},
+              "additionalProp3":!{additionalProp3}
+			  }
+			}
+        ]]>
+        </Body>
+   </RestRequest>
+   
+   <RestRequest name="REQUEST_LOYALTY_MEMBER_PROMOTIONS_VER_2">
+        <Body dtype="String"><![CDATA[{
+            "theOrder":{
+              "salesChannel":!{SALESCHANNEL},
+              "orderType":!{orderType},
+              "orderTypeDescription":!{orderTypeDescription},
+              "id":!{id},
+              "cashier":!{CASHIER},
+              "orderDate":!{orderDate},
+			  "orderTotalWithTax":!{orderTotalWithTax},
+			  "customer":!{CUSTOMER},
+			  "thirdPartyPayer":!{THIRDPARTYPAYER},
+			  "shipToInfo":!{SHIPTOINFO},
+			  "items": !{ARRAY_REQUEST_ITEMS_ATTR},
+			  "tenders":!{TENDERS},
+			  "receiptType":!{receiptType},
+			  "receiptTypeDescription":!{receiptTypeDescription},
+			  "eReceiptEmail":!{eReceiptEmail},
+			  "contactPhone":!{contactPhone},
+			  "paidInOutDetail":!{PAIDINOUTDETAIL},
+			  "purchaseOrder":!{purchaseOrder},
+			  "workOrderDetail":!{WORKORDERDETAIL},
+              "correlationKey":!{correlationKey},
+              "properties":!{properties},
+              "attributes":!{attributes}
+			  }
+			}
+        ]]>
+        </Body>
+   </RestRequest>
+   <RestRequest name="SALESCHANNEL">
+        <Body dtype="String"><![CDATA[{
+      			"id": !{id},
+      			"terminal":!{terminal},
+     			"channelType": !{channelType},
+     			"channelTypeDescription": !{channelTypeDescription},
+    			"physicalInfo":!{physicalInfo}
+			}
+        ]]>
+        </Body>
+   </RestRequest>
+   <RestRequest name="REQUEST_LOYALTY_PROPERTIES">
+        <Body dtype="String"><![CDATA[{
+            "properties":{
+              "additionalProp1":!{additionalProp1},
+              "additionalProp2":!{additionalProp2},
+              "additionalProp3":!{additionalProp3}
+			  }
+			}
+        ]]>
+        </Body>
+   </RestRequest>
+   <RestRequest name="REQUEST_LOYALTY_ATTRIBUTES">
+        <Body dtype="String"><![CDATA[{
+            "properties":{
+              "additionalProp1":!{additionalProp1},
+              "additionalProp2":!{additionalProp2},
+              "additionalProp3":!{additionalProp3}
+			  }
+			}
+        ]]>
+        </Body>
+   </RestRequest>
+   <!-- End BZ49894 -->
+   <!-- Start BZ50032 -->
+      <RestRequest name="REQ_TOKEN">
+        <Body dtype="String"><![CDATA[{
+              "client_id":"!{client_id}",
+              "client_secret":"!{client_secret}",
+              "grant_type":"!{grant_type}"
+			}
+        ]]>
+        </Body>
+   </RestRequest>
+   <!-- End BZ50032 -->
+   
+   <!-- START BZ50442, BZ51699, BZ53752 -->
+   <RestRequest name="REQUEST_LOYALTY_SUBMIT_ORDER"> 
+   <Body dtype="String"><![CDATA[{
+            "memberId": !{memberID},
+            "theOrder":{
+			    "salesChannel": {
+			       "id": !{id},
+			        "channelType": !{channelType}
+			    },
+			    "orderType": !{orderType},
+			    "workOrderDetail": !{workOrderDetail},
+			    "id": !{idOrder},
+			    "correlationKey": !{correlationKey},
+			    "orderDate": !{orderDate},
+			    "orderTotalWithTax": !{orderTotalWithTax},
+			    "customer":!{CUSTOMER},
+			    "items": !{ARRAY_REQUEST_ITEMS_ATTR},
+        	  	"tenders": !{tenders},
+        	  	"purchaseOrder": !{purchaseOrder},
+        	  	"attributes": !{attributes}
+			  },
+			"promoOfferRedemptions": !{PROMO_OFFER_REDEMPTIONS},
+			"rewardRedemption": !{REWARD_REDEMPTION}
+			}
+        ]]>
+   </Body>
+   </RestRequest>
+   
+   <RestRequest name="ORDER_ATTRIBUTE"> 
+   <Body dtype="String"><![CDATA[{
+            "goodSamSavings": !{goodSamSavings},
+            "couldSave": !{couldSave}
+			}
+        ]]>
+   </Body>
+   </RestRequest>
+   <!-- END BZ51699, BZ53752: Add ["correlationKey": !{correlationKey}, "workOrderDetail": !{workOrderDetail}] into request -->
+   
+   <RestRequest name="PROMO_OFFER_REDEMPTIONS"> 
+   <Body dtype="String"><![CDATA[{
+            "offerResponseCode": !{offerResponseCode},
+            "offerCode": !{offerCode},
+            "ebsCouponCode": !{ebsCouponCode}
+			}
+        ]]>
+   </Body>
+   </RestRequest>   
+   
+   <!-- BEGIN BZ52874  -->
+   <RestRequest name="REWARD_POINTS_ALLOCATIONS"> 
+   <Body dtype="String"><![CDATA[{
+            "itemCorrelationKey": !{itemCorrelationKey},
+            "pointsRedeemedOnLineItem": !{pointRedeemedOnLineItem}
+			}
+        ]]>
+   </Body>
+   </RestRequest>
+   <!-- END BZ52874, BZ52837  -->
+   <RestRequest name="REWARD_REDEMPTION"> 
+   <Body dtype="String"><![CDATA[{
+			"rewardCode": !{rewardCode},
+			"ebsCouponCode": !{ebsCouponCode},
+			"rewardPointsAllocations": !{REWARD_POINTS_ALLOCATIONS}
+			}
+        ]]>
+   </Body>
+   </RestRequest>
+   <!-- END BZ50442, BZ52837 -->
+
+
+	<!-- BEGIN BZ51770, BZ52837 -->
+	<RestRequest name="LOYALTY_INFO_FOR_OS">
+		<Body dtype="String"><![CDATA[{
+			 "loyaltyDetails": {
+        			"receiptSummary": !{receiptSummary},
+        			"pointEarnings": !{pointEarnings},
+        			"promoOfferRedemptions": !{PROMO_OFFER_REDEMPTIONS},
+        			"rewardRedemption": !{REWARD_REDEMPTION_WITH_RESPONSE_CODE}
+    			}
+			}
+        ]]>
+		</Body>
+	</RestRequest>
+	<!-- BEGIN BZ52837 -->
+	<RestRequest name="REWARD_REDEMPTION_WITH_RESPONSE_CODE"> 
+    <Body dtype="String"><![CDATA[{
+			"rewardCode": !{rewardCode},
+			"rewardResponseCode": !{rewardResponseCode},
+			"ebsCouponCode": !{ebsCouponCode},
+			"rewardPointsAllocations": !{REWARD_POINTS_ALLOCATIONS}
+			}
+        ]]>
+    </Body>
+    </RestRequest>
+	<!-- END BZ51770, BZ52837 -->
+	
+	<!-- BEGIN BZ51771 -->
+   <RestRequest name="PROMO_OFFER_REDEMPTIONS_FULL_INFO"> 
+   <Body dtype="String"><![CDATA[{
+            "offerResponseCode": !{offerResponseCode},
+            "offerCode": !{offerCode},
+            "ebsCouponCode": !{ebsCouponCode},
+            "offerExpiration": !{offerExpiration},
+            "offerLabel": !{offerLabel},
+            "promoOfferClaimAdjustments": !{promoOfferClaimAdjustments}
+			}
+        ]]>
+   </Body>
+   </RestRequest> 
+   <!-- END BZ51771 -->
+	
+	<!-- BEGIN BZ33233, BZ40898, BZ53752 -->
+    <RestRequest name="REQUEST_ITEMS_ATTR_FOR_CHEETAH_RETURN">
+        <Body dtype="String"><![CDATA[{
+                "correlationKey": !{correlationKey},
+                "lineNumber": !{lineNumber},
+                "quantity": !{quantity},
+                "unitOfMeasure": !{unitOfMeasure}, 
+                "unitListPrice": !{unitListPrice},
+                "cost": !{cost},
+                "unitSellingPrice": !{unitPrice}, 
+                "taxCode": !{taxCode}, 
+                "taxAmount": !{taxAmount},
+                "lineTotal": !{lineTotal},
+                "isSpecialOrder": !{isSpecialOrder},
+                "isReturn": !{isReturn},
+                "adjustments": !{adjustments}, 
+                "salesPerson": !{OBJECT_REQUEST_SALESPERSON_ATTR},
+                "repriceItem": !{repriceItem},
+                "discounts": !{ARRAY_REQUEST_DISCOUNTS_ATTR},
+                "prompts": !{ARRAY_REQUEST_PROMPTS_ATTR},
+                "code": !{code},
+                "type": !{type},
+                "status": !{status},
+                "uom": !{uom},
+                "division": !{division},
+                "department": !{department},
+                "classCode": !{classCode},
+                "subclassCode": !{subclassCode},
+                "hazardClass": !{hazardClass},
+                "merchandiseCode": !{merchandiseCode},
+                "buyer": !{OBJECT_REQUEST_BUYER_ATTR},
+                "pricing": !{OBJECT_REQUEST_TIEM_PRICING_ATTR},
+                "vendor": !{OBJET_REQUEST_VENDOR_ATTR},
+                "description": !{description},
+                "posTaxCode": !{posTaxCode},
+                "isInstallable": !{isInstallable},
+                "isReturnable": !{isReturnable},
+                "weight": !{weight},
+                "isShippable": !{isShippable},
+                "isInventory": !{isInventory},
+                "isClearance": !{isClearance},
+                "isDropship": !{isDropship},
+                "isShipFreight": !{isShipAlone},
+                "isShipAlone": !{isShipAlone},
+                "isDiscountable": !{isDiscountable},
+                "isLaborSku": !{isLaborSku},
+                "shipToInfo": !{shipToInfo}, 
+                "brokerItemDetail": !{brokerItemDetail},
+                "properties": !{properties}
+                ,"attributes": {"returnReason": !{returnReason},"originalCorrelationKey": !{originalCorrelationKey},!{wo}}
+
+        } 
+        ]]>
+        </Body>
+    </RestRequest>
+    <!-- END BZ33233, BZ40898-->
+    
+    <RestRequest name="REQUEST_ITEMS_ATTR_FOR_CHEETAH_SALE">
+        <Body dtype="String"><![CDATA[{
+                "correlationKey": !{correlationKey},
+                "lineNumber": !{lineNumber},
+                "quantity": !{quantity},
+                "unitOfMeasure": !{unitOfMeasure}, 
+                "unitListPrice": !{unitListPrice},
+                "cost": !{cost},
+                "unitSellingPrice": !{unitPrice}, 
+                "taxCode": !{taxCode}, 
+                "taxAmount": !{taxAmount},
+                "lineTotal": !{lineTotal},
+                "isSpecialOrder": !{isSpecialOrder},
+                "isReturn": !{isReturn},
+                "adjustments": !{adjustments}, 
+                "salesPerson": !{OBJECT_REQUEST_SALESPERSON_ATTR},
+                "repriceItem": !{repriceItem},
+                "discounts": !{ARRAY_REQUEST_DISCOUNTS_ATTR},
+                "prompts": !{ARRAY_REQUEST_PROMPTS_ATTR},
+                "code": !{code},
+                "type": !{type},
+                "status": !{status},
+                "uom": !{uom},
+                "division": !{division},
+                "department": !{department},
+                "classCode": !{classCode},
+                "subclassCode": !{subclassCode},
+                "hazardClass": !{hazardClass},
+                "merchandiseCode": !{merchandiseCode},
+                "buyer": !{OBJECT_REQUEST_BUYER_ATTR},
+                "pricing": !{OBJECT_REQUEST_TIEM_PRICING_ATTR},
+                "vendor": !{OBJET_REQUEST_VENDOR_ATTR},
+                "description": !{description},
+                "posTaxCode": !{posTaxCode},
+                "isInstallable": !{isInstallable},
+                "isReturnable": !{isReturnable},
+                "weight": !{weight},
+                "isShippable": !{isShippable},
+                "isInventory": !{isInventory},
+                "isClearance": !{isClearance},
+                "isDropship": !{isDropship},
+                "isShipFreight": !{isShipAlone},
+                "isShipAlone": !{isShipAlone},
+                "isDiscountable": !{isDiscountable},
+                "isLaborSku": !{isLaborSku},
+                "shipToInfo": !{shipToInfo}, 
+                "brokerItemDetail": !{brokerItemDetail},
+                "properties": !{properties}
+                ,"attributes": {!{wo}}
+        } 
+        ]]>
+        </Body>
+    </RestRequest>
+    
+    <RestRequest name="REQUEST_ITEMS_ATTR_ORDER_SHIPPING_INFO">
+        <Body dtype="String"><![CDATA[{
+                "name": !{nameShip},
+                "line1": !{line1Ship},
+                "city": !{cityShip},
+                "stateProvince": !{stateProvinceShip},
+                "postalCode": !{postalCodeShip},
+                "country": !{countryShip},
+                "shipVia": !{shipVia},
+                "serviceLevel": !{serviceLevel}
+        } 
+        ]]>
+        </Body>
+    </RestRequest>
+    
+    <RestRequest name="REQUEST_ITEMS_ATTR_ADJUSTMENTS">
+        <Body dtype="String"><![CDATA[{
+                "correlationKey": !{correlationKey},
+                "type": !{type},
+                "amount": !{amount},
+                "couponCode": !{couponCode},
+                "serializedCouponCode": !{serializedCouponCode}
+        } 
+        ]]>
+        </Body>
+    </RestRequest>
+    
+    <RestRequest name="REQUEST_CHEETAH_TENDER_ATTR">
+        <Body dtype="String"><![CDATA[{
+                "correlationKey":!{correlationKey},
+                "type": !{type},
+                "code": !{code},
+                "amount": !{amount},
+                "authorization": !{authorization},
+                "token": !{token},
+                "cardNumberMasked": !{cardNumberMasked},
+                "cardholder": !{cardholder},
+                "expireDate": !{expireDate}
+            }
+        ]]>
+        </Body>
+   </RestRequest>
+   
+   <RestRequest name="REQUEST_CHEETAH_ITEM_GIFT_CARD_ATTR">
+        <Body dtype="String"><![CDATA[{
+		    "correlationKey": !{correlationKey},
+		    "salePerson": {
+		          "code":!{salePersonCode},
+		          "fileNumber":!{fileNumber},
+		          "name":!{name}
+		    },
+		    "code": !{code},
+		    "isReturn": false,
+		    "unitSellingPrice": 0.0,
+		    "quantity": 1,
+		    "adjustments": null,
+		    "unitOfMeasure": 0,
+		    "lineTotal": 0.0,
+		    "taxCode": "NT",
+		    "shipToInfo": null,
+		    "unitListPrice": 0.0,
+		    "brokerItemDetail": null,
+		    "attributes": null,
+		    "taxAmount": 0.0,
+		    "properties":{
+		      "serialNumber": !{serialNumber}
+		     }
+        }
+        ]]>
+        </Body>
+   </RestRequest>
+    <!-- END BZ53752 -->
+</RestRequestSet>

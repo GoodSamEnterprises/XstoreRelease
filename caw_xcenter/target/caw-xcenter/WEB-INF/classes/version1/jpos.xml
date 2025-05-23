@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ23782              091017    Enable MSR swipe for Gift card
+ * BZ23733              121017    [Payments] Cannot swipe gift card on pin pad for load/reload gift card transactions
+ * BZ23359              121017    Gift cards can't be swiped at screen.
+ * BZ24275              151117    unable to scan sale receipts on scan screen.
+ * BZ33595              151119    Scanner/Warranty prompt screen - scanner provides 1 successful beep but desire is to have triple error beep
+ *===================================================================
+ */
+  -->
+<JposEntries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="jcl.xsd">
+    <!--* Oracle Retail Entries -->
+    <!--*************************************************************-->
+    <JposEntry logicalName="defaultMSR">
+        <creation factoryClass="com.securemsr.jpos.MSRJposServiceInstanceFactory" serviceClass="com.securemsr.service.MSRService"/>
+        <vendor name="IDTECH" url="http://www.idtechproducts.com"/>
+        <jpos category="MSR" version="1.13"/>
+        <product description="MSR JavaPOS Service for IDTECH MSR" name="IDTECH RS232 MSR" url="http://www.idtechproducts.com"/>
+        <!--Other properties and bus specific properties -->
+        <prop name="connector" type="String" value="rs232/dev/ttyS2/baud=9600/parity=N/stop=1/data=8"/>
+        <!-- Oracle Retail properties -->
+        <prop name="dtvDiscrectionaryDataIncludesServiceCode" type="Boolean" value="true" />
+        <prop name="dtvSetTracksToReadBeforeEnable" type="Boolean" value="true" />
+        <prop name="dtvTracksIncludeDiscrectionaryData" type="Boolean" value="true" />
+        <prop name="dtvTracksToRead" type="String" value="2" />
+        <prop name="dtvcert" type="Boolean" value="true" />
+    </JposEntry>
+      
+   <JposEntry logicalName="Virtual-Scanner-Transaction">
+    <creation factoryClass="dtv.hardware.service.ServiceInstanceFactory" serviceClass="caw.hardware.service.CawScannerDummy" />
+    <vendor name="MICROS Retail" url="http://www.micros-retail.com" />
+    <jpos version="1.7" category="Scanner" />
+    <product name="MICROS Retail Services for JavaPOS(TM) Standard" description="MICROS Retail Virtual MSR Service"
+      url="http://www.micros-retail.com" />
+    <!--Other non JavaPOS required property (mostly vendor properties and bus specific properties i.e. RS232)-->
+    <prop name="idCodabar" type="String" value="A" />
+    <prop name="idCode128" type="String" value="B" />
+    <prop name="idCode39" type="String" value="C" />
+    <prop name="idCode93" type="String" value="E" />
+    <prop name="idCoupon" type="String" value="D" />
+    <prop name="idEAN128" type="String" value="F" />
+    <prop name="idEAN13" type="String" value="G" />
+    <prop name="idEAN8" type="String" value="H" />
+    <prop name="idITF" type="String" value="I" />
+    <prop name="idMSIPlessey" type="String" value="J" />
+    <prop name="idTF" type="String" value="K" />
+    <prop name="idUPCA" type="String" value="L" />
+    <prop name="idUPCE" type="String" value="M" />
+    <prop name="title" type="String" value="SCANNER" />
+    <!-- MICROS Retail properties -->
+    <prop name="dtvcert" type="Boolean" value="true" />
+  </JposEntry>
+  
+  <!-- BEGIN BZ33595 -->
+  <JposEntry logicalName="ZebraAllScanners">
+     <creation factoryClass="com.zebra.jpos.service.scanner.SymScannerSvc112Factory" serviceClass="com.zebra.jpos.service.scanner.SymScannerSvc112"/>
+     <vendor name="Zebra Technologies" url="https://www.zebra.com"/>
+     <jpos category="Scanner" version="1.12"/>
+     <product description="Zebra Serial/USB Scanner" name="Zebra Scanner" url="https://www.zebra.com"/>
+     <prop name="ScannerType" value="ALL"/>
+     <prop name="ExclusiveClaimLevel" value="0" />
+     <prop name="dtvcert" type="Boolean" value="true" />
+  </JposEntry>
+  <!-- END BZ33595 -->
+
+</JposEntries>

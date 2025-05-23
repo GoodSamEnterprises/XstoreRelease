@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ48564              100222    [Loyalty] - Need to add new Rewards column on the existing Customer Maintenance Accounts Tab
+ * BZ48401              210222    [Task] Apply Reward to Redeem in Sales Transaction
+ *===================================================================
+ */
+  -->
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ListViewConfig.xsd">
+  <!-- Begin BZ48564 -->
+
+   <Header name="LOYALTY_CARD_SUMMARY">
+    <Row>    
+      <Column start="0" width="27" translatable="_membershipInfor" />
+      <Column start="28" width="16" translatable="_loyaltyCardNumber" />
+      <Column start="45" width="16" translatable="_expires" /> 
+      <Column start="61" width="16" translatable="_loyaltyAccountPointsBalance" alignment="RIGHT" />
+      <Column start="77" width="23" translatable="_cawRedeemableValue" alignment="RIGHT" />    
+    </Row>
+  </Header>
+  <Element name="LOYALTY_CARD_SUMMARY">
+	<Row>
+      <Column start="0" width="27" alignment="LEFT">
+         <CellDataHandlerFactoryClass dtype="Class">caw.pos.customer.membership.CawCustomerMembershipsCellHandler</CellDataHandlerFactoryClass>
+      </Column> 
+
+      <Column start="28" width="16" method="getCardNumber" />
+      <Column start="45" width="16" method="getExpirationDate" formatter="DateMedium" />
+      <Column start="61" width="16" alignment="RIGHT" >
+      	 <CellDataHandlerFactoryClass dtype="Class">caw.pos.customer.membership.CawCustomerMembershipsPointsBalanceCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="77" width="23" alignment="RIGHT" formatter="Money" >
+      	 <CellDataHandlerFactoryClass dtype="Class">caw.pos.customer.membership.CawCustomerMembershipsRedeemableValueCellHandler</CellDataHandlerFactoryClass>
+      </Column>    
+    </Row> 
+  </Element>
+  
+  <Header name="AVAILABLE_AWARDS">
+    <Row>
+      <Column start="0" width="25" translatable="_loyaltyCardNumber" />
+      <Column start="25" width="35" translatable="_loyaltyOffer" />
+      <Column start="60" width="20" translatable="_expires" />
+      <Column start="80" width="20" translatable="_loyaltyItemValue" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="AVAILABLE_AWARDS">
+    <Row>
+      <Column start="0" width="25" method="getCardNumber" />
+      <Column start="25" width="35" alignment="LEFT" >
+      	 <CellDataHandlerFactoryClass dtype="Class">caw.pos.customer.membership.CawCustomerMembershipsOfferCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="60" width="20" method="getExpirationDate" formatter="DateMedium" />
+      <Column start="80" width="20" alignment="RIGHT" method="getAmount"/>
+    </Row>
+  </Element>
+  <!-- End BZ48564 -->
+  <!-- BEGIN BZ48401 -->
+  <Header name="PROMOTION_LIST">
+    <Row>
+      <Column start="0" width="80" translatable="_rewardDescription" />
+      <Column start="80" width="20" translatable="_expirationDate"/>
+    </Row>
+  </Header>
+  <Element name="PROMOTION_LIST">
+    <Row>
+      <Column start="0" width="80" method="getPromoCodeLabel" />
+      <Column start="80" width="20" method="getExpiration" alignment="RIGHT" formatter="DateMedium" />
+    </Row>
+  </Element>
+  
+  <Header name="TRANSACTION_COUPONS_TAB" >
+    <Row>
+      <Column start="0" width="40" translatable="_couponId" />
+      <Column start="40" width="45" translatable="_commonDescription" />
+      <Column start="85" width="15" translatable="_appliedQuestion" alignment="CENTER" />
+    </Row>
+  </Header>
+  <Element name="TRANSACTION_COUPONS_TAB">
+    <Row>
+      <Column start="0" width="40" method="getId" />
+      <Column start="40" width="45" wrapText="true">
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.coupon.CawCouponDealsCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="85" width="15" alignment="CENTER" >
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.framework.ui.listview.NamedIconColumnDataHandler</CellDataHandlerFactoryClass>
+        <EvaluatedFormattable method="isApplied" />
+        <Parameter name="true">
+          <param_value dtype="IconRef">_imageListCheckMark</param_value>
+        </Parameter>
+      </Column>
+    </Row>
+  </Element>
+    <Element name="APPLIED_DISCOUNT_LIST">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="5" width="6" icon="_imageDiscountIcon" />
+      <Column start="11" width="61">
+        <CellDataHandlerFactoryClass dtype="Class">caw.pos.pricing.discount.CawAppliedDiscountCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="72" width="14" method="getExtendedAmount.negate" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <!-- END BZ48401 -->
+</ListView>

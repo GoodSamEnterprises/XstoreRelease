@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#       ddMMyy      Description
+ * PAYMENT           070917      Payment-Item Display
+ * BZ23999           171017      New Changes to Sales Screen Required
+ * BZ26742           180718      [New Requirement] Update QAS results include the entered or existing customer address as an option
+ * BZ29372           150219      [Requirement] PLCC Account Lookup - ID Verification Screen new request
+ * BZ33518           130220      [PROD] - Wholesale account set up is requiring First Name and Last Name to be included
+ * BZ37706           070920      [Internal] Missing membership information such as Membership#, exp,Club price and logo on Top panel into View port when doing an order transaction.
+ *===================================================================
+ */ 
+-->
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd"
+  default-init-method="init">
+  
+  <!-- This file holds configurations for beans either are edit models or are related to/used by edit models. -->
+  
+  <bean id="listEditModelServiceMappings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="properties">
+      <props>
+        <prop key="CURRENT_TRANSACTION">currentTransactionListModel</prop>
+        <prop key="CUSTOMER_MESSAGE_VIEW_LIST">customerMessageListModel</prop>
+        <prop key="RECEIVING_DOCUMENT">receivingDocumentListModel</prop>
+        <prop key="RECEIVING_CARTON">receivingCartonListModel</prop>
+        <prop key="SHIPPING_DOCUMENT">shippingDocumentListModel</prop>
+        <prop key="LAYAWAY">layawayListModel</prop>
+        <prop key="SPECIAL_ORDER">specialOrderListModel</prop>
+        <prop key="SEND_SALE">sendSaleListModel</prop>
+        <prop key="WORK_ORDER">workOrderListModel</prop>
+        <prop key="TILL_COUNT">tillCountListModel</prop>
+        <prop key="TILL_COUNT_UNIT">tillUnitCountListModel</prop>
+        <prop key="ITEM_LABEL_SELECTION">itemLabelListModel</prop>
+        <prop key="TIME_OFF">timeOffListModel</prop>
+        <prop key="INVENTORY_ADJUSTMENT">inventoryAdjustmentListModel</prop>
+        <prop key="INVENTORY_ITEM_TRANSFER">itemTransferListModel</prop>
+        <prop key="INVENTORY_MOVEMENT_PENDING">inventoryMovementPendingListModel</prop>
+        <prop key="TENDER_REPOSITORY">tenderRepositoryListModel</prop>
+        <prop key="GIFT_REGISTRY">giftRegistryListModel</prop>
+        <prop key="ORDER_LIST_MODEL">orderListModel</prop>
+        <prop key="INVENTORY_REPLENISHMENT">replenishmentListModel</prop>
+        <prop key="STORE_LAYOUT_MAINTENANCE_MODEL">storeLayoutListModel</prop>
+        <prop key="TAXFREE_RECEIPT">taxFreeReceiptSearchListModel</prop>
+        <prop key="CAW_CURRENT_TRANSACTION">cawTransactionListEditModel</prop>
+      </props>
+    </property>
+  </bean>
+  <bean id="cawTransactionListEditModel" class="caw.tenderauth.impl.eigen.model.CawTransactionListEditModel" scope="prototype" />
+  <bean id="currentTransactionListModel" class="caw.pos.register.CawRetailTransactionListModel" scope="prototype" /> <!-- BZ23999 -->
+  
+  <!-- Begin BZ26742: Customized from base -->
+  <bean id="custMaintModelFieldValidators" class="org.springframework.beans.factory.config.MapFactoryBean">
+    <property name="sourceMap">
+      <map>
+        <entry key="emailAddress" value-ref="emailAddressFieldValidator" />
+        <entry key="contactPref" value-ref="contactPrefFieldValidator" />
+        <entry key="nationalTaxId" value-ref="taxCodeFieldValidator" />
+        <entry key="personalTaxId" value-ref="fiscalCodeFieldValidator" />
+        <entry key="postalCode" value-ref="postalCodeFieldValidator" /><!-- BZ26742 added -->
+      </map>
+    </property>  
+  </bean>
+  <bean id="postalCodeFieldValidator" class="caw.pos.framework.form.validators.CawPostalCodeFieldValidator" scope="prototype" />
+  <!-- End BZ26742: Customized from base -->
+  
+  <!-- Begin BZ29372 -->
+  <bean id="cawAccountCardTypeSetFieldFactory" class="dtv.pos.framework.form.DefaultEditModelSetFieldFilterFactory" scope="prototype" >
+    <property name="parameters">
+      <map>
+        <entry key="acountCardType" value-ref="cawAccountStateSetFieldFilter" />
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="cawAccountStateSetFieldFilter" class="caw.pos.shared.mutators.CawSimpleDependentSetFieldFilter" scope="prototype">
+    <property name="dependentField" value="acountState"/>
+  </bean>
+  <!-- End BZ29372 -->
+  <!-- BEGIN BZ33518 -->
+  <bean id="organizationNameSetFieldFilter" class="caw.pos.shared.mutators.CawCheckCreateCustFields" scope="prototype">
+     <property name="dependencyProps">
+        <props>
+           <prop key="lastName">EnableRequired</prop>
+           <prop key="middleName">Enable</prop>
+           <prop key="firstName">EnableRequired</prop>
+           <prop key="organizationTypeCode">Disable</prop>
+        </props>
+     </property>
+ </bean>
+ <!-- END BZ33518 -->
+ <bean id="orderListModel" class="caw.pos.order.CawOrderListEditModel" scope="prototype" /><!-- BZ37706 -->
+</beans>

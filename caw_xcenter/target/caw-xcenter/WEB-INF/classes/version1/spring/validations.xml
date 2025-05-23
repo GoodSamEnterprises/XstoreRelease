@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ23147              070917    Implement Serialized coupon
+ * BZ23605              021017    [Xstore] Travel Check Tender Denomination Configuration
+ * BZ24153              231017    Error message should be displayed on 'Enter Shopping Pass Number' & Expired date field when pressing 'Next' to by pass GS visa information
+ * BZ24322              031117    Should be validated coupon number when using one coupon both serialized number and coupon tender in transaction
+ * BZ24402              141117    Can't complete the transaction with Third-party tender 
+ * BZ24537              171117    [Payment] Gift cards do not partial auth, auto decline if there is not enough balance on the card
+ * BZ25590              200318    New Requirement - Default price if club pricing does not exist
+ * BZ25927              140518    [1.4.0] Confirm the added privileges for the EVERYONE ROLE
+ * BZ25674              040718    New Requirement - Add security override for employee/crew member sales
+ * BZ26289              120718    New Requirement - Enable A/R Payment Functionality in Xstore
+ * BZ26896              260718    [New Requirement] Add security override for Paid Out transaction greater than the configured max
+ * BZ25958              010818    New Requirement - Gift Card User Flow and Receipt Changes
+ * BZ26851              090818    [PROD] Register displayed an error when trying to print receipt
+ * BZ27921              231018    [Internal] Incorrect return tender options for when you combine Verified Return with Web Order Return in the same transaction
+ * BZ28534              241218    [New requirement][BZ-27969] All CW roles will be restricted by the new tender limit requirements.
+ * BZ29125              280119    Port 29014 to Release 3.0 - Work Order quantity does not import to Xstore if only 0500 item exists on the order
+ * BZ29443              200219    [Internal][Account Payment]GS Account Payment amount should be validated incase inputting invalid amount.
+ * BZ28014              310519    [New Requirement] Xstore needs to allow stackability for/Allow multiple Merchant Certificates in a transaction
+ * BZ30269              280519    [New-Requirement] For returns of warranty merchandise, add in the warranty override to this change - prompt for manager override
+ * BZ35326              120320    [PROD] [NEW REQ] Non-credited Wholesale using Credit / AR and 3rd Party Credit mapped to same Tender Type/Trans Code
+ * BZ41379              022221    Requirement - Disabled Mixed Order Transactions in Xstore
+ * BZ45947              260821    [Internal] Cannot apply a transaction discount to a kiosk order or a mix transaction of sale and kiosk order
+ * BZ44917              110921    [New Requirement] IDS Payment Integration with Xstore
+ * BZ46387				290921	  IDS Payment item restriction question
+ * BZ42307              200921    [Requirement] Add ability to reject at the item level for BOPIS
+ * BZ61330              290124    Update tender options for Verified return, Unverified return, web orders and Tender Exchange
+ *===================================================================
+ */
+-->
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd 
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd"
+  default-init-method="init">
+
+  <bean id="cawValidateCouponIdRule" class="caw.pos.promotion.api.validation.CawValidateCouponIdRule" scope="prototype" />
+  <bean id="cawCouponAmountRule" class="caw.pos.promotion.api.validation.CawValidateCouponTenderAmountRule" scope="prototype" />
+  <bean id="cawCouponSerializedRule" class="caw.pos.promotion.api.validation.CawValidateCouponSerializedRule" scope="prototype" /><!-- BZ24322 -->
+  
+  <!-- Begin BZ24153 -->
+  <bean id="cawGSSPNumberRule" class="caw.pos.promotion.api.validation.CawValidateGsShoppingPassNum" scope="prototype" />
+  <bean id="cawGSSPExpiredDateRule" class="caw.pos.promotion.api.validation.CawValidateGsShoppingPassExpDate" scope="prototype" />
+  <!-- End BZ24153 -->
+  <!-- Begin BZ24402 -->
+  <bean id="houseAccountARTPTenderAmountRule" class="caw.pos.araccount.CawValidateHAARTPTenderAmountRule" scope="prototype">
+    <property name="privilege" value="HOUSE_ACCNT_MANAGER_OVERRIDE" />
+  </bean>
+  <!-- End BZ24402 -->
+  <!-- BZ25674 Start -->  
+  <bean id="cawValidateEmployeeSaleRule" class="caw.pos.customer.CawValidateEmployeeSaleRule" scope="prototype">
+    <property name="privilege" value="CAW_CREW_OVERRIDE" />
+  </bean>
+  <!-- BZ25674 End -->
+  <!-- BEGIN BZ26896 -->
+  <bean id="cawFundXferAmountRule" class="caw.pos.till.fundxfer.CawValidateFundXferAmountRule" scope="prototype">
+    <property name="privilege" value="CAW_PAID_OUT_EXCEED_MAX_THRESHOLD" />
+  </bean>
+  <!-- END BZ26896 -->
+  <bean id="cawCheckGiftCardAmtRefundRule" class="caw.pos.tender.validation.CawValidateGiftCardAmtRefundRule" scope="prototype" />
+  
+  <bean id="cawValidateItemPriceRule" class="caw.pos.register.sale.CawValidateItemDefaultPrice" scope="prototype"/> <!-- BZ25590 -->
+  
+  <bean id="cawLoginBackOfficeRule" class="caw.pos.assistance.access.CawLoginBackOfficeValidation" scope="prototype"/> <!-- BZ25927 -->
+  
+  <!-- BEGIN BZ27921 -->
+  <bean id="tenderAvailabilityRule" class="caw.pos.tender.validation.CawValidateTenderAvailabilityRule" scope="prototype" />
+  <!-- END BZ27921 -->
+  
+  <!-- BEGIN BZ28534: override base rule with new rule. -->
+  <bean id="maxmimumTenderAmountRule" class="caw.pos.tender.validation.CawMaxAcceptAmountRule" scope="prototype">
+    <property name="privilege" value="TENDER_ABOVE_CONFIGURED_AMOUNT" />
+  </bean>
+  <!-- END BZ28534 -->
+  
+  <bean id="cawCouponIdRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCouponIdRule" />
+        <ref bean="cawValidateCouponIdRule" />
+        <ref bean="cawCouponSerializedRule" /><!-- BZ24322 -->
+      </list>
+    </property>
+  </bean>
+
+  <bean id="cawCouponAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cawCouponAmountRule" />
+        <ref bean="basicTenderAmountRule" />
+        <ref bean="tenderDenominationAmountRule" />
+        <ref bean="beyondOverTenderLimitRule" />
+        <ref bean="minimumTenderAmountRule" />
+        <ref bean="maxmimumTenderAmountRule" />
+        <ref bean="maxmimumRefundAmountRule" />
+        <ref bean="houseAccountTenderAmountRule" />
+      </list>
+    </property>
+  </bean>
+  <!-- Begin BZ23605 -->
+  <bean id="travelersCheckAmountRules" parent="validationRuleList">
+    <property name="rules">
+     <list>
+        <ref bean="basicTenderAmountRule" />
+        <ref bean="beyondOverTenderLimitRule" />
+        <ref bean="minimumTenderAmountRule" />
+        <ref bean="maxmimumTenderAmountRule" />
+        <ref bean="maxmimumRefundAmountRule" />
+        <ref bean="houseAccountTenderAmountRule" />
+      </list>
+    </property>
+  </bean>
+  <!-- End BZ23605 -->
+  <!-- Begin BZ24153 -->
+  <bean id="cawGSSPNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cawGSSPNumberRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="cawGSSPExpiredDateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cawGSSPExpiredDateRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- End BZ24153 -->
+  <!-- Begin BZ24402 -->
+  <bean id="tenderAmountARTPRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="basicTenderAmountRule" />
+        <ref bean="tenderDenominationAmountRule" />
+        <ref bean="beyondOverTenderLimitRule" />
+        <ref bean="minimumTenderAmountRule" />
+        <ref bean="maxmimumTenderAmountRule" />
+        <ref bean="maxmimumRefundAmountRule" />
+        <ref bean="houseAccountARTPTenderAmountRule" />
+        <ref bean="cawTPTenderAmountRule" /> <!-- BZ35326 -->
+      </list>
+    </property>
+  </bean>
+  <!-- End BZ24402 -->
+  
+  <bean id="cawVoucherTenderAmountRules" parent="tenderAmountRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="voucherTenderAmountRule" />
+        <ref bean="cawCheckGiftCardAmtRefundRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Begin BZ25590 -->
+  <bean id="cawValidateItemPriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cawValidateItemPriceRule" />
+      </list>
+    </property>
+  </bean>
+  <!-- End BZ25590 -->
+  
+  <!-- Begin BZ25927 -->
+  <bean id="cawLoginBackOfficeRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cawLoginBackOfficeRule" />
+      </list>
+    </property>
+  </bean>
+  <!-- End BZ25927 -->
+  <!-- BZ25674 Start -->
+  <bean id="cawAttachCustomerToSaleRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cawValidateEmployeeSaleRule" />
+      </list>
+    </property>
+  </bean>
+  <!-- BZ25674 End -->
+  <!-- BZ26289 start -->
+  <bean id="houseAccountTenderAmountRule" class="caw.pos.houseaccount.validation.CawValidateHouseAccountTenderAmountRule" scope="prototype">
+    <property name="privilege" value="HOUSE_ACCNT_MANAGER_OVERRIDE" />
+  </bean>
+  <bean id="houseAccountPaymentAmountRule" class="caw.pos.houseaccount.validation.CawValidateHouseAccountPaymentAmtRule" scope="prototype" />
+  <!-- BZ26289 end -->
+
+  <!-- BEGIN BZ26896 -->
+  <bean id="cawFundXferAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cawFundXferAmountRule" />
+        <ref bean="minimumCashDenominationRule" />
+      </list>
+    </property>
+  </bean>
+  <!-- END BZ26896 -->
+  
+  <!-- Begin BZ25958 -->
+  <bean id="cawVoucherAmountRule" class="caw.pos.register.CawValidateVoucherAmountRule" scope="prototype"/>
+  <bean id="cawVoucherItemPriceRules" parent="itemPriceRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="voucherPriceRule" />
+        <ref bean="cawVoucherAmountRule" />
+      </list>
+    </property>
+  </bean>
+  <!-- End BZ25958 -->
+  
+  <!-- Begin BZ26851 -->
+  <bean id="cawDiscountAmountLimitValidRule" class="caw.pos.pricing.discount.validation.CawDiscountAmountLimitValidRule" scope="prototype"/>
+  <bean id="cawLineItemDiscountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemDiscountThresholdRule" />
+        <ref bean="cawDiscountAmountLimitValidRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="cawTransactionDiscountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cawDiscountAmountLimitValidRule" />
+      </list>
+    </property>
+  </bean>
+  <!-- End BZ26851 -->
+  <bean id="totalNumberPartTaskRule" class="caw.pos.workorder.validation.CawValidateTotalNumberPartTaskRule" scope="prototype" /> <!-- BZ29125 -->
+  <!-- BEGIN BZ29443 -->
+  <bean id="cawAccountPaymentCheckAmountRules" parent="validationRuleList">
+    <property name="rules">
+     <list>
+        <ref bean="cawAccountPaymentAmountRule"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="cawAccountPaymentAmountRule" class="caw.pos.accountpayment.validation.CawValidateAccountPaymentAmountRule" scope="prototype">
+  </bean>
+  <!-- END BZ29443 -->
+  <bean id="dealCouponOnTransRule" class="caw.pos.coupon.CawValidateDealCouponOnTransactionRule" scope="prototype" /> <!-- BZ28014 -->
+    <!-- BEGIN BZ30269 -->
+    <bean id="cawReturnWarrantyItemPrivileges" parent="validationRuleList">
+        <property name="rules">
+            <list>
+                <ref bean="cawReturnWarrantyItemPrivilege" />
+            </list>
+        </property>
+    </bean>
+    <bean id="cawReturnWarrantyItemPrivilege" class="caw.pos.warranty.common.CawReturnWarrantyItemPrivilege"
+        scope="prototype">
+        <property name="privilege" value="CAW_RETURN_WARRANTY" />
+    </bean>
+    <!-- END BZ30269 -->
+
+  <bean id="cawTPTenderAmountRule" class="caw.pos.araccount.CawValidateTPTenderAmountRule" scope="prototype"/> <!-- BZ35326 -->
+  
+  <!-- BEGIN BZ41379 -->
+  <bean id="cawAnyOrderLinesValidationRule" class="caw.pos.pricing.discount.validation.CawAnyOrderLinesValidationRule" scope="prototype"/>
+  <bean id="cawAnyOrderPickupLinesValidationRule" class="caw.pos.pricing.discount.validation.CawAnyOrderPickupLinesValidationRule" scope="prototype"/><!-- BZ45947 -->
+  <bean id="transactionDiscountRules" parent="itemInTransRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="secureDiscountRule" />
+        <ref bean="anyValidLineDiscountRule" />
+        <ref bean="maximumDiscountAppliedRule" />
+        <ref bean="minimumTransactionAmountRule" />
+        <ref bean="cawAnyOrderPickupLinesValidationRule" /><!-- BZ45947 -->
+      </list>
+    </property>
+  </bean>
+  <bean id="groupItemSelectionDiscountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="minimumGroupItemsRule" />
+        <ref bean="allSaleAllReturnGroupRule" />
+        <ref bean="cawAnyOrderPickupLinesValidationRule" /><!-- BZ45947 -->
+      </list>
+    </property>
+  </bean>
+  <bean id="validateItemsTranChangeTaxRate" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allItemsCanChangeTaxRate" />
+        <ref bean="cawAnyOrderLinesValidationRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="cawTransTaxRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cawAnyOrderLinesValidationRule" />
+      </list>
+    </property>
+  </bean>
+  <!-- END BZ41379 -->
+  
+  <!-- BEGIN PATCH 15 -->
+  <!-- BEGIN BZ44917 -->
+  <!-- Begin block code for patch 15, it needs to be uncomment when applying patch 15 -->
+  <bean id="beyondOverTenderLimitRule" class="caw.pos.tender.validation.CawBeyondOverTenderLimitRule" scope="prototype">
+    <property name="privilege" value="OVER_TENDER_ABOVE_CONFIGURED_AMOUNT" />
+  </bean>
+  <!-- End block code for patch 15, it needs to be uncomment when applying patch 15 -->
+  <!-- END BZ44917 -->
+  
+  <!-- BEGIN BZ46387 -->
+  <!-- Begin block code for patch 15, it needs to be uncomment when applying patch 15 -->
+  <bean id="cawItemOffLimitsRestrictionRule" class="caw.pos.item.restriction.CawItemOffLimitsRestrictionValidationRule" scope="prototype" />
+  <bean id="itemAvailableForSaleRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <bean parent="cawItemOffLimitsRestrictionRule" >
+          <property name="errorMessage" value="_itemSaleTimeRestricted" />
+          <property name="saleItemType" >
+            <util:constant static-field="dtv.xst.dao.trl.SaleItemType.SALE" /> 
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+  <!-- End block code for patch 15, it needs to be uncomment when applying patch 15 -->
+  <!-- END BZ46387 -->
+  <!-- END PATCH 15-->
+  
+  <!-- BEGIN PATCH 16: BZ42307 -->
+  <!-- Begin block code for patch 16, it needs to be uncomment when applying patch 16 -->
+  <!-- BEGIN BZ42307 -->
+  <bean id="rejectOrderLinesValidationRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="rejectOrderLinesValidationRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="rejectOrderLinesValidationRule" class="caw.pos.order.maint.CawOrderLineRejectValidationRule" scope="prototype">
+    <property name="acceptedStatuses">
+      <list>
+        <value>POLLED</value>
+        <value>ACCEPTED</value>
+        <value>RESERVED</value>
+      </list>
+    </property>
+  </bean>
+  <!-- End block code for patch 16, it needs to be uncomment when applying patch 16 -->
+  <!-- END PATCH 16: BZ42307 -->
+  
+  <!-- BEGIN BZ61330 -->
+  <bean id="tenderMaximumOriginalTenderTypeAmountRule" class="caw.pos.tender.validation.MaxOrigTenderAmountRule" scope="prototype" />
+  <bean id="tenderMaximumOriginalThirdPartyAmountRule" parent="tenderMaximumOriginalTenderTypeAmountRule" scope="prototype" >
+  	<property name="tenderType" value="THIRD_PARTY" />
+  </bean>
+  <bean id="tenderMaximumOriginalARAccountAmountRule" parent="tenderMaximumOriginalTenderTypeAmountRule" scope="prototype" >
+  	<property name="tenderType" value="AR_ACCOUNT" />
+  </bean>
+  <bean id="tenderMaximumOriginalUSDCurrenctyAmountRule" parent="tenderMaximumOriginalTenderTypeAmountRule" scope="prototype" >
+  	<property name="tenderType" value="USD_CURRENCY" />
+  </bean>
+  <bean id="tenderMaximumOriginalUSDCurrenctyAmountModifyRule" parent="tenderMaximumOriginalTenderTypeAmountRule" scope="prototype" >
+  	<property name="tenderType" value="TENDER_AMOUNT_MODIFY" />
+  </bean>
+  <bean id="tenderAmountThirdPartyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="basicTenderAmountRule" />
+        <ref bean="tenderDenominationAmountRule" />
+        <ref bean="beyondOverTenderLimitRule" />
+        <ref bean="minimumTenderAmountRule" />
+        <ref bean="maxmimumTenderAmountRule" />
+        <ref bean="maxmimumRefundAmountRule" />
+        <ref bean="houseAccountARTPTenderAmountRule" />
+        <ref bean="cawTPTenderAmountRule" /> <!-- BZ35326 -->
+        <ref bean="tenderMaximumOriginalThirdPartyAmountRule" /> <!-- BZ61330 -->
+      </list>
+    </property>
+  </bean>
+  <bean id="tenderAmountARAccountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="basicTenderAmountRule" />
+        <ref bean="tenderDenominationAmountRule" />
+        <ref bean="beyondOverTenderLimitRule" />
+        <ref bean="minimumTenderAmountRule" />
+        <ref bean="maxmimumTenderAmountRule" />
+        <ref bean="maxmimumRefundAmountRule" />
+        <ref bean="houseAccountARTPTenderAmountRule" />
+        <ref bean="cawTPTenderAmountRule" /> <!-- BZ35326 -->
+        <ref bean="tenderMaximumOriginalARAccountAmountRule" /> <!-- BZ61330 -->
+      </list>
+    </property>
+  </bean>
+  <bean id="currencyTenderAmountRules" parent="tenderAmountRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="cashTenderAmountRule" />
+        <ref bean="tenderMaximumOriginalUSDCurrenctyAmountRule" /> <!-- BZ61330 -->
+      </list>
+    </property>
+  </bean>
+  <bean id="currencyTenderAmountModifyRules" parent="tenderAmountRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="cashTenderAmountRule" />
+        <ref bean="tenderMaximumOriginalUSDCurrenctyAmountModifyRule" /> <!-- BZ61330 -->
+      </list>
+    </property>
+  </bean>
+  <!-- END BZ61330 -->
+  
+</beans>

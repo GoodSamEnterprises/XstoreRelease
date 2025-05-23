@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+        http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+        version="3.0">
+
+  <display-name>Oracle Retail Xstore Office DTX</display-name>
+
+  <context-param>
+    <param-name>xcenter.bootstrap.additional.steps</param-name>
+    <param-value>
+        com.micros_retail.xcenter.bootstrap.BootstrapVersions;
+    </param-value>
+  </context-param>
+  
+  <context-param>
+    <param-name>spring.profiles.active</param-name>
+    <param-value>xcenter</param-value>
+  </context-param>
+
+  <filter>
+    <filter-name>xcenterFilter</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>xcenterFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>SpringSessionFilter</filter-name>
+    <filter-class>org.springframework.web.filter.RequestContextFilter</filter-class>
+    <init-param>
+      <param-name>threadContextInheritable</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>SpringSessionFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <listener>
+    <listener-class>com.micros_retail.xcenter.bootstrap.servlet.XcenterContextListener</listener-class>
+  </listener>
+  
+  <listener>
+    <listener-class>com.micros_retail.xcenter.spring.XcenterSpringLoaderListener</listener-class>
+  </listener>
+   
+  <listener>
+   <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+   
+  <servlet>
+    <servlet-name>getByIdServlet</servlet-name>
+    <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>makePersistentServlet</servlet-name>
+    <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>getByQueryServlet</servlet-name>
+    <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+  </servlet>  
+  <servlet>
+    <servlet-name>getUpdatesServlet</servlet-name>
+    <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>reportDeployStatusServlet</servlet-name>
+    <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>postEventLogEntryServlet</servlet-name>
+    <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>getConfigPathServlet</servlet-name>
+    <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>getSystemDateTimeServlet</servlet-name>
+    <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+  </servlet>
+  
+  
+  <servlet-mapping>
+    <servlet-name>getByIdServlet</servlet-name>
+    <url-pattern>/dtx/GetById</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getByQueryServlet</servlet-name>
+    <url-pattern>/dtx/GetByQuery</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>makePersistentServlet</servlet-name>
+    <url-pattern>/dtx/MakePersistent</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>reportDeployStatusServlet</servlet-name>
+    <url-pattern>/deploystatus/ReportDeployStatus</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>postEventLogEntryServlet</servlet-name>
+    <url-pattern>/eventlog/PostEventLogEntry</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getConfigPathServlet</servlet-name>
+    <url-pattern>/configpath/GetConfigPath</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getUpdatesServlet</servlet-name>
+    <url-pattern>/update/GetUpdates</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>getSystemDateTimeServlet</servlet-name>
+    <url-pattern>/misc/GetSystemDateTime</url-pattern>
+  </servlet-mapping>
+
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>XcenterDtx</web-resource-name>
+      <description>Security Config for Xcenter Dtx
+      </description>
+      <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>XcenterUsers</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <login-config>
+    <auth-method>BASIC</auth-method>
+    <realm-name>Xcenter Dtx</realm-name>
+  </login-config>
+  <security-role>
+    <role-name>XcenterUsers</role-name>
+  </security-role>
+</web-app>

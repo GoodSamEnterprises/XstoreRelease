@@ -1,0 +1,799 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Scope/Bug ID#          ddMMyy       Description
+ * BZ22462                270717       CW - Config Files from Oracle Demo
+ * BZ22461                050917       Smoke Test with requested Configuration files from Oracle Demo
+ * BZ23052                120917       Implement Advanced Prompting
+ * BZ23326                140917       No action for special order transaction after counting items on Inventory/Receiving in back office
+ * BZ25972                180418       Blank Screen appears when logging off from Serial Exchange function
+ * BZ26207                190718       New Requirement - Enable Work Order Functionality
+ * BZ37058                120820       [TASK] Enable Order Reject feature for all Xstore roles
+ *===================================================================
+ */ 
+-->
+<ContextSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="ContextConfig.xsd">
+  <!-- This is the standard register context that makes sure the transaction
+         list, menu, and focus bar are visible and enabled. -->
+  <Context name="DEFAULT">
+    <ColorGroup fgColor="0xFFFFFF" bgColor="0xC0C0C0" />
+    <ComponentGroup ref="DEFAULT" />
+        <ComponentPropertySet ref="TABBED_PANE_DEFAULT" />
+    <!-- set the message view to enabled and visible -->
+    <Component dtype="ContextComponent">
+      <Name dtype="String">INPUT_CONTROL_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="BLANK">
+      <ComponentPropertySet ref="TABBED_PANE_DEFAULT" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">FOCUS_BAR_MESSAGE_AREA</Name>
+      <Visible dtype="Boolean">false</Visible>
+      <Enabled dtype="Boolean">false</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_LIST_AREA_BACKGROUND</Name>
+      <Visible dtype="Boolean">false</Visible>
+      <Enabled dtype="Boolean">false</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">MULTI_PURPOSE_VIEW</Name>
+      <Visible dtype="Boolean">false</Visible>
+      <Enabled dtype="Boolean">false</Enabled>
+    </Component>
+  </Context>
+  <Context name="TEXT_PROMPT_ONLY">
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_LIST_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">INPUT_CONTROL_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="TEXT_PROMPT_ONLY_EMPTY_MENU">
+    <ParentContext dtype="String">TEXT_PROMPT_ONLY</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+  </Context>
+
+  <!-- START: Login & Navigation Contexts -->
+  <Context name="REGISTER_LOGIN">
+    <ParentContext dtype="String">TEXT_PROMPT_ONLY</ParentContext>
+    <SecondDisplayMode dtype="String">OTHER</SecondDisplayMode>
+    <MenuKey dtype="String">LOGIN::REGISTER</MenuKey>
+    <Text1 dtype="Translatable">_contextRegisterLogin</Text1>
+    <Text2 dtype="Translatable">_appRegister</Text2>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRegisterLogin</HelpKey>
+    <ColorGroup bgColor="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+    <ComponentPropertySet ref="TABBED_PANE_DEFAULT" />
+  </Context>
+  <Context name="REGISTER_LOCKED">
+    <ParentContext dtype="String">SALE</ParentContext>
+    <MenuKey dtype="String">ADMIN::LOCKED_REGISTER_OPTIONS</MenuKey>
+    <Text1 dtype="Translatable">_contextRegisterLocked</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRegisterLocked</HelpKey>
+  </Context>
+  <Context name="BACK_OFFICE_LOGIN">
+    <ParentContext dtype="String">TEXT_PROMPT_ONLY</ParentContext>
+    <MenuKey dtype="String">LOGIN::BACK_OFFICE</MenuKey>
+    <Text1 dtype="Translatable">_contextBackOfficeLogin</Text1>
+    <Text2 dtype="Translatable">_appBackOffice</Text2>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgBackOfficeLogin</HelpKey>
+    <ColorGroup bgColor="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+    <ComponentPropertySet ref="TABBED_PANE_DEFAULT" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    
+    <!-- Begin BZ25972 -->
+    <!-- <Component dtype="ContextComponent">
+      <Name dtype="String">POPUP_LAYER</Name>
+      <Visible dtype="Boolean">false</Visible>
+      <Enabled dtype="Boolean">false</Enabled>
+    </Component> -->
+    <!-- End BZ25972 -->
+    
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_LIST_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="REGISTER_OPTIONS_LOGIN">
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <Text1 dtype="Translatable">_contextRegisterOptionsLogin</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRegisterOptionsLogin</HelpKey>
+    <ColorGroup bgColor="0x339933" />
+    <ComponentGroup ref="GREEN" />
+    <ComponentPropertySet ref="TABBED_PANE_DEFAULT" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_LIST_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="TO_REGISTER_LOGIN">
+    <ParentContext dtype="String">REGISTER_LOGIN</ParentContext>
+    <MenuKey dtype="String">LOGIN::REGISTER</MenuKey>
+    <Text2 dtype="Translatable">_appBackOffice</Text2>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgToRegisterLogin</HelpKey>
+  </Context>
+  <Context name="TO_BACK_OFFICE_LOGIN">
+    <ParentContext dtype="String">BACK_OFFICE_LOGIN</ParentContext>
+    <MenuKey dtype="String">LOGIN::BACK_OFFICE</MenuKey>
+    <Text2 dtype="Translatable">_appRegister</Text2>
+  </Context>
+  <Context name="CLOCK_IN_OUT">
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <Text1 dtype="Translatable">_contextClockInOut</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgClockInOut</HelpKey>
+    <ColorGroup bgColor="0x009696" />
+    <ComponentGroup ref="YELLOW" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_LIST_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="CHANGE_EMPLOYEE_PASSWORD">
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <Text1 dtype="Translatable">_contextChangePassword</Text1>
+    <Text2 dtype="Translatable">_appRegister</Text2>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgChangeEmployeePassword</HelpKey>
+    <ColorGroup bgColor="0x663300" />
+    <ComponentGroup ref="BROWN" />
+    <ComponentPropertySet ref="TABBED_PANE_DEFAULT" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_LIST_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <!-- END: Login & Navigation Contexts -->
+  <Context name="REGISTER_TRANSACTION">
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+    <SecondDisplayMode dtype="String">REGISTER</SecondDisplayMode>
+  </Context>
+  <!-- This is the standard register context that makes sure the transaction
+         list, menu, and focus bar are visible and enabled. -->
+  <Context name="REGISTER_TRANSACTION_LIST">
+    <ParentContext dtype="String">REGISTER_TRANSACTION</ParentContext>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_LIST_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <!-- This is the register context that makes sure the reference transaction
+         list, menu, and focus bar are visible and enabled. -->
+  <Context name="REFERENCE_TRANSACTION_LIST">
+    <ParentContext dtype="String">REGISTER_TRANSACTION</ParentContext>
+    <Text1 dtype="Translatable">_contextReturn</Text1>
+    <ColorGroup fgColor="0xFFFFFF" bgColor="0xFF3333" />
+    <ComponentGroup ref="RED" />
+  </Context>
+  <!-- This is the standard register context that makes sure the user list,
+         menu, and focus bar are visible and enabled. -->
+  <Context name="REGISTER_PRE_TRANSACTION_LIST">
+    <ParentContext dtype="String">REGISTER_TRANSACTION</ParentContext>
+    <!-- make sure the transaction list is visible -->
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+    <!-- This is the standard register context that makes sure the main form 
+        panel and menu are visible and enabled. In this context, the focus bar is 
+        not present. -->
+  <Context name="REGISTER_FORM">
+    <!-- make sure the panel with the form is visible -->
+    <Component dtype="ContextComponent">
+      <Name dtype="String">MULTI_PURPOSE_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="SALE">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">SALE</MenuKey>
+    <ListModelKey dtype="String">CURRENT_TRANSACTION</ListModelKey>
+    <Text1 dtype="Translatable">_contextSale</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgSale</HelpKey>
+    <ColorGroup bgColor="0x0000A0" bgColor2="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+    <ComponentPropertySet ref="TABBED_PANE_TRANSACTION" />
+  </Context>
+  <Context name="TENDER_EXCHANGE_INCOMING">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">TENDER_EXCHANGE::IN</MenuKey>
+    <Text1 dtype="Translatable">_menutextTenderExchange</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgTenderExchangeIncoming</HelpKey>
+    <ColorGroup bgColor="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+  </Context>
+  <Context name="TENDER_EXCHANGE_OUTGOING">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">TENDER_EXCHANGE::OUT</MenuKey>
+    <Text1 dtype="Translatable">_menutextTenderExchange</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgTenderExchangeOutgoing</HelpKey>
+    <ColorGroup bgColor="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+  </Context>
+  <Context name="TENDER_EXCHANGE">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgTenderExchange</HelpKey>
+    <ColorGroup bgColor="0x0000A0" />
+    <ComponentGroup ref="BLACK" /> 
+  </Context>
+  <Context name="TENDER_EXCHANGE_SIGCAP">
+    <!-- this exists a different context for event mappings (see EventConfig.xml) -->
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgTenderExchangeSigcap</HelpKey>
+  </Context>
+  <Context name="CREDIT_CARD_REFUND">
+    <!-- this exists a different context for event mappings (see EventConfig.xml) -->
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgCreditCardRefund</HelpKey>
+     <ComponentGroup ref="RED" />
+  </Context>
+  <Context name="RETURN">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">RETURN</MenuKey>
+    <Text1 dtype="Translatable">_contextReturn</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgReturn</HelpKey>
+    <ColorGroup bgColor="0x9A1D08" bgColor2="0xBA2209" />
+    <ComponentGroup ref="RED" />
+  </Context>
+  <Context name="SALE_TENDER">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">SALE::TENDER_OPTIONS</MenuKey>
+    <Text1 dtype="Translatable">_contextSaleTender</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgSaleTender</HelpKey>
+    <ColorGroup bgColor="0x0000A0" bgColor2="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+  </Context>
+  <Context name="SALE_TENDER_SIGCAP">
+    <!-- this exists a different context for event mappings (see EventConfig.xml) -->
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgSaleTenderSigcap</HelpKey>
+    <ColorGroup bgColor="0x0000A0" bgColor2="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+  </Context>
+  <Context name="REFUND_TENDER">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">RETURN::TENDER_OPTIONS</MenuKey>
+    <Text1 dtype="Translatable">_contextRefundTender</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRefundTender</HelpKey>
+    <ColorGroup bgColor="0xC60000" bgColor2="0xFF0A0A" />
+    <ComponentGroup ref="RED" />
+  </Context>
+  <Context name="CHANGE_TENDER">
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgChangeTender</HelpKey>
+    <ColorGroup bgColor="0x44B066" bgColor2="0x82D2A0" />
+  </Context>
+  <!-- This is the context for a salereturn items change line/change associate -->
+  <Context name="REGISTER_COMMISSIONED_ASSOCIATE">
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgCommissionedAssociate</HelpKey>
+  </Context>
+  <Context name="SEND_SALE">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">SEND_SALE</MenuKey>
+    <Text1 dtype="Translatable">_contextSendSale</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgSendSale</HelpKey>
+    <ColorGroup bgColor="0x48270A" bgColor2="0x62350E" />
+    <ComponentGroup ref="BROWN" />
+    <ComponentPropertySet ref="TABBED_PANE_TRANSACTION" />
+  </Context>
+  <Context name="LAYAWAY">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_FORM</ParentContext>
+    <MenuKey dtype="String">LAYAWAY</MenuKey>
+    <Text1 dtype="Translatable">_contextLayaway</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgLayaway</HelpKey>
+    <ColorGroup bgColor="0x691966" bgColor2="0x852F81" />
+    <ComponentGroup ref="PURPLE" />
+    <ComponentPropertySet ref="TABBED_PANE_TRANSACTION" />
+  </Context>
+  <Context name="SPECIAL_ORDER">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_FORM</ParentContext>
+    <MenuKey dtype="String">SPECIAL_ORDER</MenuKey>
+    <Text1 dtype="Translatable">_contextSpecialOrder</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgSpecialOrder</HelpKey>
+    <ColorGroup bgColor="0x691966" bgColor2="0x852F81" />
+    <ComponentGroup ref="PURPLE" />
+    <ComponentPropertySet ref="TABBED_PANE_TRANSACTION" />
+  </Context>
+  <Context name="MIN_SPECIAL_ORDER">
+    <ParentContext dtype="String">SPECIAL_ORDER</ParentContext>
+    <MenuKey dtype="String">SPECIAL_ORDER::MINIMUM</MenuKey>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgMinSpecialOrder</HelpKey>
+  </Context>
+  <!--BZ26207 Begin work order session -->
+   <Context name="WORK_ORDER">
+     <ParentContext dtype="String">REGISTER_TRANSACTION_FORM</ParentContext>
+     <Text1 dtype="Translatable">_contextWorkOrder</Text1>
+     <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgWorkOrder</HelpKey>
+     <ColorGroup bgColor="0xDF9C02" bgColor2="0xF6AB00" />
+     <ComponentGroup ref="DARK_ORANGE" />
+     <ComponentPropertySet ref="TABBED_PANE_TRANSACTION" />
+   </Context>
+    <Context name="WORK_ORDER_COMPLETE">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">SALE</MenuKey>
+    <ListModelKey dtype="String">CURRENT_TRANSACTION</ListModelKey>
+    <Text1 dtype="Translatable">_contextWorkOrder</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgSale</HelpKey>
+    <ColorGroup bgColor="0x0000A0" bgColor2="0x0000A0" />
+    <ComponentGroup ref="DARK_ORANGE" />
+    <ComponentPropertySet ref="TABBED_PANE_TRANSACTION" />
+  </Context>
+  <Context name="WO_TENDER">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <MenuKey dtype="String">SALE::TENDER_OPTIONS</MenuKey>
+    <Text1 dtype="Translatable">_contextWorkOrder</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgSaleTender</HelpKey>
+    <ColorGroup bgColor="0x0000A0" bgColor2="0x0000A0" />
+    <ComponentGroup ref="DARK_ORANGE" />
+  </Context>
+  <!--BZ26207 End work order session -->
+  <Context name="WARRANTY">
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgWarranty</HelpKey>
+    <ColorGroup fgColor="0xFFFFFF" bgColor="0x664DFF" />
+  </Context>
+  <Context name="BACK_OFFICE_MAIN_MENU">
+    <!-- UI Popup Views: Traditional -->
+    <!--<ParentContext dtype="String">BACK_OFFICE_LOGIN</ParentContext>-->
+    <!-- UI Popup Views: Centered -->
+    <ParentContext dtype="String">BLANK</ParentContext>
+
+    <MenuKey dtype="String">ADMIN::BACK_OFFICE_OPTIONS</MenuKey>
+    <Text1 dtype="Translatable">_contextBackOfficeMenu</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgBackOfficeMainMenu</HelpKey>
+    <ColorGroup bgColor="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+        <ComponentPropertySet ref="TABBED_PANE_DEFAULT" />
+  </Context>
+  <Context name="REGISTER_OPTIONS_MAIN_MENU">
+    <ParentContext dtype="String">REGISTER_OPTIONS_LOGIN</ParentContext>
+    <MenuKey dtype="String">ADMIN::REGISTER_OPTIONS</MenuKey>
+    <Text1 dtype="Translatable">_contextRegisterOptions</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRegisterOptionsMainMenu</HelpKey>
+  </Context>
+  <Context name="EMPTY">
+    <SecondDisplayTransitionEnabled dtype="boolean">false</SecondDisplayTransitionEnabled>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+  </Context>
+  <Context name="ISSUE_TILL">
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgIssueTill</HelpKey>
+    <ComponentGroup ref="GREEN" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">INPUT_CONTROL_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">FOCUS_BAR</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="ELECTRONIC_JOURNAL">
+    <Text1 dtype="Translatable">_ejournalContext</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgElectronicJournal</HelpKey>
+    <ColorGroup bgColor="0xC0DCC0" />
+  </Context>
+  <Context name="ELECTRONIC_JOURNAL_VIEW">
+    <ParentContext dtype="String">ELECTRONIC_JOURNAL</ParentContext>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgElectronicJournalView</HelpKey>
+    <!-- make sure the panel with the form is enabled -->
+    <Component dtype="ContextComponent">
+      <Name dtype="String">MULTI_PURPOSE_VIEW</Name>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="SHIPPING">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_FORM</ParentContext>
+    <Text1 dtype="Translatable">_shippingContext</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgShipping</HelpKey>
+    <ColorGroup bgColor="0x6056D1" />
+    <ComponentGroup ref="BLACK" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">FOCUS_BAR</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+    </Component>
+  </Context>
+  <Context name="RECEIVING">
+    <MenuKey dtype="String">RECEIVING::DOCUMENT</MenuKey> <!-- BZ-23326 -->
+    <Text1 dtype="Translatable">_receivingContext</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgReceiving</HelpKey>
+    <ColorGroup fgColor="0xFFFFFF" bgColor="0x99BBE6" />
+    <ComponentGroup ref="BLACK" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">FOCUS_BAR</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="REGISTER_TRANSACTION_FORM">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+  </Context>
+  <Context name="REFUND_TENDER_EMPTY_MENU_OPTION">
+    <ParentContext dtype="String">EMPTY</ParentContext>
+    <SecondDisplayMode dtype="String">REGISTER</SecondDisplayMode>
+    <Text1 dtype="Translatable">_contextRefundTender</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRefundTender</HelpKey>
+    <ColorGroup fgColor="0xFFFFFF" bgColor="0xC60000" bgColor2="0xFF0A0A" />
+    <ComponentGroup ref="RED" />
+  </Context>
+  <Context name="SALE_TENDER_EMPTY_MENU_OPTION">
+    <ParentContext dtype="String">EMPTY</ParentContext>
+    <SecondDisplayMode dtype="String">REGISTER</SecondDisplayMode>
+    <Text1 dtype="Translatable">_contextSaleTender</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgSaleTender</HelpKey>
+    <ColorGroup fgColor="0x0000A0" bgColor="0x0000A0" bgColor2="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+  </Context>
+  <Context name="LAYAWAY_COMMISSIONED_ASSOCIATE">
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgLayawayCommissionedAssociate</HelpKey>
+    <ColorGroup bgColor="0xB64AE3" />
+  </Context>
+  <Context name="SP_ORDER_COMMISSIONED_ASSOCIATE">
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgSpOrderCommissionedAssociate</HelpKey>
+    <ColorGroup bgColor="0xB64AE3" />
+  </Context>
+  <Context name="TILL">
+    <ParentContext dtype="String">EMPTY</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <ComponentGroup ref="BLACK" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="INVENTORY_ADJUSTMENT">
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+  </Context>
+  <Context name="TILL_PROMPT">
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+    <ComponentGroup ref="GREEN" />
+  </Context>
+  <Context name="TILL_COUNT">
+    <!-- Base Till Context Extended by till contexts no direct chain use -->
+    <ParentContext dtype="String">TILL</ParentContext>
+    <SecondDisplayMode dtype="String">OTHER</SecondDisplayMode>
+    <Text1 dtype="Translatable">_tillCountContextTitle</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgTillCount</HelpKey>
+  </Context>
+  <Context name="BEGIN_COUNT">
+    <!-- Starting count chain -->
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleBegin</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgBeginCount</HelpKey>
+  </Context>
+  <Context name="RECONCILE_COUNT">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleReconcile</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgReconcileCount</HelpKey>
+  </Context>
+  <Context name="BANK_DEPOSIT_COUNT">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleBankDeposit</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgBankDepositCount</HelpKey>
+  </Context>
+  <Context name="STOREBANK_AUDIT">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleSTOREBANK_AUDIT</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgStoreBankAudit</HelpKey>
+  </Context>
+  <Context name="STOREBANK_OPEN">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleSTOREBANK_OPEN</Text1>
+  </Context>
+  <Context name="STOREBANK_RECONCILE">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleSTOREBANK_RECONCILE</Text1>
+  </Context>
+  <Context name="STOREBANK_CLOSING_COUNT">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleSTOREBANK_CLOSING_COUNT</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgStoreBankClosingCount</HelpKey>
+  </Context>
+  <Context name="CASH_PICKUP">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleCashPickup</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgCashPickup</HelpKey>
+  </Context>
+  <Context name="TILL_AUDIT">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleTillAudit</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgTillAudit</HelpKey>
+  </Context>
+  <Context name="CLOSE_COUNT">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleCloseCount</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgCloseCount</HelpKey>
+  </Context>
+  <Context name="MIDDAY_DEPOSIT">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_tillCountContextTitleMiddayDeposit</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgMiddayDeposit</HelpKey>
+  </Context>
+  <Context name="CASH_TRANSFER">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_cashTransferMenuText</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgCashTransfer</HelpKey>
+  </Context>
+  <Context name="STORE_BANK_CASH_DEPOSIT">
+    <ParentContext dtype="String">TILL_COUNT</ParentContext>
+    <Text1 dtype="Translatable">_storeBankCashDepositMenuText</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgStoreBankCashDeposit</HelpKey>
+  </Context>
+  <!-- START: Training Mode Contexts -->
+  <Context name="TRAINING">
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgTraining</HelpKey>
+    <ComponentGroup ref="TRAINING" />
+  </Context>
+  <Context name="NON_TRAINING">
+    <ComponentGroup ref="NON_TRAINING" />
+  </Context>
+  <!-- END: Training Mode Contexts -->
+  <Context name="VIEW_TIMECARD_LOGIN">
+    <ParentContext dtype="String">REGISTER_LOGIN</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <Text1 dtype="Translatable">_contextRegisterLogin</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgViewTimecardLogin</HelpKey>
+    <ColorGroup bgColor="0x009696" />
+    <ComponentGroup ref="YELLOW" />
+  </Context>
+  <Context name="FOREIGN_CURRENCY_MAINTENANCE">
+    <ParentContext dtype="String">TILL</ParentContext>
+    <Text1 dtype="Translatable">_foreignCurrencyRateMaint</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgForeignCurrencyMaintenance</HelpKey>
+  </Context>
+  <Context name="ITEM_AND_SHELF_LABELS">
+    <ParentContext dtype="String">DEFAULT</ParentContext>
+    <Text1 dtype="Translatable">_itemAndShelfLabels</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgItemAndShelfLabels</HelpKey>
+  </Context>
+  <Context name="OPEN_CLOSE">
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgOpenClose</HelpKey>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">INPUT_CONTROL_AREA</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+  </Context>
+  <Context name="WORKSTATION_OPEN">
+    <ParentContext dtype="String">OPEN_CLOSE</ParentContext>
+    <Text1 dtype="Translatable">_contextTitleWorkstationOpen</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgWorkstationOpen</HelpKey>
+  </Context>
+  <Context name="WORKSTATION_CLOSE">
+    <ParentContext dtype="String">OPEN_CLOSE</ParentContext>
+    <Text1 dtype="Translatable">_contextTitleWorkstationClose</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgWorkstationClose</HelpKey>
+  </Context>
+  <Context name="RETAIL_LOCATION_OPEN">
+    <ParentContext dtype="String">OPEN_CLOSE</ParentContext>
+    <Text1 dtype="Translatable">_contextTitleRetailLocationOpen</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRetailLocationOpen</HelpKey>
+  </Context>
+  <Context name="RETAIL_LOCATION_CLOSE">
+    <ParentContext dtype="String">OPEN_CLOSE</ParentContext>
+    <Text1 dtype="Translatable">_contextTitleRetailLocationClose</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRetailLocationClose</HelpKey>
+  </Context>
+  <Context name="CHANGE_BUSINESS_DATE">
+    <ParentContext dtype="String">OPEN_CLOSE</ParentContext>
+    <Text1 dtype="Translatable">_contextTitleChangeBusinessDate</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgChangeBusinessDate</HelpKey>
+  </Context>
+  <Context name="INVENTORY_COUNT">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_FORM</ParentContext>
+    <Text1 dtype="Translatable">_invCountMenuText</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgInventoryCount</HelpKey>
+    <ColorGroup bgColor="0x6056D1" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">FOCUS_BAR</Name>
+      <Visible dtype="Boolean">true</Visible>
+      <Enabled dtype="Boolean">true</Enabled>
+    </Component>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+    </Component>
+  </Context>
+  <Context name="RESTORE_TRANSACTION_LIST">
+    <ParentContext dtype="String">PRE_SALE</ParentContext>
+    <Component dtype="ContextComponent">
+      <Name dtype="String">TRANSACTION_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+    </Component>
+  </Context>
+  <Context name="CHANGE_TILL_FLOAT">
+    <ParentContext dtype="String">TILL</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgChangeTillFloat</HelpKey>
+  </Context>
+
+  <Context name="DASHBOARD">
+    <ParentContext dtype="String">REGISTER_FORM</ParentContext>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgDashboard</HelpKey>
+  </Context>
+
+  <Context name="ASSOCIATE_TASKS_LOGIN">
+    <ParentContext dtype="String">BLANK</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <Text1 dtype="Translatable">_associateTasksContextTitle</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgEmployeeTask</HelpKey>
+    <ColorGroup bgColor="0x339933" />
+    <ComponentGroup ref="GREEN" />
+    <Component dtype="ContextComponent">
+      <Name dtype="String">STARTUP_SCREEN_VIEW</Name>
+      <Visible dtype="Boolean">true</Visible>
+    </Component>
+  </Context>
+  <Context name="CHANGE_PASSWORD">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_FORM</ParentContext>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgChangeEmployeePassword</HelpKey>
+  </Context>
+  <Context name="REGISTER_TILL_OPTIONS_MENU">
+    <MenuKey dtype="String">TILL::OPTIONS</MenuKey>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRegisterOptionsMainMenu</HelpKey>
+  </Context>
+
+  <Context name="CUSTOMER_ACCOUNT">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_FORM</ParentContext>
+    <MenuKey dtype="String">CUSTOMER_ACCOUNT</MenuKey>
+  </Context>
+
+  <Context name="PRESALE">
+    <ParentContext dtype="String">CUSTOMER_ACCOUNT</ParentContext>
+    <Text1 dtype="Translatable">_contextPreSale</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgPreSale</HelpKey>
+    <ComponentGroup ref="PURPLE" />
+    <ComponentPropertySet ref="TABBED_PANE_TRANSACTION" />
+  </Context>
+
+  <Context name="ONHOLD">
+    <ParentContext dtype="String">CUSTOMER_ACCOUNT</ParentContext>
+    <Text1 dtype="Translatable">_contextOnHold</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgPreSale</HelpKey>
+    <ComponentGroup ref="GREEN" />
+    <ComponentPropertySet ref="TABBED_PANE_TRANSACTION" />
+  </Context>
+
+  <Context name="PRE_SALE">
+    <ParentContext dtype="String">REGISTER_TRANSACTION_LIST</ParentContext>
+    <Text1 dtype="Translatable">_contextPreSale</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgPreSale</HelpKey>
+    <ColorGroup bgColor="0x0000A0" />
+    <ComponentGroup ref="BLACK" />
+    <ComponentPropertySet ref="TABBED_PANE_TRANSACTION" />
+  </Context>
+
+  <Context name="GIFT_REGISTRY">
+    <MenuKey dtype="String">GIFT_REGISTRY::MAINTENANCE</MenuKey>
+    <Text1 dtype="Translatable">_contextGiftRegistry</Text1>
+  </Context>
+  
+  <!-- Begin BZ23052 -->
+  <Context name="INFORMATION_MESSAGE">
+    <ComponentGroup ref="GREEN" />
+  </Context>
+  <Context name="WARNING_MESSAGE">
+    <ComponentGroup ref="YELLOW" />
+  </Context>
+  <Context name="CRITICAL_MESSAGE">
+    <ComponentGroup ref="RED" />
+  </Context>
+  <!-- End BZ23052 -->
+  
+  <!-- Begin BZ37058 -->
+  <Context name="ORDER_CAW_MANAGE_LOGIN_CW">
+    <ParentContext dtype="String">TEXT_PROMPT_ONLY</ParentContext>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <Text1 dtype="Translatable">_registerOrderOptionsMenuText</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRegisterOptionsLogin</HelpKey>
+    <ColorGroup bgColor="0x009F9B" bgColor2="0x00ACA8" />
+    <ComponentGroup ref="TEAL" />
+  </Context>
+  
+  <Context name="ORDER_CAW_OPTIONS_MAIN_MENU">
+    <ParentContext dtype="String">ORDER_CAW_MANAGE_LOGIN</ParentContext>
+    <MenuKey dtype="String">ADMIN:CAW_MANAGE_ORDERS</MenuKey>
+    <Text1 dtype="Translatable">_contextOrderOptions</Text1>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgRegisterOptionsMainMenu</HelpKey>
+    <ColorGroup bgColor="0x009F9B" bgColor2="0x00ACA8" />
+    <ComponentGroup ref="TEAL" />
+  </Context>
+  <!-- End BZ37058 -->
+  
+</ContextSet>

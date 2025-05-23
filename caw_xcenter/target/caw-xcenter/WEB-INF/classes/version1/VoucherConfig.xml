@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ23339              080917    [DEV] Implement Gift card authorization
+ * BZ23359              021017    Gift cards can't be swiped at screen
+ * BZ23437              271017    Update VoucherConfig.xml with non-physical item
+ * BZ24662              011217    [Xstore] Camping World/Gander Outdoors Gift Card Config
+ * BZ24800              121217    [Xstore]Xstore] Multiple Gift Cards on One Transaction 
+ * BZ32123              240719    [Prod] Gift Card Reload Activated Wrong Card Number
+ * BZ34138              061219    [New Requirement] Additional gift card types need to be added to Return and Non-Merch Purchase processes
+ * BZ48996              140322    [PROD] Gift Card Issue
+ *===================================================================
+ */
+  -->
+<Vouchers dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VoucherConfig.xsd">
+  <Voucher name="XPAY_GIFT_CARD">
+    <VoucherCategory dtype="String">GIFT_CARD</VoucherCategory>
+    <Description dtype="Translatable">_giftcardtender</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">false</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">false</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">0</NumberOfDaysToExpire>
+    <Activity name="ISSUED">
+      <TenderId dtype="String">ISSUE_XPAY_GIFT_CARD</TenderId>
+      <!-- Begin BZ23437 -->
+      <ItemId dtype="String">38200</ItemId>
+      <!-- Begin BZ24662 -->
+      <ItemId dtype="String">110106</ItemId>
+      <ItemId dtype="String">110107</ItemId>
+      <ItemId dtype="String">110108</ItemId>
+      <!-- End BZ24662 -->
+      <!-- End BZ23437 -->
+      <!-- Begin BZ34138 -->
+      <ItemId dtype="String">115725</ItemId>
+      <ItemId dtype="String">115726</ItemId>
+      <ItemId dtype="String">115727</ItemId>
+      <ItemId dtype="String">115728</ItemId>
+      <ItemId dtype="String">115729</ItemId>
+      <ItemId dtype="String">115730</ItemId>
+      <ItemId dtype="String">115731</ItemId>
+      <!-- End BZ34138 -->
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <MaximumNumberPerTransaction dtype="Integer">50</MaximumNumberPerTransaction><!-- BZ 24800-->
+      <MinimumAmount dtype="BigDecimal">0</MinimumAmount>
+      <MaximumAmount dtype="BigDecimal">500</MaximumAmount>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="REDEEMED">
+      <TenderId dtype="String">XPAY_GIFT_CARD</TenderId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="CASHOUT">
+      <TenderId dtype="String">XPAY_GIFT_CARD</TenderId>
+      <!-- Begin BZ23437 -->
+      <ItemId dtype="String">38200</ItemId>
+      <!-- End BZ23437 -->
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+      <PromptForAmount dtype="Boolean">false</PromptForAmount>
+      <Voidable dtype="Boolean">false</Voidable>
+    </Activity>
+    <Activity name="RELOAD">
+      <TenderId dtype="String">RELOAD_XPAY_GIFT_CARD</TenderId>
+      <!-- Begin BZ23437 -->
+      <ItemId dtype="String">GC RELOAD</ItemId><!-- BZ32123: Remove the GC RELOAD item from the sell gift card item options in GUI, BZ48996: revert BZ32123 --> 
+      <!-- End BZ23437 -->
+      <MinimumAmount dtype="BigDecimal">0</MinimumAmount>
+      <MaximumAmount dtype="BigDecimal">500</MaximumAmount>
+      <ValidateLocalBalance dtype="Boolean">true</ValidateLocalBalance>
+    </Activity>
+    <Activity name="INQUIRE_BALANCE">
+      <TenderId dtype="String">XPAY_GIFT_CARD</TenderId>
+      <RequiresTransaction dtype="Boolean">true</RequiresTransaction>
+    </Activity>
+  </Voucher>
+</Vouchers>

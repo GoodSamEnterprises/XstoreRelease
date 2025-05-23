@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * 23164                080917    [DEV] Implement EMV Payment Integration 
+ * BZ23340              280917    Customer ID should be displayed instead of Account# on Contact information screen when adding a new Customer
+ * BZ23267              041017    UI issues on Customer Search prompt screen
+ * BZ25640              052518    New Requirement - Used Firearm System Process Redesign
+ * BZ26742              110718    [New Requirement] Update QAS results include the entered or existing customer address as an option
+ * BZ26289              240718    New Requirement - Enable A/R Payment Functionality in Xstore
+ * BZ27000              030818    [26289] House Account tab info displays incorrectly the A/R data retrieved from EBS Neuron or localDB.
+ * BZ27339              031018    [New Requirement] Display Membership Information on Xstore POS Information tab
+ * BZ29372              150218    [Requirement] PLCC Account Lookup - ID Verification Screen new request
+ * BZ30922              210619    [New Requirement] Price Check and Inventory Lookup
+ * BZ37305              260820    [New Requirement] Prompting Engine call before customer information gets displayed on the PinPad.
+ * BZ44528				130821	  Electric World & Mobile POS Implementation (Phase 1)      
+ * BZ44917              110921    [New Requirement] IDS Payment Integration with Xstore
+ * BZ42307              200921    [Requirement] Add ability to reject at the item level for BOPIS
+ * BZ45995          	141021    [New requirement] Email capture when good sam membership is sold
+ * BZ49729				280422    [Internal] - The title at Info Tab should display 'Membership Info' when customer assigned is NOT GSAM Club.
+ *===================================================================
+ */
+  -->
+<FieldSet xmlns="http://micros.com/xstore/config/form/field" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormFieldConfig.xsd">
+
+    <Field name="header1Label" type="Label" text="_header1Label" />
+
+    <Field name="header2Label" type="Label" text="_header2Label" />
+    <!-- Begin BZ23340 -->
+    <Field name="cawCustomerIdLabelFull" type="Label" resource="custAccountLabel" />
+    <!-- End BZ23340 -->
+
+    <!-- Begin BZ23267 -->
+    <Field name="cawCountry" type="Label" resource="country" >
+      <Parameter name="WrapText" value="true" />
+    </Field>
+    <Field name="cawEmptyField" type="Label" text="" />
+    <!-- End BZ23267 -->
+    <!-- Begin BZ25640 -->
+    <Field name="lb_ufaCustomerNameField" type="Label" resource="ufaCustomerNameField" />
+    <Field name="lb_ufaCustomerAddressField" type="Label" resource="ufaCustomerAddressField" />
+    <Field name="lb_ufaCustomerCountryField" type="Label" resource="ufaCustomerCountryField" />
+    <Field name="lb_ufaCustomerPhoneField" type="Label" resource="ufaCustomerPhoneField" />
+
+    <Field name="ufaFirearmListHeader" type="List" resource="ufaFirearmList" >
+        <Parameter name="ColumnHeaderType" value="UFA_DETAIL_LAYOUT_HEADER" />
+        <Parameter name="CellType" value="UFA_DETAIL_LAYOUT_HEADER" />
+        <Parameter name="ListSelectionMode" value="NO_SELECTION" />
+    </Field>
+    <Field name="ufaPaidOutAmtField" type="Label" resource="ufaPaidOutAmtField" />
+    <Field name="ufaEtrackIdField" type="Label" resource="ufaEtrackIdField" />
+    <Field name="ufaSerialNbrField" type="Label" resource="ufaSerialNbrField" />
+    <Field name="ufaUPCField" type="Label" resource="ufaUPCField" />
+    <Field name="ufaModelField" type="Label" resource="ufaModelField" />
+    <Field name="ufaManufacturerField" type="Label" resource="ufaManufacturerField" />
+    <Field name="ufaImporterField" type="Label" resource="ufaImporterField" />
+    <Field name="ufaActionField" type="Label" resource="ufaActionField" />
+    <Field name="ufaFirearmTypeField" type="Label" resource="ufaFirearmTypeField" />
+    <Field name="ufaChamberField" type="Label" resource="ufaChamberField" />
+    <Field name="ufaMagazineTypeField" type="Label" resource="ufaMagazineTypeField" />
+    <Field name="ufaCaliberGaugeField" type="Label" resource="ufaCaliberGaugeField" />
+    <Field name="ufaBarrelField" type="Label" resource="ufaBarrelField" />
+    <Field name="ufaDepInfoField" type="Label" resource="ufaDepInfoField" />
+    <Field name="ufaClassInfoField" type="Label" resource="ufaClassInfoField" />
+    <Field name="ufaSubclassInfoField" type="Label" resource="ufaSubclassInfoField" />
+    <Field name="ufaPaidOutAmtLabel" type="Label" text="_ufaPaidOutAmtLabel" />
+    <Field name="ufaAttributeLabel" type="Label" text="_ufaAttributeLabel" />
+    <Field name="ufaEtrackIdLabel" type="Label" text="_ufaEtrackIdLabel" />
+    <Field name="ufaSerialNbrLabel" type="Label" text="_ufaSerialNbrLabel" />
+    <Field name="ufaUPCLabel" type="Label" text="_ufaUPCLabel" />
+    <Field name="ufaModelLabel" type="Label" text="_ufaModelLabel" />
+    <Field name="ufaManufacturerLabel" type="Label" text="_ufaManufacturerLabel" />
+    <Field name="ufaImporterLabel" type="Label" text="_ufaImporterLabel" />
+    <Field name="ufaActionLabel" type="Label" text="_ufaActionLabel" />
+    <Field name="ufaFirearmTypeLabel" type="Label" text="_ufaFirearmTypeLabel" />
+    <Field name="ufaChamberLabel" type="Label" text="_ufaChamberLabel" />
+    <Field name="ufaMagazineTypeLabel" type="Label" text="_ufaMagazineTypeLabel" />
+    <Field name="ufaCaliberGaugeLabel" type="Label" text="_ufaCaliberGaugeLabel" />
+    <Field name="ufaBarrelLabel" type="Label" text="_ufaBarrelLabel" />
+    <Field name="ufaDepInfoLabel" type="Label" text="_ufaDepInfoLabel" />
+    <Field name="ufaClassInfoLabel" type="Label" text="_ufaClassInfoLabel" />
+    <Field name="ufaSubclassInfoLabel" type="Label" text="_ufaSubclassInfoLabel" />
+    <Field name="ufaCustomerCountryLabel" type="Label" text="_ufaCustomerCountryLabel" />
+    <!-- End BZ25640 -->
+
+    <!-- End BZ26742 -->
+    <Field name="addressGroups" type="List" resource="addressGroupListModel">
+        <Parameter name="ColumnHeaderType" value="ADDRESS_GROUPS_HEADER" />
+        <Parameter name="CellType" value="ADDRESS_GROUPS" />
+        <Parameter name="ListSelectionMode" value="SINGLE_SELECTION" />
+    </Field>
+    <!-- End BZ26742 -->
+    <!-- BZ26289 start -->
+    <Field name="taxExemptStatusLabel" type="Label" text="_custTaxExemptStatus" />
+    <Field name="taxExemptStatus" type="Label" resource="custTaxExemptStatus" />
+    <!-- BZ26289 end -->
+    <!--BZ27000 start-->
+    <Field name="houseAcctNo" type="Label" resource="customerId" />
+    <Field name="houseAcctAvailableCredit" type="Label" resource="customerHouseAccountAvailableCredit" formatterRef="Money" />
+    <Field name="houseAcctSetupDate" type="Label" resource="cawCustomerHouseAccountSetupDate" formatterRef="DateMedium" />
+    <!-- BZ27000 end-->
+
+    <!-- Begin BZ27339 -->
+    <Field name="customerMembershipSummaryList" type="List" resource="customerMembershipList">
+       <Parameter name="ColumnHeaderType" value="CAW_CUSTOMER_MEMBERSHIP_LIST" />
+       <Parameter name="CellType" value="CAW_CUSTOMER_MEMBERSHIP_ELEMENT" />
+       <Parameter name="ListSelectionMode" value="NO_SELECTION" />
+    </Field>
+    
+    <Field name="houseAccountDetailsLabel" type="Label" text="_houseAccountDetailsLabel" />
+    
+    <Field name="cawHouseAccountAvatar" type="Image" resource="avatarIcon">
+        <Parameter name="scale" value="true" dtype="boolean" />
+    </Field>
+    
+    <Field name="accountLabel" type="Label" text="_accountLabel" />
+    <Field name="statusLabel" type="Label" text="_statusLabel" />
+    <Field name="availableCreditLabel" type="Label" text="_availableCreditLabel" />
+    <Field name="taxExemptStatusLabel" type="Label" text="_taxExemptStatusLabel" />
+    <Field name="accountOnHoldLabel" type="Label" text="_accountOnHoldLabel" />
+    
+    <Field name="accountValue" type="Label" resource="accountValue" />
+    <Field name="statusValue" type="Label" resource="statusValue" />
+    <Field name="availableCreditValue" type="Label" resource="availableCreditValue" formatterRef="Money"/>
+    <Field name="taxExemptStatusValue" type="Label" resource="taxExemptStatusValue" />
+    <Field name="accountOnHoldValue" type="Label" resource="accountOnHoldValue" />
+    
+    <Field name="membershipInfoTitle" type="Label" text="_membershipInfoTitle" /> <!-- BZ48567,BZ49729 -->
+    <!-- End BZ27339 -->
+    
+    <!-- Begin BZ29372 -->
+    <Field name="cawAccountValidationMsgLine1" type="Label" text="_cawAccountValidationMsgLine1" />
+    <Field name="cawAccountValidationMsgLine2" type="Label" text="_cawAccountValidationMsgLine2" />
+    
+    <Field name="cawAccountFirstNameLabel" type="Label" text="_cawAccountFirstName" />
+    <Field name="accountFirstName" type="Label" resource="accountFirstName" />
+    
+    <Field name="cawAccountLastName" type="Label" text="_cawAccountFirstName" />
+    <Field name="accountLastName" type="Label" resource="accountLastName" />
+    
+    <Field name="cawAccountSelectIDType" type="Label" text="_cawAccountSelectIDType" />
+    <Field name="acountCardType" type="ComboBox" resource="acountCardType"/>
+    
+    <Field name="cawAccounStateOfIssuance" type="Label" text="_cawAccounStateOfIssuance" />
+    <Field name="acountState" type="ComboBox" resource="acountState"/>
+    <!-- End BZ29372 -->
+    
+    <!-- BEGIN BZ30922 -->
+    <Field name="cawRegularPriceLabel" type="Label" text="_cawRegularPriceLabel" />
+    <Field name="cawRegularPrice" type="Label" resource="regularPrice" formatterRef="Money" />
+    
+    <Field name="cawClubPriceLabel" type="Label" text="_cawClubPriceLabel" />
+    <Field name="cawClubPrice" type="Label" resource="clubPrice" formatterRef="Money" />
+    
+    <Field name="cawWholeSalePriceLabel" type="Label" text="_cawWholeSalePriceLabel" />
+    <Field name="cawWholeSalePrice" type="Label" resource="wholeSalePrice" formatterRef="Money" />
+    
+    <Field name="cawCrewPriceLabel" type="Label" text="_cawCrewPriceLabel" />
+    <Field name="cawCrewPrice" type="Label" resource="crewPrice" formatterRef="Money" />
+    
+    <Field name="storeIDLabel" type="Label" text="_storeIDLabel" />
+    <Field name="storeNameLabel" type="Label" text="_storeNameLabel" />
+    <Field name="locationLabel" type="Label" text="_locationLabel" />
+    <Field name="distanceLabel" type="Label" text="_distanceLabel" />
+    <Field name="quantityLabel" type="Label" text="_quantityLabel" />
+    
+    <Field name="inventoryLabel" type="Label" text="_inventoryLabel"/>
+    <Field name="inventoryList" type="List" resource="listInventoryStoreInfo">
+        <Parameter name="ColumnHeaderType" value="INVENTORY_LIST_HEADER" />
+        <Parameter name="CellType" value="INVENTORY_LIST_ELEMENT" />
+        <Parameter name="ListSelectionMode" value="NO_SELECTION" />
+    </Field>
+    <!-- END BZ30922 -->
+    <!-- BEGIN BZ37305 -->
+    <Field name="valicationMessage1" type="Label" text="_custVerificationMessage1" />
+    <Field name="valicationMessage2" type="Label" text="_custVerificationMessage2" />
+    <Field name="custNameLabel" type="Label" text="_custNameLabel"/>
+    <Field name="custAddressLabel" type="Label" text="_custAddressLabel"/>
+    <Field name="custCityLabel" type="Label" text="_custCityLabel"/>
+    <Field name="custStateLabel" type="Label" text="_custStateLabel"/>
+    <Field name="custPostalCodeLabel" type="Label" text="_custPostalCodeLabel"/>
+    <Field name="custTelephoneHomeLabel" type="Label" text="_custTelephoneHomeLabel"/>
+    <Field name="custTelephoneMobileLabel" type="Label" text="_custTelephoneMobileLabel"/>
+    <Field name="custEmailLabel" type="Label" text="_custEmailLabel"/>
+    
+    <Field name="custName" type="Label" resource="custName"/>
+    <Field name="custAddress" type="Label" resource="custAddress"/>
+    <Field name="custCity" type="Label" resource="custCity"/>
+    <Field name="custState" type="Label" resource="custState"/>
+    <Field name="custPostalCode" type="Label" resource="custPostalCode"/>
+    <Field name="custTelephoneHome" type="Label" resource="custTelephoneHome"/>
+    <Field name="custTelephoneMobile" type="Label" resource="custTelephoneMobile"/>
+    <Field name="custEmail" type="Label" resource="custEmail"/>
+    <!-- END BZ37305 -->
+    
+    <!-- BEGIN BZ44528: Phase 1 -->
+    <Field name="cawWonderSignCartSearchDateRangeLable" type="Label" text="_cawDateRange" />
+    <Field name="cawWonderSignCartSearchFromDateText" type="Text" resource="fromDate" dataFieldRef="Date" accessibilityText="_fromDate" />
+    <Field name="cawWonderSignCartSearchToDateText" type="Text" resource="toDate" dataFieldRef="Date" accessibilityText="_toDate" />
+    <Field name="cawWonderSignCartSearchRangeDropDown" type="ComboBox" resource="dateRange" />
+    
+    <Field name="cawWOnderSignCartSearchAllFieldRequireMsg" type="Label" text="_cawWonderSignCartSearchAllFieldRequireMsg" />
+    
+    <Field name="cawWonderSignCartSearchFirstNameLabel" type="Label" text="_firstNameLabel" />
+    <Field name="cawWonderSignCartSearchFirstNameText" type="Text" resource="firstName" />]
+    
+    <Field name="cawWonderSignCartSearchLastNameLabel" type="Label" text="_lastNameLabel" />
+    <Field name="cawWonderSignCartSearchLastNameText" type="Text" resource="lastName" />
+    
+    <Field name="cawWonderSignCartSearchPhoneLabel" type="Label" text="_phoneNumberLabel" />
+    <Field name="cawWonderSignCartSearchPhoneText" type="Text" resource="phoneNumber" dataFieldRef="Phone" />
+    <!-- END BZ44528: Phase 1 -->
+    
+    <!-- BEGIN BZ44917 -->
+    <Field name="rvHeader1Label" type="Label" text="_rvHeader1Label"/>
+    <Field name="rvServiceCustomerLabel" type="Label" text="_rvServiceCustomerLabel"/>
+    <Field name="rvServiceCustomer" type="Text" resource="rvServiceCustomer"/>
+    <Field name="rvServiceWoLabel" type="Label" text="_rvServiceWoLabel"/>
+    <Field name="rvServiceWo" type="Text" resource="rvServiceWo"/>
+    <Field name="rvHeader2Label" type="Label" text="_rvHeader2Label"/>
+    <Field name="rvFistName" type="Text" resource="rvFistName"/>
+    <Field name="rvLastName" type="Text" resource="rvLastName"/>
+    <Field name="rvCustomerDetailLabel" type="Label" text="_rvCustomerDetailLabel"/>
+    <Field name="rvWoLabelDetail" type="Label" text="_rvWoLabelDetail"/>
+    <Field name="rvPostalCode" type="Text" resource="rvPostalCode" dataFieldRef="PostalCode"/>
+    <Field name="rvCustomerDetail" type="Label" resource="rvServiceCustomer"/>
+    <Field name="rvWoDetail" type="Label" resource="rvServiceWo"/>
+    <Field name="locationCodeLabel" type="Label" text="_locationCodeLabel"/>
+    <Field name="locationCode" type="Label" resource="locationCode"/>
+    <Field name="salesChannelIdLabel" type="Label" text="_rvSalesChannelIdLabel"/>
+    <Field name="salesChannelId" type="Label" resource="salesChannelId"/>
+    <Field name="rvAmountLabel" type="Label" text="_rvAmountLabel"/>
+    <Field name="rvAmount" type="Label" resource="rvAmount" formatterRef="Money"/>
+    <!-- END BZ44917 -->
+    
+    <!-- BEGIN BZ42307 -->
+    <Field name="orderItemUpdateQtyPrompt" type="Label" resource="message" >
+      <Parameter name="WrapText" value="true" />
+    </Field>
+    <Field name="orderQty" type="Text" resource="quantity" dataFieldRef="Integer" />
+	<!-- END BZ42307 -->
+	
+	<!-- BEGIN BZ45995 -->
+    <Field name="membershipEmailCaptureLabel" type="Label" resource="message"/>
+    <Field name="membershipEmailCaptureText" type="Text" resource="email" dataFieldRef="Email"/>
+    <!-- END BZ45995 -->
+</FieldSet>

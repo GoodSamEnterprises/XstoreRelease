@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ44528				130821	  Electric World & Mobile POS Implementation (Phase 1)
+ * BZ45902				250821	  [Internal] Exception after call Prompting Engine Catalyst API when an Electric World order is completed
+ *===================================================================
+ */
+-->
+<RestRequestSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="RestRequestConfig.xsd">
+  <!-- BEGIN BZ40898, BZ45902 -->
+  <RestRequest name="REQUEST_BROKER_ITEM_DETAIL_ATTR">
+    <Body dtype="String"><![CDATA[{
+          "brokerAction": !{brokerAction},
+          "fulfillmentSystem": !{fulfillmentSystem},
+          "fulfillmentLocation": !{fulfillmentLocation},
+          "obRequestId": !{obRequestId},
+          "obOrderId": !{obOrderId},
+          "brokerActionDescription": !{brokerActionDescription},
+          "specialInstructions": null
+    } 
+    ]]>
+    </Body>
+  </RestRequest>
+  <!-- END BZ40898, BZ45902 -->
+ 
+  <!-- BEGIN BZ44528: Phase 1 -->
+  <RestRequest name="CART_SEARCH">
+     <Body dtype="String"><![CDATA[{
+              "salesChannel":{
+                  "id": !{id},
+                  "terminal": !{terminal},
+                  "channelType": !{channelType}
+              },
+              "salesChannelId": !{salesChannelId},
+              "fromDate": !{fromDate},
+              "toDate": !{toDate},
+              "firstName": !{firstName},
+              "lastName": !{lastName},
+              "phoneNumber": !{phoneNumber},
+              "pageSize": !{pageSize},
+              "pageNumber": !{pageNumber}
+      }]]></Body>
+    </RestRequest>
+  <!-- END BZ44528: Phase 1 -->   
+</RestRequestSet>

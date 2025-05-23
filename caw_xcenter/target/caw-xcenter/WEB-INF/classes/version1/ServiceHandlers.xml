@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * CONFIDENTIAL AND PROPRIETARY SOURCE CODE. 
+ * 
+ * Use and distribution of this code is subject to applicable 
+ * licenses and the permission of the code owner.  This notice 
+ * does not indicate the actual or intended publication of 
+ * this source code.
+ * 
+ * Portions developed for Camping World by BTM Global Consulting
+ * LLC and are the property of Camping World.
+ * 
+ * ===== BTM Modification ===========================================
+ * Req/Bug ID#          ddMMyy    Description
+ * BZ23164              080917    [DEV] Implement EMV Payment Integration
+ * BZ26410              300518    [Technical] Move QAS URL from system.properties to ServiceHandlers.xml
+ * BZ37177              150720    [Task] Enable Order Function in Xstore
+ * BZ36988              170820    [TASK] Xstore OB Configuration
+ * BZ42307              200921    [Requirement] Add ability to reject at the item level for BOPIS
+ *===================================================================
+ */
+  -->
+<Services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/ServiceHandlers.xsd">
+
+  <Service name="RELATE_CUSTOMER_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://relate_host:8443/soap/xst/v2_3/CustomerServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_CARD_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://relate_host:8443/soap/xst/v2_1/CardServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_LOYALTY_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://relate_host:8443/soap/xst/v1_0/LoyaltyAccountServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_AWARD_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://relate_host:8443/soap/xst/v1_0/AwardAccountServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_PROMOTION_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://relate_host:8443/soap/xst/v1_0/SerializedCouponServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_REGISTRY_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://relate_host:8443/soap/xst/v1_2/RegistryServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <PurchaseRetryInterval dtype="Integer">15</PurchaseRetryInterval>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_ATTRIBUTE_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://relate_host:8443/soap/xst/v1_1/AttributesServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_TASK_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://relate_host:8443/soap/xst/v1_1/TaskServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_GIFT_CARD_SVC_TRANSACTION_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://relate_host:8084/soap/xst/v3_0/SvcTransactionServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <CardPrefix dtype="String">33333</CardPrefix>
+      <CardSeries dtype="String">01</CardSeries>
+    </Parameters>
+  </Service>
+  <!-- Begin BZ37177 -->
+  <Service name="LOCATE">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://vncawoobr02.clienttest.btmgcs.com:7004/Locate/LocateServices?wsdl</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <StatusUpdateRetryInterval dtype="Integer">15</StatusUpdateRetryInterval>
+      <OrderSubmitRetryInterval dtype="Integer">15</OrderSubmitRetryInterval>
+      <UpdateAvailableRetryInterval dtype="Integer">15</UpdateAvailableRetryInterval>
+      <Destination dtype="String">Locate</Destination>
+      <LocateVersion dtype="String">19.0</LocateVersion> <!-- BZ36988 -->
+      <AllowSplitOrder dtype="String">true</AllowSplitOrder> <!-- BZ36988 BZ42307-->
+      <LegacyOrderType dtype="String">true</LegacyOrderType>  
+    </Parameters>
+  </Service>
+  <!-- End BZ37177 -->
+  <Service name="SIM_STORE_INVENTORY">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://localhost:17015/StoreInventoryBean/StoreInventoryService?WSDL</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="SIM_UIN_STORE_INVENTORY">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://localhost:17015/StoreInventoryUinBean/StoreInventoryUinService?WSDL</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="SIM_POS_TRANSACTION">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://localhost:17015/POSTransactionBean/POSTransactionService?WSDL</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <ProcessTransRetryInterval dtype="Integer">15</ProcessTransRetryInterval>
+    </Parameters>
+  </Service>
+  <Service name="OPERA">
+    <Parameters dtype="Map">
+      <ServiceURL dtype="String">http://localhost:4400/Operajserv/Ifc8ws/Ifcws</ServiceURL>
+      <DataSource dtype="String">Opera</DataSource>
+    </Parameters>
+  </Service>
+  <Service name="ADDRESS_VERIFICATION">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://ws2.ondemand.qas.com:443/ProOnDemand/V3/ProOnDemandService.asmx?WSDL</WsdlLocation>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <QasEngineTimeout dtype="Integer">10000</QasEngineTimeout>
+      <QasResponseLimit dtype="Integer">30</QasResponseLimit>
+    </Parameters>
+  </Service>
+
+  <!--  Begin 26410 and 25358 QAS-->
+  <Service name="CAW_QAS_PROWEB">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://ky-bgr-qas-dev:2021/proweb.wsdl</WsdlLocation>
+      <QasTargetNamespaceUri dtype="String">http://www.qas.com/web-2013-12</QasTargetNamespaceUri>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <QasEngineTimeout dtype="Integer">10000</QasEngineTimeout>
+    </Parameters>
+  </Service>
+  <!--  End 26410 -->
+</Services>
