@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed May 24 09:34:01 EDT 2006 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner 
+	ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/form/FormsConfig.xsd">
+	<FormView>
+		<FormKey dtype="String">GIFT_REGISTRY_SEARCH</FormKey>
+		<FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+		<FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+		<FormViewPanel>
+			<PanelType dtype="String">DETAIL</PanelType>
+			<FormTabKey dtype="String">DEFAULT</FormTabKey>
+			<IconGroup icon="_imagePromptCustomerSearch" />
+			<Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+			<LayoutParameters dtype="ParameterList">
+				<Parameter name="setColumn">
+					<!--MINIMUM, FILL -->
+					<param_value dtype="DoubleArray">-3.0, -1.0</param_value>
+				</Parameter>
+				<Parameter name="setRow">
+					<!--PREFERRED, PREFERRED, 10.0, PREFERRED, PREFERRED, 10.0, PREFERRED, PREFERRED, PREFERRED, 10.0, PREFERRED, FILL -->
+					<param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0</param_value>
+				</Parameter>
+				<Parameter name="setMargins">
+					<param_value dtype="IntegerArray">30, 0, 30, 0</param_value>
+				</Parameter>
+				<Parameter name="addRowOffset">
+					<param_value dtype="Integer">13</param_value>
+				</Parameter>
+				<Parameter name="setVerticalStretch">
+					<param_value dtype="Boolean">true</param_value>
+				</Parameter>
+			</LayoutParameters>
+			<FormViewCell>
+				<LayoutLocation dtype="String">0, 0, 1, 1, R, F</LayoutLocation>
+				<Type dtype="String">FormLabel</Type>
+				<TextKey dtype="Translatable">_giftRegistryIdLabel</TextKey>
+				<Font fontStyle="BOLD" fontSize="+5" />
+			</FormViewCell>
+			<FormViewCell>
+				<LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+				<Type dtype="String">FormTextField</Type>
+        <DataField ref="Numeric" />
+				<Resource dtype="String">registryId</Resource>
+				<Font fontSize="+5" />
+			</FormViewCell>
+			<FormViewCell>
+				<LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+				<Type dtype="String">FormLabel</Type>
+				<TextKey dtype="Translatable">_giftRegistryEventNameLabel</TextKey>
+				<Font fontStyle="BOLD" fontSize="+5" />
+			</FormViewCell>
+			<FormViewCell>
+				<LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+				<Type dtype="String">FormTextField</Type>
+				<Resource dtype="String">eventName</Resource>
+				<DataField ref="Name" />
+				<Font fontSize="+5" />
+			</FormViewCell>
+			<FormViewCell>
+				<LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+				<Type dtype="String">FormLabel</Type>
+				<TextKey dtype="Translatable">_giftRegistryLastNameLabel</TextKey>
+				<Font fontStyle="BOLD" fontSize="+5" />
+			</FormViewCell>
+			<FormViewCell>
+				<LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+				<Type dtype="String">FormTextField</Type>
+				<Resource dtype="String">lastName</Resource>
+				<DataField ref="Name" />
+				<Font fontSize="+5" />
+			</FormViewCell>
+			<FormViewCell>
+				<LayoutLocation dtype="String">0, 3, 1, 1, R, F</LayoutLocation>
+				<Type dtype="String">FormLabel</Type>
+				<TextKey dtype="Translatable">_giftRegistryFirstNameLabel</TextKey>
+				<Font fontStyle="BOLD" fontSize="+5" />
+			</FormViewCell>
+			<FormViewCell>
+				<LayoutLocation dtype="String">1, 3, 1, 1, F, F</LayoutLocation>
+				<Type dtype="String">FormTextField</Type>
+				<Resource dtype="String">firstName</Resource>
+				<DataField ref="Name" />
+				<Font fontSize="+5" />
+			</FormViewCell>
+			<FormViewCell>
+				<LayoutLocation dtype="String">0, 5, 1, 1, R, F</LayoutLocation>
+				<Type dtype="String">FormLabel</Type>
+				<TextKey dtype="Translatable">_giftRegistryEventTypeLabel</TextKey>
+				<Font fontStyle="BOLD" fontSize="+5" />
+			</FormViewCell>
+			<FormViewCell>
+				<LayoutLocation dtype="String">1, 5, 1, 1, F, F</LayoutLocation>
+				<Type dtype="String">FormComboBox</Type>
+				<Resource dtype="String">eventType</Resource>
+				<Font fontSize="+5" />
+			</FormViewCell>
+		</FormViewPanel>
+		<!--********************************** -->
+		<!--** DEFAULT action keys ** -->
+		<!--********************************** -->
+		<ActionGroup key="DEFAULT">
+			<Action ref="CANCEL_BACK" />
+      <Action dataKey="NEW" text="_new" keyStroke="F7" />
+			<Action ref="ACCEPT" />
+		</ActionGroup>
+    <ActionGroup key="NO_ADD">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" />
+    </ActionGroup>
+	</FormView>
+</FormViewSet>

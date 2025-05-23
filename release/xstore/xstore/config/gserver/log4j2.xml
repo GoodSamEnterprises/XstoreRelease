@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <!-- define file logging appender for interpreter -->
+    <RollingRandomAccessFile name="GSERVER_FILE" fileName="${sys:user.dir}/log/gserver.log"
+      filePattern="${sys:user.dir}/log/gserver.%i.log">
+      <PatternLayout pattern="%d %-5p %m -- %l [%t]%n" header="loading ${log4j:configLocation}%n" />
+      <SizeBasedTriggeringPolicy size="100KB" />
+      <DefaultRolloverStrategy max="14" />
+    </RollingRandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
+      <AppenderRef ref="GSERVER_FILE" />
+    </Root>
+  </Loggers>
+</Configuration>

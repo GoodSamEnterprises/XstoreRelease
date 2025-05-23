@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed Jun 21 12:41:16 EDT 2006 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">RECEIVING_DOCUMENT_HEADER</FormKey>
+    <FormLocation dtype="String">MESSAGE_AREA</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, PREFERRED, FILL, PREFERRED-->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, 1.0, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell resourceLink="documentSubtypeCode">
+        <LayoutLocation dtype="String">0, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_documentHeaderType</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">documentSubtypeCode</Resource>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell resourceLink="documentId">
+        <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_documentHeaderId</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">documentId</Resource>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell resourceLink="referenceId">
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_inventoryDocumentReferenceId</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">referenceId</Resource>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell resourceLink="cartonCount">
+        <LayoutLocation dtype="String">0, 3, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formReceivingDocumentCartonCount</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">cartonCount</Resource>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell resourceLink="quantityCount">
+        <LayoutLocation dtype="String">0, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formReceivingDocumentItemCount</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">quantityCount</Resource>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell resourceLink="expectedDeliveryDate">
+        <LayoutLocation dtype="String">0, 5, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formReceivingDocumentExpectedReceipt</TextKey>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">expectedDeliveryDate</Resource>
+        <FormatterType dtype="String">DateMedium</FormatterType>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell resourceLink="actualDeliveryDate">
+        <LayoutLocation dtype="String">0, 6, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formReceivingDocumentActualReceipt</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 6, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">actualDeliveryDate</Resource>
+        <FormatterType dtype="String">DateMedium</FormatterType>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell resourceLink="documentStatus">
+        <LayoutLocation dtype="String">0, 7, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formReceivingDocumentReceivingStatus</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 7, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">documentStatus</Resource>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+    </FormViewPanel>
+  </FormView>
+</FormViewSet>

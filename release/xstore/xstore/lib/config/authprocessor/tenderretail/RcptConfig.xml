@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+
+  <ReceiptCopyRules>
+    <ReceiptCopyRule name="RETAIL_SALE" document="CUSTOMER">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.TransactionTypeRule" type="RETAIL_SALE" />
+      <Rule class="dtv.tenderretail.TenderRetailManualAuthMultiOfflineInvertedRule" />
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.CanceledTransactionReceiptEnabledRule" />
+    </ReceiptCopyRule>
+    <ReceiptCopyRule name="TENDER_RETAIL_RECEIPT" document="TENDER_RETAIL_RECEIPT">
+      <Rule class="dtv.tenderretail.TenderRetailCopyRule" />
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.CanceledTransactionReceiptEnabledRule" />
+    </ReceiptCopyRule>
+    <ReceiptCopyRule name="MANUAL_AUTH_MULTI_OFFLINE" document="MANUAL_AUTH_MULTI_OFFLINE">
+      <Rule class="dtv.tenderretail.TenderRetailManualAuthMultiOfflineRule" />
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.CanceledTransactionReceiptEnabledRule" />
+    </ReceiptCopyRule>
+    <ReceiptCopyRule name="TENDER_RETAIL_STORE" document="STORE">
+      <Rule class="dtv.tenderretail.TenderRetailStoreCopyRule" />
+      <Rule class="dtv.tenderretail.TenderRetailManualAuthMultiOfflineInvertedRule" />
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.CanceledTransactionReceiptEnabledRule" />
+    </ReceiptCopyRule>
+  </ReceiptCopyRules>
+
+  <receipts>
+    <receipt document="MANUAL_AUTH_MULTI_OFFLINE" sectionref="MANUAL_AUTH_MULTI_OFFLINE" />
+    <receipt document="TENDER_RETAIL_RECEIPT" sectionref="TENDER_RETAIL_RECEIPT" />
+  </receipts>
+
+  <sections>
+
+    <section name="creditcard_detail_customer">
+      <sectionref>tenderRetail_creditcard</sectionref>
+      <sectionref>tenderRetail_creditcard_customercopy</sectionref>
+    </section>
+
+    <section name="creditcard_detail">
+      <sectionref>tenderRetail_creditcard</sectionref>
+      <sectionref>tenderRetail_creditcard_storecopy</sectionref>
+    </section>
+
+    <section name="tenderRetail_creditcard">
+      <row>
+        <field><aggregate class="dtv.tenderretail.TRTenderDescriptionField" /></field>
+        <field method="getAmount" formatter="Money" loc="-3" />
+      </row>
+      <row>
+        <field loc="2">
+          <aggregate class="dtv.tenderretail.TRTenderLabelField" contents="_TR_cardNumber" />
+        </field><sp/>
+        <field><aggregate class="dtv.tenderretail.TRMaskedCardField" /></field>
+      </row>
+      <row>
+        <field loc="3">
+          <aggregate class="dtv.tenderretail.TRTenderLabelField" contents="_TR_DateTime" />
+        </field><sp/>
+        <field method="getStringProperty" method_param="TR::DAT" /><sp/>
+        <field method="getStringProperty" method_param="TR::TIM" />
+      </row>
+      <row>
+        <field loc="4">
+          <aggregate class="dtv.tenderretail.TRTenderLabelField" contents="_TR_RefNumber" />
+        </field><sp/>
+        <field method="getStringProperty" method_param="TR::TERMINAL_ID" /><sp/>
+        <field method="getStringProperty" method_param="TR::SEQ" /><sp/>
+        <field><aggregate class="dtv.tenderretail.TRSwipeOrManualField" /></field>
+      </row>
+      <row>
+        <field loc="5">
+          <aggregate class="dtv.tenderretail.TRTenderLabelField" contents="_TR_AuthCode" />
+        </field><sp/>
+        <field method="getAuthorizationCode" />
+      </row>
+      <region>
+        <left_margin dtype="Integer">6</left_margin>
+        <field method="getStringProperty" method_param="TR::RCP" />
+      </region>
+    </section>
+
+    <section name="tenderRetail_creditcard_storecopy">
+      <!-- do not include for debit cards -->
+      <condition method="getStringProperty" method_param="TR::CRT" comparison="NOT_EQUAL">
+        <Parameter name="value" value="DEBIT [60]" />
+      </condition>
+      <!-- do not include on refunds -->
+      <condition method="getAmount" comparison="GREATER_THAN_ZERO" />
+      <row />
+      <region>
+        <condition method="getCustomerName" comparison="NOT_BLANK" />
+        <field>
+          <aggregate class="dtv.tenderretail.TRTenderLabelField" contents="_trReceiptCreditTerms" />
+        </field>
+      </region>
+      <row n="6" />
+      <sectionref>signature_line</sectionref>
+      <row>
+        <condition method="getCustomerName" comparison="NOT_BLANK" />
+        <field method="getCustomerName" />
+      </row>
+      <region>
+        <condition method="getCustomerName" comparison="IS_BLANK" />
+        <field>
+          <aggregate class="dtv.tenderretail.TRTenderLabelField" contents="_trReceiptCreditTerms" />
+        </field>
+      </region>
+    </section>
+
+    <section name="tenderRetail_creditcard_customercopy">
+      <!-- do not include for debit cards -->
+      <condition method="getStringProperty" method_param="TR::CRT" comparison="NOT_EQUAL">
+        <Parameter name="value" value="DEBIT [60]" />
+      </condition>
+      <!-- only include on refunds -->
+      <condition method="getAmount" comparison="LESS_THAN_ZERO" />
+      <row />
+      <region>
+        <field><aggregate class="dtv.tenderretail.TRTenderLabelField" contents="_trReceiptCreditTermsReturn" /></field>
+      </region>
+      <row n="6" />
+      <sectionref>signature_line</sectionref>
+      <row>
+        <field><aggregate class="dtv.tenderretail.TRTenderLabelField" contents="_trReceiptMerchantSignature" /></field>
+      </row>
+    </section>
+
+    <section name="MANUAL_AUTH_MULTI_OFFLINE">
+      <sectionref>header</sectionref>
+      <region>
+        <field><aggregate class="dtv.tenderretail.TRManualAuthOfflineField" contents="_manualAuthMultiOfflineMsg1" /></field>
+      </region>
+    </section>
+
+    <section name="TENDER_RETAIL_RECEIPT">
+      <iterator method="getReceiptText">
+        <sectionref>TRReceipt</sectionref>
+      </iterator>
+    </section>
+    <section name="TRReceipt">
+      <call method="getParent.getRequest.getLineItem.getParentTransaction">
+        <sectionref>header</sectionref>
+      </call>
+      <!-- this region will have the receipt text required by Canadian banks -->
+      <region><field method="getReceiptText" /></region>
+      <!--
+      <call method="getParent.getRequest.getLineItem.getParentTransaction">
+        <sectionref>footer</sectionref>
+        <sectionref>system_mode</sectionref>
+      </call>
+      <sectionref>TR_FOOTER_CUSTOMER_TAG</sectionref>
+      <sectionref>TR_FOOTER_STORE_TAG</sectionref>
+      -->
+      <sectionref>page_break</sectionref>
+    </section>
+    
+    <section name="TR_FOOTER_CUSTOMER_TAG">
+      <condition method="getParent.getRequest.getLineItem" comparison="NOT_NULL" />
+      <sectionref>CustomerCopyLabel</sectionref>
+    </section>
+
+    <section name="TR_FOOTER_STORE_TAG">
+      <condition method="getParent.getRequest.getLineItem" comparison="IS_NULL" />
+      <sectionref>StoreCopyLabel</sectionref>
+    </section>
+
+
+  </sections>
+</ReceiptDefinitions>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+ 
+  <bean id="jmxStartupHelper" class="dtv.jmx.JmxAgentStartupHelper" scope="prototype" />
+  <bean id="mbeanInfoHelper" class="dtv.jmx.MBeanInfoHelper" lazy-init="true" />
+
+  <bean id="htmlHttpsServer" class="dtv.jmx.html.HttpsServer">
+    <property name="name" value="Server:HTTP=HttpsServer" />
+    <property name="priority" value="10" />
+    <property name="port" value="#{systemProperties['dtv.pos.appmanagement.jmx.port']}" />
+    <property name="keyStore" value="#{systemProperties['javax.net.ssl.keyStore']}" />
+    <property name="keyStorePassword" value="#{systemProperties['dtv.keystore.password']}" />  
+    <property name="style">
+      <value><![CDATA[<style>
+        BODY {FONT-SIZE: 11px; FONT-FAMILY: Verdana; margin: 2px; color: #000000;}
+        TD {FONT-SIZE: 11px; FONT-FAMILY: Verdana; }
+        TH {font-weight: 100; }
+        I {color: #222222;}
+        A {FONT-WEIGHT: normal; FONT-SIZE: 11px; COLOR: #0850A0}
+        A:hover {COLOR: #ff6600; TEXT-DECORATION: none  }
+        </style>]]></value>
+    </property>
+    <property name="headingMessageFormat">
+      <value><![CDATA[<TABLE width="100%"><TR><TD width="99%"><H2>{0}</H2></TD><TD width="181"><img width="181" height="82" src="/img/splash2.png"></TD></TR></TABLE>]]></value>
+    </property>
+    <property name="hiddenDomains">
+      <set>
+        <value>Server</value>
+        <value>JMImplementation</value>
+      </set>
+    </property>
+    <property name="authenticationMethods">
+      <list>
+        <value>dtv.pos.security.JmxAuthenticator</value>
+      </list>
+    </property>
+  </bean>
+ 
+  <bean id="configInfo" class="dtv.pos.appmanagement.jmx.ConfigurationInformation" scope="prototype">
+    <property name="name" value="Information:POS=ConfigurationInformation" />
+    <property name="priority" value="30" />
+    <property name="iconSuccess" value="icon-check.gif" />
+    <property name="iconFailInfo" value="icon-info.gif" />
+    <property name="iconFailWarn" value="icon-warn.gif" />
+    <property name="iconFailError" value="icon-error.gif" />
+    <property name="iconFailFatal" value="icon-fatalerror.gif" />
+  </bean>
+  
+  <bean id="classPathInfo" class="dtv.jmx.ClassPathMBean" scope="prototype">
+    <property name="name" value="Information:POS=ClassPathInformation" />
+    <property name="priority" value="30" />
+  </bean>
+ 
+  <bean id="storeCalendarInfo" class="dtv.pos.appmanagement.jmx.StoreCalendarInformation" scope="prototype">
+    <property name="name" value="Information:POS=StoreCalendarInformation" />
+    <property name="priority" value="30" />
+  </bean>
+ 
+   <bean id="posDebugger" class="dtv.pos.appmanagement.jmx.PosDebug" scope="prototype">
+     <property name="name" value="Debug:POS=PosDebugger" />
+     <property name="priority" value="30" />
+   </bean>
+ 
+  <bean id="dataSourceStatus" class="dtv.data2.access.status.DataSourceStatusMBean" scope="prototype">
+    <property name="name" value="Debug:POS=Data Source Status" />
+    <property name="priority" value="30" />
+  </bean>
+ 
+  <bean id="receiptDebugger" class="dtv.hardware.rcptbuilding.config.RcptTrace" scope="prototype">
+    <property name="name" value="Debug:POS=ReceiptDebugger" />
+    <property name="priority" value="140" />
+  </bean>
+  <bean id="logLevelSetter" class="dtv.pos.appmanagement.jmx.LogLevelConfig" scope="prototype">
+    <property name="name" value="Debug:POS=LogLevelConfig" />
+    <property name="priority" value="30" />
+  </bean>
+  <bean id="managedCacheReporter" class="dtv.data2.cache.jmx.CacheStatusMBean" scope="prototype">
+    <property name="name" value="Debug:POS=Cache Status" />
+    <property name="priority" value="30" />
+  </bean>
+  <!-- TODO remove depends-on -->
+  <bean id="authManager" class="dtv.tenderauth.AuthManager" depends-on="authFactory" scope="prototype">
+    <property name="name" value="Information:POS=AuthManager" />
+    <property name="priority" value="70" />
+  </bean>
+  <bean id="hardwareDeviceMgr" class="dtv.hardware.HardwareDeviceManager" scope="prototype">
+    <property name="name" value="Information:POS=HardwareDeviceManager" />
+    <property name="priority" value="70" />
+  </bean>
+  <bean id="printQueueMgr" class="dtv.hardware.posprinting.PrintQueueMgr" scope="prototype">
+    <property name="name" value="Information:POS=PrintQueueMgr" />
+    <property name="priority" value="70" />
+  </bean>
+  <bean id="tLogGenerator" class="dtv.pos.tools.TlogGeneratorMBean" scope="prototype">
+    <property name="name" value="Tlog Generation" />
+    <property name="priority" value="120" />
+    <property name="serverReference" value="Server:HTTP=HttpsServer" />
+  </bean>
+  <bean id="ipcServerMbean" class="dtv.ipc.server.ServerMBean">
+    <property name="name" value="Server:HTTP=IpcServer" />
+    <property name="priority" value="10" />
+    <property name="port" value="9090" />
+    <property name="keyStore" value="#{systemProperties['javax.net.ssl.keyStore']}" />
+    <property name="keyAlias" value="xstore" />
+    <property name="keyStorePassword" value="#{systemProperties['dtv.keystore.password']}" />
+  </bean>
+
+</beans>

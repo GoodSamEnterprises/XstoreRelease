@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+
+  <OpChain name="VERIFY_HARDWARE_STARTUP">
+    <Op class="dtv.tenderauth.impl.transarmor.TransArmorWaitForHardwareSetupOp" />
+    <Op class="dtv.tenderauth.impl.transarmor.TransArmorUpdateBINExclusionListOp">
+      <Parameter name="updateDir" value="${user.dir}/updates" />
+      <Parameter name="AdditionalMessageTranslatable" value="_trUnableToBinUpdate" />
+    </Op>
+    <Op class="dtv.pos.hardware.op.IdleCustomerDisplayOp" />
+  </OpChain>
+  <OpChain name="REINIT_HARDWARE">
+    <Op class="dtv.pos.hardware.op.ShutdownHardwareOp" longRunning="true" />
+    <WorkerOp workersBean="initHardwareWorkers" />
+    <Op class="dtv.tenderauth.impl.transarmor.TransArmorWaitForHardwareSetupBackOfficeOp" longRunning="true" />
+    <Op class="dtv.pos.hardware.op.IdleCustomerDisplayOp" />
+  </OpChain>
+  <OpChain name="PROMPT_CREDIT_CARD">
+    <PromptOp class="dtv.tenderauth.impl.transarmor.VerifyTransArmorEnableOp" />
+    <PromptOp class="dtv.tenderauth.impl.transarmor.TransArmorPromptCreditCardInfoOp" validationsBean="creditCardInfoRules">
+    	<Parameter name="IgnoreDeviceList" value="MSR.MAIN_MSR" />
+    </PromptOp>
+  </OpChain>
+  <OpChain name="RETURN_BY_CREDIT_CARD" contextKey="RETURN">
+    <Op class="dtv.tenderauth.impl.transarmor.RetrieveTokenForTransArmorLookupOp" longRunning="true" />
+    <ValidationOp class="dtv.pos.register.returns.verification.ValidateCreditCardTransOp" validationsBean="returnByCreditCardRules" />
+    <Op class="dtv.pos.register.itemmessages.DisplayInstructionsOp">
+      <Parameter name="FILENAME" value="_instructionalReturnItemScanMsg" />
+    </Op>
+    <PromptOp class="dtv.pos.register.returns.verification.PromptTransactionListItemScanOp" validationsBean="itemIdRules" />
+    <OpChainRoute chainKey="RETURN_BY_CREDIT_CARD.post" />
+  </OpChain>
+  <OpChain name="TR_ADVANCED_DDK">
+    <PromptOp key="TR_DDK_INITIATE" />
+    <Op class="dtv.tenderauth.impl.transarmor.TransArmorAdvancedDDKOp" longRunning="true">
+      <Parameter name="AdditionalMessageTranslatable" value="_trUnableToAdvanceDDK" />
+    </Op>
+  </OpChain>
+
+</OpChainSet>

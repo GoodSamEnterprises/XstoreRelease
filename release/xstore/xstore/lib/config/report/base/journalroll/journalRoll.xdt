@@ -1,0 +1,461 @@
+<dataTemplate name="journalRoll" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="MIN" value="_rptMin"/>
+    <label name="MAX" value="_rptMax"/>
+    <label name="CRITERIA_REPORT_DATE" value="_rptRetailPeriodColon"/>
+    <label name="CRITERIA_PRIOR_DAYS" value="_rptPriorBusinessDaysIncludedOptionColon"/>
+    <label name="CRITERIA_REGISTER" value="_rptRegisterColon"/>
+    <label name="CRITERIA_EMPLOYEE" value="_rptEmployeeColon"/>
+    <label name="CRITERIA_CUSTOMER" value="_rptCustomerColon"/>
+    <label name="CRITERIA_TRANSACTION" value="_rptTransactionColon"/>
+    <label name="CRITERIA_TRANSACTION_TYPE" value="_rptTransactionTypeColon"/>
+    <label name="CRITERIA_TENDER_TYPE" value="_rptTenderTypeColon"/>
+    <label name="DAYS_INCLUDED_0" value="_rptPriorBusinessDaysIncludedOption0"/>
+    <label name="DAYS_INCLUDED_1" value="_rptPriorBusinessDaysIncludedOption1"/>
+    <label name="DAYS_INCLUDED_2" value="_rptPriorBusinessDaysIncludedOption2"/>
+    <label name="DAYS_INCLUDED_3" value="_rptPriorBusinessDaysIncludedOption3"/>
+    <label name="DAYS_INCLUDED_4" value="_rptPriorBusinessDaysIncludedOption4"/>
+    <label name="DAYS_INCLUDED_5" value="_rptPriorBusinessDaysIncludedOption5"/>
+    <label name="DAYS_INCLUDED_6" value="_rptPriorBusinessDaysIncludedOption6"/>
+    <label name="TOTAL" value="_rptTotal"/>
+    <label name="BUSINESS_DATE" value="_rptBusinessDate"/>
+    <label name="REGISTER" value="_rptRegister"/>
+    <label name="TRANSACTION" value="_rptTransaction"/>
+    <label name="TRANSACTION_STATUS" value="_rptTransactionStatus"/>
+    <label name="TRANSACTION_TYPE" value="_rptTransactionType"/>
+    <label name="CASHIER" value="_rptCashier"/>
+    <label name="CUSTOMER" value="_rptCustomer"/>
+    <label name="REASON" value="_rptReason"/>
+    <label name="TRANSACTION_TOTAL" value="_rptJournalRollTransactionTotal"/>
+    <label name="DESCRIPTION" value="_rptDescription"/>
+    <label name="AMOUNT" value="_rptAmount"/>
+    <label name="NON_TAXABLE" value="_rptJournalRollNonTaxable"/>
+    <label name="TAXABLE" value="_rptJournalRollTaxable"/>
+    <label name="SALES_TAX" value="_rptJournalRollSalesTax"/>
+    <label name="PAYMENT" value="_rptPayment"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="TYPE" value="_rptType"/>
+    <label name="ORDER" value="_rptJournalRollOrder"/>
+    <label name="SALE" value="_rptJournalRollSale"/>
+    <label name="COMMISSIONED_ASSOC" value="_rptJournalRollCommissionedAssociate"/>
+    <label name="QTY" value="_rptQty"/>
+    <label name="SELLING_PRICE" value="_rptSellingPrice"/>
+    <label name="EXT_PRICE" value="_rptExtendedPrice"/>
+    <label name="TENDER" value="_rptTender"/>
+    <label name="ORGANIZATION" value="_rptOrganization"/>
+    <label name="STORE" value="_rptStoreNo"/>
+    <label name="DATE" value="_rptTransDate"/>
+    <label name="TRANS_NMBR" value="_rptTransactionNumber"/>
+    <label name="OLD_SN" value="_rptOldSerialNum"/>
+    <label name="NEW_SN" value="_rptNewSerialNum"/>
+    <label name="ITEM_ID" value="_rptItemId"/>
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="zeroAmount" class="java.math.BigDecimal" formatter="Money" isForPrompting="false" include_in_output="true">
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriod;Date]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>
+    <parameter name="priorBusinessDaysIncluded" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptPriorBusinessDaysIncludedOption;Combo;dtv.pos.reporting.fill.SoftEnumFactory;0=_rptPriorBusinessDaysIncludedOption0|1=_rptPriorBusinessDaysIncludedOption1|2=_rptPriorBusinessDaysIncludedOption2|3=_rptPriorBusinessDaysIncludedOption3|4=_rptPriorBusinessDaysIncludedOption4|5=_rptPriorBusinessDaysIncludedOption5|6=_rptPriorBusinessDaysIncludedOption6]]></parameterDescription>
+    </parameter>
+    <parameter name="startReg" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptStartReg;Text;Simple;maxCharacters=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endReg" class="java.lang.String"  isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptEndReg;Text;Simple;maxCharacters=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[99999999]]></defaultValueExpression>
+    </parameter>
+    <parameter name="transactionType" class="java.lang.String"  isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptTransactionType;Combo;dtv.pos.common.TransactionType;all=_rptParamSelectionAll]]></parameterDescription>
+    </parameter>
+    <parameter name="employeeId" class="java.lang.String"  isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptEmployeeId;Text;Simple;maxCharacters=20]]></parameterDescription>
+    </parameter>
+    <parameter name="transSeq" class="java.lang.String"  isForPrompting="true" include_in_output="true" >
+      <parameterDescription><![CDATA[_rptTransaction;Text;Simple;maxCharacters=20]]></parameterDescription>
+    </parameter>
+    <parameter name="customerId" class="java.lang.String"  isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptCustomerId;Text;Simple;maxCharacters=20]]></parameterDescription>
+    </parameter>
+    <parameter name="tndrId" class="java.lang.String"  isForPrompting="true" include_in_output="true" >
+      <parameterDescription><![CDATA[_rptTenderType;Combo;dtv.pos.tender.TenderListLoader;all=_rptParamSelectionAll]]></parameterDescription>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_TRANS" key="JOURNAL_ROLL_TRANSACTION_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>customerId</Parameter>
+        <Parameter>tndrId</Parameter>
+        <Parameter>transSeq</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>business_date</ResultField>
+        <ResultField>trans_date</ResultField>
+        <ResultField>trans_typcode</ResultField>
+        <ResultField>total</ResultField>
+        <ResultField>taxtotal</ResultField>
+        <ResultField>tenderControlTranTypeCode</ResultField>
+        <ResultField>sessionControlTranTypeCode</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>rtl_loc_id</ResultField>
+        <ResultField>trans_statcode</ResultField>
+        <ResultField>employee_id</ResultField>
+        <ResultField>cust_name</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_ITEM" key="JOURNAL_ROLL_ITEM_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>customerId</Parameter>
+        <Parameter>tndrId</Parameter>
+        <Parameter>transSeq</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>trans_lineitem_seq</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>quantity</ResultField>
+        <ResultField>unit_price</ResultField>
+        <ResultField>extended_amt</ResultField>
+        <ResultField>cust_acct_code</ResultField>
+        <ResultField>line_item_code</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_EXCHANGE_TRANS" key="JOURNAL_ROLL_SERIAL_EXCHANGE_ITEM_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>customerId</Parameter>
+        <Parameter>tndrId</Parameter>
+        <Parameter>transSeq</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>Orig_serial_nmbr</ResultField>
+        <ResultField>New_seial_nmbr</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_EMP" key="JOURNAL_ROLL_COMMISSIONED_ASSOC_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>customerId</Parameter>
+        <Parameter>tndrId</Parameter>
+        <Parameter>transSeq</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>trans_lineitem_seq</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>emp_id</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TENDER" key="JOURNAL_ROLL_TENDER_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>customerId</Parameter>
+        <Parameter>tndrId</Parameter>
+        <Parameter>transSeq</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>amt</ResultField>
+        <ResultField>tndr_statcode</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_LINEITEM_NON_TAXABLE" key="JOURNAL_ROLL_NON_TAXABLE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>customerId</Parameter>
+        <Parameter>transSeq</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>amt</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_LINEITEM_TAXABLE" key="JOURNAL_ROLL_TAXABLE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>customerId</Parameter>
+        <Parameter>transSeq</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>taxableFlag</ResultField>
+        <ResultField>amt</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_NO_SALE" key="JOURNAL_ROLL_NOSALE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>transSeq</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>description</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_PAID" key="JOURNAL_ROLL_PAID_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>transSeq</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>reason_code</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>amt</ResultField>
+        <ResultField>typcode</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_POSTVOID" key="JOURNAL_ROLL_POSTVOID_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>transSeq</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>voided_org_id</ResultField>
+        <ResultField>voided_rtl_store_id</ResultField>
+        <ResultField>voided_wkstn_id</ResultField>
+        <ResultField>voided_business_date</ResultField>
+        <ResultField>voided_trans_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>orig_trans_typcode</ResultField>
+        <ResultField>orig_amount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_LINEITEM_PAYMENT" key="JOURNAL_ROLL_PAYMENT_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>customerId</Parameter>
+        <Parameter>transSeq</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>amt</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_TRANS" source="Q_TRANS">
+      <element name="TRN_SEQ" value="trans_seq" />
+      <element name="DATE" value="business_date" formatter="DateShort" />
+      <element name="TRANS_DATE" value="trans_date" formatter="DateShort" />
+      <element name="TRN_STATUS" value="trans_statcode" translation-prefix="_dtv.pos.common.TransactionStatus."/>
+      <element name="TRN_TYPE" value="trans_typcode" translation-prefix="_dtv.pos.common.TransactionType." />
+      <element name="TENDER_TYPE" value="tenderControlTranTypeCode" translation-prefix="_dtv.pos.till.types.TenderControlTransTypeCode."/>
+      <element name="SESSION_TYPE" value="sessionControlTranTypeCode" translation-prefix="_dtv.pos.till.types.SessionControlTransTypeCode."/>
+      <element name="AMT" value="total" formatter="Money" />
+      <element name="TAX" value="taxtotal" formatter="Money" />
+      <element name="REG" value="wkstn_id" />
+      <element name="EMP" value="employee_id" />
+      <element name="CUST_NAME" value="cust_name" formatter="LastFirstNameFromString"/>
+    </group>
+    <group name="G_ITEM" source="Q_ITEM">
+      <element name="DATE" value="business_date" formatter="DateShort" />
+      <element name="REG" value="wkstn_id" />
+      <element name="TRN" value="trans_seq" />
+      <element name="TRN_LINE" value="trans_lineitem_seq" />
+      <element name="ITM" value="item_id" />
+      <element name="DESC" value="description" />
+      <element name="QTY" value="quantity" />
+      <element name="UNIT_PRICE" value="unit_price" formatter="Money" />
+      <element name="EXT_AMT" value="extended_amt" formatter="Money" />
+      <element name="CUST_ACCT" value="cust_acct_code" translation-prefix="_dtv.pos.customer.account.type.CustomerAccountType."/>
+      <element name="LNITM_CODE" value="line_item_code" />
+    </group>
+    <group name="G_EXCHANGE_ITEM" source="Q_EXCHANGE_TRANS">
+      <element name="trans_seq" value="trans_seq" />
+      <element name="itm" value="item_id" />
+      <element name="osn" value="Orig_serial_nmbr" />
+      <element name="nsn" value="New_seial_nmbr" />
+    </group>
+    <group name="G_EMP" source="Q_EMP">
+      <element name="DATE" value="business_date" formatter="DateShort" />
+      <element name="REG" value="wkstn_id" />
+      <element name="TRN" value="trans_seq" />
+      <element name="TRN_LINE" value="trans_lineitem_seq" />
+      <element name="ITM" value="item_id" />
+      <element name="EMP" value="emp_id" />
+    </group>
+    <group name="G_TENDER" source="Q_TENDER">
+      <element name="DATE" value="business_date" formatter="DateShort" />
+      <element name="REG" value="wkstn_id" />
+      <element name="TRN" value="trans_seq" />
+      <element name="DESC" value="description" />
+      <element name="AMT" value="amt" formatter="Money" />
+      <element name="STAT_CODE" value="tndr_statcode" />
+    </group>
+    <group name="G_TAXABLE" source="Q_LINEITEM_TAXABLE">
+      <element name="DATE" group-by="true" value="business_date" formatter="DateShort" />
+      <element name="REG" group-by="true" value="wkstn_id" />
+      <element name="TRN" group-by="true" value="trans_seq" />
+      <element name="AMT" value="amt" formatter="Money" function="SUM" />
+    </group>
+    <group name="G_NON_TAXABLE" source="Q_LINEITEM_NON_TAXABLE">
+      <element name="DATE" group-by="true" value="business_date" formatter="DateShort" />
+      <element name="REG" group-by="true" value="wkstn_id" />
+      <element name="TRN" group-by="true" value="trans_seq" />
+      <element name="AMT" value="amt" formatter="Money" function="SUM" />
+    </group>
+    <group name="G_NO_SALE" source="Q_NO_SALE">
+      <element name="DATE" value="business_date" formatter="DateShort" />
+      <element name="REG" value="wkstn_id" />
+      <element name="TRN" value="trans_seq" />
+      <element name="DESC" value="description" />
+    </group>
+    <group name="G_PAID" source="Q_PAID">
+      <element name="DATE" value="business_date" formatter="DateShort" />
+      <element name="REG" value="wkstn_id" />
+      <element name="TRN" value="trans_seq" />
+      <element name="DESC" value="description" />
+      <element name="REASON" value="reason_code" />
+      <element name="AMT" value="amt" formatter="Money" />
+      <element name="TYPE" value="typcode" translation-prefix="_dtv.pos.till.types.TenderControlTransTypeCode." />
+    </group>
+    <group name="G_POSTVOID" source="Q_POSTVOID">
+      <element name="DATE" value="business_date" formatter="DateShort" />
+      <element name="REG" value="wkstn_id" />
+      <element name="TRN" value="trans_seq" />
+      <element name="VOID_ORG" value="voided_org_id" />
+      <element name="VOID_LOC" value="voided_rtl_store_id" />
+      <element name="VOID_REG" value="voided_wkstn_id" />
+      <element name="VOID_DATE" value="voided_business_date" formatter="DateShort" />
+      <element name="VOID_TRN" value="voided_trans_id" />
+      <element name="DESC" value="description" />
+      <element name="TYPE" value="orig_trans_typcode" translation-prefix="_dtv.pos.common.TransactionType." />
+      <element name="AMT" value="orig_amount" formatter="Money" />
+    </group>
+    <group name="G_PAYMENT" source="Q_LINEITEM_PAYMENT">
+      <element name="DATE" group-by="true" value="business_date" formatter="DateShort" />
+      <element name="REG" group-by="true" value="wkstn_id" />
+      <element name="TRN" group-by="true" value="trans_seq" />
+      <element name="AMT" value="amt" formatter="Money" function="SUM" />
+    </group>
+  </dataStructure>
+</dataTemplate>

@@ -1,0 +1,105 @@
+<dataTemplate name="EmployeePerformance" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="PERCENT" value="_rptPercent"/>
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+    <label name="CRITERIA_WORK_CODE" value="_rptEmpPerfWorkCode"/>
+    <label name="CRITERIA_EMPLOYEE" value="_rptEmpPerfEmployee"/>
+    <label name="CRITERIA_VALUE_ALL" value="_rptParamSelectionAll"/>
+   
+	<label name="title"      value="_rptEmpPerfEnterParamTitle" />
+	<label name="DATE_RANGE" value="_rptDateRange" />
+	<label name="WORK_CODE"  value="_rptEmpPerfWorkCodeSearch" />
+	<label name="EMPLOYEE"   value="_rptEmpPerfEmployee" />
+
+	<label name="EMP"      value="_rptEmpPerfEmployeeSearch" />
+	<label name="EMP_ID"   value="_rptEmpID" />
+	<label name="EMP_NAME" value="_rptEmployeeName" />
+	<label name="HRS"      value="_rptSchedEmpPerfHrs" />
+	<label name="TOTAL_HRS_SCHED"  value="_rptSchedEmpPerfHrsSched" />
+	<label name="ACTUAL_HRS_WRKED" value="_rptSchedEmpPerfActHrs" />
+	<label name="DIFF"             value="_rptSchedEmpPerfDiff" />
+	<label name="NO_OF_SALES"      value="_rptSchedEmpPerfNumSales" />
+	<label name="AVG_SALE"         value="_rptAverageSale" />
+	<label name="AVG_PER_TRANS"    value="_rptSchedEmpPerfAvgPerTransaction" />
+	<label name="AVG_PER_HR"       value="_rptSchedEmpPerfAvgPerHr" />
+	<label name="NET_SALES"        value="_rptSchedEmpPerfTotSales" />
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+	<parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+
+    <!-- User Parameters -->
+	<parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" include_in_output="true">
+		<parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+		<defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+	</parameter>   
+	<parameter name="workCode" class="java.lang.String" isForPrompting="true" include_in_output="true" translation-prefix="_dtv.pos.scheduling.WorkCodesType.">
+		<parameterDescription><![CDATA[_rptEmpPerfWorkCodeSearch;Combo;dtv.pos.scheduling.WorkCodesLoader;all=_rptParamSelectionAll]]></parameterDescription>
+		<defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+	</parameter>
+	<parameter name="empId" class="java.lang.String" isForPrompting="true" include_in_output="true">
+		<parameterDescription><![CDATA[_rptEmpPerfEmployeeSearch;Text;Simple;maxLength=20]]></parameterDescription>
+		<defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+	</parameter>
+    
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter> 	
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_EMPLOYEEPERFORMANCE" key="EMPLOYEE_PERFORMANCE_REPORT">
+      <Parameters>
+	    <Parameter>empId</Parameter>
+	    <Parameter>organizationId</Parameter>
+	    <Parameter>argBusinessDateStart</Parameter>
+	    <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>workCode</Parameter>
+        <Parameter>dateRange</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+      </Parameters>
+      <ResultFields>
+         <ResultField>employee_id</ResultField>
+	     <ResultField>cust_name</ResultField>
+	     <ResultField>sch_hour</ResultField>
+	     <ResultField>wk_hour</ResultField>
+	     <ResultField>diff</ResultField>
+	     <ResultField>net_sale</ResultField>
+	     <ResultField>sales_per_trans</ResultField>
+	     <ResultField>sales_per_hour</ResultField>
+	     <ResultField>num_of_sales</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_EMPPERF" source="Q_EMPLOYEEPERFORMANCE">
+	    <element name="ID"         value="employee_id"/>
+	    <element name="CUST_NAME"  value="cust_name"       formatter="LastFirstNameFromString"  />
+	    <element name="SCH_HRS"    value="sch_hour"        formatter="MillsToHours" />
+	    <element name="WK_HRS"     value="wk_hour"         formatter="MillsToHours"   />
+	    <element name="DIFF"       value="diff"            formatter="MillsToHours"   />
+	    <element name="NUM_SALE"   value="num_of_sales"    formatter="Decimal"      />
+	    <element name="S_TRAN"     value="sales_per_trans" formatter="Money"        />
+	    <element name="S_HOUR"     value="sales_per_hour"  formatter="Money"        />
+	    <element name="N_SALE"     value="net_sale"        formatter="Money"        />
+    </group>
+  </dataStructure>
+</dataTemplate>

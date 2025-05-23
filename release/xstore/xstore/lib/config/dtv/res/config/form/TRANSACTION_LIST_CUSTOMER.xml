@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">TRANSACTION_LIST_CUSTOMER</FormKey>
+<!--     <FormLocation dtype="String">CUSTOMER_TRANSACTION_LIST_AREA</FormLocation> --><!-- Causes a stack trace as this location doesnt exist in the enum -->
+    <FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+    <FormViewPanel class="dtv.pos.framework.form.component.FormCustomerDisplayTransactionInformationHeader">
+    
+      <PanelType dtype="String">TOP_INFO</PanelType>
+      <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsTransactionInformationPanel</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginTransactionInformationPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      
+      <FormViewCell>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">customerName</Resource>
+        <Font fontSize="+4"/>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">LIST</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList2</Type>
+        <Resource dtype="String">viewList</Resource>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">CUSTOMER_DISPLAY_SALE</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+<!--     <FormViewPanel class="dtv.pos.framework.form.component.FormCustomerDisplayTransactionListDetails"> -->
+    <FormViewPanel panelType="LIST_FOOTER" class="dtv.pos.register.ui.FormTransactionListDetails">
+      <ComponentParameter name="setName">
+        <param_value dtype="String">TRANSACTION_LIST_FOOTER</param_value>
+      </ComponentParameter>
+    </FormViewPanel>
+    <FormViewPanel class="dtv.pos.framework.form.component.FormCustomerDisplayTransactionInformationFooter">
+      <PanelType dtype="String">BOTTOM_INFO</PanelType>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">-1.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginTransactionInformationPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      
+      <FormViewPanel name="TENDER_AREA">
+        <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+        <LayoutLocation dtype="String">1, 0, 1, 1, R, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsTransactionInformationPanel</param_value>
+          </Parameter>
+        </LayoutParameters>
+        
+        <FormViewCell>
+          <Type dtype="String">FormLabelTransaction</Type>
+          <Resource dtype="String">footerAmountLabel</Resource>
+          <Font fontSize="+8"/>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabelTransaction</Type>
+          <Resource dtype="String">amountDue</Resource>
+          <FormatterType dtype="String">Money</FormatterType>
+          <Font fontSize="+8"/>
+        </FormViewCell>
+      </FormViewPanel>
+    </FormViewPanel>
+  </FormView>
+</FormViewSet>

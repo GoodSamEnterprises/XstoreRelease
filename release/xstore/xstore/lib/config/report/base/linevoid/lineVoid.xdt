@@ -1,0 +1,83 @@
+<dataTemplate name="LineVoid" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="TRANS" value="_rptTrans"/>
+    <label name="REG" value="_rptReg"/>
+    <label name="DATE_AND_TIME" value="_rptDateTime"/>
+    <label name="ASSOCIATE" value="_rptAssociate"/>
+    <label name="ITEM_AND_DESCRIPTION" value="_rptItem"/>
+    <label name="QTY" value="_rptQty"/>
+    <label name="UNIT_PRICE" value="_rptUnitPrice"/>
+    <label name="NET" value="_rptNetAmount"/>
+
+    <label name="TOTAL" value="_rptTotal"/>
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>  
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_LINE_VOID" key="LINE_VOID_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+      </Parameters>
+      <ResultFields>
+          <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+          <ResultField>transaction_number</ResultField>
+          <ResultField>register_no</ResultField>          
+          <ResultField>associate_no</ResultField>
+          <ResultField>transaction_time</ResultField>
+          <ResultField>itemid</ResultField>
+          <ResultField>itemdesc</ResultField>
+          <ResultField>quantity</ResultField>
+          <ResultField>unitprice</ResultField>
+          <ResultField>netamount</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_LINE_VOID" source="Q_LINE_VOID">
+      <element name="TRN" value="transaction_number"/>
+      <element name="REG" value="register_no"/>
+      <element name="CASHIER" value="associate_no"/>
+      <element name="TRANS_TIME" value="transaction_time" formatter="DateTimeMedium"/>
+      <element name="ITM" value="itemid"/>
+      <element name="DESC" value="itemdesc"/>
+      <element name="QTY" value="quantity" formatter="Decimal"/>
+      <element name="UNIT_PRICE" value="unitprice" formatter="Money"/> 
+      <element name="NET" value="netamount" formatter="Money"/>
+    </group>
+    <group name="G_TOTAL_LINE_VOID" source="Q_LINE_VOID">
+      <element name="TRN" group-by="true" value="transaction_number"/>
+      <element name="REG" group-by="true" value="register_no"/>
+      <element name="NET" value="netamount" formatter="Money" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

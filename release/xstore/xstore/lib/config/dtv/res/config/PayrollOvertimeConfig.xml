@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PayrollOvertime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PayrollOvertimeConfig.xsd">
+  <PayrollOvertimeRuleSet name="WEEKLYOVER40">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">99</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">40</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="DAILYOVER8" >
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">90</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="DAILY_OVER8_LESSTHAN12">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">85</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+      <HoursUnder dtype="BigDecimal">12</HoursUnder>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="DAILY_OVER12_DT">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">DT</PayrollCategory>
+      <Sequence dtype="Integer">1</Sequence>
+      <OvertimeRate dtype="BigDecimal">2</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">12</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="7TH_DAY_OF_WEEK_OT">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">7</NumberParam>
+        <DayParam dtype="String">DAY_OF_WEEK</DayParam>
+        <WeekMonthParam dtype="String">WEEK</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+      <HoursUnder dtype="BigDecimal">8</HoursUnder>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="7TH_DAY_OF_WEEK_OVER8">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">DT</PayrollCategory>
+      <Sequence dtype="Integer">2</Sequence>
+      <OvertimeRate dtype="BigDecimal">2</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">7</NumberParam>
+        <DayParam dtype="String">DAY_OF_WEEK</DayParam>
+        <WeekMonthParam dtype="String">WEEK</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="CALIFORNIA">
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">DAILY_OVER8_LESSTHAN12</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">DAILY_OVER12_DT</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">7TH_DAY_OF_WEEK_OT</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">7TH_DAY_OF_WEEK_OVER8</PayrollOvertimeRuleSetReference>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="DAILYOVER12">
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">50</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">12</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="DAILYOVER10">
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">40</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">10</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="SUNDAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">EVERY</NumberParam>
+        <DayParam dtype="String">SUNDAY</DayParam>
+        <WeekMonthParam dtype="String">WEEK</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="NEW_YEAR_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">9</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">1</NumberParam>
+        <DayParam dtype="String">DAY_OF_MONTH</DayParam>
+        <WeekMonthParam dtype="String">JANUARY</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="US_MEMORIAL_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">LAST</NumberParam>
+        <DayParam dtype="String">MONDAY</DayParam>
+        <WeekMonthParam dtype="String">MAY</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="INDEPENDENCE_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">4</NumberParam>
+        <DayParam dtype="String">DAY_OF_MONTH</DayParam>
+        <WeekMonthParam dtype="String">JULY</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="LABOR_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">1</NumberParam>
+        <DayParam dtype="String">MONDAY</DayParam>
+        <WeekMonthParam dtype="String">SEPTEMBER</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="COLUMBUS_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <ExtraNumberParam dtype="String">NEAREST</ExtraNumberParam>
+        <NumberParam dtype="String">12</NumberParam>
+        <DayParam dtype="String">MONDAY</DayParam>
+        <WeekMonthParam dtype="String">OCTOBER</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="VETERAN_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">11</NumberParam>
+        <DayParam dtype="String">DAY_OF_MONTH</DayParam>
+        <WeekMonthParam dtype="String">NOVEMBER</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="VICTORY_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">2</NumberParam>
+        <DayParam dtype="String">MONDAY</DayParam>
+        <WeekMonthParam dtype="String">AUGUST</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="THANKSGIVING_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">4</NumberParam>
+        <DayParam dtype="String">THURSDAY</DayParam>
+        <WeekMonthParam dtype="String">NOVEMBER</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="CHRISTMAS_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">25</NumberParam>
+        <DayParam dtype="String">DAY_OF_MONTH</DayParam>
+        <WeekMonthParam dtype="String">DECEMBER</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="MASSACHUSETTS">
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">SUNDAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">NEW_YEAR_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">US_MEMORIAL_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">INDEPENDENCE_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">LABOR_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">COLUMBUS_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">VETERAN_DAY</PayrollOvertimeRuleSetReference>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="RHODE_ISLAND">
+    <MixSundayNHolidayRule dtype="String">MONDAY</MixSundayNHolidayRule>
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">SUNDAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">NEW_YEAR_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">US_MEMORIAL_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">INDEPENDENCE_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">LABOR_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">COLUMBUS_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">VETERAN_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">VICTORY_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">THANKSGIVING_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">CHRISTMAS_DAY</PayrollOvertimeRuleSetReference>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="WISCONSIN">
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">DAILYOVER10</PayrollOvertimeRuleSetReference>
+    <OvertimeApplyEmployeeAgeRuleSet dtype="OvertimeApplyEmployeeAgeRuleSet">
+      <OvertimeApplyEmployeeAgeRule dtype="OvertimeApplyEmployeeAgeRule">
+        <RuleType dtype="String">EQUAL</RuleType>
+        <Age dtype="Integer">16</Age>
+      </OvertimeApplyEmployeeAgeRule>
+      <OvertimeApplyEmployeeAgeRule dtype="OvertimeApplyEmployeeAgeRule">
+        <RuleType dtype="String">EQUAL</RuleType>
+        <Age dtype="Integer">17</Age>
+      </OvertimeApplyEmployeeAgeRule>
+    </OvertimeApplyEmployeeAgeRuleSet>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="KENTUCKY">
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">10</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">7</NumberParam>
+        <DayParam dtype="String">DAY_OF_WEEK</DayParam>
+        <WeekMonthParam dtype="String">WEEK</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+      <HoursUnder dtype="BigDecimal">24</HoursUnder>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="PR">
+    <PayrollOvertimeRuleSetReference dtype="String">NEW_YEAR_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">US_MEMORIAL_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">INDEPENDENCE_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">LABOR_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">COLUMBUS_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">VETERAN_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">VICTORY_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">THANKSGIVING_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">CHRISTMAS_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">DT</PayrollCategory>
+      <Sequence dtype="Integer">1</Sequence>
+      <OvertimeRate dtype="BigDecimal">2</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+    </PayrollOvertimeRule>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">DT</PayrollCategory>
+      <Sequence dtype="Integer">99</Sequence>
+      <OvertimeRate dtype="BigDecimal">2</OvertimeRate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">40</HoursOver>
+    </PayrollOvertimeRule>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">DT</PayrollCategory>
+      <Sequence dtype="Integer">3</Sequence>
+      <OvertimeRate dtype="BigDecimal">2</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">EVERY</NumberParam>
+        <DayParam dtype="String">SUNDAY</DayParam>
+        <WeekMonthParam dtype="String">WEEK</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">DT</PayrollCategory>
+      <Sequence dtype="Integer">2</Sequence>
+      <OvertimeRate dtype="BigDecimal">2</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">7</NumberParam>
+        <DayParam dtype="String">DAY_OF_WEEK</DayParam>
+        <WeekMonthParam dtype="String">WEEK</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name ="MB_CANADA">
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">85</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+    </PayrollOvertimeRule>
+    <!-- Canadian Holidays for time and half -->
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="NS_CANADA">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">99</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">48</HoursOver>
+    </PayrollOvertimeRule>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">85</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name ="ON_CANADA">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">99</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">44</HoursOver>
+    </PayrollOvertimeRule>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">85</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+      <HoursUnder dtype="BigDecimal">12</HoursUnder>
+    </PayrollOvertimeRule>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">DT</PayrollCategory>
+      <Sequence dtype="Integer">1</Sequence>
+      <OvertimeRate dtype="BigDecimal">2</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">12</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="PE_CANADA">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">99</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">48</HoursOver>
+    </PayrollOvertimeRule>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">85</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+    </PayrollOvertimeRule>
+    <!-- Canadian Holidays for time and half -->
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="AB_CANADA">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">99</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">44</HoursOver>
+    </PayrollOvertimeRule>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">85</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+    </PayrollOvertimeRule>
+    <!-- Canadian Holidays for time and half -->
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="BC_CANADA">
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">85</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+      <HoursUnder dtype="BigDecimal">12</HoursUnder>
+    </PayrollOvertimeRule>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">DT</PayrollCategory>
+      <Sequence dtype="Integer">1</Sequence>
+      <OvertimeRate dtype="BigDecimal">2</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">12</HoursOver>
+    </PayrollOvertimeRule>
+    <!-- Canadian Holidays for time and half -->
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name ="NB_CANADA">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">99</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">WEEKLY</OTType>
+      <HoursOver dtype="BigDecimal">44</HoursOver>
+    </PayrollOvertimeRule>
+    <!-- Canadian Holidays for time and half -->
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="SK_CANADA">
+    <PayrollOvertimeRuleSetReference dtype="String">WEEKLYOVER40</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">85</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">8</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="MARTIN_LUTHER_KING_DAY">
+    <PayrollOvertimeRule>
+      <PayrollCategory dtype="String">OT</PayrollCategory>
+      <Sequence dtype="Integer">1</Sequence>
+      <OvertimeRate dtype="BigDecimal">1.5</OvertimeRate>
+      <OvertimeSpecificDate dtype="OvertimeSpecificDate">
+        <NumberParam dtype="String">3</NumberParam>
+        <DayParam dtype="String">MONDAY</DayParam>
+        <WeekMonthParam dtype="String">JANUARY</WeekMonthParam>
+      </OvertimeSpecificDate>
+      <OTType dtype="String">DAILY</OTType>
+      <HoursOver dtype="BigDecimal">0</HoursOver>
+    </PayrollOvertimeRule>
+  </PayrollOvertimeRuleSet>
+  <PayrollOvertimeRuleSet name="TEST">
+    <PayrollOvertimeRuleSetReference dtype="String">DAILYOVER8</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">US_MEMORIAL_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">US_MEMORIAL_DAY</PayrollOvertimeRuleSetReference>
+    <PayrollOvertimeRuleSetReference dtype="String">DAILY_OVER12_DT</PayrollOvertimeRuleSetReference>
+  </PayrollOvertimeRuleSet>
+</PayrollOvertime>

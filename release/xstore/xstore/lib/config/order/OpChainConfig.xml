@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dtv/res/config/OpChainConfig.xsd">
+  <OpChain name="ORDER_SEARCH" rollbackLevel="20" contextKey="BACK_OFFICE_MAIN_MENU">
+    <Op class="dtv.pos.order.maint.OrderSearchOp" />
+    <OpChainRoute chainKey="ORDER_MAINTENANCE" chainType="START" />
+  </OpChain>
+  <OpChain name="ORDER_MAINTENANCE" rollbackLevel="40" contextKey="ORDER">
+    <Op class="dtv.pos.order.maint.OrderMaintenanceOp" breakpoint="true"/>
+  </OpChain>
+  <OpChain name="ORDER_MAINTENANCE_REGISTER_SETUP" contextKey="ORDER" rollbackChainKey="BACKTO_SALE_ITEM">
+    <Op class="dtv.pos.order.OrderSearchRegisterOp" />
+    <Op class="dtv.pos.order.SetupRegisterOrderMaintenanceOp" />
+    <OpChainRoute chainKey="ORDER_ADD_ITEM" chainType="START" />
+  </OpChain>
+  <OpChain name="ORDER_WORKLIST" rollbackLevel="20">
+    <PromptOp class="dtv.pos.order.maint.PromptOrderWorklistOp" />
+    <OpChainRoute chainKey="ORDER_MAINTENANCE" chainType="START" />
+  </OpChain>
+  <OpChain name="ORDER_ITEM_FROM_SEARCH" contextKey="ORDER">
+    <OpChainRoute>
+      <Choice chainKey="ORDER_ADD_ITEM" condition="dtv.pos.order.CurrentOrderExists" chainType="START" />
+      <Choice chainKey="ORDER_NEW_ORDER" chainType="START" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="ORDER_NEW_ORDER" rollbackChainKey="BACKTO_SALE_ITEM" contextKey="ORDER">
+    <Op class="dtv.pos.customer.EnsureCustomerAssignedOp">
+      <Parameter name="CHAIN_KEY" value="ORDER_CUST_ASSOCIATION" />
+    </Op>
+    <Op class="dtv.pos.customer.EnsureExistingCustInfoPresentOp">
+      <Parameter name="RequiredField" value="firstName" />
+      <Parameter name="RequiredField" value="lastName" />
+      <Parameter name="RequiredField" value="address1" />
+      <Parameter name="RequiredField" value="city" />
+      <Parameter name="RequiredField" value="state" />
+      <Parameter name="RequiredField" value="postalCode" />
+      <Parameter name="RequiredField" value="country" />
+    </Op>
+    <PromptOp class="dtv.pos.order.PromptOrderTypeOp" />
+    <Op class="dtv.pos.order.PromptDeliveryInfoOp" breakpoint="true"/>
+    <Op class="dtv.pos.order.SetupRegisterOrderMaintenanceOp" />
+    <OpChainRoute chainKey="ORDER_ADD_ITEM" chainType="START" />
+  </OpChain>
+  <OpChain name="ORDER_CUST_ASSOCIATION" signal="TransactionModified">
+    <Op class="dtv.pos.customer.CustomerSearchOp" required="true" breakpoint="true">
+      <!-- the CustomerSearchOp MUST be the first in the CUST_ASSOCIATION chain
+        so that it can see card swipe events that trigger this chain -->
+      <Parameter name="RESULTS_PROMPT" value="CUSTOMER_LIST_REGISTER" />
+      <Parameter name="PrimaryOnly" value="true" />
+      <Parameter name="AddCustomerChain" value="ADD_NEW_CUST_ASSOC" />
+      <Parameter name="EditCustomerChain" value="CUST_ASSOCIATION_EDIT" />
+    </Op>
+    <OpChainRoute chainKey="CUSTOMER.REVIEW_INFORMATION_CONSENT" />
+    <Op class="dtv.pos.customer.EnsureExistingCustInfoPresentOp">
+      <Parameter name="RequiredField" value="firstName" />
+      <Parameter name="RequiredField" value="lastName" />
+      <Parameter name="RequiredField" value="address1" />
+      <Parameter name="RequiredField" value="city" />
+      <Parameter name="RequiredField" value="state" />
+      <Parameter name="RequiredField" value="postalCode" />
+      <Parameter name="RequiredField" value="country" />
+    </Op>
+    <OpChainRoute chainKey="CUST_ASSOCIATION.pre" />
+    <ValidationOp validationsBean="attachCustomerToSaleRules" />
+    <Op class="dtv.pos.customer.AddCustToTransactionOp" />
+    <OpChainRoute chainKey="CUST_ASSOCIATION.LOYALTY" />
+    <Op class="dtv.pos.pricing.discount.ValidateDiscountsOnCustomerChangeOp" />
+    <Op class="dtv.pos.register.layaway.account.DelinquentLayawaySearchOp" />
+    <Op class="dtv.pos.register.specorder.account.ReceivedSpecOrderSearchOp" />
+    <Op class="dtv.pos.workorder.account.WorkOrderRequiresAttentionOp" />
+    <Op class="dtv.pos.register.UpdateCurrentTransListOp" />
+    <OpChainRoute chainKey="CUST_ASSOCIATION.post" />
+  </OpChain>
+  <OpChain name="ORDER_ADD_ITEM" signal="TransactionModified" contextKey="ORDER" rollbackChainKey="ORDER_MAINTENANCE_REGISTER_FINISH" rollbackLevel="30">
+    <PromptOp class="dtv.pos.order.PromptOrderItemScanOp" breakpoint="true" />
+    <ValidationOp class="dtv.pos.order.CheckItemNotOnFileOp" validationsBean="itemNotOnFileRules" />
+    <ValidationOp validationsBean="sellingIdGroupRules" />
+    <OpChainRoute chainKey="ORDER_ADD_ITEM_AFTER_LOOKUP" />
+    <OpChainRoute chainKey="ORDER_ADD_ITEM_POST" />
+  </OpChain>
+  <OpChain name="ORDER_ADD_ITEM_LOOKUP">
+    <OpChainRoute chainKey="ORDER_ADD_ITEM_AFTER_LOOKUP" />
+    <OpChainRoute chainKey="ORDER_ADD_ITEM_POST" />
+  </OpChain>
+  <OpChain name="ORDER_ADD_ITEM_AFTER_LOOKUP" signal="TransactionModified">
+    <Op class="dtv.pos.common.PromptStyleLookupOp" />
+    <ValidationOp class="dtv.pos.order.ValidateOrderItemsOp" validationsBean="itemAvailableForOrderRules" />
+    <ValidationOp class="dtv.pos.order.ValidateOrderItemsOp" validationsBean="orderItemRules" />
+    <Op class="dtv.pos.order.CreateOrderSaleLineOp" />
+    <PromptOp class="dtv.pos.register.MinimumAgeValidationOp" />
+    <PromptOp class="dtv.pos.order.PromptOrderItemQuantityOp" validationsBean="orderItemQuantityRules" />
+    <Op class="dtv.pos.register.modifyitem.UpdateChangedQuantityOp" />
+    <PromptOp class="dtv.pos.register.sale.PromptForItemWeightOp" />
+    <PromptOp class="dtv.pos.register.ItemPropertyPromptOp" validationsBean="itemPromptPropertyRules" />
+    <PromptOp class="dtv.pos.register.PromptItemDescriptionOp" />
+    <PromptOp class="dtv.pos.register.PromptItemPriceOp" />
+    <PromptOp class="dtv.pos.order.ConfirmOrderOnHandItemOp" key="ORDER_CONFIRM_ON_HAND_ITEM" />
+    <Op class="dtv.pos.order.LocateItemOp" longRunning="true">
+      <Parameter name="ShowListIfOne" value="false" />
+    </Op>
+    <PromptOp class="dtv.pos.order.PromptConfirmLocationAvailabilityOp" />
+    <Op class="dtv.pos.order.CreateOrderLineOp" />
+    <WorkerOp workersBean="addPriceChangeModifierToLineItemWorkers" />
+    <Op class="dtv.pos.commission.RouteItemCommissionAssociationOp"/>
+    <PromptOp class="dtv.pos.order.PromptShippingMethodOp" />
+    <Op class="dtv.pos.order.CalculateOrderLineTaxOp" />
+    <Op class="dtv.pos.order.AddLineToOrderOp" />
+  </OpChain>
+  <OpChain name="ORDER_ADD_ITEM_POST" signal="TransactionModified">
+    <WorkerOp workersBean="addTransDiscountsToNewItemWorkers" />
+    <Op class="dtv.pos.order.AddSetupFeeOp" />
+    <OpChainRoute chainKey="ORDER_SETUP_SHIPPING_FEE_UPDATE" />
+  </OpChain>
+  
+  <OpChain name="ORDER_SETUP_SHIPPING_FEE_UPDATE">
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />
+    <Op class="dtv.pos.order.ClearOrderItemOp" />
+  </OpChain>
+  
+  <OpChain name="ORDER_EDIT_DELIVERY_INFO">
+    <Op class="dtv.pos.order.PromptDeliveryInfoOp" breakpoint="true"/>
+    <Op class="dtv.pos.order.ChangeDeliveryTaxOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />
+  </OpChain>
+  <OpChain name="ORDER_EDIT_NOTES">
+    <PromptOp class="dtv.pos.order.EditOrderNotesOp" />
+  </OpChain>
+  <OpChain name="ORDER_CHANGE_ITEM_QUANTITY" signal="TransactionModified">
+    <PromptOp class="dtv.pos.order.GetSelectedOrderLineOp" validationsBean="orderItemChangeQuantityRules" />
+    <OpChainRoute chainKey="ORDER_CHANGE_ITEM_QUANTITY_IMPL" />
+  </OpChain>
+  <OpChain name="ORDER_CHANGE_ITEM_QUANTITY_TOUCH" signal="TransactionModified">
+    <ValidationOp class="dtv.pos.order.GetSelectedOrderLineFromTouchOp" validationsBean="orderItemChangeQuantityRules" />
+    <Op class="dtv.pos.hardware.op.PlaySoundOp" />
+    <OpChainRoute chainKey="ORDER_CHANGE_ITEM_QUANTITY_IMPL" />
+  </OpChain>
+  <OpChain name="ORDER_CHANGE_ITEM_QUANTITY_IMPL">
+    <PromptOp class="dtv.pos.order.PromptItemQuantityChangeOp" validationsBean="orderItemQuantityRules" />
+    <Op class="dtv.pos.order.LocateItemChangeQuantityOp" longRunning="true">
+        <Parameter name="ShowListIfOne" value="false" />
+    </Op>  
+    <Op class="dtv.pos.order.UpdateItemLocationOp" />  
+    <PromptOp class="dtv.pos.order.PromptShippingMethodOp" /> 
+    <Op class="dtv.pos.register.modifyitem.UpdateChangedQuantityOp" />
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />    
+  </OpChain>
+  <OpChain name="ORDER_CHANGE_ITEM_QUANTITY_LOCATE_ITEM">
+    <Op class="dtv.pos.order.LocateItemOp" longRunning="true">
+      <Parameter name="ShowListIfOne" value="false" />
+    </Op>
+  </OpChain>
+  <OpChain name="ORDER_PRE_CHANGE_ITEM_PRICE_TOUCH">
+    <ValidationOp class="dtv.pos.order.GetSelectedOrderLineFromTouchOp" validationsBean="orderItemChangePriceRules" />
+    <Op class="dtv.pos.hardware.op.PlaySoundOp" />
+    <OpChainRoute chainKey="ORDER_CHANGE_ITEM_PRICE_IMPL" />
+  </OpChain>
+  <OpChain name="ORDER_PRE_CHANGE_ITEM_PRICE">
+    <PromptOp class="dtv.pos.order.GetSelectedOrderLineOp" validationsBean="orderItemChangePriceRules" />
+    <OpChainRoute chainKey="ORDER_CHANGE_ITEM_PRICE_IMPL" />
+  </OpChain>
+  <OpChain name="ORDER_CHANGE_ITEM_PRICE_IMPL" signal="TransactionModified">
+    <OpChainRoute chainKey="ORDER_CHANGE_ITEM_PRICE" />
+    <Op class="dtv.pos.order.UpdateShippingFeeModifiersOp" />
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />  
+  </OpChain>
+  <OpChain name="ORDER_CHANGE_ITEM_PRICE" signal="TransactionModified">
+    <PromptOp class="dtv.pos.register.modifyitem.PromptItemPriceChangeOp" />
+    <Op class="dtv.pos.register.returns.ValidateTotalReturnPriceExistingItemOp" />
+    <PromptOp class="dtv.pos.register.modifyitem.PromptPriceChangeReasonCodeOp" />
+    <Op class="dtv.pos.register.VoidAllDiscountsOp" />
+    <WorkerOp workersBean="addPriceChangeModifierToLineItemWorkers" />
+  </OpChain>
+  <OpChain name="ORDER_VOID_LINE_TOUCH" signal="TransactionModified">
+    <!-- no support for swipe to void a price modifier -->
+    <ValidationOp class="dtv.pos.order.GetSelectedOrderLineFromTouchOp" validationsBean="orderItemVoidRules" />
+    <OpChainRoute chainKey="ORDER_VOID_LINE_IMPL" />
+  </OpChain>
+  <OpChain name="ORDER_VOID_LINE" signal="TransactionModified">
+    <!-- void an order line or price modifier line -->
+    <ValidationOp class="dtv.pos.order.GetSelectedVoidOrderLineOp" validationsBean="VoidOrderItemRules" />
+    <OpChainRoute>
+      <Choice chainKey="ORDER_VOID_DISCOUNT">
+        <Condition class="dtv.pos.order.IsDiscountOrDealCondition">
+          <Parameter name="reasonCodes" value="LINE_ITEM_DISCOUNT" />
+          <Parameter name="reasonCodes" value="TRANSACTION_DISCOUNT" />
+        </Condition>
+      </Choice>
+      <Choice chainKey="ORDER_VOID_GROUP_DISCOUNT">
+        <Condition class="dtv.pos.order.IsDiscountOrDealCondition">
+          <Parameter name="reasonCodes" value="GROUP_DISCOUNT" />
+        </Condition>
+      </Choice>
+      <Choice chainKey="ORDER_VOID_DEAL">
+        <Condition class="dtv.pos.order.IsDiscountOrDealCondition">
+          <Parameter name="reasonCodes" value="DEAL" />
+          <Parameter name="reasonCodes" value="MANUFACTURER_COUPON" />
+        </Condition>
+      </Choice>
+      <Choice chainKey="ORDER_VOID_LINE_IMPL" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="ORDER_VOID_LINE_IMPL" >
+    <OpChainRoute chainKey="VOID_ITEM" />
+    <Op class="dtv.pos.order.VoidOrderLineOp" />
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />
+  </OpChain>
+  <OpChain name="ORDER_VOID_DISCOUNT">
+    <OpChainRoute chainKey="VOID_DISCOUNT" />
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />
+  </OpChain>
+  <OpChain name="ORDER_VOID_GROUP_DISCOUNT">
+    <OpChainRoute chainKey="VOID_GROUP_DISCOUNT" />
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />
+  </OpChain>
+  <OpChain name="ORDER_VOID_DEAL">
+    <OpChainRoute chainKey="VOID_DEAL" />
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />
+  </OpChain>
+  <OpChain name="ORDER_CHANGE_COMMISSIONED_ASSOCIATES" signal="TransactionModified">
+    <PromptOp class="dtv.pos.order.GetSelectedOrderLineOp" validationsBean="orderItemChangeRules" />
+    <Op class="dtv.pos.commission.RouteCommAssocOp" />
+    <Op class="dtv.pos.commission.UpdateCommModifierOp" />
+  </OpChain>
+  <OpChain name="ORDER_CHANGE_COMMISSIONED_ASSOCIATES_TOUCH" signal="TransactionModified">
+    <ValidationOp class="dtv.pos.order.GetSelectedOrderLineFromTouchOp" validationsBean="orderItemChangeRules" />
+    <Op class="dtv.pos.commission.RouteCommAssocOp" />
+    <Op class="dtv.pos.commission.UpdateCommModifierOp" />
+  </OpChain>
+  <OpChain name="ORDER_CHANGE_TAX_LOCATION" signal="TransactionModified">
+    <PromptOp class="dtv.pos.order.GetSelectedOrderLineOp" validationsBean="orderItemChangeRules" />
+    <PromptOp class="dtv.pos.register.tax.PromptPostalCodeOp" />
+    <PromptOp class="dtv.pos.register.tax.PromptTaxLocationOp" />
+    <PromptOp class="dtv.pos.register.tax.PromptTaxChangeReasonOp" />
+    <Op class="dtv.pos.register.tax.ChangeTaxGroupRuleOp" />
+  </OpChain>
+  <OpChain name="ORDER_EXEMPT_ITEM_TAX" signal="TransactionModified">
+    <PromptOp class="dtv.pos.order.GetSelectedOrderLineOp" validationsBean="orderItemChangeRules" />
+    <Op class="dtv.pos.register.tax.PromptSelectItemTaxOp" />
+    <PromptOp class="dtv.pos.register.tax.PromptTaxExemptionOp" />
+    <PromptOp class="dtv.pos.register.tax.PromptTaxExemptReasonOp" />
+    <Op class="dtv.pos.register.tax.SaveTaxExemptOp" />
+    <Op class="dtv.pos.register.tax.ChangeTaxToExemptOp" />
+  </OpChain>
+  <OpChain name="ORDER_EDIT_LINE_NOTES">
+    <PromptOp class="dtv.pos.order.GetSelectedOrderLineOp" validationsBean="orderItemChangeRules" />
+    <PromptOp class="dtv.pos.order.EditOrderLineNotesOp" />
+  </OpChain>
+  <OpChain name="ORDER_PICKUP_ITEMS" signal="TransactionModified">
+    <PromptOp class="dtv.pos.order.PromptItemsToPickupOp" validationsBean="orderCancelSelectedItemsRules" />
+    <Op class="dtv.pos.order.OrderPickupItemIteratingOp">
+      <Parameter name="ChainKey" value="ORDER_PICKUP_ITEM_SERIAL_NUMBER" />
+    </Op>
+    <Op class="dtv.pos.order.ProcessItemsToPickupOp" />
+    <Op class="dtv.pos.order.AddAccountCreditOp" />
+    <Op class="dtv.pos.order.ApplyPickupPaymentOp" />
+  </OpChain>
+  <OpChain name="ORDER_PICKUP_ITEM_SERIAL_NUMBER">
+    <PromptOp class="dtv.pos.register.PromptItemSerialNumberOp" validationsBean="serialNumberSaleRules"  />
+  </OpChain>
+  <OpChain name="ORDER_MAINTENANCE_REGISTER_FINISH" signal="TransactionModified">
+    <Op class="dtv.pos.order.DetermineAnyChangesMadeOp" />
+    <OpChainRoute chainKey="SET_ORDER_DEPOSIT_AMOUNT" />
+    <OpChainRoute chainKey="BACKTO_SALE_ITEM" chainType="START" />
+  </OpChain>
+
+  <OpChain name="SET_ORDER_DEPOSIT_AMOUNT">
+    <PromptOp class="dtv.pos.order.PromptDepositAmountOp" validationsBean="orderDepositRules" />
+    <Op class="dtv.pos.order.UpdateDepositInfoOp" />
+  </OpChain>
+  
+  <OpChain name="ORDER_PRE_TENDERING" signal="TransactionModified">
+    <Op class="dtv.pos.order.DetermineAnyChangesMadeOp" />
+    <OpChainRoute chainKey="SET_ORDER_DEPOSIT_AMOUNT" />
+    <Op class="dtv.pos.register.UpdateCurrentTransListOp" />
+    <OpChainRoute chainKey="PRE_TENDERING" chainType="START" />
+  </OpChain>
+ 
+  <OpChain name="ORDER_ADD_ITEM_DISCOUNT">
+    <PromptOp class="dtv.pos.order.GetSelectedOrderLineOp" validationsBean="orderItemChangeRules" />
+    <PromptOp class="dtv.pos.pricing.discount.PromptDiscountOp">
+      <Parameter name="ApplicationMethodCode" value="LINE_ITEM" />
+    </PromptOp>
+    <Op class="dtv.pos.pricing.discount.RouteDiscountOp" />
+    <Op class="dtv.pos.pricing.discount.UpdateLineItemAsscModPriceUponDiscountOp" />
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />
+  </OpChain>
+  <OpChain name="ORDER_ADD_TRANS_DISCOUNT">
+    <PromptOp class="dtv.pos.pricing.discount.PromptDiscountOp">
+      <Parameter name="ApplicationMethodCode" value="TRANSACTION" />
+    </PromptOp>
+    <Op class="dtv.pos.pricing.discount.RouteDiscountOp" />
+    <Op class="dtv.pos.pricing.discount.UpdateLineItemAsscModPriceUponDiscountOp" />
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />
+  </OpChain>
+  <OpChain name="ORDER_CANCEL_ORDER">
+    <PromptOp class="dtv.pos.order.PromptFulfillingLocationListOp" />
+    <PromptOp class="dtv.pos.order.PromptCancellableItemListOp" validationsBean="orderCancelSelectedItemsRules" />
+    <PromptOp class="dtv.pos.framework.op.PromptYesNoOp" key="ORDER_CONFIRM_CANCEL" />
+    <PromptOp class="dtv.pos.order.PromptCancelOrderReasonOp" />
+    <Op class="dtv.pos.order.CancelOrderOp" />
+    <Op class="dtv.pos.order.AddOrderRefundOp" />
+    <OpChainRoute chainKey="ORDER_MAINTENANCE_REGISTER_FINISH" chainType="START" />
+  </OpChain>
+  <OpChain name="ORDER_ACCEPT_FROM_WORKLIST">
+    <ValidationOp validationsBean="acceptOrderFromWorklistRules"/>
+    <OpChainRoute chainKey="ORDER_ACCEPT_ORDER" />
+  </OpChain>
+  <OpChain name="ORDER_ACCEPT_ORDER" signal="TransactionComplete">
+    <ValidationOp validationsBean="acceptOrderRules" />
+    <Op class="dtv.pos.order.maint.ValidateStatusHasNotChangedOp" />
+    <PromptOp class="dtv.pos.framework.op.PromptYesNoOp" key="ORDER_CONFIRM_ACCEPT" />
+    <Op class="dtv.pos.order.maint.UpdateOrderStatusOp">
+      <Parameter name="NewStatus" value="ACCEPTED" />
+      <Parameter name="Operation" value="ACCEPT_ORDER" />
+    </Op>
+    <Op class="dtv.pos.order.maint.CreateStatusUpdateTransactionOp" />
+    <Op class="dtv.pos.order.maint.AddPickTicketReceiptSourceOp" />
+    <Op class="dtv.pos.common.PersistCurrentTransactionOp" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+    <Op class="dtv.pos.order.maint.PromptOrderAcceptInstructionsOp" />
+  </OpChain>
+
+  <OpChain name="ORDER_ACCEPT_ALL_ORDER" signal="TransactionComplete">
+   <Op class="dtv.pos.order.maint.PromptAcceptAllPolledOrdersOp">
+      <Parameter name="PromptKey" value="ORDER_CONFIRM_ACCEPT_ALL" />
+    </Op>
+    <Op class="dtv.pos.order.maint.UpdatePolledOrderStatusToAcceptedOp" longRunning="true" />
+    <Op class="dtv.pos.order.maint.CreateAcceptAllStatusUpdateTransactionOp" />
+    <WorkerOp workersBean="acceptAllCompleteTransactionWorkers" />
+    <Op class="dtv.pos.order.maint.AddAllPickTicketReceiptSourceOp" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+    <Op class="dtv.pos.order.maint.AcceptAllPersistCurrentTransactionOp" />
+   <Op class="dtv.pos.order.maint.AcceptAllPromptOrderAcceptInstructionsOp" />
+  <OpChainRoute chainKey="ORDER_WORKLIST" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="ACCEPT_ALL_POLLED_ORDERS">
+    <Op class="dtv.pos.order.maint.CheckForPolledOrdersOp" longRunning="true" />
+  </OpChain>
+
+  <OpChain name="ORDER_REJECT_ORDER" signal="TransactionComplete">
+    <Op class="dtv.pos.order.maint.ValidateStatusHasNotChangedOp" />
+    <PromptOp class="dtv.pos.order.maint.PromptRejectOrderOp">
+      <Parameter name="PromptKey" value="ORDER_CONFIRM_REJECT" />
+    </PromptOp>
+    <PromptOp class="dtv.pos.order.maint.PromptRejectOrderReasonOp">
+      <Parameter name="ReasonTypeCode" value="ORDER_REJECT" />
+    </PromptOp>
+    <Op class="dtv.pos.order.maint.UpdateOrderStatusOp">
+      <Parameter name="NewStatus" value="REJECTED" />
+    </Op>
+    <Op class="dtv.pos.order.maint.CreateStatusUpdateTransactionOp" />
+    <Op class="dtv.pos.common.PersistCurrentTransactionOp" />
+    <OpChainRoute chainKey="ORDER_REJECT_RESERVED_ORDER" condition="dtv.pos.order.maint.PreviousOrderLineReserved" />
+    <WorkerOp workersBean="closeOrderShippingDocumentWorkers" />
+  </OpChain>
+  <OpChain name="ORDER_REJECT_RESERVED_ORDER" signal="InventoryOperationsComplete,TransactionComplete">
+    <WorkerOp workersBean="rejectReservedOrderWorkers" />
+  </OpChain>
+  <OpChain name="ORDER_RESERVE_ORDER" signal="InventoryOperationsComplete,TransactionComplete" >
+    <Op class="dtv.pos.order.maint.ValidateStatusHasNotChangedOp" />
+    <PromptOp class="dtv.pos.framework.op.PromptYesNoOp" key="ORDER_CONFIRM_RESERVE" />
+    <Op class="dtv.pos.order.maint.UpdateOrderStatusOp">
+      <Parameter name="NewStatus" value="RESERVED" />
+    </Op>
+    <Op class="dtv.pos.order.maint.CreateStatusUpdateTransactionOp" />
+    <Op class="dtv.pos.common.PersistCurrentTransactionOp" />
+    <OpChainRoute chainKey="ORDER_RESERVE_ORDER_INVENTORY" />
+    <PromptOp class="dtv.pos.order.maint.PromptOrderReserveInstructionsOp" />
+    <WorkerOp workersBean="sendReservedOrderEmailWorkers" />
+  </OpChain>
+  
+  <OpChain name="ORDER_UNRESERVE_ORDER" signal="InventoryOperationsComplete,TransactionComplete">
+    <PromptOp class="dtv.pos.framework.op.PromptYesNoOp" key="ORDER_CONFIRM_UNRESERVE" />
+    <Op class="dtv.pos.order.maint.UpdateOrderStatusOp">
+      <Parameter name="NewStatus" value="ACCEPTED" />
+      <Parameter name="Operation" value="UNRESERVE_ORDER" />
+    </Op>
+    <Op class="dtv.pos.order.maint.CreateStatusUpdateTransactionOp" />
+    <Op class="dtv.pos.common.PersistCurrentTransactionOp" />
+    <OpChainRoute chainKey="ORDER_UNRESERVE_ORDER_INVENTORY" />
+  </OpChain>
+  
+  <OpChain name="ORDER_UNRESERVE_ORDER_INVENTORY">
+    <WorkerOp workersBean="unreserveOrderInventoryWorkers" />
+  </OpChain>
+   
+  <OpChain name="ORDER_RESERVE_ORDER_INVENTORY" signal="TransactionComplete">
+    <WorkerOp workersBean="reserveOrderInventoryWorkers" />
+  </OpChain>
+  <OpChain name="ORDER_PREPARE_TO_SHIP_ORDER">
+    <Op class="dtv.pos.order.maint.ValidateStatusHasNotChangedOp" />
+    <PromptOp class="dtv.pos.framework.op.PromptYesNoOp" key="ORDER_CONFIRM_SHIP" />
+    <Op class="dtv.pos.order.maint.HandleShipOrderOp" />
+  </OpChain>
+  <OpChain name="ORDER_SHIP_ORDER" signal="InventoryOperationsComplete,TransactionComplete" >
+    <Op class="dtv.pos.order.maint.ProcessShippingDocumentOp" />
+    <WorkerOp workersBean="sendShippedOrderEmailWorkers" />
+    <OpChainRoute chainKey="SHIPPING_PROCESS_SHIPMENT" />
+    <OpChainRoute chainKey="PRINT_PACKING_SLIP" />
+    <WorkerOp workersBean="shipOrderWorkers" />
+  </OpChain>
+  <OpChain name="ORDER_ALLOCATE_ITEMS" signal="InventoryOperationsComplete,TransactionComplete" >
+    <Op class="dtv.pos.order.maint.ValidateStatusHasNotChangedOp" />
+    <PromptOp class="dtv.pos.framework.op.PromptYesNoOp" key="ORDER_CONFIRM_ALLOCATE_ITEMS" />
+    <Op class="dtv.pos.order.maint.AllocateOrderOp" />
+    <Op class="dtv.pos.order.maint.CreateStatusUpdateTransactionOp" />
+    <WorkerOp workersBean="sendAllocatedOrderEmailWorkers" />
+    <Op class="dtv.pos.common.PersistCurrentTransactionOp" />
+    <OpChainRoute chainKey="ORDER_ALLOCATE_ITEMS_INVENTORY" />
+  </OpChain>
+  <OpChain name="ORDER_ALLOCATE_ITEMS_INVENTORY" signal="TransactionComplete">
+    <Op class="dtv.pos.order.maint.CreateAllocateInventoryTransactionOp" />
+    <Op class="dtv.pos.inventory.NewProcessInventoryOp" />
+    <Op class="dtv.pos.common.PersistCurrentTransactionOp" />
+  </OpChain>
+  
+  <OpChain name="ORDER_CHECK_INVENTORY">
+    <PromptOp class="dtv.pos.order.maint.PromptInventoryLevelsOp" />
+  </OpChain>
+  <OpChain name="SALE_COMPLETE_FINISH.order.1">
+    <Op class="dtv.pos.order.AddOrderReceiptSourceOp" />
+  </OpChain>
+  <OpChain name="SALE_COMPLETE_FINISH.order.2">
+    <Op class="dtv.pos.order.SubmitOrderOp" longRunning="true" />
+    <Op class="dtv.pos.order.UpdateFulfilledItemsOp" longRunning="true" />
+    <Op class="dtv.pos.order.UpdateCancelledOrderOp" longRunning="true" />
+  </OpChain>
+  
+  <OpChain name="RECEIVING_CLOSE_DOCUMENT">
+    <PromptOp class="dtv.pos.order.maint.PromptCloseReceivingDocumentOp" />
+  </OpChain>
+  <OpChain name="SAVE_RECEIVING.ORDER">
+    <Op class="dtv.pos.order.maint.UpdateReceivedItemsOp" />
+    <WorkerOp workersBean="sendReceivedOrderEmailWorkers" />
+  </OpChain>
+  
+  <OpChain name="ORDER_STATUS_REPORT">
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="ORDER_STATUS_REPORT" />
+    </Op>
+    <Op class="dtv.pos.order.PromptOrderStatusReportParametersOp" breakpoint="true" />
+  </OpChain>
+  <OpChain name="UNFULFILLABLE_ORDER_STATUS_REPORT">
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="UNFULFILLABLE_ORDER_STATUS_REPORT" />
+    </Op>
+    <Op class="dtv.pos.order.PromptUnfulfillableOrderReportParametersOp" breakpoint="true" />
+  </OpChain>
+  <OpChain name="ORDER_MANUAL_SHIPPING_PRINT_LABEL">
+    <Op class="dtv.pos.order.maint.GatherOrderShipmentInfoOp">
+      <Parameter name="chainToProcess" value="MANUAL_SHIPPING_PRINT_LABEL" />
+    </Op>
+  </OpChain>
+  <OpChain name="PRINT_PICK_SLIP_CHAIN">
+    <PromptOp class="dtv.pos.reporting.PromptRunReportOp" />
+    <Op class="dtv.pos.order.maint.CheckForAcceptedOrdersOp" longRunning="true" />
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="PICK_SLIP_REPORT" />
+    </Op>
+    <Op class="dtv.pos.order.SetPickListReportDataSource" />
+    <Op class="dtv.pos.order.FillAndPrintPickSlipReportOp" />
+    <OpChainRoute chainKey="ORDER_WORKLIST" chainType="START" />
+  </OpChain>
+  <OpChain name="RETAIL_LOCATION_OPEN.order">
+    <PromptOp class="dtv.pos.order.PromptOrdersOnStoreOpenOp" />
+  </OpChain>
+  <OpChain name="RETAIL_LOCATION_CLOSE.order.1">
+    <PromptOp class="dtv.pos.order.PromptOrdersOnStoreCloseOp" />
+  </OpChain>
+  <OpChain name="RETAIL_LOCATION_CLOSE.order.2">
+    <Op class="dtv.pos.order.maint.ProcessClosingStatusRequestsOp" longRunning="true" />
+  </OpChain>
+  
+  <!-- Customer Item List Opchains -->
+  <OpChain name="ORDER_WISH_LIST_ITEM">
+    <PromptOp class="dtv.pos.customer.wishlist.op.PromptOrderWishListOp" validationsBean="custItemListSelectItemsRules" />
+    <PromptOp class="dtv.pos.customer.wishlist.op.NotifyRemoveWishListOp" />
+    <OpChainRoute chainKey="ORDER_ITEMS_FROM_CART" chainType="START" />
+  </OpChain>
+  <OpChain name="ORDER_DIGITAL_CART_ITEM">
+    <PromptOp class="dtv.pos.customer.digitalcart.op.PromptOrderDigitalCartOp" validationsBean="custItemListSelectItemsRules" />
+    <PromptOp class="dtv.pos.customer.digitalcart.op.NotifyRemoveDigitalCartOp" />
+    <OpChainRoute chainKey="ORDER_ITEMS_FROM_CART" chainType="START" />
+  </OpChain>
+  <OpChain name="ORDER_ITEMS_FROM_CART" contextKey="ORDER">
+    <OpChainRoute>
+      <Choice chainKey="ORDER_MULTIPLE_ITEMS" condition="dtv.pos.order.CurrentOrderExists" />
+      <Choice chainKey="ORDER_NEW_MULTIPLE_ITEMS" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="ORDER_NEW_MULTIPLE_ITEMS" rollbackChainKey="BACKTO_SALE_ITEM" contextKey="ORDER">
+    <PromptOp class="dtv.pos.order.PromptOrderTypeOp" />
+    <Op class="dtv.pos.order.PromptDeliveryInfoOp" breakpoint="true"/>
+    <Op class="dtv.pos.order.SetupRegisterOrderMaintenanceOp" />
+    <OpChainRoute chainKey="ORDER_MULTIPLE_ITEMS" />
+  </OpChain>
+  <OpChain name="ORDER_MULTIPLE_ITEMS">
+    <Op class="dtv.pos.order.LocateMultipleItemsOp" longRunning="true">
+      <Parameter name="ShowListIfOne" value="false" />
+    </Op>
+    <Op class="dtv.pos.customer.custitem.op.SplitItemQuantityOp" />
+    <Op class="dtv.pos.customer.custitem.op.CustItemsOrderIteratingOp">
+      <Parameter name="chainKey" value="ORDER_MULTIPLE_ADD_ITEM" />
+    </Op>
+    <OpChainRoute chainKey="ORDER_ADD_ITEM" />
+  </OpChain>
+  <OpChain name="ORDER_MULTIPLE_ADD_ITEM">
+    <OpChainRoute chainKey="ORDER_ADD_ITEM_AFTER_LOOKUP" />
+    <OpChainRoute chainKey="ORDER_ADD_ITEM_POST" />
+  </OpChain>  
+  <OpChain name="ADD_ORDER_COUPON">
+    <PromptOp class="dtv.pos.coupon.PromptCouponOp" validationsBean="couponIdRules">
+      <Parameter name="AcceptMissingCoupon" value="true" />
+      <Parameter name="MissingCouponChainKey" value="ADD_ORDER_DISCOUNT" />
+    </PromptOp>
+    <ValidationOp class="dtv.pos.coupon.LookupCouponOp" validationsBean="couponVerificationRules" />
+  </OpChain>
+  <OpChain name="ADD_ORDER_DISCOUNT" signal="TransactionModified">
+    <PromptOp class="dtv.pos.order.GetSelectedOrderLineOp" validationsBean="orderItemChangeRules" />
+    <PromptOp class="dtv.pos.pricing.discount.PromptDiscountOp" />
+    <Op class="dtv.pos.pricing.discount.RouteDiscountOp" />
+    <Op class="dtv.pos.pricing.discount.UpdateLineItemAsscModPriceUponDiscountOp" />
+  </OpChain>
+  
+  <OpChain name="PRE_TENDERING_ACTIVITY.pre">
+    <OpChainRoute chainKey="ORDER_SETUP_SHIPPING_FEE_UPDATE" />
+    <OpChainRoute chainKey="SET_ORDER_DEPOSIT_AMOUNT" />
+  </OpChain>
+</OpChainSet>

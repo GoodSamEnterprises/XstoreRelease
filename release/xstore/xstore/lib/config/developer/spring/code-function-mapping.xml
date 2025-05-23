@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="codeMapAppenderTest" class="com.micros_retail.xfgclient.code.CodeMapAppender">
+    <property name="codeMap" >
+      <map>
+        <entry key="204">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_GenerateHeapDump" />
+            <property name="description" value="_xfgclient.codefunction.heapdump" />
+          </bean>
+        </entry>
+        <entry key="1001">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_Empty" />
+            <property name="description" value="_xfgclient.codefunction.tcntest.TCN_Empty" />
+          </bean>
+        </entry>
+        <entry key="1002">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_Succeed" />
+            <property name="description" value="_xfgclient.codefunction.tcntest.TCN_Succeed" />
+          </bean>
+        </entry>
+        <entry key="1003">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_Fail" />
+            <property name="description" value="_xfgclient.codefunction.tcntest.TCN_Fail" />
+          </bean>
+        </entry>
+        <entry key="1004">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_NotApplicable" />
+            <property name="description" value="_xfgclient.codefunction.tcntest.TCN_NotApplicable" />
+          </bean>
+        </entry>
+        <entry key="1005">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_FailAtBegin" />
+            <property name="description" value="_xfgclient.codefunction.tcntest.TCN_FailAtBegin" />
+          </bean>
+        </entry>
+        <entry key="1006">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_FailAtEnd" />
+            <property name="description" value="_xfgclient.codefunction.tcntest.TCN_FailAtEnd" />
+          </bean>
+        </entry>
+        <entry key="1007">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_FailAtRollback" />
+            <property name="description" value="_xfgclient.codefunction.tcntest.TCN_FailAtRollback" />
+          </bean>
+        </entry>
+        <entry key="1008">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_Invoke" />
+            <property name="description" value="_xfgclient.codefunction.tcntest.TCN_Invoke" />
+          </bean>
+        </entry>
+        <entry key="1010">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_BreakPointTest1" />
+            <property name="description" value="Chain Breakpoint Test 1" />
+          </bean>
+        </entry>
+        <entry key="1011">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_BreakPointTest2" />
+            <property name="description" value="Chain Breakpoint Test 2" />
+          </bean>
+        </entry>
+        <entry key="1012">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_BreakPointTest3" />
+            <property name="description" value="Chain Breakpoint Test 3" />
+          </bean>
+        </entry>
+        <entry key="1100">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.RequestResourceInCodeTN" />
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Request Resource TEST" />
+            <property name="validations" ref="userLoggedInRules" />
+          </bean>
+        </entry>
+        <entry key="1110">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.ExecuteGSActionTN" >
+                      <property name="gsActionPrompt">
+                        <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig" >
+                          <property name="keyword" ref="KW_GS_ExecuteGSAction" />
+                        </bean>
+                      </property>
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Execute GSAction" />
+          </bean>
+        </entry>
+        <entry key="1112">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.discount.SetAllowedDiscountApplicationMethodsTN" >
+                      <property name="discountApplicationMethods" value="LINE_ITEM" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.transition.discount.PromptForDiscountTN" >
+                      <property name="listInitKeyword" ref="KW_GS_SelectListInit" />
+                      <property name="listAddKeyword" ref="KW_GS_SelectListAdd" />
+                      <property name="promptKeyword" ref="KW_SelectList" />
+                      <property name="promptState" ref="STATE_ChoiceEntry" />
+                      <property name="promptParameters" value="TEST ITEM DISCOUNT SELECTION" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="ITEM DISCOUNT SELECTION TEST" />
+          </bean>
+        </entry>
+        <entry key="1113">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.discount.SetAllowedDiscountApplicationMethodsTN" >
+                      <property name="discountApplicationMethods" value="GROUP" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.transition.discount.PromptForDiscountTN" >
+                      <property name="listInitKeyword" ref="KW_GS_SelectListInit" />
+                      <property name="listAddKeyword" ref="KW_GS_SelectListAdd" />
+                      <property name="promptKeyword" ref="KW_SelectList" />
+                      <property name="promptState" ref="STATE_ChoiceEntry" />
+                      <property name="promptParameters" value="TEST GROUP DISCOUNT SELECTION" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="GROUP DISCOUNT SELECTION TEST" />
+          </bean>
+        </entry>
+        <entry key="1114">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.discount.SetAllowedDiscountApplicationMethodsTN" >
+                      <property name="discountApplicationMethods" value="TRANSACTION" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.transition.discount.PromptForDiscountTN" >
+                      <property name="listInitKeyword" ref="KW_GS_SelectListInit" />
+                      <property name="listAddKeyword" ref="KW_GS_SelectListAdd" />
+                      <property name="promptKeyword" ref="KW_SelectList" />
+                      <property name="promptState" ref="STATE_ChoiceEntry" />
+                      <property name="promptParameters" value="TEST TRANSACTION DISCOUNT SELECTION" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="TRANSACTION DISCOUNT SELECTION TEST" />
+          </bean>
+        </entry>
+        <entry key="1115">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.CaptureStringTestTN"> 
+                      <property name="promptState" ref="STATE_DateEntry" />
+                      <property name="promptDefault" >
+                        <bean class="java.util.Date" />
+                      </property>
+                      <property name="promptParameters" value="Date Entry TEST" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Date Entry TEST" />
+          </bean>
+        </entry>
+        <entry key="1116">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.CaptureStringTestTN"> 
+                      <property name="promptState" ref="STATE_DateTimeEntry" />
+                      <property name="promptDefault" >
+                        <bean class="java.util.Date" />
+                      </property>
+                      <property name="promptParameters" value="Date&amp;Time Entry TEST" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Date&amp;Time Entry TEST" />
+          </bean>
+        </entry>
+        <entry key="1117">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.CaptureStringTestTN"> 
+                      <property name="promptState" ref="STATE_BigDecimalEntry" />
+                      <property name="promptDefault" >
+                        <bean class="java.math.BigDecimal">
+                          <constructor-arg value="99999.99" />
+                        </bean>
+                      </property>
+                      <property name="promptParameters" value="Decimal Entry TEST" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Decimal Entry TEST" />
+          </bean>
+        </entry>
+        <entry key="1118">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.CaptureStringTestTN"> 
+                      <property name="promptState" ref="STATE_MoneyEntry" />
+                      <property name="promptParameters" value="Money Entry TEST" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Money Entry TEST" />
+          </bean>
+        </entry>
+        <entry key="1119">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.CaptureStringTestTN"> 
+                      <property name="promptState" ref="STATE_MoneyEntry" />
+                      <property name="promptDefault" >
+                        <bean class="dtv.util.Money">
+                          <constructor-arg>
+                            <bean class="java.math.BigDecimal">
+                              <constructor-arg value="99999.99" />
+                            </bean>
+                          </constructor-arg>
+                          <constructor-arg value="#{T(java.util.Currency).getInstance(&quot;HUF&quot;)}" />
+                        </bean>
+                      </property>
+                      <property name="promptParameters" value="Money Entry TEST" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Money Entry TEST" />
+          </bean>
+        </entry>
+        <entry key="1120">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.util.PromptNotificationTN" >
+                    <property name="promptState" ref="STATE_Error" />
+                    <property name="promptParameters" value="Error Popup Test" />
+                  </bean> 
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Error Popup TEST" />
+          </bean>
+        </entry>
+        <entry key="1121">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.util.PromptNotificationTN" >
+                    <property name="promptState" ref="STATE_Notification" />
+                    <property name="promptParameters" value="Info Popup Test" />
+                  </bean> 
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Info Popup TEST" />
+          </bean>
+        </entry>
+        <entry key="1122">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.test.CaptureYesNoTestTN" >
+                    <property name="promptParameters" value="Yes/No Entry Test" />
+                  </bean> 
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Yes/No Entry TEST" />
+          </bean>
+        </entry>
+        <entry key="1123">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.test.CaptureChoiceTestTN" >
+                    <property name="promptParameters" >
+                      <array>
+                        <value>Choice 3 Entry Test</value>
+                        <value>Cancel</value>
+                        <value>No</value>
+                        <value>Yes</value>
+                      </array>
+                    </property>
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Choice 3 Entry TEST" />
+          </bean>
+        </entry>
+        <entry key="1124">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.test.CaptureChoiceTestTN" >
+                    <property name="promptKeyword" ref="KW_TestScaleErrorChoice" />
+                    <property name="promptParameters" >
+                      <array>
+                        <value>Scale Error Popup Test</value>
+                        <value>Cancel</value>
+                        <value>No</value>
+                        <value>Yes</value>
+                      </array>
+                    </property>
+                  </bean> 
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Scale Error Popup TEST" />
+          </bean>
+        </entry>
+        <entry key="1125">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.SelectListTestTN" >
+                      <property name="listInitKeyword" ref="KW_GS_SelectListInit" />
+                      <property name="listAddKeyword" ref="KW_GS_SelectListAdd" />
+                      <property name="promptKeyword" ref="KW_SelectList" />
+                      <property name="promptState" ref="STATE_ChoiceEntry" />
+                      <property name="promptParameters" value="TEST LIST SELECTION" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="List Entry Popup TEST" />
+          </bean>
+        </entry>
+        <entry key="1126">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.util.PromptNotificationTN" >
+                    <property name="promptKeyword" ref="KW_ShowCamera" />
+                  </bean> 
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Camera Popup TEST" />
+          </bean>
+        </entry>
+        <entry key="1127">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeInterpreterTN" >
+                    <property name="keyword" ref="KW_TestShowPLUList" />
+                  </bean> 
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Item Grid Popup TEST" />
+          </bean>
+        </entry>
+        <entry key="1128">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.util.PromptNotificationTN" >
+                    <property name="promptKeyword" ref="KW_TestShowSystemInfo" />
+                  </bean> 
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="System Info Popup TEST" />
+          </bean>
+        </entry>
+        <entry key="1129">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeInterpreterTN" >
+                    <property name="keyword" ref="KW_VirtualKeyboard_Enable" />
+                  </bean> 
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Keyboard Popup TEST" />
+          </bean>
+        </entry>
+        <entry key="1131">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.CaptureStringTestTN"> 
+                      <property name="promptState" ref="STATE_MaskEntry" />
+                      <property name="promptDefault" >
+                        <array>
+                          <value>xfGA529AOOE!!AB12</value>
+                          <value>'# LLUU#//HHHAAA-[**]??###A*</value>
+                        </array>
+                      </property>
+                      <property name="promptParameters" value="Mask Entry TEST" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Mask Entry TEST" />
+          </bean>
+        </entry>
+        <entry key="1132">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.test.CaptureStringTestTN"> 
+                      <property name="promptState" ref="STATE_ReasonCodeComments" />
+                      <property name="promptParameters" >
+                        <array>
+                          <value>Test Reason Code Entry</value>
+                          <value>Enter some reason code comment text</value>
+                        </array>
+                      </property>
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Reason Comment Entry TEST" />
+          </bean>
+        </entry>
+        <entry key="1200">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.util.PromptNotificationTN" > 
+                      <property name="promptState" ref="STATE_Notification" />
+                      <property name="promptParameters" value="SPECIAL CHARACTER TEST: $nl äöüáàÄÖÜßÁÀ€@²³§$'#&amp;&quot;&lt;&gt;" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="SPECIAL CHARACTER TEST" />
+          </bean>
+        </entry>
+        <entry key="1281">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.browser.PromptBrowserWindowTN" >
+                    <property name="promptState" ref="STATE_Notification" />
+                    <property name="promptKeyword" ref="KW_ShowBrowser" />
+                    <property name="promptParameters" value="_xfgclient.browser.header" />
+                    <property name="dataSource" value="Relate" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Relate Browser Popup" />
+          </bean>
+        </entry>
+        <entry key="1282">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.browser.PromptBrowserWindowTN" >
+                    <property name="promptState" ref="STATE_Notification" />
+                    <property name="promptKeyword" ref="KW_ShowBrowser" />
+                    <property name="promptParameters" value="_xfgclient.browser.header" />
+                    <property name="dataSource" value="Xcenter" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Xcenter Browser Popup" />
+          </bean>
+        </entry>
+        <entry key="1301">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.hardware.gserver.ReloadGserverUITN" />
+                    <bean class="com.micros_retail.xfgclient.transition.util.ClearGServerCachingComponentTN" />
+                    <bean class="com.micros_retail.xfgclient.transition.util.UpdateOutputContextLocaleTN" >
+                      <property name="outputContext" ref="OC_Operator" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.transition.util.InvokeInterpreterTN">
+                      <property name="keyword" ref="KW_SetTimeFormat"/>
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.transition.startup.RestartHardwareDeviceTN" >
+                      <property name="device" value="gserverGridLoader"/>
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.transition.util.UpdateUITN" />
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.reloadxml" />
+            <!-- <property name="validations" ref="loggedOutStateRules" /> -->
+          </bean>
+        </entry>
+        <entry key="5001">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_RecursiveEntryTest" />
+            <property name="description" value="_xfgclient.codefunction.test.recursion1" />
+          </bean>
+        </entry>
+        <entry key="5002">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_RecursiveEntryTest2" />
+            <property name="description" value="_xfgclient.codefunction.test.recursion2" />
+          </bean>
+        </entry>
+        <entry key="5003">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_ResetStationTest" />
+            <property name="description" value="_xfgclient.codefunction.test.reset" />
+            <property name="validations" ref="userLoggedInRules" />
+          </bean>
+        </entry>
+        <entry key="5004">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_CauseExceptionTest" />
+            <property name="description" value="_xfgclient.codefunction.test.exception1" />
+            <property name="validations" ref="userLoggedInRules" />
+          </bean>
+        </entry>
+        <entry key="5005">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_CauseExceptionTest2" />
+            <property name="description" value="_xfgclient.codefunction.test.exception2" />
+            <property name="validations" ref="userLoggedInRules" />
+          </bean>
+        </entry>
+        <entry key="5006">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_InterruptionTest" />
+            <property name="description" value="_xfgclient.codefunction.test.interrupt" />
+            <property name="validations" ref="userLoggedInRules" />
+          </bean>
+        </entry>
+        <entry key="5007">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_RCRTest" />
+            <property name="description" value="_xfgclient.codefunction.test.remotecapture" />
+            <property name="validations" ref="userLoggedInRules" />
+          </bean>
+        </entry>
+        <entry key="9999">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <list>
+                    <ref bean="WORK_testWorkers" />
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="WORKER LIST EXECUTION TEST" />
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+</beans>

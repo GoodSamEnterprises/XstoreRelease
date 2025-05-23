@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+  <MenuItem name="LOGIN::REGISTER" text="_menuLoginRegister" displayType="BUTTON" category="Login" keywords="exclude">
+    <MenuOption ref="ADMIN::SEARCH_FOR_ITEM" />
+    <MenuOption ref="EMPLOYEE::CLOCK_IN_OUT" />
+    <MenuOption ref="LOGIN::INVENTORY_OPTIONS" />
+    <MenuOption ref="LOGIN::CUSTOMER_MAINTENANCE" />
+
+    <MenuOption>
+      <Action ref="LOGIN::OPEN_REGISTER" />
+      <Action ref="LOGIN::CLOSE_REGISTER" />
+    </MenuOption>
+    <SubMenu ref="BALANCE_INQUIRY::REGISTER_OPTIONS" />
+    <MenuOption ref="LOGIN::TILL_OPTIONS" />
+    <MenuOption ref="ADMIN::REINIT_HARDWARE" />
+    <MenuOption ref="ADMIN::EFTLINK_ADMIN" />
+  </MenuItem>
+
+  <MenuItem name="LOGIN::BACK_OFFICE" text="_menuLoginBackOffice" displayType="BUTTON" category="Login" keywords="exclude">
+    <MenuOption ref="ADMIN::SEARCH_FOR_ITEM" />
+    <MenuOption ref="EMPLOYEE::CLOCK_IN_OUT" />
+    <MenuOption ref="LOGIN::INVENTORY_OPTIONS" />
+    <MenuOption ref="LOGIN::CUSTOMER_MAINTENANCE" />    
+    
+    <MenuOption>
+      <Action ref="LOGIN::OPEN_REGISTER" />
+      <Action ref="LOGIN::CLOSE_REGISTER" />
+    </MenuOption>
+    <SubMenu ref="BALANCE_INQUIRY::REGISTER_OPTIONS" />
+    <MenuOption ref="LOGIN::TILL_OPTIONS" />
+    <MenuOption ref="ADMIN::EFTLINK_ADMIN" />
+  </MenuItem>
+  
+  <MenuItem name="SALE" text="_menuSale" displayType="BUTTON" category="Retail" keywords="universal,sale,register_extended,register_all">
+    <SubMenu actionRef="RETAIL::MENU.MODIFY_LINE" sticky="false">
+      <MenuOptions ref="RETAIL::CHANGE_LINE" />
+      <MenuOption ref="RETAIL::ADD_LINE_COMMENT" />
+      <MenuOption ref="XSTOREM::REMOVE_COMMENT" />
+    </SubMenu>
+
+    <SubMenu actionRef="SALE::MENU.ADD_NON_PHYSICAL" sticky="false" displayType="LIST">
+      <MenuOption ref="SALE::ADD_NON_PHYSICAL" />
+      <MenuOption ref="SALE::ADD_GIFT_CARD" />
+      <MenuOption ref="SALE::ADD_GIFT_CERTIFICATE" />
+    </SubMenu>
+
+    <MenuOption ref="RETURN" />
+    <SubMenu ref="RETAIL::ADD_DISCOUNT" />
+
+    <MenuOption ref="SALE::SELECT_GIFT_RECEIPTS" />
+ 
+    <SubMenu ref="RETAIL::CUSTOMER_OPTIONS" sticky="false" />
+
+    <MenuOption ref="SALE::SEARCH_FOR_ITEM" />
+    <MenuOption ref="RETAIL::INVENTORY_LOCATOR" />
+        
+    <SubMenu ref="RETAIL::EXTENDED_TRANS" />
+    <SubMenu ref="RETAIL::REGISTER_OPTIONS" />
+
+    <MenuOption>
+      <Action ref="RETAIL::COMPLETE.TO_TENDERING" />
+      <Action ref="RETAIL::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+
+    <MenuOption>
+      <Action ref="RETAIL::SUSPEND_TRANSACTION" />
+      <Action ref="RETAIL::RESUME_TRANSACTION" />
+    </MenuOption>
+    <MenuOption ref="SALE::XCOMMERCE" />   
+  </MenuItem>
+  
+  <MenuItem name="RETAIL::EXTENDED_TRANS" text="_accountOptionsMenuText" sticky="false" category="Retail" keywords="universal,sale,register_extended,register_all">
+    <MenuOption ref="ORDER" />
+    <MenuOption ref="LAYAWAY" />
+
+    <MenuOption>
+      <Action ref="SPECIAL_ORDER" />
+      <Action ref="SPECIAL_ORDER::MINIMAL" />
+    </MenuOption>
+    
+    <MenuOption ref="PRESALE" />
+    <MenuOption ref="ONHOLD" />    
+  </MenuItem>
+  
+</MenuSet>

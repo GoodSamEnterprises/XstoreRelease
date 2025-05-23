@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="STATE_RecursiveEntryTest" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_RecursiveEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_Entry_CaptureOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESC" />
+        <ref bean="STTN_STD_Pause" />
+        <ref bean="STTN_STD_ExecuteCode" />
+        <!-- ATTN: transition config to allow indefinite recursions - DO NOT USE IN PROD  -->
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_PLU" />
+          <property name="transitionChain" ref="TCN_RecursiveEntryTest" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Delete" />
+          <property name="transitionChain" ref="TCN_RecursiveEntryTest2" />
+        </bean>
+        <!--  DO NOT USE IN PROD END -->
+        <ref bean="STTN_STD_QuitOnHardwareExit" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

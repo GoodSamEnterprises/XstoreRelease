@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Tue Jan 20 12:58:28 EST 2004 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">TIMECARD_RECORD_HISTORY</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, FILL -->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">currentDate</Resource>
+        <FormatterType dtype="String">DateMedium</FormatterType>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">partyName</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">employeeId</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardRecordOriginalRecord</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardRecordWorkCodeColon</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">workCode</Resource>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardRecordClockInTime</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">clockInTime</Resource>
+        <FormatterType dtype="String">TimeShort</FormatterType>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardRecordClockOutTime</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">clockOutTime</Resource>
+        <FormatterType dtype="String">TimeShort</FormatterType>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 6, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormList</Type>
+        <Resource dtype="String">listModel</Resource>
+        <TabOrder dtype="Integer">10</TabOrder>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">TIMECARD_RECORD_HISTORY</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+
+    <ActionGroup key="DEFAULT">
+      <Action dataKey="CONTINUE" text="_timecardRecordHistoryBacktosummary" keyStroke="Escape" />
+      <Action ref="UP" />
+      <Action ref="DOWN" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

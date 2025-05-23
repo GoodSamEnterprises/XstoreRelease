@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+  
+  <Action name="RETURN::TENDER_CREDIT_CARD" category="Return" keywords="return_tender" text="_credittender" chainKey="REFUND_EFTL_CREDIT_CARD">
+    <IconGroup icon="_imageTenderCredit" rollIcon="_imageTenderCreditRoll" pressIcon="_imageTenderCreditPress" disabledIcon="_imageTenderCreditDisabled" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderEnabledCheck" >
+      <Parameter name="tender" value="VISA" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.RefundTenderCheck" >
+      <Parameter name="tender" value="VISA" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.RefundBalanceTenderAccessCheck">
+      <Parameter name="privilege" value="REFUND_TENDER_BALANCE" />
+      <Parameter name="tender" value="VISA" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderAccCheck" >
+      <Parameter name="tender" value="VISA" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.register.sale.RefundDueVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderOnReturnRule" />
+  </Action>
+  
+  <Action name="SALE::TENDER_CREDIT_CARD" category="Register" keywords="sale_tender" text="_menutext33" chainKey="TENDER_EFTL_CREDIT_CARD">
+    <IconGroup icon="_imageTenderCredit" rollIcon="_imageTenderCreditRoll" pressIcon="_imageTenderCreditPress" disabledIcon="_imageTenderCreditDisabled" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderEnabledCheck" >
+      <Parameter name="tender" value="VISA" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderAccCheck" >
+      <Parameter name="tender" value="VISA" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AvailableLayawayTenderAccCheck" >
+      <Parameter name="tender" value="VISA" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.register.sale.AmountDueVisibilityRule" />
+  </Action>
+
+  <Action name="ADMIN::EFTLINK_ADMIN" category="Back Office" keywords="back_office_only" text="_eftLinkAdminFunction" chainKey="EFTLINK_ADMIN_FUNCTIONS" />
+  
+</ActionSet>

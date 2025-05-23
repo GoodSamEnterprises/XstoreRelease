@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SequenceSet xmlns:dtv="http://www.datavantagecorp.com/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="SequenceConfig.xsd">
+
+  <Sequence name="COUNTRYPACK.FR.SALES_SEQUENCE">
+    <FileName dtype="String">frSales.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="T" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.INVOICE_PREFIX">
+    <FileName dtype="String">ivciprefix.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="F" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart partType="NEXT_NUMBER" >
+      <InitialValue dtype="Long">0</InitialValue> 
+      <MaximumValue dtype="Long">9</MaximumValue>
+      <ValueIncrement dtype="Integer">0</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.CREDIT_NOTE_PREFIX">
+    <FileName dtype="String">ivccprefix.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="A" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart partType="NEXT_NUMBER" >
+      <InitialValue dtype="Long">0</InitialValue> 
+      <MaximumValue dtype="Long">9</MaximumValue>
+      <ValueIncrement dtype="Integer">0</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.FR.EVENT_LOG_SEQUENCE">
+    <FileName dtype="String">frEventLog.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="E" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="NEXT_NUMBER" padLength="8">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">99999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.FR.REPRINT_RECEIPT_SEQUENCE">
+    <FileName dtype="String">frRcptDup.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="D" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+</SequenceSet>

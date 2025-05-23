@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Thu Aug 25 01:02:35 EDT 2005 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">CREDIT_APPLICATION</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, MINIMUM-->
+          <param_value dtype="DoubleArray">-1.0, -1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_creditApplicationTitle</TextKey>
+        <Font fontStyle="BOLD" fontSize="+6" />
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">CUSTOMER_MAINTENANCE</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--MINIMUM, FILL, FILL, FILL, MINIMUM, FILL-->
+          <param_value dtype="DoubleArray">0.05, -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 0.05</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, MINIMUM, PREFERRED, PREFERRED, PREFERRED, PREFERRED, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM-->
+          <param_value dtype="DoubleArray">0.05, 0.20, -2.0, -2.0, -2.0, -2.0, -2.0, 0.05, 0.05, 0.20, -2.0,
+            -2.0, -2.0, -2.0, 0.05, 0.05, 0.20, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0,
+            -2.0, -2.0, -2.0, -2.0, 0.05</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="IntegerArray">1, 1, 1, 1</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 9, 8, F, F</LayoutLocation>
+        <Type dtype="String">FormPanel</Type>
+        <BorderTextKey dtype="Translatable">_creditApplicationGroupCustomer</BorderTextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_customerNameLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">lastName</Resource>
+        <DataField ref="Name" />
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">100</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">firstName</Resource>
+        <DataField ref="Name" />
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">100</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">5, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">middleName</Resource>
+        <DataField ref="NameMI" />
+        <TabOrder dtype="Integer">100</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">6, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">suffix</Resource>
+        <TabOrder dtype="Integer">100</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 3, 1, 1, C, T</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formLastNameLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 3, 1, 1, C, T</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formNameLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">5, 3, 1, 1, C, T</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formMILabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">6, 3, 1, 1, C, T</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formNameSuffixLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_addressLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 4, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">address1</Resource>
+        <DataField ref="AddressShort">
+          <Parameter name="allowNull">
+            <param_value dtype="Boolean"><![CDATA[false]]></param_value>
+          </Parameter>
+        </DataField>
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">100</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 5, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">address2</Resource>
+        <DataField ref="AddressShort" />
+        <TabOrder dtype="Integer">100</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 6, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_postalCodeLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 6, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">postalCode</Resource>
+        <DataField ref="PostalCode" />
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">100</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 6, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_cityLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">5, 6, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">city</Resource>
+        <DataField ref="Address" />
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">100</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">6, 6, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_stateLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">7, 6, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">state</Resource>
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">100</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 8, 9, 7, F, F</LayoutLocation>
+        <Type dtype="String">FormPanel</Type>
+        <BorderTextKey dtype="Translatable">_creditApplicationGroupCustomerProfile</BorderTextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 10, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_rptCustListBirthDate</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 10, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">dateOfBirth</Resource>
+        <DataField ref="Date">
+          <Parameter name="allowNull">
+            <param_value dtype="Boolean"><![CDATA[false]]></param_value>
+          </Parameter>
+        </DataField>
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">200</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 10, 2, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formSocialSecurityNumber</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">6, 10, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">socialSecurityNumber</Resource>
+        <DataField ref="SSN" />
+        <TabOrder dtype="Integer">200</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 11, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_phoneLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 12, 2, 1, C, T</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationHomePhone</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 11, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">homePhoneNumber</Resource>
+        <DataField ref="Phone" />
+        <TabOrder dtype="Integer">200</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">5, 12, 2, 1, C, T</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationWorkPhone</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">5, 11, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">workPhoneNumber</Resource>
+        <DataField ref="PhoneExt" />
+        <TabOrder dtype="Integer">200</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 13, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_emailLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 13, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">emailAddress</Resource>
+        <DataField ref="Email" />
+        <TabOrder dtype="Integer">200</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 15, 9, 14, F, F</LayoutLocation>
+        <Type dtype="String">FormPanel</Type>
+        <BorderTextKey dtype="Translatable">_creditApplicationGroupIdentification</BorderTextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 17, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationPrimaryIdType</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 17, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">primaryIdType</Resource>
+        <TabOrder dtype="Integer">300</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 18, 2, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationPrimaryIdNumber</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 18, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">primaryIdNumber</Resource>
+        <DataField ref="ID" />
+        <TabOrder dtype="Integer">300</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">6, 18, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationPrimaryIdState</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">7, 18, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">primaryIdState</Resource>
+        <TabOrder dtype="Integer">300</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 19, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationSecondaryIdType</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 19, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">secondaryIdType</Resource>
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">300</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 20, 2, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationSecondaryIdNumber</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 20, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">secondaryIdNumber</Resource>
+        <DataField ref="ID" />
+        <TabOrder dtype="Integer">300</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 21, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationChargeAmount</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 21, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">chargeAmount</Resource>
+        <DataField ref="Quantity">
+          <Parameter name="allowNull">
+            <param_value dtype="Boolean"><![CDATA[false]]></param_value>
+          </Parameter>
+        </DataField>
+        <TabOrder dtype="Integer">310</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 22, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationInsurancePlan</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 22, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">insurancePlan</Resource>
+        <TabOrder dtype="Integer">310</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 23, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationFraudR10Flag</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 23, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormYesNo</Type>
+        <Resource dtype="String">r10Fraud</Resource>
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">310</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 24, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationAccountType</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 24, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">accountType</Resource>
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">310</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 25, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationAuthorizedBuyerName</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 25, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">jointLastName</Resource>
+        <DataField ref="Name" />
+        <TabOrder dtype="Integer">310</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 25, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">jointFirstName</Resource>
+        <DataField ref="Name" />
+        <TabOrder dtype="Integer">310</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 26, 1, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formLastNameLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 26, 1, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formNameLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 21, 3, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationAnnualHouseholdIncome</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">7, 21, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">annualHouseholdIncome</Resource>
+        <DataField ref="Quantity" />
+        <TabOrder dtype="Integer">320</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 22, 3, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationWorks30Hours</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">7, 22, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormYesNo</Type>
+        <Resource dtype="String">work30hours</Resource>
+        <TabOrder dtype="Integer">320</TabOrder>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">6, 23, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_creditApplicationFraudM10Flag</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">7, 23, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormYesNo</Type>
+        <Resource dtype="String">m10Fraud</Resource>
+        <Required dtype="Boolean">true</Required>
+        <TabOrder dtype="Integer">320</TabOrder>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+      <Action ref="ACCEPT" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

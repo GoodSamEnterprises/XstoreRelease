@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+  <sections>
+    <section name="tax_code_summary_detail">
+      <row />
+      <row>
+        <field text="_countrypack.mx.receipt.taxName" loc="-30" />
+        <field text="_countrypack.common.taxAmount" loc="-5" />
+      </row>
+      <iterator>
+        <impl dtype="Class">oracle.retail.xstore.countrypack.mx.receipt.MxTaxTotalIterator</impl>
+        <condition method="getVoid" comparison="EQUAL">
+          <Parameter name="VALUE">
+            <param_value dtype="Boolean">false</param_value>
+          </Parameter>
+        </condition>
+        <row>
+          <condition method="getTaxableAmount" comparison="NOT_EQUAL">
+            <Parameter name="VALUE">
+              <param_value dtype="BigDecimal">0</param_value>
+            </Parameter>
+          </condition>
+          <field method="getTaxGroupId" loc="-30" />
+          <sp />
+          <field method="getTaxAmount" formatter="Money" align="R" loc="-5" />
+        </row>
+      </iterator>
+    </section>
+  </sections>
+</ReceiptDefinitions>

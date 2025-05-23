@@ -1,0 +1,1570 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AuthConfig.xsd">
+
+  <!-- ***** AuthProcess TENDER_RETAIL_HOST ****************************** -->
+  <AuthProcess name="TENDER_RETAIL_HOST" Abstract="true">
+    <Parameter name="communicatorHosts">
+      <param_value dtype="List">
+        <!-- the timeout value in the host string is the connect timeout -->
+        <DialHost dtype="String">socket://localhost:3858;timeout=1000</DialHost>
+      </param_value>
+    </Parameter>
+    <!-- following setting can be used to indicate the -->
+    <!-- processor is offline permenantly (or for a long time anyway) -->
+    <Parameter name="connectionEnabled" value="true" />
+    <Parameter name="manualAuthValidation.length.maximum" value="30" />
+  </AuthProcess>
+  <!-- ***** AuthProcess TENDER_RETAIL *********************************** -->
+  <AuthProcess name="TENDER_RETAIL" extends="TENDER_RETAIL_HOST" Abstract="true">
+    <AuthProcessClass dtype="Class">dtv.tenderretail.TenderRetailAuthProcess</AuthProcessClass>
+    <!-- +++++ TENDER_RETAIL marshalling parameters +++++ -->
+    <Parameter name="authResponseClass">
+      <param_value dtype="Class">dtv.tenderretail.response.TRAuthResponse</param_value>
+    </Parameter>
+    <!-- +++++ TENDER_RETAIL communication parameters +++++ -->
+    <Parameter name="communicator" value="dtv.tenderretail.TenderRetailCommunicator" />
+    <!-- the following (communicatorProgress...) control the progress bar -->
+    <Parameter name="communicatorProgressConnectMillis" value="500" />
+    <Parameter name="communicatorProgressSendingMillis" value="500" />
+    <Parameter name="communicatorProgressWaitMillis" value="60000" />
+    <Parameter name="communicatorProgressReceiveMillis" value="500" />
+    <Parameter name="automaticallyReinitializePINpad" value="true" />
+    <Parameter name="allowNonSAF" value="false" />
+    <!-- the following controls how long we wait for Multi.exe to ACK a request -->
+    <Parameter name="communicatorAckTimeoutMillis" value="4000" />
+    <!-- the following controls how long we wait for a response from Multi.exe -->
+    <Parameter name="communicatorReceiveTimeoutMillis" value="300000" />
+    <!-- +++++ TENDER_RETAIL marshalling parameters +++++ -->
+    <Parameter name="requestConverter" value="dtv.tenderretail.TenderRetailRequestConverter" />
+    <Parameter name="responseConverter" value="dtv.tenderretail.TenderRetailResponseConverter" />
+  </AuthProcess>
+  <!-- ***** AuthRequestMap TENDER_RETAIL ******************************** -->
+  <AuthRequestMap name="TENDER_RETAIL">
+    <AuthRequest key="TENDER" class="dtv.tenderretail.request.TRCreditDebitRequest" enabled="true">
+      <Parameter name="TerminalID" ref="TerminalID" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderretail.request.TRCreditDebitRequest" enabled="true">
+      <Parameter name="TerminalID" ref="TerminalID" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="dtv.tenderretail.request.TRCreditDebitRequest" enabled="true">
+      <Parameter name="TerminalID" ref="TerminalID" />
+    </AuthRequest>
+    <AuthRequest key="VOID_REFUND_TENDER" class="dtv.tenderretail.request.TRCreditDebitRequest" enabled="true">
+      <Parameter name="TerminalID" ref="TerminalID" />
+    </AuthRequest>
+  </AuthRequestMap>
+  <!-- ***** AuthProcess TENDER_RETAIL_STORE_SETTINGS ******************** -->
+  <AuthProcess name="TENDER_RETAIL_STORE_SETTINGS" extends="TENDER_RETAIL" Abstract="true">
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-TR" />
+    <Parameter name="TerminalID" value="-DEFAULT-TerminalID-TR" />
+  </AuthProcess>
+  <!-- ***** AuthProcess TENDER_RETAIL_CREDIT **************************** -->
+  <AuthProcess name="TENDER_RETAIL_CREDIT" extends="TENDER_RETAIL_STORE_SETTINGS">
+    <!-- +++++ TENDER_RETAIL_CREDIT action map +++++ -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">1</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">48</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">49</key>
+          <!-- APPROVED -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">50</key>
+          <!-- APPROVED -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">67</key>
+          <!-- INVALID AMOUNT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">69</key>
+          <!-- INVALID EXP DATE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">70</key>
+          <!-- INVALID CARD -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">71</key>
+          <!-- USER_ABORT or timeout -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">72</key>
+          <!-- Invalid Card Number for void -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">73</key>
+          <!-- I[73] - Invalid Debit Type for void -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">74</key>
+          <!-- RETRY (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">75</key>
+          <!-- K[75] - PinPad swipe error -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">76</key>
+          <!-- FID is missing -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">77</key>
+          <!-- PICKUP (confiscate) the card -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">78</key>
+          <!-- REFERRAL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">79</key>
+          <!-- O[79] - Invalid Response Message -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">80</key>
+          <!-- P[80] - Invalid Transaction Type used with defined Business Type -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">81</key>
+          <!-- PINPad is not ready -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">82</key>
+          <!-- R[82] - Error injecting keys -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">83</key>
+          <!-- S[83] - Invalid Track2 -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">84</key>
+          <!-- T[84] - Error generating MAC -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">85</key>
+          <!-- U[85] - Request is not complete -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">86</key>
+          <!-- V[86] - Terminal is not initialized -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">87</key>
+          <!-- W[87] - MAC verification failed -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">88</key>
+          <!-- X[88] - Floor limit declined -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">90</key>
+          <!-- COMMUNICATION ERROR from MerchantConnectMulti to processor -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">100</key>
+          <!-- Card Type does not match -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">104</key>
+          <!-- user cancel -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">105</key>
+          <!-- swipe timeout -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN MULTI IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++++ TENDER_RETAIL_CREDIT message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when Tender Retail MULTI.EXE is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_trAuthOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_0">
+          <!-- message shown for response code 0[48] (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-0[48]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!--
+        <MapEntry key="RESULT_CODE_1">
+          <!- - message shown for response code 1[49] (approved) - ->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-1[49]" />
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_2">
+          <!- - message shown for response code 2[50] (approved offline) - ->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-2[50]" />
+        </MapEntry>
+        -->
+        <MapEntry key="RESULT_CODE_C">
+          <!-- message shown for action code C[67] (invalid amount) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-C[67]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_E">
+          <!-- message shown for action code E[69] (invalid card expiration date) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-E[69]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_F">
+          <!-- message shown for action code F[70] (invalid card) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-F[70]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_G">
+          <!-- message shown for action code G[71] (PINpad timeout/cancel/error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-G[71]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_H">
+          <!-- message shown for response code H[72] (invalid card # for void) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-H[72]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_I">
+          <!-- message shown for response code I[73] (invalid debit type for void) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-I[73]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_J">
+          <!-- message shown for response code J[74] (timeout) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-J[74]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_K">
+          <!-- message shown for action code K[75] (PINPad swipe error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-K[75]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_L">
+          <!-- message shown for action code L[76] (FID missing) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-L[76]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_M">
+          <!-- message shown for response code M[77] (stolen/restricted card) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-M[77]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_N">
+          <!-- message shown for response code N[78] (referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-N[78]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_O">
+          <!-- message shown for response code O[79] (invalid response message) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-O[79]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_P">
+          <!-- message shown for response code P[80] (invalid tran type for business type) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-P[80]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_Q">
+          <!-- message shown for response code Q[81] (referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-Q[81]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_R">
+          <!-- message shown for response code R[82] (error injecting keys) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-R[82]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_S">
+          <!-- message shown for response code S[83] (invalid track2) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-S[83]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_T">
+          <!-- message shown for response code T[84] (error generating MAC) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-T[84]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_U">
+          <!-- message shown for response code U[85] (request is not complete) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-U[85]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_V">
+          <!-- message shown for response code V[86] (terminal is not initialized) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-V[86]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_W">
+          <!-- message shown for response code W[87] (MAC verification failed) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-W[87]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_X">
+          <!-- message shown for response code X[88] (floor limit declined) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-X[88]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_Z">
+          <!-- message shown for response code Z[90] (communication error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-Z[90]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_d">
+          <!-- message shown for action code d[100] (Card type does not match) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-d[100]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription"/>
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine"/>
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode"/>
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_h">
+          <!-- message shown for response code h[104] (user cancel) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_i">
+          <!-- message shown for response code i[105] (swipe timeout) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-i[105]" />
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trCreditMsg-UNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!-- ** PPINIT_RESULT_CODEs *********************************** -->
+        <!-- 0[48] Primary Merchant Mismatch, Primary PINPad Mismatch, Primary Init Failed, Credit Merchant Mismatch, 
+          Credit PINPad Mismatch, Credit Init Failed, or Initialization Failed -->
+        <MapEntry key="PPINIT_RESULT_CODE_0">
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-0[48]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_1">
+          <!-- 1[49] Initialization Successful -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-1[49]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!-- Z[90] PINPad Is Not Ready, File Server Is Not Running, Cannot Send Timeout Reversal, Communications 
+          Problems, Response Code Error, Communications Problems on 50 (Logon Problem), or SSL Not Started -->
+        <MapEntry key="PPINIT_RESULT_CODE_Z">
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-Z[90]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_R">
+          <!-- R[82] Cannot Inject Keys -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-R[82]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_W">
+          <!-- W[87] MAC Verification Failed -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-W[87]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_T">
+          <!-- T[84] Error Generating MAC -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-T[84]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_U">
+          <!-- U[85] Request Is Not Complete -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-U[85]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_Q">
+          <!-- Q[81] Pin Pad Is Not Ready -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-Q[81]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_OFFLINE">
+          <!-- message displayed when Tender Retail MULTI.EXE is offline during a PINPad intialization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadFailedOffline">
+            <Parameter dtype="Translatable" name="_trAuthOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs during a PINPad intialization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadFatalError" />
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_OTHER">
+          <!-- message shown when any unconfigured result is returned from an Init PINpad request -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-UNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess TENDER_RETAIL_DEBIT ***************************** -->
+  <AuthProcess name="TENDER_RETAIL_DEBIT" extends="TENDER_RETAIL_STORE_SETTINGS">
+    <Parameter name="allowManualAuth" value="false" />
+    <!-- +++++ TENDER_RETAIL_DEBIT action map +++++ -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">48</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">49</key>
+          <!-- APPROVED -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">67</key>
+          <!-- INVALID AMOUNT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">69</key>
+          <!-- INVALID EXP DATE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">70</key>
+          <!-- INVALID CARD -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">71</key>
+          <!-- USER_ABORT or timeout -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">72</key>
+          <!-- Invalid Card Number for void -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">73</key>
+          <!-- I[73] - Invalid Debit Type for void -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">74</key>
+          <!-- RETRY (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">75</key>
+          <!-- K[75] - PinPad swipe error -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">76</key>
+          <!-- FID is missing -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">77</key>
+          <!-- PICKUP (confiscate) the card -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">78</key>
+          <!-- REFERRAL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">79</key>
+          <!-- O[79] - Invalid Response Message -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">80</key>
+          <!-- P[80] - Invalid Transaction Type used with defined Business Type -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">81</key>
+          <!-- PINPad is not ready -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">82</key>
+          <!-- R[82] - Error injecting keys -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">83</key>
+          <!-- S[83] - Invalid Track2 -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">84</key>
+          <!-- T[84] - Error generating MAC -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">85</key>
+          <!-- U[85] - Request is not complete -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">86</key>
+          <!-- V[86] - Terminal is not initialized -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">87</key>
+          <!-- W[87] - MAC verification failed -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">88</key>
+          <!-- X[88] - Floor limit declined -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">90</key>
+          <!-- COMMUNICATION ERROR from MerchantConnectMulti to processor -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">104</key>
+          <!-- user cancel -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">105</key>
+          <!-- swipe timeout -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN MULTI IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++++ TENDER_RETAIL_DEBIT message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when Tender Retail MULTI.EXE is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_trAuthOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_0">
+          <!-- message shown for response code 0[48] (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-0[48]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_C">
+          <!-- message shown for action code C[67] (invalid amount) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-C[67]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_E">
+          <!-- message shown for action code E[69] (invalid card expiration date) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-E[69]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_F">
+          <!-- message shown for action code F[70] (invalid card) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-F[70]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_G">
+          <!-- message shown for action code G[71] (PINpad timeout/cancel/error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-G[71]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_H">
+          <!-- message shown for response code H[72] (invalid card # for void) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-H[72]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_I">
+          <!-- message shown for response code I[73] (invalid debit type for void) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-I[73]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_J">
+          <!-- message shown for response code J[74] (timeout) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-J[74]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_K">
+          <!-- message shown for action code K[75] (PINPad swipe error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-K[75]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_L">
+          <!-- message shown for action code L[76] (FID missing) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-L[76]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_M">
+          <!-- message shown for response code M[77] (stolen/restricted card) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-M[77]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_N">
+          <!-- message shown for response code N[78] (referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-N[78]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_O">
+          <!-- message shown for response code O[79] (invalid response message) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-O[79]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_P">
+          <!-- message shown for response code P[80] (invalid tran type for business type) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-P[80]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_Q">
+          <!-- message shown for response code Q[81] (referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-Q[81]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_R">
+          <!-- message shown for response code R[82] (error injecting keys) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-R[82]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_S">
+          <!-- message shown for response code S[83] (invalid track2) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-S[83]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_T">
+          <!-- message shown for response code T[84] (error generating MAC) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-T[84]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_U">
+          <!-- message shown for response code U[85] (request is not complete) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-U[85]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_V">
+          <!-- message shown for response code V[86] (terminal is not initialized) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-V[86]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_W">
+          <!-- message shown for response code W[87] (MAC verification failed) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-W[87]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_X">
+          <!-- message shown for response code X[88] (floor limit declined) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-X[88]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_Z">
+          <!-- message shown for response code Z[90] (communication error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-Z[90]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_h">
+          <!-- message shown for response code h[104] (user cancel) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_i">
+          <!-- message shown for response code i[105] (swipe timeout) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-i[105]" />
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trDebitMsg-UNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!-- ** PPINIT_RESULT_CODEs *********************************** -->
+        <!-- 0[48] Primary Merchant Mismatch, Primary PINPad Mismatch, Primary Init Failed, Credit Merchant Mismatch, 
+          Credit PINPad Mismatch, Credit Init Failed, or Initialization Failed -->
+        <MapEntry key="PPINIT_RESULT_CODE_0">
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-0[48]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_1">
+          <!-- 1[49] Initialization Successful -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-1[49]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!-- Z[90] PINPad Is Not Ready, File Server Is Not Running, Cannot Send Timeout Reversal, Communications 
+          Problems, Response Code Error, Communications Problems on 50 (Logon Problem), or SSL Not Started -->
+        <MapEntry key="PPINIT_RESULT_CODE_Z">
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-Z[90]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_R">
+          <!-- R[82] Cannot Inject Keys -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-R[82]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_W">
+          <!-- W[87] MAC Verification Failed -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-W[87]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_T">
+          <!-- T[84] Error Generating MAC -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-T[84]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_U">
+          <!-- U[85] Request Is Not Complete -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-U[85]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_Q">
+          <!-- Q[81] Pin Pad Is Not Ready -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-Q[81]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_OFFLINE">
+          <!-- message displayed when Tender Retail MULTI.EXE is offline during a PINPad intialization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadFailedOffline">
+            <Parameter dtype="Translatable" name="_trAuthOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs during a PINPad intialization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadFatalError" />
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_OTHER">
+          <!-- message shown when any unconfigured result is returned from an Init PINpad request -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-UNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess TENDER_RETAIL_BATCH ***************************** -->
+  <AuthProcess name="TENDER_RETAIL_BATCH" extends="TENDER_RETAIL_STORE_SETTINGS">
+    <!-- +++++ TENDER_RETAIL_BATCH action map +++++ -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">48</key>
+          <!-- 0[48] - Not Settled -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">49</key>
+          <!-- 1[49] - Settled -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">50</key>
+          <!-- 2[50] - Settled Out of Balance -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">51</key>
+          <!-- 3[51] - No transactions in file -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">71</key>
+          <!-- USER_ABORT or timeout -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">74</key>
+          <!-- RETRY (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">79</key>
+          <!-- O[79] - Invalid Response Message -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">80</key>
+          <!-- P[80] - Invalid Transaction Type used with defined Business Type -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">85</key>
+          <!-- U[85] - Request is not complete -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">86</key>
+          <!-- V[86] - Terminal is not initialized -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">90</key>
+          <!-- COMMUNICATION ERROR from MerchantConnectMulti to processor -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">110</key>
+          <!-- no SAF records -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <!--<FailedActionType dtype="String">CANCEL</FailedActionType>-->
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">122</key>
+          <!-- SAF failed -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN MULTI IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="SAF_OFFLINE">
+          <!-- WHEN MULTI IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="SAF_EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CONTINUE</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++++ TENDER_RETAIL_BATCH message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <!-- ** SAF_RESULT_CODEs ************************************** -->
+        <MapEntry key="SAF_OFFLINE">
+          <!-- message displayed when Tender Retail MULTI.EXE is offline during a Clear SAF request -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trClearSAFFailedOffline">
+            <Parameter dtype="Translatable" name="_trAuthOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="SAF_EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs during a Clear SAF request -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trClearSAFFatalError" />
+        </MapEntry>
+        <MapEntry key="SAF_RESULT_CODE_1">
+          <!-- 1[49] - SAF cleared successfully -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trClearSAFMsg-1[49]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!--
+        <MapEntry key="SAF_RESULT_CODE_n">
+          <!- - n[110] - No Records in SAF file - ->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trClearSAFMsg-n[110]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        -->
+        <MapEntry key="SAF_RESULT_CODE_e">
+          <!-- e[101] - Error reading SAF file -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trClearSAFMsg-e[101]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="SAF_RESULT_CODE_z">
+          <!-- z[122] - Communication error -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trClearSAFMsg-z[122]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="SAF_RESULT_CODE_OTHER">
+          <!-- message shown when any unconfigured result is returned from a Clear SAF request -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trClearSAFMsg-UNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!-- ** TRAN_SETTLE_RESULT_CODEs ****************************** -->
+        <MapEntry key="RESULT_CODE_0">
+          <!-- 0[48] - Not Settled -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trTranSettleMsg-0[48]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_1">
+          <!-- 1[49] - Settled -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trTranSettleMsg-1[49]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_2">
+          <!-- 2[50] - Settled Out of Balance -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trTranSettleMsg-2[50]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!-- 3[51]  - No transactions in the file -->
+        <MapEntry key="RESULT_CODE_3">
+          <value dtype="ParameterizedFormattable" TranslationKey="_trTranSettleMsg-3[51]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription"/>
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine"/>
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode"/>
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_Z">
+          <!-- Z[90] - Error -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trTranSettleMsg-Z[90]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_OTHER">
+          <!-- message shown when any unconfigured result is returned from an Init PINpad request -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trTranSettleMsg-UNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!-- ** PPINIT_RESULT_CODEs *********************************** -->
+        <!-- 0[48] Primary Merchant Mismatch, Primary PINPad Mismatch, Primary Init Failed, Credit Merchant Mismatch, 
+          Credit PINPad Mismatch, Credit Init Failed, or Initialization Failed -->
+        <MapEntry key="PPINIT_RESULT_CODE_0">
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-0[48]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_1">
+          <!-- 1[49] Initialization Successful -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-1[49]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <!-- Z[90] PINPad Is Not Ready, File Server Is Not Running, Cannot Send Timeout Reversal, Communications 
+          Problems, Response Code Error, Communications Problems on 50 (Logon Problem), or SSL Not Started -->
+        <MapEntry key="PPINIT_RESULT_CODE_Z">
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-Z[90]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_R">
+          <!-- R[82] Cannot Inject Keys -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-R[82]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_W">
+          <!-- W[87] MAC Verification Failed -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-W[87]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_T">
+          <!-- T[84] Error Generating MAC -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-T[84]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_U">
+          <!-- U[85] Request Is Not Complete -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-U[85]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_Q">
+          <!-- Q[81] Pin Pad Is Not Ready -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-Q[81]">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_OFFLINE">
+          <!-- message displayed when Tender Retail MULTI.EXE is offline during a PINPad intialization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadFailedOffline">
+            <Parameter dtype="Translatable" name="_trAuthOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="PPINIT_EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs during a PINPad intialization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadFatalError" />
+        </MapEntry>
+        <MapEntry key="PPINIT_RESULT_CODE_OTHER">
+          <!-- message shown when any unconfigured result is returned from an Init PINpad request -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trInitPINPadMsg-UNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getDisplayLine" />
+            <Parameter dtype="EvaluatedFormattable" method="getReceiptInfo.getResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when Tender Retail MULTI.EXE is offline during a close batch -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trTranSettleFailedOffline">
+            <Parameter dtype="Translatable" name="_trAuthOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs during a close batch -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_trTranSettleFatalError" />
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+</AuthConfig>

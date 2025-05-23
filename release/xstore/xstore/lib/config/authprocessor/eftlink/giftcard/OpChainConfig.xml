@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+
+  <OpChain name="TENDER_EFTLINK_GIFT_CARD" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.voucher.GatherVoucherTenderInformationOp" />
+    <Op class="dtv.pos.tender.CreateEftLinkVoucherLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderCategory" value="VOUCHER" />
+      <Parameter name="TenderId" value="XPAY_GIFT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkAuthorizeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <OpChainRoute chainKey="CAPTURE_SALE_TENDER_SIGNATURE" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="VOID_TENDER" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <PromptOp class="dtv.pos.tender.modifytender.PromptTendersToVoidOp">
+      <Parameter name="disallowNonVoidableTenders" value="true" />
+    </PromptOp>
+    <OpChainRoute chainKey="GUEST_LOOKUP" />
+    <OpChainRoute chainKey="VOID_ROOM_CHARGE" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.VoidEftLinkTenderAuthorizationOp" />
+    <WorkerOp workersBean="updateTenderVoidWorkers" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="EFTLINK_BALANCE_INQUIRY">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderCategory" value="VOUCHER" />
+      <Parameter name="TenderId" value="XPAY_GIFT_CARD" />
+    </Op>
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkBalanceEnquiryOp">
+      <Parameter name="TenderId" value="XPAY_GIFT_CARD" />
+    </Op>
+    <PromptOp class="dtv.tenderauth.storedvalue.DisplayBalanceOp" />
+    <Op class="dtv.pos.hardware.op.BuildRcptsOp" />
+    <Op class="dtv.pos.hardware.op.PrintRcptsOp" />
+    <Op class="dtv.pos.hardware.op.WaitForRcptPrintOp" required="false" />
+    <OpChainRoute chainKey="PRINT_FISCAL_RECEIPTS.local" />
+  </OpChain>
+  <OpChain name="REFUND_EFT_LINK_GIFT_CARD" signal="TransactionModified" contextKey="REFUND_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Refund" />
+      <Parameter name="TenderId" value="XPAY_GIFT_CARD" />
+      <Parameter name="TenderCategory" value="VOUCHER" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkAuthorizeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <OpChainRoute chainKey="CAPTURE_SALE_TENDER_SIGNATURE" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="REFUND_ISSUE_EFT_LINK_GIFT_CARD" signal="TransactionModified" contextKey="REFUND_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.voucher.GatherVoucherTenderInformationOp" />
+    <Op class="dtv.pos.tender.CreateEftLinkVoucherLineItemOp">
+      <Parameter name="TenderStatus" value="Refund" />
+      <Parameter name="TenderCategory" value="VOUCHER" />
+      <Parameter name="TenderId" value="ISSUE_XPAY_GIFT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkGiftCardAuthorizeOp"/>
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <OpChainRoute chainKey="CAPTURE_SALE_TENDER_SIGNATURE" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="WORKSTATION_OPEN.eftlink">
+    <!-- login to eft link -->
+    <Op class="dtv.tenderauth.impl.eftlink.op.SendEftLinkAuthenticationRequestOp">
+      <Parameter name="RequestType" value="LOGIN" />
+    </Op>
+  </OpChain>
+  <OpChain name="EXT_WORKSTATION_CLOSE_CHECK.eftlink">
+    <!-- logout from eft link -->
+    <Op class="dtv.tenderauth.impl.eftlink.op.SendEftLinkAuthenticationRequestOp">
+      <Parameter name="RequestType" value="LOGOFF" />
+    </Op>
+  </OpChain>
+  <OpChain name="REGISTER_STARTUP.1">
+    <!-- to handle the scenario where Xstore is restarting at the middle of the day -->
+    <Op class="dtv.tenderauth.impl.eftlink.op.SendEftLinkAuthenticationRequestOp">
+      <Parameter name="RequestType" value="LOGIN" />
+      <Parameter name="RESTART" value="true" />
+    </Op>
+  </OpChain>
+  <OpChain name="POST_VOID_TENDER_AUTH">
+    <OpChainRoute chainKey="POSTVOID_GUEST_LOOKUP" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.VoidEftLinkTenderAuthorizationOp" />
+  </OpChain>
+  <OpChain name="EFTLINK_ADMIN_FUNCTIONS">
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkAdministrativeFunctionsOp">
+      <Parameter name="RequestType" value="ADMINISTRATION" />
+    </Op>
+  </OpChain>
+  <OpChain name="POST_VOID_MAIN.2">
+    <Op class="dtv.tenderauth.impl.eftlink.op.CreateEftLinkPostVoidTransactionOp" />
+  </OpChain>
+  <OpChain name="POST_VOID_STORED_VALUE">
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkVoidGiftCardAuthorizeOp"/>
+  </OpChain>
+  <!-- override from base pos/config/dtv/res/config/OpChainConfig.xml -->
+  <OpChain name="SALE_VOUCHER_FINISH.pre">
+      <OpChainRoute>
+        <Choice chainKey="EFTLINK_SALE_VOUCHER_FINISH" condition="dtv.tenderauth.impl.eftlink.op.IsGiftCardVoucherType" />
+        <Choice chainKey="SALE_VOUCHER_FINISH" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="EFTLINK_SALE_VOUCHER_FINISH">
+    <PromptOp class="dtv.pos.register.nonphysical.PromptVoucherAmtOp" validationsBean="voucherItemPriceRules" />
+    <Op class="dtv.pos.register.nonphysical.CreateVoucherSaleLineItemOp">
+      <Parameter name="SaleItemType" value="SALE" />
+    </Op>
+    <OpChainRoute chainKey="SALE_VOUCHER_VALIDATE" />
+    <Op class="dtv.pos.commission.RouteItemCommissionAssociationOp" />
+    <Op class="dtv.pos.register.AddItemToSaleTranOp" />
+    <WorkerOp workersBean="addPriceChangeModifierToLineItemWorkers" />
+    <OpChainRoute chainKey="SIGNAL_TRANSACTION_MODIFIED" />
+    <OpChainRoute chainKey="EFTLINK_SALE_VOUCHER_AUTHORIZE" />
+    <OpChainRoute chainKey="SALE_TAXING" />
+    <Op class="dtv.pos.register.itemmessages.DisplayItemMessagesOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <Op class="dtv.pos.register.UpdateCurrentTransListOp" />
+  </OpChain>
+  <OpChain name="EFTLINK_SALE_VOUCHER_AUTHORIZE">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderCategory" value="VOUCHER" />
+      <Parameter name="TenderId" value="RELOAD_XPAY_GIFT_CARD" />
+    </Op>
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkGiftCardAuthorizeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+  </OpChain>
+  <OpChain name="VOID_ITEM.pre">
+    <OpChainRoute chainKey="EFT_LINK_VOID_ITEM" chainType="START" condition="dtv.tenderauth.impl.eftlink.op.IsGiftCardVoucherType" />
+  </OpChain>  
+  <OpChain name="EFT_LINK_VOID_ITEM" signal="TransactionModified">
+    <PromptOp class="dtv.pos.pricing.discount.ConfirmGroupDiscountItemVoidOp" key="GROUP_DISCOUNT_ITEM_REMOVE_CONFIRM" />
+    <PromptOp class="dtv.pos.register.PromptVoidLineItemReasonCodeOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkVoidGiftCardAuthorizeOp"/>
+    <Op class="dtv.tenderauth.impl.op.VoidARAuthorizationOp">
+      <Parameter name="ContinueOnFailure" value="false" />
+    </Op>
+    <WorkerOp workersBean="updateVoidItemWorkers" />
+    <Op class="dtv.pos.pricing.discount.VoidGroupDiscountOp">
+      <Parameter name="ChainKey" value="VOID_DISCOUNT_MAIN" />
+    </Op>
+    <Op class="dtv.pos.register.returns.UpdateVoidVerifiedReturnItemOp" />
+    <Op class="dtv.pos.customer.award.AutoVoidAwardDiscountsOp" />
+    <OpChainRoute chainKey="UNASSIGN_LOYALTY_SALE" />    
+  </OpChain>
+
+<!-- CASH OUT UNVERIFIED AND VERIFIED -->
+
+  <OpChain name="RETURN_VOUCHER_AUTHORIZE.pre">
+      <OpChainRoute>
+        <Choice chainKey="EFTLINK_RETURN_VOUCHER_AUTHORIZE" condition="dtv.tenderauth.impl.eftlink.op.IsGiftCardVoucherType" />
+        <Choice chainKey="RETURN_VOUCHER_AUTHORIZE" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="EFTLINK_RETURN_VOUCHER_AUTHORIZE">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Change" />
+      <Parameter name="TenderCategory" value="VOUCHER" />
+      <Parameter name="TenderId" value="XPAY_GIFT_CARD" />
+    </Op>
+    <WorkerOp workersBean="addPriceChangeModifierToLineItemWorkers" />
+    <PromptOp class="dtv.pos.register.nonphysical.PromptReturnVoucherAmtOp" validationsBean="itemPriceRules" />
+    <WorkerOp workersBean="addPriceChangeModifierToLineItemWorkers" />
+    <PromptOp class="dtv.pos.register.nonphysical.PromptSelectVoucherItemOp" />
+    <OpChainRoute chainKey="SIGNAL_TRANSACTION_MODIFIED" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkGiftCardAuthorizeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+  </OpChain>
+  <OpChain name="VOUCHER_RETURN_FROM_ITEM">
+      <OpChainRoute>
+        <Choice chainKey="EFTLINK_VOUCHER_RETURN_FROM_ITEM" condition="dtv.tenderauth.impl.eftlink.op.IsGiftCardVoucherType" />
+        <Choice chainKey="VOUCHER_RETURN_FROM_ITEM.base" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="EFTLINK_VOUCHER_RETURN_FROM_ITEM">
+    <Op class="dtv.pos.register.nonphysical.GatherVoucherSaleItemInfoOp">
+      <Parameter name="VoucherActivityCodeType" value="CASHOUT" />
+    </Op>
+    <PromptOp class="dtv.pos.register.nonphysical.PromptReturnVoucherAmtOp" validationsBean="itemPriceRules" />
+    <Op class="dtv.pos.register.nonphysical.CreateVoucherSaleLineItemOp">
+      <Parameter name="SaleItemType" value="RETURN" />
+    </Op>
+    <ValidationOp class="dtv.pos.register.returns.ValidateTotalReturnPriceNewItemOp" validationsBean="returnNewItemPriceRules" />
+    <Op class="dtv.pos.register.returns.verification.CompleteUnverifiedBlindReturnOp" />
+    <OpChainRoute chainKey="RETURN_VOUCHER_FINISH" chainType="START" />
+  </OpChain>
+<!-- CASH OUT VERIFIED -->
+
+  <OpChain name="VERIFIED_RETURN_ITEM_IMPL.pre">
+      <OpChainRoute>
+        <Choice chainKey="EFTLINK_VERIFIED_RETURN_ITEM_IMPL" condition="dtv.tenderauth.impl.eftlink.op.IsGiftCardVoucherType" />
+        <Choice chainKey="VERIFIED_RETURN_ITEM_IMPL" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="EFTLINK_VERIFIED_RETURN_ITEM_IMPL">
+    <OpChainRoute chainKey="RETURN_ITEM_ID_VALIDATE" />
+    <Op class="dtv.pos.register.returns.verification.ValidateReturnItemOp" />
+    <PromptOp class="dtv.pos.register.PromptItemDescriptionOp" validationsBean="itemDescriptionRules" />
+    <PromptOp class="dtv.pos.register.returns.verification.PromptReturnVerificationItemQuantityOp" validationsBean="allowVerifiedReturnInputQtyRules" />
+    <PromptOp class="dtv.pos.warranty.returns.PromptReturnWarrantiesOp" validationsBean="returnVerifiedWarrantyRules" />
+    <ValidationOp class="dtv.pos.register.returns.verification.ValidateTotalReturnPriceNewVerifiedItemOp" validationsBean="returnNewItemPriceRules" />
+    <PromptOp class="dtv.pos.register.returns.PromptReturnCommAssocOp" />
+    <Op class="dtv.pos.register.returns.verification.UpdateVerifiedReturnLineOp" />
+    <Op class="dtv.pos.register.returns.verification.UpdateVerifiedReturnVoucherOp" />
+    <Op class="dtv.pos.register.returns.verification.RouteReturnVerificationOp" />
+    <Op class="dtv.pos.register.returns.verification.CompleteReturnVerificationOp" />
+  </OpChain>
+
+<!-- CASH OUT UNVERIFIED -->
+  <OpChain name="RETURN_VOUCHER_VALIDATE.pre">
+      <OpChainRoute>
+        <Choice chainKey="EFTLINK_RETURN_VOUCHER_VALIDATE" condition="dtv.tenderauth.impl.eftlink.op.IsGiftCardVoucherType" />
+        <Choice chainKey="RETURN_VOUCHER_VALIDATE" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="EFTLINK_RETURN_VOUCHER_VALIDATE">
+    <Op class="dtv.pos.register.nonphysical.GatherVoucherSaleItemInfoOp">
+      <Parameter name="VoucherActivityCodeType" value="CASHOUT" />
+    </Op>
+    <Op class="dtv.pos.register.nonphysical.CreateVoucherSaleLineItemOp">
+      <Parameter name="SaleItemType" value="RETURN" />
+    </Op>
+    <ValidationOp class="dtv.pos.register.returns.ValidateTotalReturnPriceNewItemOp" validationsBean="returnNewItemPriceRules" />
+  </OpChain>
+  <OpChain name="RETURN_VOUCHER_START">
+      <OpChainRoute>
+        <Choice chainKey="EFTLINK_RETURN_VOUCHER_START" condition="dtv.tenderauth.impl.eftlink.op.IsGiftCardVoucherType" />
+        <Choice chainKey="RETURN_VOUCHER_START.base" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="EFTLINK_RETURN_VOUCHER_START">
+    <Op class="dtv.pos.register.nonphysical.GatherVoucherSaleItemInfoOp">
+      <Parameter name="VoucherActivityCodeType" value="CASHOUT" />
+    </Op>
+    <OpChainRoute chainKey="PRE_RETURN_CHAIN" />
+    <PromptOp class="dtv.pos.register.nonphysical.PromptSelectVoucherItemOp" />
+    <ValidationOp validationsBean="sellingIdGroupRules" />
+      <PromptOp class="dtv.pos.register.returns.PromptReturnWithReceiptOp">
+      <Parameter name="RETURN_ITEM_TYPE" value="VOUCHER" />
+    </PromptOp>
+  </OpChain>
+
+  <!-- Cancel transaction when Cashout card is in transaction -->
+  <OpChain name="CANCEL_STORED_VALUE">
+     <!-- TODO: Void functions shouldn't have any reason to use GatherVoucherSaleItemInfoOp. It needs to be removed from this opchain -->
+    <Op class="dtv.pos.register.nonphysical.GatherVoucherSaleItemInfoOp">
+      <Parameter name="VoucherActivityCodeType" value="VOID_CASH_OUT" />
+    </Op>
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkVoidGiftCardAuthorizeOp"/>
+  </OpChain>
+  
+  <!-- EFT Link Gift card Tender Exchnage -->
+   <OpChain name="EFTLINK_STANDARD_INCOMING_TENDER_EXCHANGE_VOUCHER_TENDER">
+   <Op class="dtv.pos.tender.voucher.GatherVoucherTenderInformationOp">
+      <Parameter name="VoucherActivityCodeType" value="CASHOUT" />
+    </Op>
+    <Op class="dtv.pos.tender.voucher.CreateVoucherTenderLineItemOp" >
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderCategory" value="VOUCHER" />
+      <Parameter name="TenderId" value="XPAY_GIFT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderExchangeIncomingAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkGiftCardAuthorizeOp"/>
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <OpChainRoute chainKey="CALCULATE_TENDER_EXCHANGE_TOTALS" />
+    <PromptOp class="dtv.pos.tender.exchange.PromptWhetherMoreIncomingTendersOp" />
+  </OpChain>
+   <OpChain name="EFTLINK_OUTGOING_TENDER_EXCHANGE_VOUCHER_TENDER">
+    <Op class="dtv.pos.tender.voucher.GatherVoucherTenderInformationOp">
+      <Parameter name="TenderStatus" value="Change" />
+      <Parameter name="VoucherActivityCodeType" value="ISSUED" />
+    </Op>
+    <Op class="dtv.pos.tender.voucher.CreateVoucherTenderLineItemOp" >
+      <Parameter name="TenderCategory" value="VOUCHER" />
+      <Parameter name="TenderId" value="XPAY_GIFT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderExchangeOutgoingAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkGiftCardAuthorizeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <OpChainRoute chainKey="CALCULATE_TENDER_EXCHANGE_TOTALS" />
+  </OpChain>
+  
+  <!-- Void EFTLink Gift card Tender Exchange -->
+   <OpChain name="VOID_TENDER_FOR_TENDER_EXCHANGE" contextKey="TENDER_EXCHANGE">
+    <PromptOp class="dtv.pos.tender.modifytender.PromptTendersToVoidOp"/>
+    <Op class="dtv.tenderauth.impl.eftlink.op.VoidEftLinkGiftCardTenderAuthorizationOp"/>
+    <WorkerOp workersBean="updateTenderVoidWorkers" />
+    <OpChainRoute chainKey="CALCULATE_TENDER_EXCHANGE_TOTALS" />
+    <OpChainRoute chainKey="TENDER_EXCHANGE_INCOMING" chainType="START" condition="dtv.pos.tender.exchange.NoIncomingTenders" />
+  </OpChain>
+    
+</OpChainSet>

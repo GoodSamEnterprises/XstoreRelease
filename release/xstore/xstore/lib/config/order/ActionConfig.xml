@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/ActionConfig.xsd">
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       ORDER
+       These actions pertain to the creation and administration of Distributed Orders
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <Action name="ORDER::ADD_LINE_DISCOUNT" category="Order" keywords="order,actionForSelectedListItem" text="_menutext12a" chainKey="ORDER_ADD_ITEM_DISCOUNT" privilege="ADD_DISCOUNT">
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <IconGroup icon="_iconMenuAddDiscount" />
+  </Action>
+  <Action name="ORDER::ADD_TRAN_DISCOUNT" category="Order" keywords="order" text="_menutext12b" chainKey="ORDER_ADD_TRANS_DISCOUNT" privilege="ADD_DISCOUNT">
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+  </Action>
+  <Action name="ORDER::ADD_AWARD_DISCOUNT" category="Order" keywords="order" text="_menuAddAward" chainKey="ORDER_AWARD_DISCOUNT_SETUP">
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <VisibilityRule class="dtv.pos.customer.loyalty.LoyaltyCardInUseVisibilityRule" inverted="true" />
+    <VisibilityRule class="dtv.pos.customer.award.AnyAwardsAvailableRule" />
+  </Action>
+  <Action name="ORDER::CANCEL" category="Order" keywords="order" text="_orderCancelOrderAction" chainKey="ORDER_CANCEL_ORDER">
+   <VisibilityRule class="dtv.pos.order.CancelOrderVisibilityRule" />
+  </Action>
+  <Action name="ORDER::CHANGE_COMMISSIONED_ASSOCIATES" category="Order" keywords="order,actionForSelectedListItem" text="_menutext109" chainKey="ORDER_CHANGE_COMMISSIONED_ASSOCIATES">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <IconGroup icon="_iconMenuChangeAssociate" />
+  </Action>
+  <Action name="ORDER::CHANGE_LINE_PRICE" category="Order" keywords="order,actionForSelectedListItem" text="_orderChangePriceAction" chainKey="ORDER_PRE_CHANGE_ITEM_PRICE" privilege="CHANGE_PRICE">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <IconGroup icon="_iconMenuChange" />
+  </Action>
+  <Action name="ORDER::CHANGE_LINE_QUANTITY" category="Order" keywords="order,actionForSelectedListItem" text="_orderChangeQuantityAction" chainKey="ORDER_CHANGE_ITEM_QUANTITY" privilege="CHANGE_QUANTITY">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <IconGroup icon="_iconMenuChange" />
+  </Action>
+  <Action name="ORDER::COMPLETE" category="Order" keywords="order" text="_orderExitOrderAction" chainKey="ORDER_MAINTENANCE_REGISTER_FINISH" />
+  <Action name="ORDER::COMPLETE.NO_TENDERING" category="Order" keywords="order,isForTendering_XstoreM" text="_completeTransaction" chainKey="ORDER_PRE_TENDERING">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.ZeroTransAmountDueVisibilityRule" inverted="true" />
+  </Action>
+  <Action name="ORDER::COMPLETE.TO_TENDERING" category="Order" keywords="order,isForTendering_XstoreM" text="_menutext30" chainKey="ORDER_PRE_TENDERING">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.ZeroTransAmountDueVisibilityRule" />
+  </Action>
+  <Action name="ORDER::EDIT_COMMENTS" category="Order" keywords="order" text="_orderEditNotesAction" chainKey="ORDER_EDIT_NOTES">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+  </Action>
+  <Action name="ORDER::EDIT_DELIVERY_INFO" category="Order" keywords="order" text="_orderEditDeliveryInfoAction" chainKey="ORDER_EDIT_DELIVERY_INFO">
+    <VisibilityRule class="dtv.pos.order.DeliveryOrderVisibilityRule" />
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+  </Action>
+  <Action name="ORDER::EDIT_LINE_COMMENT" category="Order" keywords="order,actionForSelectedListItem" text="_orderEditLineNotesAction" chainKey="ORDER_EDIT_LINE_NOTES">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <IconGroup icon="_iconMenuComment" />
+  </Action>
+  <Action name="ORDER::MENU.ADD_DISCOUNT" category="Order" keywords="order,exclude" ref="RETAIL::MENU.ADD_DISCOUNT">
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+  </Action>
+  <Action name="ORDER::MENU.MODIFY_LINE" category="Order" keywords="exclude" text="_orderEditItemAction">
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+  </Action>
+  <Action name="ORDER::MENU.MODIFY_LINE_TAX" category="Order" keywords="exclude,actionForSelectedListItem" text="_menutextChangeItemTax">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+    <IconGroup icon="_iconMenuChange" />
+  </Action>
+  <Action name="ORDER::PICKUP_LINE" category="Order" keywords="order" text="_orderPickupItemsAction" chainKey="ORDER_PICKUP_ITEMS">
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule" inverted="true">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+  </Action>
+  <Action name="ORDER::SEARCH_FOR_ITEM" category="Order" keywords="order" ref="?SEARCH_FOR_ITEM?">
+    <Parameter name="ItemType" value="ORDER" />
+    <Parameter name="AddItemChainKey" value="ORDER_ADD_ITEM_LOOKUP" />
+    <Parameter name="OrderAllowed" value="true"/>
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+  </Action>
+  <Action name="ORDER::TAX.CHANGE_LINE_LOCATION" category="Order" keywords="order,actionForSelectedListItem" text="_menutextChangeItemTaxLocation" chainKey="ORDER_CHANGE_TAX_LOCATION" privilege="CHANGE_TAX_LOCATION">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <IconGroup icon="_iconMenuChange" />
+  </Action>
+  <Action name="ORDER::TAX.EXEMPT_LINE" category="Order" keywords="order,actionForSelectedListItem" text="_exemptItemTax" chainKey="ORDER_EXEMPT_ITEM_TAX" privilege="CHANGE_TAX_TO_EXEMPT">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <IconGroup icon="_iconMenuChange" />
+  </Action>
+  <Action name="ORDER::VOID_LINE" category="Order" keywords="order,actionForSelectedListItem" text="_orderVoidLineAction" chainKey="ORDER_VOID_LINE" privilege="VOID_LINE">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+    <IconGroup icon="_iconMenuVoid" />
+  </Action>
+  <Action name="ORDER::ITEM_MATRIX" category="Register" keywords="order" ref="?ITEM_MATRIX?">
+    <Parameter name="ItemType" value="ORDER" />
+    <Parameter name="AddItemChainKey" value="ORDER_ADD_ITEM_LOOKUP" />
+    <Parameter name="OrderAllowed" value="true"/>
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+      <Parameter name="FormFactor" value="tablet" />
+    </VisibilityRule>
+  </Action>
+  
+  <Action name="ORDER::ORDER_WISH_LIST_ITEM" text="_customerOrderItemAction" chainKey="ORDER_WISH_LIST_ITEM" chainType="STACK" keyStroke="F8">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.WishListItemButtonsVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.CustListItemModeVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowMixedInTransWithSaleItemTypeRule">
+      <Parameter name="Type" value="ORDER" />
+    </VisibilityRule>
+  </Action>
+  <Action name="ORDER::ORDER_DIGITAL_CART_ITEM" text="_customerOrderItemAction" chainKey="ORDER_DIGITAL_CART_ITEM" chainType="STACK" keyStroke="F8">
+    <VisibilityRule class="dtv.pos.customer.digitalcart.DigitalCartButtonsVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.CustListItemModeVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowMixedInTransWithSaleItemTypeRule">
+      <Parameter name="Type" value="ORDER" />
+    </VisibilityRule>
+  </Action>
+  <Action name="ORDER::ADD_COUPON" category="Order" keywords="order" text="_menutext13" chainKey="ADD_ORDER_COUPON" privilege="ADD_COUPON">
+    <VisibilityRule class="dtv.pos.order.OrderStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.order.AnyOrderLinesVisibilityRule" />
+  </Action>
+   <Action name="ITEM_RESULT::ORDER_ITEM" category="Register" keywords="order" dataKey="ORDER_ITEM" text="_orderItemAction" keyStroke="F3" >
+    <VisibilityRule class="dtv.pos.order.OrderItemVisibilityRule" />
+  </Action>
+  
+  <!-- TOUCH ACTIONS 
+        Please keep all touch actions in one place.
+        - Ensure your touch action has the keyword "exclude"
+        - Ensure your touch action's name starts with "TOUCH::"
+        - To keep it clean don't assign text to a touch action (can't think of any cases where that would be needed)
+        
+        The action doesn't qualify as a touch action 
+          - if it is a part of the MenuConfig.xml
+          - if it is also assigned to buttons (don't rename actions assigned to buttons to TOUCH::OLD_NAME)
+   -->
+    
+  <!-- END OF TOUCH ACTIONS -->
+</ActionSet>

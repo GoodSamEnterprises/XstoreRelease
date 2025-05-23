@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+ <bean id="guestHelper" class="dtv.xst.opera.impl.guest.GuestHelper" />
+ <bean id="operaPersistenceStrategy" class="dtv.xst.opera.impl.guest.PersistenceStrategy" scope="prototype" />
+
+ <bean id="GUEST_LOOKUP" class="dtv.xst.opera.impl.guest.OperaApiHandler">
+    <property name="serviceId" value="OPERA" />
+    <property name="exceptionHandler" ref="guestLookupExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.opera.impl.guest.req.GuestQueryRequestPreparer">
+        <property name="parameters">
+          <map>
+            <entry key="argRoomNumber" value="setRoomNumber" />
+            <entry key="argGuestName" value="setGuestName" />
+            <entry key="argGuestNumber" value="setGuestNumber" />
+            <entry key="argRequestType" value="setRequestType" />
+            <entry key="argPostNum" value="setPostNum" />
+            <entry key="argWsNum" value="setWsNum" />
+            <entry key="argMaxGuestsNum" value="setMaxGuestsNum" />
+            <entry key="argDate" value="setDate" />
+            <entry key="argTime" value="setTime" />
+          </map>
+        </property>
+      </bean>
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.opera.impl.guest.req.XstoreToOperaLookupAdapter" />
+      </list>
+    </property>
+    <property name="requestTransformer">
+      <bean class="dtv.xst.opera.impl.guest.req.OperaLookupToXmlTransformer" />
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.opera.impl.guest.resp.GuestQueryResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.opera.impl.guest.resp.OperaLookupToXstoreQueryResultsAdapter">
+          <property name="preparer">
+            <bean class="dtv.xst.opera.impl.guest.resp.GuestQueryResponseSubPreparer" />
+          </property>
+          <property name="adapters">
+            <list value-type="dtv.servicex.IAdapter">
+              <bean class="dtv.xst.opera.impl.guest.resp.OperaLookupToXstoreGuestResponseAdapter" />
+            </list>
+          </property>
+          <property name="transformer">
+            <bean class="dtv.xst.opera.impl.guest.resp.XstoreGuestResponseToQueryResultTransformer" />
+          </property>
+        </bean>
+      </list>
+    </property>
+    <property name="responseTransformer">
+      <bean class="dtv.xst.opera.impl.guest.resp.XmlToOperaLookupTransformer" />
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="dtv.xst.opera.impl.guest.resp.QueryResultsSorter" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="guestLookupExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="dtv.xst.opera.impl.guest.resp.XmlResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CO" />
+              <property name="throws" value="dtv.xst.opera.impl.guest.OverCreditLimitException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="IA" />
+              <property name="throws" value="dtv.xst.opera.impl.guest.InvalidAccountException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NG" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NP" />
+              <property name="throws" value="dtv.xst.opera.impl.guest.PostNotAllowedException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+</beans>

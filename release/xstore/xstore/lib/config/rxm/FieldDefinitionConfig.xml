@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldSet xmlns="http://micros.com/xstore/config/form/field" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormFieldConfig.xsd">
+
+  <Field name="custDigitalCartLabel" type="Label" resource="digitalCartListTitle" />
+  
+  <Field name="custDigitalCart" type="List" resource="digitalCartList" >
+    <Parameter name="ColumnHeaderType" value="DIGITAL_CART_LIST" />
+    <Parameter name="CellType" value="DIGITAL_CART_LIST" />
+    <!-- Possible values [SINGLE_SELECTION, MULTIPLE_SELECTION, NO_SELECTION] -->
+    <Parameter name="ListSelectionMode" value="SINGLE_SELECTION" />
+  </Field>
+  
+  <Field name="custDigitalCartItemImage" type="Image" resource="digitalCartUrl">
+    <Parameter name="scale" value="true" />
+  </Field>
+  
+  <Field name="custDigitalCartItemInfoLabel" type="Label" text="_custListItemInfo" />
+  
+  <Field name="custItemPrice" type="Label" resource="digitalCartItemPrice" formatterRef="Money" />
+  
+  <Field name="digitalCartItemStyleLabel" type="Label" resource="digitalCartItemStyleDesc" />
+  <Field name="digitalCartItemStyle" type="Label" resource="digitalCartItemStyle" />
+  
+  <Field name="digitalCartDimension1Label" type="Label" resource="digitalCartItemDimension1Desc" />
+  <Field name="digitalCartDimension1" type="Label" resource="digitalCartItemDimension1" />
+  
+  <Field name="digitalCartDimension2Label" type="Label" resource="digitalCartItemDimension2Desc" />
+  <Field name="digitalCartDimension2" type="Label" resource="digitalCartItemDimension2" />
+  
+  <Field name="digitalCartDimension3Label" type="Label" resource="digitalCartItemDimension3Desc" />
+  <Field name="digitalCartDimension3" type="Label" resource="digitalCartItemDimension3" />
+  
+  <Field name="productDetailsUrl" type="Anchor" resource="productDetailsURL">
+    <Parameter name="displayText" value="_itemUrlClickInfo" />
+  </Field>
+  
+</FieldSet>

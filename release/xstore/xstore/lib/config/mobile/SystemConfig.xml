@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://com.micros-retail/common" xsi:schemaLocation="http://com.micros-retail/common SystemConfig.xsd">
+
+  <RegisterConfig dtype="Default">
+    <OpenClose dtype="Default">
+      <StartupApplication dtype="String">REGISTER</StartupApplication>
+      <QuickTransferNoTillCount dtype="Boolean">true</QuickTransferNoTillCount>
+    </OpenClose>
+    <CommissionedAssociates dtype="Default">
+      <DisplayPerItemOnSale dtype="Boolean">true</DisplayPerItemOnSale>
+      <DisplayPerItemOnReturn dtype="Boolean">false</DisplayPerItemOnReturn>    
+    </CommissionedAssociates>
+    
+  </RegisterConfig>
+
+  <SystemConfig dtype="Default">
+
+<!--   XstoreM requires PromptUserOnChangeItem to be false -->
+    <PromptUserOnChangeItem dtype="Boolean">false</PromptUserOnChangeItem>
+
+    <!-- Ensure that the help action is never added anywhere -->
+    <Help dtype="Default">
+      <HelpKey dtype="String" />
+    </Help>
+    <TillAccountability dtype="Default">
+      <MinimumCashInTill dtype="BigDecimal">0</MinimumCashInTill>
+    </TillAccountability>
+    <ItemLookup dtype="Default">
+      <ShowAdvancedSearchForm dtype="Boolean">false</ShowAdvancedSearchForm>
+    </ItemLookup>
+    <OnScreenKeyboard dtype="Default">
+      <Enabled dtype="Boolean">false</Enabled>
+    </OnScreenKeyboard>
+    <InventoryCount dtype="Default">
+      <EnableCountSheetMode dtype="Boolean">false</EnableCountSheetMode>
+      <PhysicalCount dtype="Default">
+        <AllowCreate dtype="Boolean">false</AllowCreate>
+        <AllowSearchable dtype="Boolean">false</AllowSearchable>
+      </PhysicalCount>
+    </InventoryCount>
+    <SequenceFilePaths dtype="Default">
+      <ActiveFilePath dtype="String">sequence/active/${workstationId}/</ActiveFilePath>
+      <TrainingFilePath dtype="String">sequence/train/${workstationId}/</TrainingFilePath>
+    </SequenceFilePaths>
+    <SignatureFilePaths dtype="Default">
+      <ActiveFilePath dtype="String">signature/active/${workstationId}/</ActiveFilePath>
+      <TrainingFilePath dtype="String">signature/train/${workstationId}/</TrainingFilePath>
+    </SignatureFilePaths>
+    <Tender dtype="Default">
+      <CashSuggestionButtonsMinDenominationFactor dtype="BigDecimal">5</CashSuggestionButtonsMinDenominationFactor>
+    </Tender>
+  </SystemConfig>
+
+</Store>

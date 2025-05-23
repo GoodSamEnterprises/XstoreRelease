@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <Query name="XUNIT_ITEMS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.ops.data2.access.DefaultOpsGenericQueryResult</ResultClass>
+    <ResultField name="ItemId" />
+    <ResultField name="Name" />
+    <ResultField name="Description" />
+    <ResultField name="PackSize" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[ 
+      SELECT TOP 200 t.item_id, t.name, t.description, o.pack_size
+        FROM itm_item t
+          JOIN itm_item_options o
+          ON t.organization_id = o.organization_id
+          AND t.item_id = o.item_id
+        WHERE t.organization_id = ?
+          AND o.prompt_for_quantity_flag = ?
+          AND o.prompt_for_price_flag = ?
+          AND (o.item_availability_code IS NULL OR o.item_availability_code NOT IN ('NA', 'RECALL'))
+          AND t.measure_req_flag = ?
+          AND o.prompt_for_description_flag = ?
+          AND o.warranty_flag = ?
+          AND o.attached_items_flag = ?
+          AND t.serialized_item_flag = ?
+          AND o.disallow_discounts_flag = ?
+          AND t.item_id NOT IN
+              (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.item_id AND merch_hierarchy_level = 'ITEM')
+          AND t.merch_level_1 NOT IN
+              (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_1 AND merch_hierarchy_level = 'DEPARTMENT')
+          AND t.merch_level_2 NOT IN
+              (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_2 AND merch_hierarchy_level = 'SUBDEPARTMENT')
+          AND t.merch_level_3 NOT IN
+              (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_3 AND merch_hierarchy_level = 'CLASS')
+          AND t.merch_level_4 NOT IN
+              (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_4 AND merch_hierarchy_level = 'SUBCLASS')
+          AND t.item_id NOT IN 
+              (SELECT item_id FROM itm_item_prompt_properties p 
+                WHERE p.organization_id = t.organization_id AND p.item_id = t.item_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argPromptForQuantityFlag" />
+      <Parameter name="argPromptForPriceFlag" />
+      <Parameter name="argMeasurementRequiredFlag" />
+      <Parameter name="argPromptForDescriptionFlag" />
+      <Parameter name="argWarrantyFlag" />
+      <Parameter name="argAttachedItemsFlag" />
+      <Parameter name="argSerializedItemFlag" />
+      <Parameter name="argDisallowDiscountsFlag" />
+      <Expression trigger="argDisallowPriceChangeFlag"><![CDATA[o.disallow_price_change_flag = ?]]></Expression>
+      <Expression trigger="argItemTypecode"><![CDATA[t.item_typcode = ?]]></Expression>
+      <Expression trigger="argAvailabilty"><![CDATA[o.item_availability_code IS NOT NULL]]></Expression>
+      <Expression trigger="argMinimumPrice"><![CDATA[o.curr_sale_price >= ?]]></Expression>
+      <Expression trigger="argMaximumPrice"><![CDATA[o.curr_sale_price <= ?]]></Expression>
+      <Expression trigger="argDisallowDealsFlag"><![CDATA[o.disallow_deals_flag = ?]]></Expression>
+      <Expression trigger="argNotInventoriedFlag"><![CDATA[t.not_inventoried_flag = ?]]></Expression>
+      <Expression trigger="argNoRestockingFee"><![CDATA[1 = ? AND (o.restocking_fee IS NULL OR o.restocking_fee = 0)]]></Expression>
+      <Expression trigger="argRestockingFee"><![CDATA[1 = ? AND (o.restocking_fee IS NOT NULL AND o.restocking_fee != 0)]]></Expression>
+      <Expression trigger="argNotReturnableFlag"><![CDATA[o.not_returnable_flag = ?]]></Expression>
+      <Expression trigger="argPackSize"><![CDATA[1 = ? AND o.pack_size IS NOT NULL]]></Expression>
+      <Expression trigger="argNoPackSize"><![CDATA[1 = ? AND o.pack_size IS NULL]]></Expression>
+      <Expression trigger="argMaxSale"><![CDATA[1 = ? AND o.max_sale_unit_count is NULL]]></Expression>
+      <Expression trigger="argForceQty"><![CDATA[o.force_quantity_of_one_flag = ?]]></Expression>
+      <Expression trigger="argInitialQtyNull"><![CDATA[1 = ? AND o.initial_sale_qty is NULL]]></Expression>
+      <Expression trigger="argInitialQty"><![CDATA[o.initial_sale_qty = ?]]></Expression>
+      <Expression trigger="argMinimumQty"><![CDATA[o.min_sale_unit_count >= ?]]></Expression>
+      <Expression trigger="argMaximumQty"><![CDATA[o.max_sale_unit_count <= ?]]></Expression>
+      <Expression trigger="argCustomerRequired"><![CDATA[o.prompt_for_customer = ?]]></Expression>
+      <Expression trigger="argCustomerNotRequired"><![CDATA[o.prompt_for_customer IS NULL OR o.prompt_for_customer = ?]]></Expression>
+      <Expression trigger="argMinAge"><![CDATA[o.min_age_required >= ?]]></Expression>
+      <Expression trigger="argNoMinAge"><![CDATA[1 = ? AND o.min_age_required IS NULL]]></Expression>
+      <Expression trigger="argDisallowSendSale"><![CDATA[o.disallow_send_sale_flag = ?]]></Expression>
+      <Expression trigger="argDisallowLayaway"><![CDATA[o.disallow_layaway_flag = ?]]></Expression>
+      <Expression trigger="argDisallowSpecialOrder"><![CDATA[o.disallow_special_order_flag = ?]]></Expression>
+      <Expression trigger="argDisallowWorkOrder"><![CDATA[o.disallow_work_order_flag = ?]]></Expression>
+      <Expression trigger="argDisallowOrder"><![CDATA[o.disallow_order_flag = ?]]></Expression>
+      <Expression trigger="argLevelCode"><![CDATA[t.item_lvlcode = ?]]></Expression>
+      <Expression trigger="argTaxable"><![CDATA[tax_group_id IN (SELECT DISTINCT(tax_group_id) FROM tax_tax_rate_rule WHERE (percentage <> ? AND percentage IS NOT NULL))]]></Expression>
+      <Expression trigger="argNotTaxable"><![CDATA[tax_group_id IN (SELECT DISTINCT(tax_group_id) FROM tax_tax_rate_rule WHERE (percentage = ? AND percentage IS NOT NULL))]]></Expression>
+      <Expression trigger="argLength"><![CDATA[LEN(t.item_id) > ?]]></Expression>
+      <Expression trigger="argNonSerializedKitComponents"><![CDATA[1=? AND t.item_id NOT IN (SELECT kit_item_id FROM itm_kit_component WHERE     
+                                              (kit_item_id IN ( SELECT k.kit_item_id FROM itm_kit_component k
+                                              LEFT OUTER JOIN itm_item it
+                                              ON k.component_item_id = it.item_id
+                                              WHERE it.serialized_item_flag=1)))]]></Expression>	
+      <Expression trigger="argSerializedKitComponents"><![CDATA[1=? AND t.item_id IN (SELECT kit_item_id FROM itm_kit_component WHERE     
+                                              (kit_item_id IN ( SELECT k.kit_item_id FROM itm_kit_component k
+                                              LEFT OUTER JOIN itm_item it
+                                              ON k.component_item_id = it.item_id
+                                              WHERE it.serialized_item_flag=1)))]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="XUNIT_CUSTOMERS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.ops.data2.access.DefaultOpsGenericQueryResult</ResultClass>
+    <ResultField name="PartyId" />
+    <ResultField name="CustId" />
+    <ResultField name="FirstName" />
+    <ResultField name="LastName" />
+    <ResultField name="Address1" />
+    <ResultField name="City" />
+    <ResultField name="State" />
+    <ResultField name="Country" />
+    <ResultField name="PostalCode" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[ 
+          SELECT TOP 200 t.party_id, t.cust_id, t.first_name, t.last_name, l.address1, l.city, l.state, l.country, l.postal_code
+          FROM crm_party t, crm_party_locale_information l
+          WHERE t.organization_id = l.organization_id
+            AND t.party_id = l.party_id
+            AND t.organization_id = ?
+            AND t.party_typcode = 'CUSTOMER'
+            AND t.void_flag = 0
+            AND t.active_flag = 1
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argOpenCustAccountType"><![CDATA[
+          t.party_id IN 
+          (SELECT cca.party_id FROM cat_cust_acct cca
+            LEFT JOIN cat_cust_consumer_charge_acct ccc
+              ON cca.organization_id = ccc.organization_id
+              AND cca.cust_acct_code = ccc.cust_acct_code
+              AND cca.cust_acct_id = ccc.cust_acct_id
+            WHERE cca.organization_id = t.organization_id
+            AND cca.cust_acct_code = ?
+            AND cca.cust_acct_statcode = 'OPEN'
+            AND ccc.on_hold_flag IS NULL OR ccc.on_hold_flag = 0)
+      ]]></Expression>
+      <Expression trigger="argTaxExemptExpirationDate"><![CDATA[
+          t.party_id IN 
+          (SELECT tte.party_id FROM tax_tax_exemption tte
+            WHERE tte.organization_id = t.organization_id
+            AND (tte.expiration_date > ? OR tte.expiration_date is null))
+      ]]></Expression>
+      <Expression trigger="argExcludeTaxExemptExpirationDate"><![CDATA[
+          t.party_id NOT IN 
+          (SELECT tte.party_id FROM tax_tax_exemption tte
+            WHERE tte.organization_id = t.organization_id
+            AND (tte.expiration_date > ? OR tte.expiration_date is null))
+      ]]></Expression>
+      <Expression trigger="argCustomerAffiliation"><![CDATA[
+          t.party_id NOT IN 
+          (SELECT cca.party_id FROM crm_customer_affiliation cca WHERE cca.cust_group_id <> ?)
+      ]]></Expression>
+      <Expression trigger="argCountry"><![CDATA[l.country = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY COALESCE(t.update_date, t.create_date) DESC]]></Suffix>
+  </Query>
+
+  <Query name="XUNIT_EMPLOYEE_TO_BE_BORROWED" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.ops.data2.access.DefaultOpsGenericQueryResult</ResultClass>
+    <ResultField name="EmployeeId" />
+    <ResultField name="EndDate" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[ 
+          SELECT e.employee_id, case when max(s.end_date) >= getdate() then max(s.end_date) else getdate() end
+          FROM hrs_employee e
+            LEFT JOIN hrs_employee_store s
+            ON e.organization_id = s.organization_id
+            AND e.employee_id = s.employee_id
+            AND s.rtl_loc_id = ?
+          WHERE e.organization_id = ?
+            AND e.employee_statcode IS NOT NULL
+            AND e.employee_statcode <> 'T'
+            AND e.employee_id != '0'
+            AND NOT EXISTS (
+              SELECT * FROM hrs_employee_store 
+              WHERE e.organization_id = hrs_employee_store.organization_id 
+              AND e.employee_id = hrs_employee_store.employee_id 
+              AND hrs_employee_store.rtl_loc_id = ?
+              AND (hrs_employee_store.begin_date IS NULL OR hrs_employee_store.begin_date <= ?) 
+              AND (hrs_employee_store.end_date IS NULL OR hrs_employee_store.end_date >= ?))
+          GROUP BY e.employee_id 
+        ]]></Statement>
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argBeginDate" />
+      <Parameter name="argEndDate" />
+    </SQL>
+  </Query>
+
+  <Query name="XUNIT_COUPON_DEAL_ITEMS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.ops.data2.access.DefaultOpsGenericQueryResult</ResultClass>
+    <ResultField name="DealId" />
+    <ResultField name="ItemId" />
+    <ResultField name="CouponNbr" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT pd.deal_id, pdft.value1, dcx.coupon_serial_nbr
+          FROM prc_deal pd, prc_deal_field_test pdft, prc_deal_trig pdt, dsc_coupon_xref dcx
+          WHERE pd.organization_id = ?
+          AND pd.organization_id = pdft.organization_id
+          AND pd.organization_id = pdt.organization_id
+          AND pd.organization_id = dcx.organization_id
+          AND pd.deal_id = pdft.deal_id
+          AND pd.deal_id = pdt.deal_id
+          AND pd.deal_id like '%' + dcx.coupon_serial_nbr + '%'
+      ]]></Statement>
+    <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <Query name="XUNIT_TRANSACTIONS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.ops.data2.access.DefaultOpsGenericQueryResult</ResultClass>
+    <ResultField name="TransSeq" />
+    <ResultField name="BusinessDate" />
+    <ResultField name="WkstnId" />
+    <ResultField name="RtlLocId" />
+    <ResultField name="Total" />
+    <ResultField name="TransTypeCode" />
+    <ResultField name="TransStatCode" />
+    <ResultField name="PartyId" />
+    <ResultField name="CustomerId" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[ 
+          SELECT TOP 200 t.trans_seq, t.business_date, t.wkstn_id, t.rtl_loc_id, t.total, t.trans_typcode, 
+            t.trans_statcode, p.party_id, p.cust_id
+          FROM trn_trans t 
+          LEFT OUTER JOIN trl_rtrans r 
+            ON t.organization_id = r.organization_id 
+            AND t.rtl_loc_id = r.rtl_loc_id 
+            AND t.business_date = r.business_date 
+            AND t.wkstn_id = r.wkstn_id 
+            AND t.trans_seq = r.trans_seq 
+          LEFT OUTER JOIN crm_party p
+            ON r.organization_id = p.organization_id 
+            AND r.cust_party_id = p.party_id 
+          WHERE t.organization_id = ? 
+            AND t.rtl_loc_id = ?
+            AND t.wkstn_id = ?
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLoc" />
+      <Parameter name="argWkstnId" />      
+      <Expression trigger="argTransTypeCode"><![CDATA[t.trans_typcode = ?]]></Expression>
+      <Expression trigger="argTransStatCode"><![CDATA[t.trans_statcode = ?]]></Expression>
+      <Expression trigger="argNotResumed"><![CDATA[NOT EXISTS (SELECT * FROM trn_trans_link link
+                                                                WHERE link.link_trans_seq = t.trans_seq
+                                                                AND link.link_rtl_loc_id = t.rtl_loc_id
+                                                                AND link.organization_id = t.organization_id
+                                                                AND link.link_wkstn_id = t.wkstn_id
+                                                                AND link.link_business_date = t.business_date
+                                                                AND link.link_typcode = ?)]]></Expression>
+      <Expression trigger="argPostVoidFlag"><![CDATA[t.post_void_flag = ?]]></Expression>
+      <Expression trigger="argBusinessDate"><![CDATA[t.business_date = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY COALESCE(t.update_date, t.create_date) DESC]]></Suffix>
+  </Query>
+
+  <Query name="XUNIT_ATTACHED_ITEMS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.ops.data2.access.DefaultOpsGenericQueryResult</ResultClass>
+    <ResultField name="SoldItemId" />
+    <ResultField name="AttachedItemId" />
+    <ResultField name="PromptToAdd" />
+    <ResultField name="QtyToAdd" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT TOP 200 sold_item_id, attached_item_id, prompt_to_add_flag, quantity_to_add
+          FROM itm_attached_items
+          WHERE organization_id = ?
+      ]]></Statement>
+    <Parameter name="argOrganizationId" />
+    <Expression trigger="argPrompt"><![CDATA[prompt_to_add_flag = ?]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="XUNIT_UPC_ITEMS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.ops.data2.access.DefaultOpsGenericQueryResult</ResultClass>
+    <ResultField name="Upc" />
+    <ResultField name="ItemId" />
+    <ResultField name="Manufacturer" />
+    <ResultField name="PrimaryFlag" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT TOP 200 c.manufacturer_upc, c.item_id, c.manufacturer, c.primary_flag
+          FROM itm_item_cross_reference c
+            JOIN itm_item t
+            ON t.organization_id = c.organization_id
+            AND t.item_id = c.item_id
+              JOIN itm_item_options o
+              ON t.organization_id = o.organization_id
+              AND t.item_id = o.item_id
+          WHERE t.organization_id = ?
+            AND o.prompt_for_quantity_flag = ?
+            AND o.prompt_for_price_flag = ?
+            AND (o.item_availability_code IS NULL OR o.item_availability_code NOT IN ('NA', 'RECALL'))
+            AND t.measure_req_flag = ?
+            AND o.prompt_for_description_flag = ?
+            AND o.warranty_flag = ?
+            AND o.attached_items_flag = ?
+            AND t.serialized_item_flag = ?
+            AND o.disallow_discounts_flag = ?
+            AND t.item_id NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.item_id AND merch_hierarchy_level = 'ITEM')
+            AND t.merch_level_1 NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_1 AND merch_hierarchy_level = 'DEPARTMENT')
+            AND t.merch_level_2 NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_2 AND merch_hierarchy_level = 'SUBDEPARTMENT')
+            AND t.merch_level_3 NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_3 AND merch_hierarchy_level = 'CLASS')
+            AND t.merch_level_4 NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_4 AND merch_hierarchy_level = 'SUBCLASS')]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argPromptForQuantityFlag" />
+      <Parameter name="argPromptForPriceFlag" />
+      <Parameter name="argMeasurementRequiredFlag" />
+      <Parameter name="argPromptForDescriptionFlag" />
+      <Parameter name="argWarrantyFlag" />
+      <Parameter name="argAttachedItemsFlag" />
+      <Parameter name="argSerializedItemFlag" />
+      <Parameter name="argDisallowDiscountsFlag" />
+      <Expression trigger="argPrimary"><![CDATA[c.primary_flag = ?]]></Expression>
+      <Expression trigger="argDisallowPriceChangeFlag"><![CDATA[o.disallow_price_change_flag = ?]]></Expression>
+      <Expression trigger="argItemTypecode"><![CDATA[t.item_typcode = ?]]></Expression>
+      <Expression trigger="argAvailabilty"><![CDATA[o.item_availability_code IS NOT NULL]]></Expression>
+      <Expression trigger="argMinimumPrice"><![CDATA[o.curr_sale_price >= ?]]></Expression>
+      <Expression trigger="argMaximumPrice"><![CDATA[o.curr_sale_price <= ?]]></Expression>
+      <Expression trigger="argDisallowDealsFlag"><![CDATA[o.disallow_deals_flag = ?]]></Expression>
+      <Expression trigger="argNotInventoriedFlag"><![CDATA[t.not_inventoried_flag = ?]]></Expression>
+      <Expression trigger="argNoRestockingFee"><![CDATA[1 = ? AND (o.restocking_fee IS NULL OR o.restocking_fee = 0)]]></Expression>
+      <Expression trigger="argRestockingFee"><![CDATA[1 = ? AND (o.restocking_fee IS NOT NULL AND o.restocking_fee != 0)]]></Expression>
+      <Expression trigger="argNotReturnableFlag"><![CDATA[o.not_returnable_flag = ?]]></Expression>
+      <Expression trigger="argPackSize"><![CDATA[1 = ? AND o.pack_size IS NOT NULL]]></Expression>
+      <Expression trigger="argNoPackSize"><![CDATA[1 = ? AND o.pack_size IS NULL]]></Expression>
+      <Expression trigger="argMaxSale"><![CDATA[1 = ? AND o.max_sale_unit_count is NULL]]></Expression>
+      <Expression trigger="argForceQty"><![CDATA[o.force_quantity_of_one_flag = ?]]></Expression>
+      <Expression trigger="argInitialQtyNull"><![CDATA[1 = ? AND o.initial_sale_qty is NULL]]></Expression>
+      <Expression trigger="argInitialQty"><![CDATA[o.initial_sale_qty = ?]]></Expression>
+      <Expression trigger="argMinimumQty"><![CDATA[o.min_sale_unit_count >= ?]]></Expression>
+      <Expression trigger="argMaximumQty"><![CDATA[o.max_sale_unit_count <= ?]]></Expression>
+      <Expression trigger="argCustomerRequired"><![CDATA[o.prompt_for_customer = ?]]></Expression>
+      <Expression trigger="argCustomerNotRequired"><![CDATA[o.prompt_for_customer IS NULL OR o.prompt_for_customer = ?]]></Expression>
+      <Expression trigger="argMinAge"><![CDATA[o.min_age_required >= ?]]></Expression>
+      <Expression trigger="argNoMinAge"><![CDATA[1 = ? AND o.min_age_required IS NULL]]></Expression>
+      <Expression trigger="argDisallowSendSale"><![CDATA[o.disallow_send_sale_flag = ?]]></Expression>
+      <Expression trigger="argDisallowLayaway"><![CDATA[o.disallow_layaway_flag = ?]]></Expression>
+      <Expression trigger="argDisallowSpecialOrder"><![CDATA[o.disallow_special_order_flag = ?]]></Expression>
+      <Expression trigger="argDisallowWorkOrder"><![CDATA[o.disallow_work_order_flag = ?]]></Expression>
+      <Expression trigger="argDisallowOrder"><![CDATA[o.disallow_order_flag = ?]]></Expression>
+      <Expression trigger="argLevelCode"><![CDATA[t.item_lvlcode = ?]]></Expression>
+      <Expression trigger="argTaxable"><![CDATA[tax_group_id IN (SELECT DISTINCT(tax_group_id) FROM tax_tax_rate_rule WHERE (percentage <> ? AND percentage IS NOT NULL))]]></Expression>
+      <Expression trigger="argNotTaxable"><![CDATA[tax_group_id IN (SELECT DISTINCT(tax_group_id) FROM tax_tax_rate_rule WHERE (percentage = ? AND percentage IS NOT NULL))]]></Expression>
+      <Expression trigger="argLength"><![CDATA[LEN(t.item_id) > ?]]></Expression>
+      <Expression trigger="argNonSerializedKitComponents"><![CDATA[1=? AND t.item_id NOT IN (SELECT kit_item_id FROM itm_kit_component WHERE     
+                                              (kit_item_id IN ( SELECT k.kit_item_id FROM itm_kit_component k
+                                              LEFT OUTER JOIN itm_item it
+                                              ON k.component_item_id = it.item_id
+                                              WHERE it.serialized_item_flag=1)))]]></Expression>	
+      <Expression trigger="argSerializedKitComponents"><![CDATA[1=? AND t.item_id IN (SELECT kit_item_id FROM itm_kit_component WHERE     
+                                              (kit_item_id IN ( SELECT k.kit_item_id FROM itm_kit_component k
+                                              LEFT OUTER JOIN itm_item it
+                                              ON k.component_item_id = it.item_id
+                                              WHERE it.serialized_item_flag=1)))]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="XUNIT_DIMENSION_ITEMS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.ops.data2.access.DefaultOpsGenericQueryResult</ResultClass>
+    <ResultField name="ItemId" />
+    <ResultField name="Dimension1" />
+    <ResultField name="Dimension2" />
+    <ResultField name="Dimension3" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT TOP 200 i.item_id, i.dimension1, i.dimension2, i.dimension3
+          FROM itm_item i
+          WHERE i.organization_id = ?
+      ]]></Statement>
+    <Parameter name="argOrganizationId" />
+    <Expression trigger="argDimension1"><![CDATA[1=? AND i.dimension1 IS NOT NULL]]></Expression>
+    <Expression trigger="argDimension2"><![CDATA[1=? AND i.dimension2 IS NOT NULL]]></Expression>
+    <Expression trigger="argDimension3"><![CDATA[1=? AND i.dimension3 IS NOT NULL]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="XUNIT_VAT_ITEMS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.ops.data2.access.DefaultOpsGenericQueryResult</ResultClass>
+    <ResultField name="ItemId" />
+    <ResultField name="Name" />
+    <ResultField name="Description" />
+    <ResultField name="PackSize" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT TOP 200 t.item_id, t.name, t.description, o.pack_size
+          FROM itm_item t
+          JOIN itm_item_options o
+            ON t.organization_id = o.organization_id
+            AND t.item_id = o.item_id
+          WHERE t.organization_id = ?
+            AND o.tax_group_id = ?
+            AND o.prompt_for_quantity_flag = ?
+            AND o.prompt_for_price_flag = ?
+            AND (o.item_availability_code IS NULL OR o.item_availability_code NOT IN ('NA', 'RECALL'))
+            AND t.measure_req_flag = ?
+            AND o.prompt_for_description_flag = ?
+            AND o.warranty_flag = ?
+            AND o.attached_items_flag = ?
+            AND t.serialized_item_flag = ?
+            AND o.disallow_discounts_flag = ?
+            AND t.item_id NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.item_id AND merch_hierarchy_level = 'ITEM')
+            AND t.merch_level_1 NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_1 AND merch_hierarchy_level = 'DEPARTMENT')
+            AND t.merch_level_2 NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_2 AND merch_hierarchy_level = 'SUBDEPARTMENT')
+            AND t.merch_level_3 NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_3 AND merch_hierarchy_level = 'CLASS')
+            AND t.merch_level_4 NOT IN
+                (SELECT merch_hierarchy_id FROM itm_item_restrict_mapping r 
+                  WHERE r.organization_id = t.organization_id AND r.merch_hierarchy_id = t.merch_level_4 AND merch_hierarchy_level = 'SUBCLASS')
+            AND t.item_id NOT IN 
+                (SELECT item_id FROM itm_item_prompt_properties p 
+                  WHERE p.organization_id = t.organization_id AND p.item_id = t.item_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argVatTaxGroup" />
+      <Parameter name="argPromptForQuantityFlag" />
+      <Parameter name="argPromptForPriceFlag" />
+      <Parameter name="argMeasurementRequiredFlag" />
+      <Parameter name="argPromptForDescriptionFlag" />
+      <Parameter name="argWarrantyFlag" />
+      <Parameter name="argAttachedItemsFlag" />
+      <Parameter name="argSerializedItemFlag" />
+      <Parameter name="argDisallowDiscountsFlag" />
+      <Expression trigger="argDisallowPriceChangeFlag"><![CDATA[o.disallow_price_change_flag = ?]]></Expression>
+      <Expression trigger="argItemTypecode"><![CDATA[t.item_typcode = ?]]></Expression>
+      <Expression trigger="argAvailabilty"><![CDATA[o.item_availability_code IS NOT NULL]]></Expression>
+      <Expression trigger="argMinimumPrice"><![CDATA[o.curr_sale_price >= ?]]></Expression>
+      <Expression trigger="argMaximumPrice"><![CDATA[o.curr_sale_price <= ?]]></Expression>
+      <Expression trigger="argDisallowDealsFlag"><![CDATA[o.disallow_deals_flag = ?]]></Expression>
+      <Expression trigger="argNotInventoriedFlag"><![CDATA[t.not_inventoried_flag = ?]]></Expression>
+      <Expression trigger="argNoRestockingFee"><![CDATA[1 = ? AND (o.restocking_fee IS NULL OR o.restocking_fee = 0)]]></Expression>
+      <Expression trigger="argRestockingFee"><![CDATA[1 = ? AND (o.restocking_fee IS NOT NULL AND o.restocking_fee != 0)]]></Expression>
+      <Expression trigger="argNotReturnableFlag"><![CDATA[o.not_returnable_flag = ?]]></Expression>
+      <Expression trigger="argPackSize"><![CDATA[1 = ? AND o.pack_size IS NOT NULL]]></Expression>
+      <Expression trigger="argNoPackSize"><![CDATA[1 = ? AND o.pack_size IS NULL]]></Expression>
+      <Expression trigger="argMaxSale"><![CDATA[1 = ? AND o.max_sale_unit_count is NULL]]></Expression>
+      <Expression trigger="argForceQty"><![CDATA[o.force_quantity_of_one_flag = ?]]></Expression>
+      <Expression trigger="argInitialQtyNull"><![CDATA[1 = ? AND o.initial_sale_qty is NULL]]></Expression>
+      <Expression trigger="argInitialQty"><![CDATA[o.initial_sale_qty = ?]]></Expression>
+      <Expression trigger="argMinimumQty"><![CDATA[o.min_sale_unit_count >= ?]]></Expression>
+      <Expression trigger="argMaximumQty"><![CDATA[o.max_sale_unit_count <= ?]]></Expression>
+      <Expression trigger="argCustomerRequired"><![CDATA[o.prompt_for_customer = ?]]></Expression>
+      <Expression trigger="argCustomerNotRequired"><![CDATA[o.prompt_for_customer IS NULL OR o.prompt_for_customer = ?]]></Expression>
+      <Expression trigger="argMinAge"><![CDATA[o.min_age_required >= ?]]></Expression>
+      <Expression trigger="argNoMinAge"><![CDATA[1 = ? AND o.min_age_required IS NULL]]></Expression>
+      <Expression trigger="argDisallowSendSale"><![CDATA[o.disallow_send_sale_flag = ?]]></Expression>
+      <Expression trigger="argDisallowLayaway"><![CDATA[o.disallow_layaway_flag = ?]]></Expression>
+      <Expression trigger="argDisallowSpecialOrder"><![CDATA[o.disallow_special_order_flag = ?]]></Expression>
+      <Expression trigger="argDisallowWorkOrder"><![CDATA[o.disallow_work_order_flag = ?]]></Expression>
+      <Expression trigger="argDisallowOrder"><![CDATA[o.disallow_order_flag = ?]]></Expression>
+      <Expression trigger="argLevelCode"><![CDATA[t.item_lvlcode = ?]]></Expression>
+      <Expression trigger="argTaxable"><![CDATA[tax_group_id IN (SELECT DISTINCT(tax_group_id) FROM tax_tax_rate_rule WHERE (percentage <> ? AND percentage IS NOT NULL))]]></Expression>
+      <Expression trigger="argNotTaxable"><![CDATA[tax_group_id IN (SELECT DISTINCT(tax_group_id) FROM tax_tax_rate_rule WHERE (percentage = ? AND percentage IS NOT NULL))]]></Expression>
+      <Expression trigger="argLength"><![CDATA[LEN(t.item_id) > ?]]></Expression>
+      <Expression trigger="argNonSerializedKitComponents"><![CDATA[1=? AND t.item_id NOT IN (SELECT kit_item_id FROM itm_kit_component WHERE     
+                                              (kit_item_id IN ( SELECT k.kit_item_id FROM itm_kit_component k
+                                              LEFT OUTER JOIN itm_item it
+                                              ON k.component_item_id = it.item_id
+                                              WHERE it.serialized_item_flag=1)))]]></Expression>	
+      <Expression trigger="argSerializedKitComponents"><![CDATA[1=? AND t.item_id IN (SELECT kit_item_id FROM itm_kit_component WHERE     
+                                              (kit_item_id IN ( SELECT k.kit_item_id FROM itm_kit_component k
+                                              LEFT OUTER JOIN itm_item it
+                                              ON k.component_item_id = it.item_id
+                                              WHERE it.serialized_item_flag=1)))]]></Expression>
+    </SQL>
+  </Query>
+</QuerySet>

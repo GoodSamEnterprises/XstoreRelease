@@ -1,0 +1,61 @@
+<dataTemplate name="LineVoid" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    
+    <!-- Template-specific Text -->
+    <label name="Date"       value="_rptDate"/>
+    <label name="Flight"     value="_rptAirsideCsvFlightNumber"/>
+    <label name="ItemId"     value="_rptItemId"/>
+    <label name="SKU"        value="_rptSKU"/>
+    <label name="ItemDesc"   value="_rptItemDescription"/>
+    <label name="FinalDest"  value="_rptAirsideCsvDestinationAirport"/>
+    <label name="QTY"        value="_rptQuantity"/>
+    <label name="NetSales"   value="_rptOutEU"/>
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    
+    <!-- User Parameters -->
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriod;Date]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>    
+    <parameter name="startDate" class="java.util.Date" isForPrompting="false" include_in_output="true">
+      <defaultValueExpression><![CDATA[$P{dtvStartDate}.getDate()]]></defaultValueExpression>
+    </parameter>   
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_AIRSIDE" key="AIRSIDE_CSV_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+          <ResultField>transaction_date</ResultField>
+          <ResultField>flight_number</ResultField>          
+          <ResultField>item_id</ResultField>
+          <ResultField>item_sku</ResultField>
+          <ResultField>item_description</ResultField>
+          <ResultField>destination_airport</ResultField>
+          <ResultField>item_qty</ResultField>
+          <ResultField>net_sales</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_AIRSIDE" source="Q_AIRSIDE">
+      <element name="TRN_DATE"   value="transaction_date" formatter="DateTimeShort"/>
+      <element name="F_NUM"      value="flight_number"/>
+      <element name="ITM_ID"     value="item_id"/>
+      <element name="SKU"        value="item_sku"/>
+      <element name="ITM_DSC"    value="item_description" />
+      <element name="DEST_PORT"  value="destination_airport"/>
+      <element name="QTY"        value="item_qty"  formatter="Decimal"/>
+      <element name="NET_S"      value="net_sales" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

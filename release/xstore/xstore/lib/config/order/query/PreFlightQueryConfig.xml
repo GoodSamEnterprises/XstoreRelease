@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/query/QueryConfig.xsd">
+  <Query name="PREFLIGHT.SEQ_ORDER" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select order_id from xom_order where organization_id = ? and order_id >= ? and order_id <= ? and order_id >= ? and order_id like ? order by order_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property value="1" key="MaxRows" />
+  </Query>
+
+  <Query name="PREFLIGHT.SEQ_ORDER_ADDRESS" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select address_seq from xom_address_mod where organization_id = ? and address_seq >= ? and address_seq <= ? and address_seq >= ? and address_seq like ? order by address_seq desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property value="1" key="MaxRows" />
+  </Query>
+</QuerySet>

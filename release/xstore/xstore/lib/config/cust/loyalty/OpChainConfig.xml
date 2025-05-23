@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+  <OpChain name="CUST_ASSOCIATION.LOYALTY">
+    <PromptOp class="dtv.pos.customer.loyalty.PromptLoyaltyCardOp" />
+    <Op class="dtv.pos.customer.loyalty.PromptCardCentricJoinLoyaltyOp" />
+    <PromptOp class="dtv.pos.customer.loyalty.PromptCustomerCentricJoinLoyaltyOp" />
+    <PromptOp class="dtv.pos.customer.loyalty.PromptLoyaltyCardExpirationThresholdOp" />
+    <OpChainRoute chainKey="ADD_LOYALTY_TO_SALE" condition="dtv.pos.customer.loyalty.IsSellingLoyalty" />
+  </OpChain>
+  <OpChain name="ADD_LOYALTY_CARD">
+    <Op class="dtv.pos.customer.loyalty.PromptCardCentricJoinLoyaltyOp">
+      <Parameter name="SkipApplicabilityChecks" value="true" />
+    </Op>
+    <PromptOp class="dtv.pos.customer.loyalty.PromptCustomerCentricJoinLoyaltyOp">
+      <Parameter name="SkipApplicabilityChecks" value="true" />
+    </PromptOp>
+    <Op class="dtv.pos.customer.SaveCurrentCustomerOp" />
+    <OpChainRoute chainKey="ADD_LOYALTY_TO_SALE" condition="dtv.pos.customer.loyalty.IsSellingLoyalty" />
+  </OpChain>
+  <OpChain name="LOYALTY_BALANCE_INQUIRY">
+    <PromptOp class="dtv.pos.customer.loyalty.PromptLoyaltyCardInquiryInfoOp" validationsBean="loyaltyNumberRules" />
+    <PromptOp class="dtv.pos.customer.loyalty.DisplayLoyaltyBalancePromptOp" />
+    <Op class="dtv.pos.hardware.op.BuildRcptsOp" />
+    <Op class="dtv.pos.hardware.op.PrintRcptsOp" />
+    <Op class="dtv.pos.hardware.op.WaitForRcptPrintOp" required="false" />
+    <OpChainRoute chainKey="PRINT_FISCAL_RECEIPTS.local" />
+  </OpChain>
+  <OpChain name="SALE_COMPLETE_FINISH.1">
+    <Op class="dtv.pos.customer.loyalty.CalculateProformaLoyaltyPointsOp" />
+  </OpChain>
+  <OpChain name="SALE_COMPLETE_FINISH.2">
+    <Op class="dtv.pos.customer.loyalty.UpdateLoyaltyPointsBalanceOp" />
+  </OpChain>
+  <OpChain name="VIEW_LOYALTY_CARD_HISTORY">
+    <PromptOp class="dtv.pos.customer.loyalty.ViewLoyaltyHistoryOp" />
+  </OpChain>  
+  <OpChain name="LOYALTY_HISTORY_INQUIRY">
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+  </OpChain>
+  <OpChain name="LOYALTY_HISTORY_PRINT">
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="CUSTOMER_LOYALTY_ACCOUNT_ACTIVITY_REPORT" />
+    </Op>
+    <Op class="dtv.pos.customer.loyalty.SetLoyaltyAccountActivityReportDatasourceOp" />
+    <Op class="dtv.pos.reporting.fill.FillReportOp" />
+    <Op class="dtv.pos.reporting.print.PrintReportOp">
+      <Parameter name="continueOnError" value="true" />
+    </Op>
+  </OpChain>
+  <OpChain name="ADD_LOYALTY_TO_SALE" signal="TransactionModified">
+    <Op class="dtv.pos.customer.loyalty.AddLoyaltySaleToTransactionOp" />
+  </OpChain>
+  <OpChain name="UNASSIGN_LOYALTY_SALE">
+    <Op class="dtv.pos.customer.loyalty.UnassignLoyaltyOp" />
+  </OpChain>
+</OpChainSet>

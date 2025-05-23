@@ -1,0 +1,3646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+  default-init-method="init">
+
+  <!-- Service locator for validation beans -->
+  <bean id="validationBeanLocator" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pos.framework.validation.ValidationRuleListFactory"/>
+  </bean>
+  
+  <bean id="validationHelper" class="dtv.pos.framework.validation.ValidationHelper" scope="prototype" />
+  
+  <!-- All validation rules that are defined as beans in this file should specify a scope of "prototype" 
+       simply because we do not need or want Spring hanging on to an instance of them forever. All validation 
+       rules beans should specify parent bean of "validationRuleList", simply for convenience and convention.-->
+
+  <!-- This group should be considered to be "abstract" beans, meaning that they really are not functional
+       on their own. What they do is prevent a user from having to specify the class and scope every time
+       a common rule is needed. -->
+  <bean abstract="true" id="positiveDecimalRule" class="dtv.pos.common.PositiveDecimalRequiredRule" scope="prototype" />
+  <bean abstract="true" id="nonNullValueRule" class="dtv.pos.common.NonNullValueRequiredRule" scope="prototype" />
+  <bean abstract="true" id="validationRuleList" class="dtv.pos.framework.validation.ValidationRuleList" scope="prototype" /> 
+  <bean abstract="true" id="alwaysSecuredRule" class="dtv.pos.util.validation.AlwaysSecuredRule" scope="prototype" />
+  <!-- End "abstract" beans -->
+  
+  <bean id="positiveItemQuantityRule" parent="positiveDecimalRule" scope="prototype">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ITEM_QUANTITY" />
+    </property>
+  </bean>
+  
+  <bean id="positiveItemCostRule" class="dtv.pos.common.PositiveDecimalRequiredRule" scope="prototype">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_INV_COST" />
+    </property>
+  </bean>
+
+  <bean id="positiveItemWeightRule" parent="positiveDecimalRule" scope="prototype">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ITEM_WEIGHT" />
+    </property>
+  </bean>
+  
+  <bean id="positiveWarrantyItemQtyRule" parent="positiveDecimalRule" scope="prototype">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_WARRANTY_ITEM_QTY" />
+    </property>
+  </bean>
+
+  <bean id="nonNullItemIdRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ITEM_ID" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullReceivingQuantityRule" parent="nonNullValueRule" scope="prototype">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ITEM_QUANTITY" />
+    </property>
+  </bean>
+  
+  <bean id="itemNotOnFileRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.CURRENT_ITEM" />
+    </property>
+    <property name="failedMessage" value="_invItemNotFound" />
+  </bean>
+
+  <bean id="itemTransferItemNotOnFileRule" parent="itemNotOnFileRule">
+    <property name="failedMessage" value="_itemTransferItemNotFound" />
+  </bean>
+  
+  <bean id="nonNullAccountIdRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ACCOUNT_ID" />
+    </property>
+  </bean>
+
+  <bean id="nonNullDateRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_DATE" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullTillAmountRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_TILL_AMOUNT" />
+    </property>
+  </bean>
+    
+  <bean id="nonNullHouseAccountUserNameRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_HOUSE_ACCOUNT_USER_NAME" />
+    </property>
+  </bean>
+
+  <bean id="nonNullInvoiceNumberRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_INVOICE_NUMBER" />
+    </property>
+  </bean>
+
+  <bean id="nonNullAttributeValueRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_RELATE_ATTRIBUTE_VALUE" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullReturnWarrantyListRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_WARRANTY_ITEMS" />
+    </property>
+    <property name="failedMessage" value="_noneSelectedError" />
+  </bean>
+
+  <bean id="nonNullDescriptionRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ITEM_DESCRIPTION" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullItemPropertyValue" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ITEM_PROMPT_PROPERTY_VALUE" />
+    </property>
+  </bean>
+
+  <bean id="nonNullCidRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_CID" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullPinRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_PIN" />
+    </property>
+  </bean>
+
+  <bean id="nonNullCommentRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_COMMENT" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullLoyaltyNumberRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_LOYALTY_NUMBER" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullPostalCodeRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_POSTAL_CODE" />
+    </property>
+  </bean>
+
+  <bean id="nonNullIdVerificationData" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ID_VERIFICATION_DATA" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullSerialNumberRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_SERIAL_NUMBER" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullWarrantyNumberRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_WARRANTY_NUMBER" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullPoNumberRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_PO_NUMBER" />
+    </property>
+  </bean>
+
+  <bean id="nonNullCouponIdRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_COUPON_ID" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullAwardAmountRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_REDEEMED_AWARD_AMOUNT" />
+    </property>
+    <property name="failedMessage" value="_awardRedeemAmountMustBeEntered" />
+  </bean>
+  
+  <bean id="nonNullTaxAmountRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_TAX_AMOUNT" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullTaxPercentRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_TAX_PERCENT" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullWorkItemsRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_WORK_ITEMS" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullRainCheckIdRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_RAIN_CHECK_ID" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullBatchNameRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_BATCH_NAME" />
+    </property>
+  </bean>
+  <bean id="encodedPriceRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ITEM_PRICE" />
+    </property>
+    <property name="failedMessage" value="_invalidEncodedPriceEntered" />
+  </bean>  
+  
+  <bean id="custItemListSelectItemsRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_CUST_LIST_ITEMS" />
+    </property>
+    <property name="failedMessage" value="_entriesAreRequired" />
+  </bean>
+  
+  <bean id="checkManualEntryRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.CHECK_MANUAL_ENTRY_DATA" />
+    </property>
+  </bean>
+  
+  <bean id="orderItemsSelectedRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ORDER_LINES_TO_PROCESS" />
+    </property>
+    <property name="failedMessage" value="_orderCancelNoItemsSelected" />
+  </bean>
+  
+  <bean id="nonNullPrimaryBuyerRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.CURRENT_HOUSE_ACCOUNT_USER" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullCashTenderListRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_TENDER" />
+    </property>
+    <property name="failedMessage" value="_noneSelectedError" />
+  </bean>
+
+  <bean id="nonNullEmployeeRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_EMPLOYEE" />
+    </property>
+    <property name="failedMessage" value="_noneSelectedError" />
+  </bean>
+  
+  <bean id="nonNullTransactionRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_TRANSACTION" />
+    </property>
+    <property name="failedMessage" value="_invalidTransaction" />
+  </bean>
+  
+   <bean id="nonNullCustomerIdRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_CUSTOMER_ID" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullEmployeeIdRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_EMPLOYEE_ID" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullTenderRepositoryListRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_TENDER_REPOSITORIES" />
+    </property>
+    <property name="failedMessage" value="_noneSelectedError" />
+  </bean>
+  
+  <bean id="nonNullTransPropertyRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_TRANSACTION_PROPERTY" />
+    </property>
+  </bean>
+  
+  <bean id="nonNullCheckNumberRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_CHECK_NUMBER" />
+    </property>
+    <property name="failedMessage" value="_checkNumberIsRequired" />
+  </bean>
+  
+  <bean id="nonNullReprintTransRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_TRANSACTION" />
+    </property>
+    <property name="failedMessage" value="_noLastTransMessage" />
+  </bean>
+  
+  <!-- Sale rules -->
+  <bean id="itemIdRule" class="dtv.pos.register.ValidateItemIdRule" scope="prototype" />
+  <bean id="itemPriceRule" class="dtv.pos.register.ValidateItemPriceRule" scope="prototype" />
+  <bean id="itemPriceChangableRule" class="dtv.pos.register.modifyitem.ValidateItemPriceChangableRule" scope="prototype" />
+  <bean id="verifiedReturnItemPriceChangableRule" class="dtv.pos.register.modifyitem.ValidateVerifiedReturnItemChangePriceRule" scope="prototype">
+    <property name="privilege" value="CHANGE_VERIFIED_RETURN_ITEM_PRICE" />
+  </bean>
+  <bean id="verifiedReturnItemQuantityChangableRule" class="dtv.pos.register.modifyitem.ValidateVerifiedReturnItemChangeQuantityRule" scope="prototype" />
+  <bean id="blindReturnItemPriceChangableRule" class="dtv.pos.register.modifyitem.ValidateBlindReturnPriceChangeRule" scope="prototype">
+    <property name="privilege" value="OVERRIDE_LOWEST_RETURN_PRICE" />
+  </bean>
+  
+  <bean id="itemNotOnFileOverrideRule" class="dtv.pos.register.ValidateCanSeeItemNotOnFileRule" scope="prototype">
+    <property name="privilege" value="SELL_ITEM_NOT_ON_FILE" />
+  </bean>
+  <bean id="itemAvailableRule" class="dtv.pos.register.sale.ValidateItemAvailableRule" scope="prototype" />
+  <bean id="itemOnHandRule" class="dtv.pos.register.ValidateItemOnhandRule" scope="prototype">
+    <property name="privilege" value="QUANTITY_UNAVAILABLE" />
+  </bean>
+  
+  <bean id="saleQuantityRule" class="dtv.pos.register.ValidateItemQuantityRule" scope="prototype" />
+  <bean id="giftRegistrySaleQuantityRule" class="dtv.pos.giftregistry.ValidateGiftRegistryItemQuantityRule" scope="prototype" />
+  <bean id="saleWeightRule" class="dtv.pos.register.ValidateItemWeightRule" scope="prototype" />
+  <bean id="itemQuantityChangableRule" class="dtv.pos.register.modifyitem.ValidateItemQuantityChangableRule" scope="prototype" />
+  <bean id="rainCheckQuantityRule" class="dtv.pos.raincheck.ValidateRainCheckQuantityRule" scope="prototype" />
+    
+  <bean id="serialNumberLengthRule" class="dtv.pos.register.ValidateSerialNumberLengthRule" scope="prototype" />
+  <bean id="serialNumberAgainstLedgerRule" class="dtv.pos.register.ValidateSerialNumberAgainstLedgerRule" scope="prototype" />
+  <bean id="serialNumberInCurrentTransactionRule" class="dtv.pos.register.ValidateSerialNumberInCurrentTransactionRule" scope="prototype" />
+  <bean id="serialNumberInExchangeTransactionRule" class="dtv.pos.inventory.serialexchange.validation.ValidateExchangeSerialNumberInTransaction" scope="prototype" />
+  <bean id="changeSerialNumberRule" class="dtv.pos.register.ValidateChangeSerialNumberRule" scope="prototype" />
+     
+  <bean id="nonVoidedSaleLineRule" class="dtv.pos.register.modifyitem.ValidateNonVoidSaleLineItemRule" scope="prototype" />
+  <bean id="finalSaleLineRule" class="dtv.pos.register.modifyitem.ValidateFinalSaleLineRule" scope="prototype" />
+  <bean id="itemVoidRule" class="dtv.pos.register.modifyitem.ValidateAllowItemVoidRule" scope="prototype" />
+  <bean id="commissionableItemRule" class="dtv.pos.commission.ValidateItemCommissionableRule" scope="prototype" />
+  <bean id="commissionedAssociateIdRule" class="dtv.pos.commission.ValidateCommAssocIdRule" scope="prototype" />
+  <bean id="selectedCommissionedAssociateRule" class="dtv.pos.commission.ValidateSelectedCommAssociateRule" scope="prototype" />
+  <bean id="employeeSaleRule" class="dtv.pos.customer.ValidateEmployeeSaleRule" scope="prototype">
+    <property name="privilege" value="ALLOW_EMPLOYEE_SALE" />
+  </bean>
+  
+  <bean id="voucherTypeActivityCountRule" class="dtv.tenderauth.storedvalue.ValidateVoucherTypeActivityCountRule" scope="prototype" />
+  <bean id="voucherInputRule" class="dtv.pos.tender.voucher.ValidateVoucherInputRule" scope="prototype" />
+  <bean id="voucherAlreadyIssuedRule" class="dtv.pos.tender.voucher.ValidateVoucherAlreadyIssuedRule" scope="prototype" />
+  <bean id="voucherOnTransactionRule" class="dtv.pos.tender.voucher.ValidateVoucherOnTransactionRule" scope="prototype" />
+  <bean id="voucherExistsRule" class="dtv.pos.tender.voucher.ValidateVoucherExistsRule" scope="prototype">
+    <property name="privilege" value="NOT_FOUND_VOUCHER" />
+  </bean>
+  <bean id="voucherPriceRule" class="dtv.pos.register.ValidateVoucherPriceRule" scope="prototype" />
+  <bean id="suspendWithVoucherRule" class="dtv.pos.register.suspendresume.AuthorizedVoucherValidationRule" scope="prototype" />
+  <bean id="voucherNotExpiredRule" class="dtv.pos.tender.voucher.ValidateVoucherNotExpiredRule" scope="prototype">
+    <property name="privilege" value="OVERRIDE_VOUCHER_EXPIRED" />
+  </bean>
+  <bean id="voucherEffectiveRule" class="dtv.pos.tender.voucher.ValidateVoucherIsEffectiveRule" scope="prototype">
+    <property name="privilege" value="OVERRIDE_VOUCHER_NOT_EFFECTIVE" />
+  </bean>
+  <bean id="resumeTransactionItemTypeRule" class="dtv.pos.register.suspendresume.ResumeItemTypeRule" scope="prototype">
+    <property name="allowAllTypes" value="true" />
+  </bean>
+  <bean id="giftCardReloadRule" class="dtv.tenderauth.storedvalue.ValidateGiftCardReloadRule" scope="prototype">
+    <property name="privilege" value="RELOAD_GIFT_CARD" />
+  </bean>
+  
+  <!-- For the following rule to pass, a CidEvent needs to be configured in InputConfig.xml with 
+       the type matching the tender ID -->
+  <bean id="cidLengthRule" class="dtv.pos.tender.cid.ValidateCidLength" scope="prototype" />
+  <bean id="foreignFundsAvailableRule" class="dtv.pos.tender.change.ForeignFundsAvailableRule" scope="prototype">
+    <property name="privilege" value="OVERRIDE_FOREIGN_CHANGE_EXCEEDS_FUNDS" />
+  </bean>
+  <bean id="voucherBalanceRule" class="dtv.pos.register.VoucherBalanceValidationRule" scope="prototype" />
+  
+  <!-- Inventory rules -->
+  <bean id="changableDocumentRule" class="dtv.pos.inventory.validation.ChangableDocumentValidityRule" scope="prototype">
+    <property name="privilege" value="INV_DOC_EDIT_CLOSED_DATA" />
+  </bean>
+  <bean id="documentAddLineRule" class="dtv.pos.inventory.validation.DocumentAddLineValidationRule" scope="prototype" />
+  <bean id="shippedQuantityRule" class="dtv.pos.inventory.ship.validation.ValidateAgainstShippedQuantityRule" scope="prototype" />
+  <bean id="scaleQuantityRule" class="dtv.pos.inventory.validation.ValidateInventoryItemQuantityScaleRule" scope="prototype" />
+  <bean id="quantityToAllocateRule" class="dtv.pos.inventory.validation.ValidateQuantityToAllocateRule" scope="prototype">
+    <property name="privilege" value="QUANTITY_UNAVAILABLE" />
+  </bean>
+  <bean id="serialNumberRule" class="dtv.pos.inventory.validation.ValidateSerialNumberRule" scope="prototype" />
+  <bean id="alreadyExistsSerialNumberRule" class="dtv.pos.inventory.validation.SerialNumberAlreadyExistsValidationRule" scope="prototype" />
+  <bean id="changeSerializedItemRule" class="dtv.pos.inventory.validation.ChangeSerializedItemRule" scope="prototype" />
+  <bean id="controlNumberRule" class="dtv.pos.inventory.validation.ControlNumberRule" scope="prototype" />
+  <bean id="receiveSerialNumberRule" class="dtv.pos.inventory.receive.validation.ValidateReceiveSerialNumberRule" scope="prototype" />
+  <bean id="receivedQuantityRule" class="dtv.pos.inventory.receive.validation.ValidateAgainstReceivedQuantityRule" scope="prototype" />
+  <bean id="receivedVoidItemRule" class="dtv.pos.inventory.receive.validation.ValidateRemovableLineItemRule" scope="prototype" />
+  <bean id="receiveMaxQuantityThresholdRule" class="dtv.pos.inventory.receive.validation.ValidateMaximumQuantityThresholdRule" scope="prototype">
+    <property name="privilege" value="RECEIVING_MAX_QUANTITY_THRESHOLD" />
+  </bean>
+  <bean id="receivingChangableDocumentRule" class="dtv.pos.inventory.validation.ChangableDocumentValidityRule" scope="prototype">
+    <property name="privilege" value="RECEIVING_EDIT_CLOSED_DATA" />
+  </bean>
+  <bean id="receivingDocAddLineAllowedRule" class="dtv.pos.inventory.receive.validation.ReceivingDocumentAddLineValidationRule" scope="prototype">
+    <property name="privilege" value="RECEIVING_EDIT_CLOSED_DATA" />
+  </bean>
+  <bean id="shippingDocAddLineAllowedRule" class="dtv.pos.inventory.ship.validation.ShippingDocumentAddLineValidationRule" scope="prototype">
+    <property name="privilege" value="SHIPPING_EDIT_CLOSED_DATA" />
+  </bean>
+  <bean id="styleItemRule" class="dtv.pos.inventory.validation.StyleItemValidationRule" scope="prototype" />
+  <bean id="itemOffLimitsRestrictionRule" class="dtv.pos.item.restriction.ItemOffLimitsRestrictionValidationRule" scope="prototype" />
+  <bean id="nonInventoriedItemRule" class="dtv.pos.inventory.validation.NonInventoriedItemValidationRule" scope="prototype" />
+
+  <!-- Inventory Count rules -->
+  <bean id="nonNullItemQuantityRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_ITEM_QUANTITY" />
+    </property>
+  </bean>
+  <bean id="nonNullStoreLayoutSectionNameRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_STORE_LAYOUT_SECTION_NAME" />
+    </property>
+  </bean>
+  <bean id="storeLayoutSectionExistsRule" class="dtv.pos.inventory.storelayout.ValidateSectionExistsRule" scope="prototype" />
+  <bean id="storeLayoutSelectSectionRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_STORE_LAYOUT_SECTION" />
+    </property>
+    <property name="failedMessage" value="_storeLayoutMaintNotValidSection" />
+  </bean>
+  <bean id="storeLayoutSelectSectionDetailRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_STORE_LAYOUT_SECTION_DETAIL" />
+    </property>
+    <property name="failedMessage" value="_storeLayoutMaintNotValidSectionDetail" />
+  </bean>
+  <bean id="duplicateSectionDetailRule" class="dtv.pos.inventory.storelayout.ValidateDuplicateSectionDetailRule" scope="prototype" />
+  
+  <bean id="inventoryCountOnlineRule" class="dtv.pos.inventory.count.ValidateInventoryCountOnlineRule" scope="prototype" />
+  <bean id="cycleCountDuplicateDetailRule" class="dtv.pos.inventory.count.ValidateDetailNotOnCycleCountRule" scope="prototype" />
+  <bean id="cycleCountSizeRule" class="dtv.pos.inventory.count.ValidateCycleCountSizeRule" scope="prototype" />
+  <bean id="inventoryCountSheetItemRule" class="dtv.pos.inventory.count.ValidateCountSheetItemRule" scope="prototype" />
+  <bean id="countSheetSelectionRequiredRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_INVENTORY_COUNT_SHEET_RESULT" />
+    </property>
+    <property name="failedMessage" value="_invCountNoSheetSelected" />
+  </bean>
+  <bean id="countSheetPrintRequiredRule" class="dtv.pos.inventory.count.ValidatePrintCountSheetRequiredRule" scope="prototype" />
+  <bean id="enterCountBeforeInitiateRule" class="dtv.pos.inventory.count.ValidateEnterCountsBeforeInitiatingRule" scope="prototype" />
+  <bean id="countSheetStatusRule" abstract="true" class="dtv.pos.inventory.count.ValidateCountSheetAccessibilityRule" scope="prototype" />
+  <bean id="countSheetStatusForSelectRule" parent="countSheetStatusRule">
+    <property name="acceptedStatuses">
+      <list value-type="dtv.pos.inventory.count.CountSheetStatus">
+        <value>PRELIMINARY</value>
+        <value>PRINTED</value>
+        <value>SAVED</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="oneCountSectionExistsRule" class="dtv.pos.inventory.count.ValidateAtLeastOneSectionExistsRule" scope="prototype" />
+  <bean id="countSectionExistsPerBucketRule" class="dtv.pos.inventory.count.ValidateSectionExistsForBucketRule" scope="prototype" />
+  <bean id="anyInventoryCountInitiatedRule" class="dtv.pos.inventory.count.ValidateAnyCountInitiatedRule" scope="prototype" />
+  <bean id="initiateInventoryCountAllowedRule" class="dtv.pos.inventory.count.ValidateInitiateAllowedRule" scope="prototype" />
+  <bean id="countSheetStatusForSubmitRule" parent="countSheetStatusRule">
+    <property name="failedMessage" value="_invCountSheetCannotBeSubmitted" />
+    <property name="acceptedStatuses">
+      <list value-type="dtv.pos.inventory.count.CountSheetStatus">
+        <value>PRELIMINARY</value>
+        <value>PRINTED</value>
+        <value>SAVED</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="countSheetsSelectedRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_INVENTORY_COUNT_SHEETS" />
+    </property>
+    <property name="failedMessage" value="_invCountSheetSelectionRequired" />  
+  </bean>
+  <bean id="manualRecountSelectionRequiredRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_MANUAL_RECOUNT_SHEETS" />
+    </property>    
+    <property name="failedMessage" value="_invCountManualRecountNoSheetsSelected" />
+  </bean>
+
+  <bean id="itemTransferQtyRule" class="dtv.pos.inventory.movement.ValidateTransferItemQuantityRule" scope="prototype">
+    <property name="privilege" value="ITEM_TRANSFER_EXCEED_QUANTITY" />
+  </bean>
+
+  <bean id="itemTransferChangeQtyRule" parent="itemTransferQtyRule">
+    <property name="newQuantity" value="true" />
+  </bean>
+  <bean id="sendSaleVoidItemRule" class="dtv.pos.customer.account.validation.ValidateVoidSendSaleItem" scope="prototype" />
+    
+  <!-- Coupon/Discount rules -->
+  <bean id="dealCouponOnTransRule" class="dtv.pos.coupon.ValidateDealCouponOnTransactionRule" scope="prototype" />
+  <bean id="couponExistsRule" class="dtv.pos.coupon.ValidateCouponExistsRule" scope="prototype" />
+  <bean id="couponNotExpiredRule" class="dtv.pos.coupon.ValidateCouponNotExpiredRule" scope="prototype">
+    <property name="privilege" value="OVERRIDE_COUPON_EXPIRED" />
+  </bean>
+  <bean id="couponEffectiveRule" class="dtv.pos.coupon.ValidateCouponIsEffectiveRule" scope="prototype">
+    <property name="privilege" value="OVERRIDE_COUPON_NOT_EFFECTIVE" />
+  </bean>
+  <bean id="secureDiscountRule" class="dtv.pos.pricing.discount.validation.SecuredDiscountValidationRule" scope="prototype" />
+  <bean id="maximumDiscountAppliedRule" class="dtv.pos.pricing.discount.validation.MaxApplicationsValidationRule" scope="prototype" />
+  <bean id="redeemBounceBackDiscountRule" class="dtv.pos.pricing.discount.validation.RedeemBounceBackDiscountRule" scope="prototype" />
+  <bean id="itemDiscountThresholdRule" class="dtv.pos.pricing.discount.validation.DiscountThresholdValidationRule" scope="prototype">
+    <property name="privilege" value="DISCOUNT_EXCEED_MAX_THRESHOLD" />
+  </bean>
+  <bean id="minimumTransactionAmountRule" class="dtv.pos.pricing.discount.validation.MinimumTransactionAmountValidationRule" scope="prototype" />
+  <bean id="anyValidLineDiscountRule" class="dtv.pos.pricing.discount.validation.AnyDiscountValidLineRule" scope="prototype" />
+  <bean id="anyValidCustAcctLineDiscountRule" class="dtv.pos.pricing.discount.validation.AnyDiscountValidCustAcctLineRule" scope="prototype" />
+  <bean id="minimumGroupItemsRule" class="dtv.pos.pricing.discount.validation.RequireMinimumSelectedRowsValidationRule" scope="prototype" />
+  <bean id="allSaleAllReturnGroupRule" class="dtv.pos.pricing.discount.validation.RequireAllSaleOrReturnItemsRule" scope="prototype" />
+  <bean id="currentLoyaltyMatchRule" class="dtv.pos.customer.award.ValidateMatchesCurrentCardNumberRule" scope="prototype" />
+  <bean id="awardAmountRule" class="dtv.pos.customer.award.ValidateRedeemAmountRule" scope="prototype" />
+  <bean id="awardCouponsRedemptionRule" class="dtv.pos.customer.award.ValidateAwardCouponsRedemptionRule" scope="prototype" />
+  <bean id="changeDiscountRule" class="dtv.pos.pricing.discount.validation.RequirePriceModifierLineRule" scope="prototype" />
+  <bean id="allowDiscountModifyRule" class="dtv.pos.pricing.discount.validation.AllowDiscountModifyValidationRule" scope="prototype" />
+  <bean id="bounceBackCouponRule" class="dtv.pos.document.bounceback.ValidateBounceBackCouponRule" scope="prototype" />
+  <bean id="itemInTransRule" class="dtv.pos.pricing.discount.validation.ValidateItemInTransRule" scope="prototype" />
+  <bean id="voidDiscountRule" class="dtv.pos.pricing.discount.validation.ValidateUserPrivilegeOnVoidDiscountRule" scope="prototype">
+    <property name="privilege" value="VOID_DISCOUNT" />
+  </bean>
+  
+  <!-- Customer account rules -->
+  <bean id="depositAmountRule" class="dtv.pos.customer.account.validation.ValidateDepositRule" scope="prototype" />
+  <bean id="maxDepositAmountRule" class="dtv.pos.customer.account.validation.ValidateMaxDepositRule" scope="prototype" />
+  <bean id="custAccountIdRule" class="dtv.pos.customer.account.validation.ValidateNewCustAccountIdRule" scope="prototype" />
+  <bean id="custAccountItemChangeableRule" class="dtv.pos.customer.account.validation.ValidateCustAcctItemChangeableRule" scope="prototype" />
+  <bean id="custAcctItemAllowableRule" class="dtv.pos.customer.account.validation.ValidateCustAcctItemAllowableRule" scope="prototype" />
+  
+  <!-- Send sale rules -->
+  <bean id="allowSendSaleItemRule" class="dtv.pos.sendsale.validation.ValidateAllowItemSendSaleRule" scope="prototype" />
+  
+  <!-- Layaway rules -->
+  <bean id="allowLayawayItemRule" class="dtv.pos.register.layaway.validation.ValidateAllowItemLayawayRule" scope="prototype" />
+  <bean id="maxLayawayItemsRule" class="dtv.pos.register.layaway.validation.ValidateMaxLayawayItemsRule" scope="prototype" />
+  <bean id="minLayawayTotalItemPriceRule" class="dtv.pos.register.layaway.validation.ValidateMinLayawayTotalItemPriceRule" scope="prototype" />
+  <bean id="paymentIntervalRule" class="dtv.pos.register.layaway.validation.ValidatePaymentIntervalRule" scope="prototype" />
+  <bean id="paymentPeriodCountRule" class="dtv.pos.register.layaway.validation.ValidatePaymentPeriodCountRule" scope="prototype" />
+  <bean id="layawayQuantityRule" class="dtv.pos.register.layaway.validation.ValidateLayawayItemQtyRule" scope="prototype" />
+  <bean id="layawayAllowEscrowRule" class="dtv.pos.register.layaway.ValidateLayawayEscrowAllowedRule" scope="prototype">
+    <property name="privilege" value="OVERRIDE_LAYAWAY_CANCEL_TO_ESCROW" />
+  </bean>
+  <bean id="layawayPaymentAmountRule" class="dtv.pos.register.layaway.validation.ValidateLayawayPaymentAmountRule" scope="prototype" />
+  
+  <!-- Special order rules -->
+  <bean id="allowSpecOrderItemRule" class="dtv.pos.register.specorder.validation.ValidateAllowItemSpecOrderRule" scope="prototype" />
+  <bean id="maxSpecialOrderItemsRule" class="dtv.pos.register.specorder.validation.ValidateMaxSpecOrderItemsRule" scope="prototype" />
+  <bean id="specialOrderQuantityRule" class="dtv.pos.register.specorder.validation.ValidateSpecOrderItemQtyRule" scope="prototype" />
+  <bean id="specialOrderAllowEscrowRule" class="dtv.pos.register.specorder.ValidateSpecOrderEscrowAllowedRule" scope="prototype">
+    <property name="privilege" value="OVERRIDE_SPECIAL_ORDER_CANCEL_TO_ESCROW" />
+  </bean>
+  <bean id="specialOrderExpectedDateRule" class="dtv.pos.register.specorder.validation.ValidateExpectedDateRule" scope="prototype" />
+  <bean id="minSpecialOrderTotalItemPriceRule" class="dtv.pos.register.specorder.validation.ValidateMinSpecOrderTotalItemPriceRule" scope="prototype" />
+
+  <!-- Work order rules -->
+  <bean id="allowWorkOrderItemRule" class="dtv.pos.workorder.validation.ValidateAllowItemWorkOrderRule" scope="prototype" />
+  <bean id="taskSelectionRule" class="dtv.pos.workorder.validation.ValidateTaskSelectionRule" scope="prototype" />
+  <bean id="workOrderItemValueRule" class="dtv.pos.workorder.validation.ValidateWorkOrderItemValueRule" scope="prototype" />
+  <bean id="workOrderApprovalAmtRule" class="dtv.pos.workorder.validation.ValidateWorkOrderApprovalAmtRule" scope="prototype" />
+  <bean id="lastNoticeDateRule" class="dtv.pos.workorder.validation.ValidateLastNoticeDateRule" scope="prototype" />
+  <bean id="workOrderItemsRule" class="dtv.pos.workorder.validation.ValidateNumberOfWorkOrderItemRule" scope="prototype" />
+  <bean id="workOrderFinishDateRule" class="dtv.pos.workorder.validation.ValidateWorkOrderExpectedFinishDateRule" scope="prototype" />
+  <bean id="workOrderStatusRule" class="dtv.pos.workorder.validation.ValidateWorkOrderStatusModifyRule" scope="prototype" />
+  <bean id="totalNumberPartTaskRule" class="dtv.pos.workorder.validation.ValidateTotalNumberPartTaskRule" scope="prototype" />
+  <bean id="workOrderSerialNumberRule" class="dtv.pos.workorder.item.ValidateWorkItemSerialNumberRule" scope="prototype" />
+  <bean id="selectedWorkOrderRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_WORK_ORDERS" />
+    </property>
+    <property name="failedMessage" value="_noneSelectedError" />
+  </bean>
+
+  <!-- Order rules -->
+  <bean id="allowOrderItemRule" class="dtv.pos.order.ValidateOrderAllowedRule" scope="prototype" />
+  <bean id="orderDepositRule" class="dtv.pos.order.ValidateDepositRule" scope="prototype" />
+  <bean id="orderLineSelectedRule" class="dtv.pos.order.SelectableOrderLineRule" scope="prototype" />
+  <bean id="orderLineOrShippingFeeSelectedRule" class="dtv.pos.order.SelectableOrderLineRule" scope="prototype">
+    <property name="shippingFeeAllowed" value="true" />
+  </bean>
+  <bean id="acceptOrderFromWorklistRule" class="dtv.pos.order.maint.ValidateAcceptFromWorklistRule" scope="prototype" />
+  <bean id="orderAcceptEligibilityRule" class="dtv.pos.order.maint.ValidateSelectedOrderEligibleRule" scope="prototype" />
+  <bean id="orderLineSelectedVoidRule" class="dtv.pos.order.SelectableVoidOrderLineRule" scope="prototype" />
+
+  <!-- Wish list rules -->
+  <bean id="wishListDuplicateItemRule" class="dtv.pos.customer.wishlist.ValidateDuplicateItemRule" scope="prototype" />
+  
+  <!-- Customer Maintenance rules -->
+  <bean id="deletePrimaryAddressRule" class="dtv.pos.customer.ValidateDeletePrimaryAddressRule" scope="prototype" />
+
+  <!-- Return item rules -->
+  <bean id="allowReturnInputQtyRule" class="dtv.pos.register.returns.verification.ValidateAllowItemReturnInputQtyRule" scope="prototype">
+    <property name="privilege" value="RETURN_QUANTITY_EXCEED_ORIG_QUANTITY" />
+  </bean>
+  <bean id="allowReturnVerificationRule" class="dtv.pos.register.returns.verification.ValidateAllowItemReturnVerificationRule" scope="prototype">
+    <property name="privilege" value="RETURN_QUANTITY_EXCEED_ORIG_QUANTITY" />
+  </bean>
+  <bean id="allowReturnInputQtySaleModeRule" class="dtv.pos.register.returns.verification.ValidateAllowItemReturnInputQtySaleModeRule" scope="prototype">
+    <property name="privilege" value="RETURN_QUANTITY_EXCEED_ORIG_QUANTITY" />
+  </bean>
+  <bean id="returnAllowableItemRule" class="dtv.pos.register.returns.verification.ValidateAllowItemReturnVerificationRule" scope="prototype" />
+  <bean id="returnAmountOnQuantityChangeRule" class="dtv.pos.register.returns.ValidatePriceOnQuantityChangeRule" scope="prototype" />
+  <bean id="returnBlindAmountRule" class="dtv.pos.register.returns.rules.BlindReturnThresholdValidationRule" scope="prototype">
+    <property name="privilege" value="BLIND_RETURNS_AMOUNT_THRESHOLD" />
+  </bean>
+  <bean id="returnByCreditCardRule" class="dtv.pos.register.returns.ValidateReturnByCreditCardRule" scope="prototype" />
+  <bean id="returnItemExistingPriceRule" class="dtv.pos.register.returns.ValidateExistingReturnPriceRule" scope="prototype">
+    <property name="privilege" value="RETURN_EXCEED_MAX_THRESHOLD" />
+  </bean>
+  <bean id="returnItemIdRule" class="dtv.pos.register.returns.ValidateAllowItemReturnRule" scope="prototype">
+    <property name="privilege" value="RETURN_NOT_RETURNABLE_ITEM" />
+  </bean>
+  <bean id="returnItemOrderLineNotCancelledRule" class="dtv.pos.register.returns.verification.ValidateOrderLineNotCancelledRule" scope="prototype" />
+  <bean id="returnItemPriceRule" class="dtv.pos.register.returns.ValidateReturnPriceRule" scope="prototype">
+    <property name="privilege" value="RETURN_MAX_ITEM_PRICE_VALIDATION" />
+  </bean>
+  <bean id="returnNewItemPriceRule" class="dtv.pos.register.returns.ValidateNewReturnItemPriceRule" scope="prototype">
+    <property name="privilege" value="RETURN_EXCEED_MAX_THRESHOLD" />
+  </bean>
+  <bean id="returnPriceOnChangeRule" class="dtv.pos.register.returns.ValidateReturnPriceOnPriceChangeRule" scope="prototype" />
+  <bean id="returnSerialNumberRule" class="dtv.pos.register.returns.ValidateReturnSerializedItemRule" scope="prototype" />
+  <bean id="returnKitComponentSerialNumberRule" class="dtv.pos.register.returns.ValidateReturnKitComponentSerialNumberRule" scope="prototype" />
+  <bean id="returnShelfItemPriceRule" class="dtv.pos.register.returns.ValidateReturnShelfPriceRule" scope="prototype" />
+  <bean id="returnOrigPriceRule" class="dtv.pos.register.returns.ValidateReturnOrigPriceRule" scope="prototype" />
+  <bean id="returnableSaleItemTypeRule" class="dtv.pos.register.returns.verification.ValidateSaleItemTypeReturnableRule" scope="prototype" />
+  <bean id="returnVerificationInputQtyRule" class="dtv.pos.register.returns.verification.ValidateReturnVerificationInputQtyRule" scope="prototype" />
+  <bean id="returnVerificationInputQtySaleModeRule" class="dtv.pos.register.returns.verification.ValidateReturnVerificationInputQtySaleModeRule" scope="prototype" />
+  <bean id="returnVerificationQtyRule" class="dtv.pos.register.returns.verification.ValidateReturnVerificationQuantityRule" scope="prototype" />
+  <bean id="returnVoucherOnTransRule" class="dtv.pos.register.returns.verification.ValidateVoucherAlreadyOnTransRule" scope="prototype" />
+  <bean id="returnSelectedReturnItemsRule" class="dtv.pos.register.returns.verification.ValidateSelectedReturnItemsRule" scope="prototype" />
+  <bean id="nonNullReturnItemListRule" class="dtv.pos.register.returns.verification.ValidateNonNullSelectedReturnItemsRule" scope="prototype" />
+  <bean id="returnVoucherByCategoryVerificationRule" abstract="true" class="dtv.pos.register.returns.verification.ValidateAllowVoucherReturnByCategoryRule" scope="prototype" />
+  <bean id="returnGiftCertificateExistingInOriginal" class="dtv.pos.register.returns.ValidateReturnExistingGiftCard" scope="prototype" />
+  <bean id="returnNonPhysicalItemRule" class="dtv.pos.register.returns.ValidateReturnNonPhysicalItemRule" scope="prototype" />
+
+  <bean id="returnGiftCertificateVerificationRule" parent="returnVoucherByCategoryVerificationRule">
+    <property name="privilege" value="RETURN_GIFT_CERTIFICATE" />
+    <property name="voucherCategory" value="GIFT_CERTIFICATE" />
+  </bean>
+  <bean id="returnGiftCardVerificationRule" parent="returnVoucherByCategoryVerificationRule">
+    <property name="privilege" value="RETURN_GIFT_CARD" />
+    <property name="voucherCategory" value="GIFT_CARD" />
+  </bean>
+  
+  <!-- Warranty rules -->
+  <bean id="allowReturnWarrantyNOFRule" class="dtv.pos.warranty.validation.ValidateAllowWarrantyNotOnFileRule" scope="prototype">
+    <property name="type" value="RETURN" />
+  </bean>
+  <bean id="allowWorkOrderWarrantyNOFRule" class="dtv.pos.warranty.validation.ValidateAllowWarrantyNotOnFileRule" scope="prototype">
+    <property name="type" value="WORK_ORDER" />
+  </bean>
+  <bean id="newWarrantyAcctIdRule" class="dtv.pos.warranty.validation.ValidateNewWarrantyAccountIdRule" scope="prototype" />
+  <bean id="returnWarrantyNotInTransRule" class="dtv.pos.warranty.validation.ValidateReturnWarrantyNotInTransRule" scope="prototype" />
+  <bean id="validWarrantyItemRule" class="dtv.pos.warranty.validation.ValidateItemEligibilityRule" scope="prototype" />
+  <bean id="warrantyExpiredRule" class="dtv.pos.warranty.validation.ValidateWarrantyNotExpiredRule" scope="prototype" />
+  <bean id="warrantyStatusRule" class="dtv.pos.warranty.validation.ValidateWarrantyStatusRule" scope="prototype">
+    <property name="status" value="OPEN" />
+  </bean>
+  <bean id="warrantyQuantityChangableRule" class="dtv.pos.warranty.validation.ValidateWarrantyQuantityChangeableRule" scope="prototype" />
+  <bean id="warrantyQuantityRule" class="dtv.pos.warranty.validation.ValidateWarrantyQuantityRule" scope="prototype" />
+  <bean id="warrantyChangeQtyRule" class="dtv.pos.warranty.validation.ValidateChangeWarrantyQtyRule" scope="prototype" />
+
+  <!-- House account rules -->
+  <bean id="closedHouseAccountRule" class="dtv.pos.houseaccount.validation.ClosedHouseAccountRule" scope="prototype" />
+  <bean id="onHoldHouseAccountRule" class="dtv.pos.houseaccount.validation.OnHoldHouseAccountRule" scope="prototype" />
+  <bean id="houseAccountBalanceRule" class="dtv.pos.houseaccount.validation.ValidateHouseAccountBalanceRule" scope="prototype" />
+  <bean id="houseAccountPaymentAmountRule" class="dtv.pos.houseaccount.validation.ValidateHouseAccountPaymentAmtRule" scope="prototype" />
+  <bean id="houseAccountStatementDateRule" class="dtv.pos.houseaccount.validation.ValidateHouseAccountStatementDateRule" scope="prototype" />
+  <bean id="houseAccountTenderAmountRule" class="dtv.pos.houseaccount.validation.ValidateHouseAccountTenderAmountRule" scope="prototype">
+    <property name="privilege" value="HOUSE_ACCNT_MANAGER_OVERRIDE" />
+  </bean>
+  <bean id="houseAccountNoSaleLineRule" class="dtv.pos.houseaccount.validation.ValidateNoHouseAccountSaleLineRule" scope="prototype" />
+  <bean id="houseAccountSetPrimaryBuyerRule" class="dtv.pos.houseaccount.validation.ValidateSetPrimaryBuyerRule" scope="prototype" />
+  <bean id="houseAccountDeactivePrimaryBuyerRule" class="dtv.pos.houseaccount.validation.ValidateDeactivatePrimaryBuyerRule" scope="prototype" />
+
+  <!-- Tender rules -->
+  <bean id="idStateRule" class="dtv.pos.tender.ValidateIdStateRule" scope="prototype" />
+  <bean id="basicTenderAmountRule" class="dtv.pos.tender.validation.ValidateBasicTenderAmountRule" scope="prototype" />
+  <bean id="tenderDenominationAmountRule" class="dtv.pos.tender.validation.ValidateDenominationAmountRule" scope="prototype" />
+  <bean id="beyondOverTenderLimitRule" class="dtv.pos.tender.validation.BeyondOverTenderLimitRule" scope="prototype">
+    <property name="privilege" value="OVER_TENDER_ABOVE_CONFIGURED_AMOUNT" />
+  </bean>
+  <bean id="minimumTenderAmountRule" class="dtv.pos.tender.validation.MinAcceptAmountRule" scope="prototype">
+    <property name="privilege" value="TENDER_BELOW_CONFIGURED_AMOUNT" />
+  </bean>
+  <bean id="maxmimumTenderAmountRule" class="dtv.pos.tender.validation.MaxAcceptAmountRule" scope="prototype">
+    <property name="privilege" value="TENDER_ABOVE_CONFIGURED_AMOUNT" />
+  </bean>
+  <bean id="maxmimumRefundAmountRule" class="dtv.pos.tender.validation.MaxRefundAmountRule" scope="prototype">
+    <property name="privilege" value="REFUND_TENDER_ABOVE_CONFIGURED_AMOUNT" />
+  </bean>
+  <bean id="cashTenderAmountRule" class="dtv.pos.tender.validation.ValidateCashTenderAmountRule" scope="prototype">
+    <property name="privilege" value="CASH_REFUND_EXCEEDS_AVAILABLE_CASH" />
+  </bean>
+  <bean id="creditCardExpDateRule" class="dtv.pos.tender.creditcard.ValidateCreditCardExpDateRule" scope="prototype" />
+  <bean id="creditPaymentAccountRule" class="dtv.pos.tender.creditcard.ValidateCreditPaymentAccountRule" scope="prototype" />
+  <bean id="tenderAvailabilityRule" class="dtv.pos.tender.validation.ValidateTenderAvailabilityRule" scope="prototype" />
+  <bean id="checkMicrRule" class="dtv.pos.hardware.op.MicrReadValidationRule" scope="prototype" />
+  <bean id="minimumCheckNumberRule" class="dtv.pos.tender.validation.MinimumCheckNumberRule" scope="prototype" />
+  <bean id="birthDateRule" class="dtv.pos.tender.check.ValidateBirthdayRule" scope="prototype" />
+  <bean id="voucherTenderAmountRule" class="dtv.pos.tender.validation.ValidateVoucherTenderAmtRule" scope="prototype" />
+  <bean id="matchesDenominationRule" class="dtv.pos.tender.validation.ValidateExactDenominationAmountRule" scope="prototype" />
+  <bean id="tenderExchangeOutNotGreaterThanInAmountRule" class="dtv.pos.tender.exchange.OutNotGreaterThanInRule" scope="prototype" />
+  <bean id="tenderExchangeOutNotGreaterThanAvailableRule" class="dtv.pos.tender.exchange.OutNotGreaterThanAvailableRule" scope="prototype" />
+  <bean id="tenderExchangeMultipleOutgoingTendersRule" class="dtv.pos.tender.exchange.OutEqualsInNoMultipleOutRule" scope="prototype" />
+  <bean id="tenderMaximumOriginalCardAmountTendersRule" class="dtv.pos.tender.validation.MaxOrigCreditCardAmountRule" scope="prototype" />
+  
+  <!-- Post Void Rules -->
+  <bean id="noReturnAllowed" class="dtv.pos.ejournal.postvoid.validation.NoReturnAllowedValidation" scope="prototype" />
+  <bean id="businessDateValidationRule" class="dtv.pos.ejournal.postvoid.validation.BusinessDateValidationRule" scope="prototype" />
+  <bean id="retailLocationValidationRule" class="dtv.pos.ejournal.postvoid.validation.RetailLocationValidationRule" scope="prototype" />
+  <bean id="retailSaleTypeValidationRule" class="dtv.pos.ejournal.postvoid.validation.RetailSaleTypeValidationRule" scope="prototype" />
+  <bean id="validateOrderTransactionRule" class="dtv.pos.order.ValidateOrderTransactionRule" scope="prototype" />
+  <bean id="transactionStatusValidationRule" class="dtv.pos.ejournal.postvoid.validation.TransactionStatusValidationRule" scope="prototype">
+    <property name="includeList">
+      <list>
+        <value>COMPLETE</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="validatePostVoidAmountRule" class="dtv.pos.ejournal.postvoid.validation.ValidatePostVoidAmountRule" scope="prototype" />
+  <bean id="validatePostVoidNotReturnedRule" class="dtv.pos.ejournal.postvoid.validation.PostVoidNotReturnedValidationRule" scope="prototype" />
+  <bean id="validateAllowRollbackSaleTransRule" class="dtv.pos.ejournal.postvoid.validation.ValidateAllowRollbackSaleTransRule" scope="prototype" />
+  <bean id="tenderValidationRule" class="dtv.pos.ejournal.postvoid.validation.TenderValidationRule" scope="prototype">
+    <property name="excludeList">
+      <list>
+        <value>DEBIT_CARD</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="validatePostVoidWarrantyRule" class="dtv.pos.warranty.validation.ValidatePostVoidWarrantyRule" scope="prototype" />
+  <bean id="postVoidFlagValidationRule" class="dtv.pos.ejournal.postvoid.validation.PostVoidFlagValidationRule" scope="prototype" />
+  <bean id="reprintPreviousDayValidationRule" class="dtv.pos.register.reprint.ReprintPreviousDayValidationRule" scope="prototype">
+    <property name="privilege" value="REPRINT_PREVIOUS_DAY" />
+  </bean>
+  <bean id="rcptReprintTransactionTypeValidation" parent="retailSaleTypeValidationRule">
+    <property name="noMatchMessageKey" value="_giftRcptInvalidTranStatusMessage" />
+  </bean>
+  <bean id="rcptReprintTransactionStatusValidation" parent="transactionStatusValidationRule">
+    <property name="noMatchMessageKey" value="_giftRcptInvalidTranStatusMessage"/>
+  </bean>
+  <bean id="rcptReprintPostVoidFlagValidation" parent="postVoidFlagValidationRule">
+    <property name="failureMessage" value="_giftRcptNotOnVoidedTrans" />
+  </bean>
+  <bean id="rcptRebateTransactionTypeValidation" parent="retailSaleTypeValidationRule">
+    <property name="noMatchMessageKey" value="_rebateRcptInvalidTranMessage" />
+  </bean>
+  <bean id="rcptRebateTransactionStatusValidation" parent="transactionStatusValidationRule">
+    <property name="noMatchMessageKey" value="_rebateRcptInvalidTranStatusMessage"/>
+  </bean>
+  <bean id="rcptRebatePostVoidFlagValidation" parent="postVoidFlagValidationRule">
+    <property name="failureMessage" value="_rebateRcptNotOnVoidedTrans" />
+  </bean>
+  <bean id="saleReturnLineItemTypeValidationRule" class="dtv.pos.register.rebate.SaleReturnLineItemTypeValidationRule" scope="prototype">
+    <property name="noMatchMessageKey" value="_rebateRcptInvalidLineItemTypeMessage" />
+  </bean>
+  
+  <!-- Rain Check Rules -->
+  <bean id="rainCheckRedeemableRule" class="dtv.pos.raincheck.ValidateRaincheckRedeemableRule" scope="prototype" />
+  
+  <!-- System Cycle Rules -->
+  <bean id="openStoreRule" class="dtv.pos.systemcycle.retaillocation.ValidateOpenRetailLocationRule" scope="prototype" />
+  <bean id="closeStoreRule" class="dtv.pos.systemcycle.retaillocation.ValidateCloseRetailLocationRule" scope="prototype" />
+  <bean id="openWorkstationRule" class="dtv.pos.systemcycle.workstation.ValidateOpenWorkstationRule" scope="prototype" />
+  <bean id="closeWorkstationRule" class="dtv.pos.systemcycle.workstation.ValidateCloseWorkstationRule" scope="prototype" />
+  <bean id="openCashdrawerRule" class="dtv.pos.systemcycle.cashdrawer.ValidateOpenCashdrawerRule" scope="prototype" />
+  <bean id="cycleStoreFromWorkstationRule" class="dtv.pos.systemcycle.retaillocation.ValidateCycleRetailLocationAtPrimaryWorkstationRule" scope="prototype" />
+  <bean id="closeStoreTillsReconciledRule" class="dtv.pos.till.ValidateAllTillsReconciledRule" scope="prototype">
+    <property name="failureMessageKey" value="_closeRetailLocationUnreconciledTills" />
+  </bean>   
+  <bean id="closeStoreStoreBankStatusRule" class="dtv.pos.till.ValidateStoreBankStatusRule" scope="prototype">
+    <property name="acceptedStatuses">
+      <list>
+        <value>ENDCOUNT</value>
+        <value>RECONCILED</value>
+      </list>
+    </property>
+    <property name="failureMessageKey" value="_closeRetailLocationUnreconciledStoreBank" />
+  </bean>
+
+  <bean id="nonNullForceCloseWorkstationListRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.WORKSTATIONS_TO_PROCESS" />
+    </property>
+    <property name="failedMessage" value="_systemCycleForceCloseWkstnNoMsg" />
+  </bean> 
+  
+  <!-- Business Date Rules -->
+  <bean id="nonNullBusinessDateRule" parent="nonNullValueRule" >
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.PROPOSED_BUSINESS_DATE" />
+    </property>
+  </bean>
+  
+  <bean id="noSessionsExistRule" class="dtv.pos.systemcycle.businessdate.ValidateNoSessionsExistRule" scope="prototype" />
+  
+  <!-- Till Maintenance Rules -->
+  <bean id="minimumCashDenominationRule" class="dtv.pos.till.ValidateMinimumCashDenominationRule" scope="prototype" />
+  <bean id="fundXferAmountRule" class="dtv.pos.till.fundxfer.ValidateFundXferAmountRule" scope="prototype" />
+  <bean id="paidOutTransactionRule" class="dtv.pos.till.fundxfer.ValidatePaidOutTransactionRefRule" scope="prototype" />
+  
+  <!-- Shelf Label/Print Rules -->
+  <bean id="noDummySkuRule" class="dtv.pos.reporting.label.ValidateNoDummySkuRule" scope="prototype" />
+  <bean id="noNonPhysicalItemRule" class="dtv.pos.reporting.label.ValidateNonPhysicalItemRule" scope="prototype" />
+  <bean id="labelQuantityRule" class="dtv.pos.reporting.label.ValidateLabelQuantityRule" scope="prototype" />
+  
+  <!-- Location Based Inventory Rules -->
+  <bean id="deleteInventoryLocationRule" class="dtv.pos.inventory.locationmaint.ValidateLocationEmptyRule" scope="prototype" />
+  <bean id="movementPendingLocExistsRule" class="dtv.pos.inventory.movement.ValidateMovementLocationExistsRule" scope="prototype" />
+  <bean id="pendingLocationQtyRule" class="dtv.pos.inventory.movement.ValidateReconcileQuantityRule" scope="prototype" />
+  <bean id="pendingLocationChangeQtyRule" class="dtv.pos.inventory.movement.ValidateReconcileQuantityRule" scope="prototype">
+    <property name="newQuantity" value="true" />
+  </bean>
+  <bean id="pendingLocationQtyAllocateRule" class="dtv.pos.inventory.movement.ValidatePendingQuantityToAllocateRule" scope="prototype" />
+  <bean id="pedingSerialItemRule" class="dtv.pos.inventory.movement.ValidateReconcileSerialNumberRule" scope="prototype" />
+  
+  <bean id="documentReprintSelectRule" class="dtv.pos.document.MinReprintDocumentsRule" scope="prototype" />
+   
+  <bean id="minimumPasswordLengthRule" class="dtv.pos.employee.ValidatePasswordLengthRule" scope="prototype" />
+  <bean id="strongPasswordRule" class="dtv.pos.employee.ValidateStrongPasswordRule" scope="prototype">
+     <property name="minimumLength" value="8" />
+  </bean>
+  <bean id="samePasswordValidationRule" class="dtv.pos.employee.SamePasswordValidationRule" scope="prototype" />
+  <bean id="passwordValidationEmpMaintenance" parent="samePasswordValidationRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_EMPLOYEE" />
+    </property>
+  </bean>
+  <bean id="passwordValidationSecurity" parent="samePasswordValidationRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_EMPLOYEE_FOR_PASSWORD_CHANGE" />
+    </property>
+  </bean>
+  <bean id="ValidatePasswordReentryRule" class="dtv.pos.employee.ValidatePasswordReentryRule" scope="prototype" />
+   
+  <bean id="issueTillRule" class="dtv.pos.till.ValidateIssueTillToEmployeeRule" scope="prototype" />
+          
+  <bean id="tillAboveMinimumCashAmountRule" class="dtv.pos.till.ValidateTillAboveMinimumCashAmountRule" scope="prototype" />
+  <bean id="tillCountAllowedRule" class="dtv.pos.till.ValidateTillCountAllowedRule" scope="prototype">
+    <property name="acceptedStatuses">
+      <set>
+        <value>UNCOUNTED</value>
+        <value>BEGINCOUNT</value>
+      </set>
+    </property>
+  </bean>
+  
+  <bean id="tillAvailableToRemoveRule" class="dtv.pos.till.ValidateTillAvailableToRemoveRule" scope="prototype" />
+  <bean id="tillAvailableToAttachRule" class="dtv.pos.till.ValidateTillAvailableToAttachRule" scope="prototype" />
+  <bean id="tillUnavailableRule" class="dtv.pos.till.ValidateTillUnavailableRule" scope="prototype" />
+  
+  <!-- Cheetah Client Device Access -->
+  <bean id="cheetahClientDeviceAccessAlreadyEnabledRule" class="dtv.cheetah.ValidateAlreadyEnabledRule" scope="prototype" />
+  <bean id="cheetahClientDeviceAccessAlreadyBlockedRule" class="dtv.cheetah.ValidateAlreadyBlockedRule" scope="prototype" />
+  <bean id="cheetahClientDeviceAccessOnlySingleWorkstationEnabledDeviceRule" class="dtv.cheetah.ValidateOnlySingleEnabledDeviceRule" scope="prototype" />
+  <bean id="cheetahClientDeviceAccessStillEnabledRule" class="dtv.cheetah.ValidateStillEnabledRule" scope="prototype" />
+  
+  
+  <bean id="timeClockPrivilegeRule" parent="alwaysSecuredRule" scope="prototype">
+    <property name="privilege" value="TIME_CLOCK" />
+    <property name="failedMessage" value="_insufficientClockinAccess" />
+  </bean>
+  
+  <bean id="attachTillPrivilegeRule" parent="alwaysSecuredRule" scope="prototype">
+    <property name="privilege" value="ATTACH_TILL" />
+    <property name="failedMessage" value="_attachTillNotPrivileged" />
+  </bean>
+
+  <bean id="attachedTillsExistRule" class="dtv.pos.till.ValidateAnyTillsAttachedRule" scope="prototype" />
+  
+  <bean id="useOtherTillPrivilegeRule" parent="alwaysSecuredRule" scope="prototype">
+    <property name="privilege" value="ACCESS_OTHER_TILLS" />
+    <property name="failedMessage" value="_accessOtherTillNotPrivileged" />
+  </bean>
+  
+  <bean id="storeBankCanBeOpenedRule" class="dtv.pos.till.ValidateStoreBankStatusRule" scope="prototype">
+    <property name="acceptedStatuses">
+      <list>
+        <value>ENDCOUNT</value>
+        <value>RECONCILED</value>
+      </list>
+    </property>
+    <property name="failureMessageKey" value="_storeBankOpenAlreadyOpen" />
+  </bean>
+  
+  <bean id="openStoreBankPrivilegeRule" parent="alwaysSecuredRule" scope="prototype">
+    <property name="privilege" value="OPEN_STORE_BANK" />
+    <property name="failedMessage" value="_storeBankOpenInsufficientPrivilege" />
+  </bean>
+
+  <bean id="storeBankStatusIsBeginCount" class="dtv.pos.till.ValidateStoreBankStatusRule" scope="prototype">
+    <property name="acceptedStatuses">
+      <list>
+        <value>BEGINCOUNT</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="storeBankReconcilableRule" parent="storeBankStatusIsBeginCount" >
+    <property name="failureMessageKey" value="_reconcileStoreBankAlreadyReconciled" />
+  </bean>
+  
+  <bean id="allTillsReconciledRule" class="dtv.pos.till.ValidateAllTillsReconciledRule" scope="prototype">
+    <property name="failureMessageKey" value="_reconcileStoreBankUnreconciledTills" />
+  </bean>     
+
+  <bean id="storeBankCanAcceptDepositRule" parent="storeBankStatusIsBeginCount" >
+    <property name="failureMessageKey" value="_storeBankCashDepositBankReconciled" />
+  </bean>   
+
+  <bean id="preIssueTillRule" parent="storeBankStatusIsBeginCount" >
+    <property name="failureMessageKey" value="_issueTillStoreBankNotOpen" />
+  </bean>
+
+  <bean id="associateAdvanceIdRule" class="dtv.pos.till.advance.ValidateAssocAdvanceIdRule" scope="prototype" />
+  <bean id="associateAdvanceAmountRule" class="dtv.pos.till.advance.ValidateAssocAdvanceAmountRule" scope="prototype" />
+  <bean id="issueStartingCashRule" class="dtv.pos.till.ValidateIssueStartingCashRule" scope="prototype" />
+  <bean id="issueRollingCloseCashRule" class="dtv.pos.till.rollingclose.ValidateRollingCloseStartingCashRule" scope="prototype" />
+
+  
+  <bean id="itemTransferDestinationRule" class="dtv.pos.inventory.movement.ValidateItemTransferDestinationRule" scope="prototype" />
+  
+    <!-- Inventory Replenishmeht -->
+  <bean id="nonNullReplenishmentItemRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.CURRENT_ITEM" />
+    </property>
+    <property name="failedMessage" value="_replenishmentInvCountItemNotFound" />
+  </bean>
+  <bean id="inventoryReplenishmentNonPhysicalItemRule" class="dtv.pos.inventory.replenishment.validation.NonPhysicalItemValidationRule" scope="prototype" />
+  <bean id="canItemBeOrderedRule" class="dtv.pos.inventory.replenishment.validation.ItemCanBeOrderedValidationRule" scope="prototype" />
+  <bean id="kitItemRule" class="dtv.pos.inventory.replenishment.validation.KitItemValidationRule" scope="prototype" />
+  <bean id="greaterThanOrEqualToOnPackRule" class="dtv.pos.inventory.replenishment.validation.QuantityGreaterThanOrEqualToOnePackValidationRule" scope="prototype" />
+  <bean id="itemAlreadyExistsRule" class="dtv.pos.inventory.replenishment.validation.ItemAlreadyExistsValidationRule" scope="prototype" />
+  <bean id="requiredInvDocLineItemRule" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.CURRENT_INV_DOC_LINE" />
+    </property>
+    <property name="failedMessage" value="_validationFailed" />
+  </bean>
+  
+  <bean id="customerIdUniqueRule" class="dtv.pos.customer.ValidateCustomerIdUniqueRule" scope="prototype" />
+  <bean id="employeeIdUniqueRule" class="dtv.pos.employee.ValidateEmployeeIdUniqueRule" scope="prototype" />
+  <bean id="employeeIdLengthRule" class="dtv.pos.employee.ValidateEmployeeIdLengthRule" scope="prototype" />
+  
+  <!-- Timecard Maintenance -->
+  <bean id="nonNullTimeCardEntry" parent="nonNullValueRule">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.SELECTED_TIMECARD_ENTRY" />
+    </property>
+    <property name="failedMessage" value="_promptmsg253" />    
+  </bean>
+  <bean id="deletedTimecardEntryRule" class="dtv.pos.timeclock.timecard.validations.TimecardDeleteValidationRule" scope="prototype" />
+  <bean id="allowFutureDateTimeEntryRule" class="dtv.pos.timeclock.timecard.validations.AllowFutureDateTimecardEntryRule" scope="prototype" />
+  <bean id="validateClockDurationRule" class="dtv.pos.timeclock.ValidateDurationRule" scope="prototype">
+    <property name="privilege" value="TIME_CLOCK_DURATION" />
+  </bean>
+  
+  <!-- Payroll Maintenance -->
+  <bean id="payrollErrorsPerEmpRule" class="dtv.pos.payroll.validations.PayrollErrorsPerEmpValidationRule" scope="prototype" />
+  <bean id="payrollRecordsExistsRule" class="dtv.pos.payroll.validations.PayrollRecordsExistsRule" scope="prototype" />
+  
+  <!-- Transaction Property Rule -->
+  <bean id="transPropPhoneNumberRule" class="dtv.pos.common.ValidateLengthRule" scope="prototype">
+     <property name="length" value="10" />
+  </bean>
+  <bean id="transPropPositiveNumberRule" class="dtv.pos.common.ValidatePositiveNumberRule" scope="prototype" />
+  
+  <bean id="cashDrawerCloseRule" class="dtv.pos.hardware.op.ValidateDrawerClosedRule" scope="prototype" />
+  <bean id="giftReceiptLimitsRule" class="dtv.pos.register.giftreceipt.validation.ValidateGiftReceiptBeyondLimitsRule" scope="prototype" />
+  
+  <!-- Fiscalization related validation rules -->
+  <bean id="mixedTransAmountDueValidationRule" class="dtv.pos.register.sale.MixedTransactionAmountDueValidationRule" scope="prototype" />
+  <bean id="maximumAllowedTotalRule" class="dtv.pos.register.sale.MaximumAllowedAmountDueRule" scope="prototype" />
+  <bean id="sameSellingGroupRule" class="dtv.pos.register.sale.ValidateItemSellingGroupRule" scope="prototype" />
+  <bean id="sameSaleLineItemSellingGroupRule" class="dtv.pos.register.sale.ValidateSaleLineItemSellingGroupRule" scope="prototype" />
+
+  <!-- END: Rule Beans. All validation rule beans should be defined above this point. -->
+
+  <!-- START: Rule Lists. All beans for lists of validation rules should be defined below this point. -->
+  
+  <bean id="postalCodeRules" parent="validationRuleList" >
+    <property name="rules">
+      <list>
+        <ref bean="nonNullPostalCodeRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="couponVerificationRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="dealCouponOnTransRule" />
+        <ref bean="couponExistsRule" />
+        <ref bean="couponNotExpiredRule" />
+        <ref bean="couponEffectiveRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="attachCustomerToSaleRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="employeeSaleRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="changeTillFloatRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullTillAmountRule" />
+        <ref bean="minimumCashDenominationRule" />
+      </list>
+    </property>
+  </bean>
+  
+
+  <bean id="paidInOutRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="fundXferAmountRule" />
+        <ref bean="minimumCashDenominationRule" />
+      </list>
+    </property>
+  </bean>
+      
+  <bean id="commentRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCommentRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="loyaltyNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullLoyaltyNumberRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemIdRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullItemIdRule" />
+        <ref bean="itemIdRule"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="houseAccountPaymentRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="closedHouseAccountRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="houseAccountTenderRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="closedHouseAccountRule" />
+        <ref bean="onHoldHouseAccountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="houseAccountNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullAccountIdRule" />
+      </list>
+    </property>
+  </bean>  
+  
+  <bean id="houseAccountBalanceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="houseAccountBalanceRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="houseAccountUserNameRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullHouseAccountUserNameRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="houseAccountPaymentAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="houseAccountPaymentAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="houseAccountStatementDateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="houseAccountStatementDateRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="houseAccountInvoiceNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullInvoiceNumberRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="houseAccountPoNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullPoNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="houseAccountAvailableRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="houseAccountNoSaleLineRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="itemNotOnFileRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemNotOnFileOverrideRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemAvailableForSaleRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <bean parent="itemOffLimitsRestrictionRule" >
+          <property name="errorMessage" value="_itemSaleTimeRestricted" />
+          <property name="saleItemType" >
+            <util:constant static-field="dtv.xst.dao.trl.SaleItemType.SALE" /> 
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemAvailableForReturnRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <bean parent="itemOffLimitsRestrictionRule" >
+          <property name="errorMessage" value="_itemReturnTimeRestricted" />
+          <property name="saleItemType" >
+            <util:constant static-field="dtv.xst.dao.trl.SaleItemType.RETURN" /> 
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemAvailableForLayawayRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <bean parent="itemOffLimitsRestrictionRule" >
+          <property name="errorMessage" value="_itemLayawayTimeRestricted" />
+          <property name="saleItemType" >
+            <util:constant static-field="dtv.xst.dao.trl.SaleItemType.LAYAWAY" /> 
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemAvailableForOrderRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <bean parent="itemOffLimitsRestrictionRule" >
+          <property name="errorMessage" value="_itemOrderTimeRestricted" />
+          <property name="saleItemType" >
+            <util:constant static-field="dtv.xst.dao.trl.SaleItemType.ORDER" /> 
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemAvailableForSpecialOrderRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <bean parent="itemOffLimitsRestrictionRule" >
+          <property name="errorMessage" value="_itemSpecialOrderTimeRestricted" />
+          <property name="saleItemType" >
+            <util:constant static-field="dtv.xst.dao.trl.SaleItemType.SPECIAL_ORDER" /> 
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemAvailableForSendSaleRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <bean parent="itemOffLimitsRestrictionRule" >
+          <property name="errorMessage" value="_itemSendSaleTimeRestricted" />
+          <property name="saleItemType" >
+            <util:constant static-field="dtv.xst.dao.trl.SaleItemType.SEND_SALE" /> 
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemAvailableForWorkOrderRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <bean parent="itemOffLimitsRestrictionRule" >
+          <property name="errorMessage" value="_itemWorkOrderTimeRestricted" />
+          <property name="saleItemType" >
+            <util:constant static-field="dtv.xst.dao.trl.SaleItemType.WORK_ORDER" /> 
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemAvailabilityRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemAvailableRule" />
+        <!-- By RXPS-23739, and in an internal meeting this validation will be on saleItemQtyNoPromptRules bean -->
+        <!-- <ref bean="itemOnHandRule" /> -->
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="allowedItemQtyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="saleQuantityRule"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemDescriptionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullDescriptionRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemWeightRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="positiveItemWeightRule" />
+        <ref bean="saleWeightRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemCostRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="positiveItemCostRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemQuantityRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="positiveItemQuantityRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemQuantityReceivingRules" parent="validationRuleList">
+   <property name="rules">
+      <list>
+        <ref bean="nonNullReceivingQuantityRule" />
+      </list>
+      </property>
+  </bean>
+  
+  <bean id="saleItemQuantityRules" parent="itemQuantityRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="saleQuantityRule" />
+        <ref bean="rainCheckQuantityRule" />
+        <ref bean="warrantyQuantityRule" />
+        <ref bean="itemOnHandRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saleItemQtyNoPromptRules" parent="validationRuleList">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="saleQuantityRule" />
+        <ref bean="rainCheckQuantityRule" />
+        <ref bean="warrantyQuantityRule" />
+        <ref bean="itemOnHandRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="validateChangeSerialNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="changeSerialNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="warrantyItemQtyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="positiveWarrantyItemQtyRule" />
+        <ref bean="warrantyChangeQtyRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemModifyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonVoidedSaleLineRule" />
+        <ref bean="finalSaleLineRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- "ChangeQuantityRules" as in, rules that must be passed before you can change a quantity, not rules for validating the quantity itself. -->
+  <bean id="saleItemChangeQuantityRules" parent="saleItemModifyRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="itemQuantityChangableRule" />
+        <ref bean="warrantyQuantityChangableRule" />
+        <ref bean="verifiedReturnItemQuantityChangableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- "ChangePriceRules" as in, rules that must be passed before you can change a price, not rules for validating the price itself. -->
+  <bean id="saleItemChangePriceRules" parent="saleItemModifyRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="itemPriceChangableRule" />
+        <ref bean="verifiedReturnItemPriceChangableRule" />
+        <ref bean="blindReturnItemPriceChangableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemChangeCommissionRules" parent="saleItemModifyRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="commissionableItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="changeItemCommissionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="commissionableItemRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="commissionByIdRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="commissionedAssociateIdRule" />
+        <ref bean="selectedCommissionedAssociateRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemVoidRules" parent="saleItemModifyRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="itemVoidRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemLocationQuantityRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="quantityToAllocateRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="serialNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullSerialNumberRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="serialNumberSaleRules" parent="serialNumberRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="serialNumberLengthRule" />
+        <ref bean="serialNumberAgainstLedgerRule" />
+        <ref bean="serialNumberInCurrentTransactionRule" />
+      </list>
+    </property>
+  </bean>
+    
+  <bean id="serialNumberExchangeRules" parent="serialNumberRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="serialNumberLengthRule" />
+        <ref bean="serialNumberAgainstLedgerRule" />
+        <ref bean="serialNumberInExchangeTransactionRule" />
+      </list>
+    </property>
+  </bean>
+  
+    <bean id="serialNumberSaleExcludingInventoryRules" parent="serialNumberRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="serialNumberLengthRule" />
+        <ref bean="serialNumberInCurrentTransactionRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemPromptPropertyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullItemPropertyValue" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemPriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemPriceRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="encodedItemPriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="encodedPriceRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="taxAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullTaxAmountRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="taxPercentRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullTaxPercentRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="voucherItemPriceRules" parent="itemPriceRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="voucherPriceRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="voucherTypeItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="voucherTypeActivityCountRule" />
+        <ref bean="sameSellingGroupRule" />
+        <ref bean="giftCardReloadRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="voucherNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="voucherInputRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="voucherNumberItemRules" parent="voucherNumberRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="voucherOnTransactionRule" />
+        <ref bean="voucherAlreadyIssuedRule"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="voucherNumberTenderRules" parent="voucherNumberRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="voucherOnTransactionRule" />
+        <ref bean="voucherExistsRule" />
+        <ref bean="voucherEffectiveRule" />
+        <ref bean="voucherNotExpiredRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="voucherPinRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullPinRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="suspendTransactionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="suspendWithVoucherRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="resumeTransactionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="resumeTransactionItemTypeRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="cidRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCidRule" />
+        <ref bean="cidLengthRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="foreignChangeRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="foreignFundsAvailableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Inventory rule lists -->
+
+  <bean id="serialNumberInvDocRules" parent="serialNumberRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="serialNumberRule" />        
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="serialNumbeInvAdjRules" parent="serialNumberInvDocRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="alreadyExistsSerialNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="controlNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="controlNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="changableDocumentRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="changableDocumentRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="shippingItemRules" parent="itemIdRules">
+  <property name="rules">
+    <list merge="true">      
+      <ref bean="changableDocumentRule" />
+      <ref bean="documentAddLineRule" />
+      <ref bean="styleItemRule" />
+    </list>
+  </property>
+  </bean>
+
+  <bean id="shippingItemChangeQuantityRules" parent="itemQuantityRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="shippedQuantityRule" />
+        <ref bean="scaleQuantityRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="shippingDocAddLineAllowedRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="shippingDocAddLineAllowedRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="receivingItemRules" parent="itemIdRules">
+    <property name="rules">
+      <list merge="true">        
+        <ref bean="receivingChangableDocumentRule" />
+        <ref bean="receivingDocAddLineAllowedRule" />
+        <ref bean="styleItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="receivingSerialNumberRules" parent="serialNumberRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="receiveSerialNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="receivingItemQuantityRules" parent="itemQuantityReceivingRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="receiveMaxQuantityThresholdRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="receivingItemChangeQuantityRules" parent="receivingItemQuantityRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="receivedQuantityRule" />
+        <ref bean="scaleQuantityRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="receivingItemChangeCostRules" parent="itemCostRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="changableDocumentRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="receivedVoidItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="changableDocumentRule" />
+        <ref bean="receivedVoidItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="invAdjustItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullItemIdRule" />
+        <ref bean="styleItemRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="selectedInventoryItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="changableDocumentRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="changableQtyInventoryItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="changableDocumentRule" />
+        <ref bean="changeSerializedItemRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Customer item account rule lists -->
+
+  <bean id="depositAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="depositAmountRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="maxDepositAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="maxDepositAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="custAccountItemVoidRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemVoidRule" />
+        <ref bean="custAccountItemChangeableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="custAccountChangePriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemPriceChangableRule" />
+        <ref bean="custAccountItemChangeableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="custAccountIdRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullAccountIdRule" />
+        <ref bean="custAccountIdRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="custAccountChangeQuantityRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemQuantityChangableRule" />
+        <ref bean="custAccountItemChangeableRule" />
+        <ref bean="warrantyQuantityChangableRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="ccaItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="custAcctItemAllowableRule" />
+        <ref bean="sameSellingGroupRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Layaway rule lists -->
+  
+  <bean id="maxLayawayItemsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="maxLayawayItemsRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="allowLayawayItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allowLayawayItemRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="minLayawayTotalItemPriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="minLayawayTotalItemPriceRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="paymentIntervalRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="paymentIntervalRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="paymentPeriodCountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="paymentPeriodCountRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="layawayQuantityRules" parent="itemQuantityRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="layawayQuantityRule" />
+        <ref bean="warrantyQuantityRule" />
+        <ref bean="saleQuantityRule"/>
+        <ref bean="itemOnHandRule" /> 
+      </list>
+    </property>
+  </bean>
+
+  <bean id="layawayAllowEscrowRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="layawayAllowEscrowRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="layawayPaymentAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="layawayPaymentAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Special order rule lists -->
+
+  <bean id="allowSpecOrderItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allowSpecOrderItemRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="maxSpecialOrderItemsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="maxSpecialOrderItemsRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="specialOrderQuantityRules" parent="itemQuantityRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="specialOrderQuantityRule" />
+        <ref bean="warrantyQuantityRule" />
+        <ref bean="saleQuantityRule"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="specialOrderAllowEscrowRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="specialOrderAllowEscrowRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="specialOrderExpectedDateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="specialOrderExpectedDateRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="minSpecialOrderTotalItemPriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="minSpecialOrderTotalItemPriceRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Work order rule lists -->
+
+  <bean id="taskSelectionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="taskSelectionRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="workOrderItemValueRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="workOrderItemValueRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="workOrderApprovalAmtRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="workOrderApprovalAmtRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="allowWorkOrderItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allowWorkOrderItemRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="lastNoticeDateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullDateRule" />
+        <ref bean="lastNoticeDateRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="workOrderItemsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="workOrderItemsRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="workOrderFinishDateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullDateRule" />
+        <ref bean="workOrderFinishDateRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="workOrderStatusRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="workOrderStatusRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="totalNumberPartTaskRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="totalNumberPartTaskRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="nonNullWorkItemsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullWorkItemsRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="workOrderSerialNumberRules" parent="nonNullSerialNumberRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="serialNumberLengthRule" />
+        <ref bean="workOrderSerialNumberRule" />
+      </list>
+    </property>
+  </bean>  
+
+  <bean id="workOrderModifyTasksRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="custAccountItemChangeableRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="workOrderBatchReceiveRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="selectedWorkOrderRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="workOrderBatchShipRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="selectedWorkOrderRule" />
+      </list>
+    </property>
+  </bean>
+
+
+  <!--Send sale rule lists -->
+
+  <bean id="allowSendSaleItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allowSendSaleItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Order rule lists -->
+  
+  <bean id="orderItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allowOrderItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="orderItemQuantityRules" parent="itemQuantityRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="saleQuantityRule"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- "ChangeRules" as in, rules that must be passed before any change can be made to the selected object, not validation on the change itself. -->  
+  <bean id="orderItemChangeRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="orderLineSelectedRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- "ChangeQuantityRules" as in, rules that must be passed before you can change a quantity, not rules for validating the quantity itself.  -->
+  <bean id="orderItemChangeQuantityRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="orderLineOrShippingFeeSelectedRule" />
+        <ref bean="itemQuantityChangableRule"/>
+      </list>
+    </property>
+  </bean>
+    
+  <!-- "ChangePriceRules" as in, rules that must be passed before you can change a price, not rules for validating the price itself. -->
+  <bean id="orderItemChangePriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="orderLineOrShippingFeeSelectedRule" />
+        <ref bean="itemPriceChangableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="orderItemVoidRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="orderLineOrShippingFeeSelectedRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="VoidOrderItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="orderLineSelectedVoidRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="orderDepositRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="orderDepositRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="orderCancelSelectedItemsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="orderItemsSelectedRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="acceptOrderFromWorklistRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="acceptOrderFromWorklistRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="acceptOrderRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="orderAcceptEligibilityRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Wish List rule lists -->
+  
+  <bean id="wishListAddItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="wishListDuplicateItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="custItemListSelectItemsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="custItemListSelectItemsRule" />
+      </list>
+    </property>
+  </bean>
+    
+  <!-- Return rule lists -->
+  
+  <bean id="returnItemPriceValRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="returnItemPriceRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnShelfItemPriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="returnShelfItemPriceRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnOrigPriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="returnOrigPriceRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="allowItemVerifiedReturnRules" parent="validationRuleList">
+    <property name="rules">
+      <list value-type="dtv.pos.iframework.validation.IValidationRule">
+        <ref bean="returnAllowableItemRule" />
+        <ref bean="returnVerificationQtyRule" />
+        <ref bean="returnableSaleItemTypeRule" />
+        <ref bean="returnItemOrderLineNotCancelledRule" />
+        <ref bean="sameSellingGroupRule" />
+        <ref bean="returnGiftCertificateVerificationRule" />
+        <ref bean="returnGiftCardVerificationRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="allowVerifiedReturnInputQtyRules" parent="validationRuleList">
+    <property name="rules">
+      <list value-type="dtv.pos.iframework.validation.IValidationRule">
+        <ref bean="allowReturnInputQtyRule" />
+        <ref bean="returnVerificationInputQtyRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="allowVerifiedReturnInputQtySaleModeRules" parent="validationRuleList">
+    <property name="rules">
+      <list value-type="dtv.pos.iframework.validation.IValidationRule">
+        <ref bean="allowReturnInputQtySaleModeRule" />
+        <ref bean="returnVerificationInputQtySaleModeRule" />        
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnVoucherNumberItemRules" parent="voucherNumberRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="returnVoucherOnTransRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnVoucherOnTransRules" parent="validationRuleList">
+    <property name="rules">
+      <list value-type="dtv.pos.iframework.validation.IValidationRule">
+        <ref bean="returnVoucherOnTransRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="voidSendSaleItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list value-type="dtv.pos.iframework.validation.IValidationRule">
+        <ref bean="sendSaleVoidItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnSerialNumberRules" parent="serialNumberSaleRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="returnSerialNumberRule" />
+        <ref bean="returnGiftCertificateExistingInOriginal" />
+        <ref bean="voucherBalanceRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnKitComponentSerialNumberRules" parent="serialNumberSaleRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="returnKitComponentSerialNumberRule" />
+        <ref bean="voucherBalanceRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnNewItemPriceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="returnNewItemPriceRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnListSelectionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullReturnItemListRule"/>
+        <ref bean="returnSelectedReturnItemsRule"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnBlindAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="returnBlindAmountRule"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="totalReturnItemAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="returnPriceOnChangeRule" />
+        <ref bean="returnItemExistingPriceRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnByCreditCardRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="returnByCreditCardRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnItemIdRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="returnItemIdRule" />
+        <ref bean="returnNonPhysicalItemRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Coupon/Discount rule lists -->
+  
+  <bean id="discountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="secureDiscountRule" />
+        <ref bean="anyValidLineDiscountRule" />
+        <ref bean="maximumDiscountAppliedRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="redeemBounceBackDiscountRules" parent="discountRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="redeemBounceBackDiscountRule" />
+      </list>
+    </property>
+  </bean>  
+  
+  <bean id="custAcctDiscountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="secureDiscountRule" />
+        <ref bean="anyValidCustAcctLineDiscountRule" />
+        <ref bean="maximumDiscountAppliedRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="itemInTransRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemInTransRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="lineItemDiscountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemDiscountThresholdRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="groupItemSelectionDiscountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="minimumGroupItemsRule" />
+        <ref bean="allSaleAllReturnGroupRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="transactionDiscountRules" parent="itemInTransRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="secureDiscountRule" />
+        <ref bean="anyValidLineDiscountRule" />
+        <ref bean="maximumDiscountAppliedRule" />
+        <ref bean="minimumTransactionAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="voidDiscountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="voidDiscountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="loyaltyCardMatchRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="currentLoyaltyMatchRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="redeemAwardAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullAwardAmountRule" />
+        <ref bean="awardAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="awardCouponsRedemptionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="awardCouponsRedemptionRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="changeSaleDiscountRules" parent="saleItemModifyRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="changeDiscountRule" />
+        <ref bean="allowDiscountModifyRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="changeDiscountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="changeDiscountRule" />
+        <ref bean="allowDiscountModifyRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="couponIdRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCouponIdRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="bounceBackCouponRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="bounceBackCouponRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="nonNullSerialNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullSerialNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Gift Registry rule lists -->
+  
+  <bean id="relateAttributeValueRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullAttributeValueRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="idTypeRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullIdVerificationData"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="idNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullIdVerificationData" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="idStateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullIdVerificationData" />
+        <ref bean="idStateRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="tenderAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="basicTenderAmountRule" />
+        <ref bean="tenderDenominationAmountRule" />
+        <ref bean="beyondOverTenderLimitRule" />
+        <ref bean="minimumTenderAmountRule" />
+        <ref bean="maxmimumTenderAmountRule" />
+        <ref bean="maxmimumRefundAmountRule" />
+        <ref bean="houseAccountTenderAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="tenderExchangeIncomingAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="basicTenderAmountRule" />
+        <ref bean="tenderDenominationAmountRule" />
+        <ref bean="minimumTenderAmountRule" />
+        <ref bean="maxmimumTenderAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="tenderExchangeOutgoingAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="tenderExchangeOutNotGreaterThanInAmountRule" />
+        <ref bean="tenderExchangeOutNotGreaterThanAvailableRule" />
+        <ref bean="minimumTenderAmountRule" />
+        <ref bean="maxmimumTenderAmountRule" />
+        <ref bean="tenderExchangeMultipleOutgoingTendersRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="currencyTenderAmountRules" parent="tenderAmountRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="cashTenderAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="changeTenderAmountRules" parent="tenderAmountRules" />
+  
+  <bean id="originalCardRefundTenderAmountRules" parent="tenderAmountRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="tenderMaximumOriginalCardAmountTendersRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="creditCardInfoRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="creditCardExpDateRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="creditPaymentAccountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="creditPaymentAccountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="tenderAvailabilityRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="tenderAvailabilityRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="checkManualEntryRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="checkManualEntryRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="micrRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="checkMicrRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="checkNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="minimumCheckNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="birthDateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="birthDateRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="voucherTenderAmountRules" parent="tenderAmountRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="voucherTenderAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="travelersCheckAmountRules" parent="tenderAmountRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="matchesDenominationRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="giftRegistryItemQuantityRules" parent="itemQuantityRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="giftRegistrySaleQuantityRule"/>
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Post Void rule lists -->
+  
+  <bean id="postVoidRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="noReturnAllowed" />
+        <ref bean="businessDateValidationRule" />
+        <ref bean="retailLocationValidationRule" />
+        <ref bean="retailSaleTypeValidationRule" />
+        <ref bean="validateOrderTransactionRule" />
+        <ref bean="transactionStatusValidationRule" />
+        <ref bean="validatePostVoidAmountRule" />
+        <ref bean="validateAllowRollbackSaleTransRule" />
+        <ref bean="tenderValidationRule" />
+        <ref bean="validatePostVoidWarrantyRule" />
+        <ref bean="postVoidFlagValidationRule" />
+        <ref bean="validatePostVoidNotReturnedRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="postVoidRollBackRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="validateAllowRollbackSaleTransRule" />
+      </list>
+    </property>
+  </bean>
+    
+  <bean id="receiptReprintRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullReprintTransRule" />
+        <ref bean="transactionStatusValidationRule" />
+        <ref bean="reprintPreviousDayValidationRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="reprintTransactionGiftReceiptRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="rcptReprintTransactionTypeValidation" />
+        <ref bean="rcptReprintTransactionStatusValidation" />
+        <ref bean="rcptReprintPostVoidFlagValidation" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="transactionReceiptRebateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="rcptRebateTransactionTypeValidation" />
+        <ref bean="rcptRebateTransactionStatusValidation" />
+        <ref bean="rcptRebatePostVoidFlagValidation" />
+        <ref bean="saleReturnLineItemTypeValidationRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Warranty rule lists -->
+  
+  <bean id="allowReturnWarrantyNOFRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allowReturnWarrantyNOFRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="allowWorkOrderWarrantyNOFRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allowWorkOrderWarrantyNOFRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="newWarrantyIdRules" parent="newWarrantyIdRulesBase">
+  <property name="rules">
+      <list merge="true">
+        <ref bean="newWarrantyAcctIdRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="newWarrantyIdRulesBase" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullWarrantyNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnVerifiedWarrantyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullReturnWarrantyListRule" />
+        <ref bean="returnWarrantyNotInTransRule" />
+        <ref bean="warrantyStatusRule" />
+        <ref bean="warrantyExpiredRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="nonNullWarrantyNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullWarrantyNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="returnWarrantyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="returnWarrantyNotInTransRule" />
+        <ref bean="warrantyStatusRule" />
+        <ref bean="warrantyExpiredRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="validWarrantyItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="validWarrantyItemRule" />
+        <ref bean="sameSellingGroupRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="workOrderWarrantyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="warrantyStatusRule" />
+        <ref bean="warrantyExpiredRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Rain Check rule lists -->
+  
+  <bean id="rainCheckIdRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullRainCheckIdRule" />
+        <ref bean="rainCheckRedeemableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="duplicateSectionDetailRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="duplicateSectionDetailRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="storeLayoutSelectSectionDetailRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="storeLayoutSelectSectionDetailRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- System Cycle rule lists -->
+  <bean id="openCashdrawerRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="openCashdrawerRule"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="openWorkstationRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="openWorkstationRule"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="closeWorkstationRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="closeWorkstationRule"/>
+      </list>
+    </property>
+  </bean>
+  
+    <bean id="openRetailLocationRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="openStoreRule" />
+        <ref bean="cycleStoreFromWorkstationRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="closeRetailLocationRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="closeStoreRule" />
+        <ref bean="cycleStoreFromWorkstationRule" />
+        <ref bean="closeStoreTillsReconciledRule" />
+        <ref bean="closeStoreStoreBankStatusRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="forceCloseWorkstationSelectionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullForceCloseWorkstationListRule"/>
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Business Date rule lists -->
+  <bean id="allowChangeBusinessDateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="noSessionsExistRule"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="changeBusinessDateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullBusinessDateRule"/>
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Till Maintenance rule lists -->
+  <bean id="tenderRepositoryListSelectionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullTenderRepositoryListRule"/>
+      </list>
+    </property>
+  </bean>
+ 
+  <bean id="cashTenderListSelectionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCashTenderListRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="cashPickupTenderListSelectionRules" parent="cashTenderListSelectionRules">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCashTenderListRule" />
+        <ref bean="tillAboveMinimumCashAmountRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="tillCountAllowedRules" parent="validationRuleList">
+    <property name="rules">
+      <ref bean="tillCountAllowedRule" />
+    </property>
+  </bean>
+  
+  <bean id="tillAvailableToRemoveRules" parent="validationRuleList">
+    <property name="rules">
+      <ref bean="tillAvailableToRemoveRule" />
+    </property>
+  </bean>
+  
+  <bean id="tillAvailableToAttachRules" parent="validationRuleList">
+    <property name="rules"> 
+      <list>
+        <ref bean="attachTillPrivilegeRule" />
+        <ref bean="tillAvailableToAttachRule" />
+      </list>
+    </property>
+  </bean>
+  
+   <bean id="tillUnavailableRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="tillUnavailableRule" />
+      </list>
+    </property>  
+  </bean>
+
+  <bean id="useOtherTillRules" parent="validationRuleList">
+    <property name="rules"> 
+      <list>
+        <ref bean="useOtherTillPrivilegeRule" />
+        <ref bean="attachedTillsExistRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="openStoreBankRules" parent="validationRuleList">
+    <property name="rules"> 
+      <list>
+        <ref bean="openStoreBankPrivilegeRule" />
+        <ref bean="storeBankCanBeOpenedRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="reconcileStoreBankRules" parent="validationRuleList">
+    <property name="rules"> 
+      <list>
+        <ref bean="allTillsReconciledRule" />
+        <ref bean="storeBankReconcilableRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="storeBankCashDepositRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="storeBankCanAcceptDepositRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="preIssueTillRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="preIssueTillRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="timeClockAccessRules" parent="validationRuleList">
+    <property name="rules"> 
+      <list>
+        <ref bean="timeClockPrivilegeRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="associateAdvanceRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="associateAdvanceIdRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="associateAdvanceAmountRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="associateAdvanceAmountRule" />
+      </list>
+    </property>  
+  </bean>
+
+  <bean id="issueStartingCashRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="issueStartingCashRule" />
+      </list>
+    </property>  
+  </bean>
+
+  <bean id="issueTillRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullEmployeeRule" />
+        <ref bean="issueTillRule" />
+        <ref bean="tillUnavailableRule" />
+      </list>
+    </property>  
+  </bean>
+  
+  <bean id="paidOutTransactionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="paidOutTransactionRule" />
+      </list>
+    </property>  
+  </bean>  
+  
+  <!-- Inventory Count rule lists -->  
+  <bean id="storeLayoutAddSectionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullStoreLayoutSectionNameRule" />
+        <ref bean="storeLayoutSectionExistsRule" />
+      </list>
+    </property>
+  </bean>
+    
+  <bean id="storeLayoutSelectSectionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="storeLayoutSelectSectionRule" />
+      </list>
+    </property>
+  </bean>
+    
+  <bean id="inventoryCountCreateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="inventoryCountOnlineRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountAddItemRules" parent="itemIdRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="itemNotOnFileRule" />
+        <ref bean="styleItemRule" />
+        <ref bean="nonInventoriedItemRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="inventoryCountScanItemRules" parent="itemIdRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="itemNotOnFileRule" />
+        <ref bean="styleItemRule" />
+      </list>
+    </property>
+  </bean>
+    
+  <bean id="cycleCountAddDetailRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cycleCountDuplicateDetailRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountSheetItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="inventoryCountSheetItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountItemQuantityRules" parent="inventoryCountSheetItemRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="positiveItemQuantityRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="inventoryCountChangeItemQuantityRules" parent="inventoryCountSheetItemRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="nonNullItemQuantityRule" />
+          <ref bean="scaleQuantityRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="cycleCountSizeRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cycleCountSizeRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountSelectSingleSheetRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countSheetSelectionRequiredRule" />
+        <ref bean="countSheetPrintRequiredRule" />
+        <ref bean="countSheetStatusForSelectRule" />
+        <ref bean="enterCountBeforeInitiateRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountSelectMultipleSheetsRules" parent="validationRuleList">
+    <property name="rules">
+      <ref bean="countSheetsSelectedRule" />
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountGenerateSheetsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="oneCountSectionExistsRule" />
+        <ref bean="countSectionExistsPerBucketRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountInitiateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="inventoryCountOnlineRule" />
+        <ref bean="anyInventoryCountInitiatedRule" />
+        <ref bean="initiateInventoryCountAllowedRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountSubmitSheetRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countSheetSelectionRequiredRule" />
+        <ref bean="countSheetStatusForSubmitRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="manualRecountSheetsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="manualRecountSelectionRequiredRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Location Based Inventory rule lists -->
+  <bean id="deleteInventoryLocationRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="deleteInventoryLocationRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="movementPendingLocExistsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="movementPendingLocExistsRule" />
+      </list>
+    </property>  
+  </bean>
+  
+  <bean id="pendingLocationQtyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="pendingLocationQtyRule" />
+      </list>
+    </property>  
+  </bean>
+  
+  <bean id="pendingLocationChangeQtyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="pendingLocationChangeQtyRule" />
+      </list>
+    </property>  
+  </bean>
+  
+  <bean id="pendingLocationQtyAllocateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="pendingLocationQtyAllocateRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="pedingSerialItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="pedingSerialItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="documentReprintSelectRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="documentReprintSelectRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="transactionExistsRule" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullTransactionRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!--Shelf label/ticket rule lists -->
+  <bean id="itemsForShelfLabelRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="noDummySkuRule" />
+        <ref bean="noNonPhysicalItemRule" />
+      </list>
+    </property>  
+  </bean>
+  
+  <bean id="labelQuantityRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="labelQuantityRule" />
+      </list>
+    </property>  
+  </bean>
+  
+  <bean id="batchNameRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullBatchNameRule" />
+      </list>
+    </property>  
+  </bean>
+  
+  <bean id="itemTransferDestinationRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemTransferDestinationRule" />
+      </list>
+    </property>  
+  </bean>
+  
+  <bean id="itemTransferItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullItemIdRule" />
+        <ref bean="itemTransferItemNotOnFileRule" />
+        <ref bean="styleItemRule" />
+      </list>
+    </property>  
+  </bean>
+
+  <bean id="itemTransferQtyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemTransferQtyRule" />
+      </list>
+    </property>  
+  </bean>
+
+  <bean id="itemTransferChangeQtyRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemTransferChangeQtyRule" />
+      </list>
+    </property>  
+  </bean>
+  
+  <!-- Inventory Replenishment rule sets -->
+  <bean id="replenishmentInventoryItemLookupRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullReplenishmentItemRule" />
+        <ref bean="inventoryReplenishmentNonPhysicalItemRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="inventoryReplenishmentItemValidationRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="itemAlreadyExistsRule" />
+        <ref bean="canItemBeOrderedRule" />
+        <ref bean="kitItemRule" />
+        <ref bean="styleItemRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="replenishmentQuantityRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullReplenishmentItemRule" />
+        <ref bean="positiveItemQuantityRule" />
+        <ref bean="greaterThanOrEqualToOnPackRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="modifyLineItemRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="requiredInvDocLineItemRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Timecard Maintenance rules -->
+  <bean id="validateTimecardSelectionRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullTimeCardEntry" />
+      </list>
+    </property>
+  </bean>
+  <bean id="timecardModificationRules" parent="validateTimecardSelectionRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="deletedTimecardEntryRule" />
+        <ref bean="allowFutureDateTimeEntryRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="addNewTimecardRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allowFutureDateTimeEntryRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="validateClockInOutRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="validateClockDurationRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Payroll Maintenance -->
+  <bean id="payrollReviewRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="payrollErrorsPerEmpRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="payrollPostRules" parent="payrollReviewRules">
+    <property name="rules">
+      <list>
+        <ref bean="payrollRecordsExistsRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="newCustomerIdRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCustomerIdRule" />
+        <ref bean="customerIdUniqueRule" />
+      </list>
+    </property>  
+  </bean>
+  
+   <bean id="newEmployeeIdRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullEmployeeIdRule" />
+        <ref bean="employeeIdUniqueRule" />
+        <ref bean="employeeIdLengthRule" />
+      </list>
+    </property>  
+  </bean>   
+  
+  
+  <bean id="newPasswordRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="strongPasswordRule" />
+        <ref bean="ValidatePasswordReentryRule" />
+      </list>
+    </property>
+  </bean>
+  
+   <bean id="newPasswordForExistingEmployeeRules" parent="newPasswordRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="passwordValidationEmpMaintenance" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="newPasswordForForcePasswordChange" parent="newPasswordRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="passwordValidationSecurity" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="setHouseAccountPrimaryBuyerRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullPrimaryBuyerRule" />
+        <ref bean="houseAccountSetPrimaryBuyerRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="deactivateHouseAccountPrimaryBuyerRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullPrimaryBuyerRule" />
+        <ref bean="houseAccountDeactivePrimaryBuyerRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="deletePrimaryAddressRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="deletePrimaryAddressRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="transPropRequiredRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullTransPropertyRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="transPropPhoneNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="transPropPhoneNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="transPropPositiveNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="transPropPositiveNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="cashDrawerCloseRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cashDrawerCloseRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="giftReceiptLimitsRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="giftReceiptLimitsRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="validateCheckNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCheckNumberRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="amountDueRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="mixedTransAmountDueValidationRule" />
+        <ref bean="maximumAllowedTotalRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="sellingIdGroupRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="sameSellingGroupRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saleLineSellingIdGroupRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="sameSaleLineItemSellingGroupRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="workOrderSellingIdGroupRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="sameSaleLineItemSellingGroupRule" />
+      </list>
+    </property>
+  </bean>
+  
+  
+  <bean id="cheetahClientDeviceAccessEnableRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cheetahClientDeviceAccessAlreadyEnabledRule" />
+        <ref bean="cheetahClientDeviceAccessOnlySingleWorkstationEnabledDeviceRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="cheetahClientDeviceAccessBlockRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cheetahClientDeviceAccessAlreadyBlockedRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="cheetahClientDeviceAccessDeleteRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cheetahClientDeviceAccessStillEnabledRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- AIRSIDE Start-->
+  <!--  This needs to be refactored -->
+  <bean id="singleValidationBeanLocator" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pos.flight.validation.ValidationsFactory"/>
+  </bean>
+  
+  <bean id="firstFlightValidation" class="dtv.pos.flight.validation.FlightInfoDepartureAirportValidation" scope="prototype" />
+  <bean id="alreadyAddedFlightValidation" class="dtv.pos.flight.validation.FlightInfoAlreadyAddedValidation" scope="prototype" />
+  <bean id="originDestinationDifferent" class="dtv.pos.flight.validation.FlightDepartureOriginDifferentValidation" scope="prototype" />
+  <bean id="moreFlightsOriginNotLocal" class="dtv.pos.flight.validation.MoreFlightOriginAirportValidation" scope="prototype"/>
+  
+  <bean id="currentFlightMissing" class="dtv.pos.flight.validation.CurrentFlightInDbValidation" scope="prototype" />
+  <bean id="flightScheduledDateOutsideWarn" class="dtv.pos.flight.validation.FlightScheduledDateWarningValidation" scope="prototype"/>
+  <bean id="flightScheduledDateOutsideLimits" class="dtv.pos.flight.validation.FlightScheduledDateValidation" scope="prototype"/>
+  
+  <bean id="flightDestinationDoesNotMatch" class="dtv.pos.flight.validation.FlightDestinationAirportValidation" scope="prototype"/>
+    
+  <bean id="resumeBoardingPassValidation" class="dtv.pos.flight.resumetransactions.validation.ResumeTransBoardingPassValidation" scope="prototype"/>
+  <bean id="resumeStaffValidation" class="dtv.pos.flight.resumetransactions.validation.ResumeStaffValidation" scope="prototype" />
+  <bean id="flightDestinationConfusion" class="dtv.pos.flight.validation.FlightDestinationNotEntered" scope="prototype" />
+    
+  <bean id="flightValidations" parent="validationRuleList">
+    <property name="rules">
+      <list> 
+        <ref bean="firstFlightValidation" />
+        <ref bean="flightScheduledDateOutsideLimits" />
+        <ref bean="alreadyAddedFlightValidation" />
+        <ref bean="originDestinationDifferent" />
+        <ref bean="flightDestinationDoesNotMatch" />
+        <ref bean="moreFlightsOriginNotLocal" />
+        <ref bean="flightDestinationConfusion" />
+      </list>
+    </property>
+  </bean>
+ 
+  <bean id="resumeTranValidations" parent="validationRuleList">
+    <property name="rules">
+      <list> 
+        <ref bean="resumeBoardingPassValidation" />
+        <ref bean="resumeStaffValidation" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- AIRSIDE End-->
+
+  <bean id="allItemsCanChangeTaxRate" class="dtv.pos.register.tax.op.validation.ValidateAllItemsCanChangeTax" scope="prototype"/>
+  <bean id="validateItemsTranChangeTaxRate" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="allItemsCanChangeTaxRate" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="isNotInUpdateRequiredPeriodValidation"
+        class="dtv.pos.common.IsNotInUpdateRequiredPeriodValidationRule" scope="prototype"/>
+
+  <bean id="isNotInUpdateRequiredPeriodValidations" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="isNotInUpdateRequiredPeriodValidation"/>
+      </list>
+    </property>
+  </bean>
+
+  <!-- IP Cash drawer validations -->
+  <bean id="ipCashDrawerInUseRule" class="dtv.pos.hardware.ipcashdrawer.validation.IpCashDrawerInUseValidationRule" scope="prototype" />
+  <bean id="ipCashDrawerIsPresentRule" class="dtv.pos.hardware.ipcashdrawer.validation.IpCashDrawerIsPresentValidationRule" scope="prototype" />
+  <bean id="ipCashDrawerNoMatchRule" class="dtv.pos.hardware.ipcashdrawer.validation.IpCashDrawerNoMatchValidationRule" scope="prototype" />
+  <bean id="ipCashDrawerIsAttachedRule" class="dtv.pos.hardware.ipcashdrawer.validation.IpCashDrawerIsAttachedValidationRule" scope="prototype" />
+  
+  <bean id="scanIpCashDrawerRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="ipCashDrawerInUseRule" />
+        <ref bean="ipCashDrawerIsPresentRule" />
+        <ref bean="ipCashDrawerIsAttachedRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="scanIpCashDrawerTillRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="ipCashDrawerInUseRule" />
+        <ref bean="ipCashDrawerIsPresentRule" />
+        <ref bean="ipCashDrawerNoMatchRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- IP Cash drawer End-->
+  
+  <bean id="isCashDrawerPresentValidation"
+        class="dtv.pos.nosale.CashDrawerPresentValidationRule" scope="prototype"/>
+  
+  <bean id="isCashDrawerPresentValidations" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="isCashDrawerPresentValidation"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="custAcctQuantityRules" parent="itemQuantityRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="warrantyQuantityRule" />
+        <ref bean="saleQuantityRule"/>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="rollingCloseTillCashRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="issueRollingCloseCashRule" />
+      </list>
+    </property>
+  </bean>
+ </beans>

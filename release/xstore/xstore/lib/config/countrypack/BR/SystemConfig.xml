@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <RegisterConfig dtype="Default"> 
+  </RegisterConfig>
+  <SystemConfig dtype="Default">
+    <LocalCurrencyId dtype="String">BRL</LocalCurrencyId>
+    <Charity dtype="Default">
+      <EnableDonation dtype="Boolean">false</EnableDonation>
+    </Charity>
+    <LineItemDiscount dtype="Default">    
+    <!-- The thresholds establish maximum allowable operator discounting; beyond these --> 
+      <!-- thresholds, the DISCOUNT_EXCEED_MAX_THRESHOLD privilege is activated. Thresholds -->
+      <!-- not applied unless Enabled is true.  -->
+      <DiscountThreshold dtype="Default">
+        <Enabled dtype="Boolean">true</Enabled>
+        <Amount dtype="BigDecimal">999999.99</Amount>
+        <Percent dtype="Integer">99</Percent>
+      </DiscountThreshold>
+    </LineItemDiscount>
+    <Tax dtype="Default">
+      <EnableVatTaxSummaryPrint dtype="Boolean">true</EnableVatTaxSummaryPrint>
+    </Tax>
+    <FiscalConfig dtype="Default">       
+      <ShippingDestination dtype="Default">
+        <ShippingDestOutsideCountryAllowed dtype="Boolean">false</ShippingDestOutsideCountryAllowed>
+        <ShippingDestOutsideStateAllowed dtype="Boolean">false</ShippingDestOutsideStateAllowed>
+      </ShippingDestination>  
+      <Country dtype="Default">
+        <Br dtype="Default">
+          <NfeConfig dtype="Default">
+            <SeriesId dtype="Integer">1</SeriesId>
+            <!-- NfeEnvironmentId: 1 Production and 2 for homologation -->
+            <NfeEnvironmentId dtype="Integer">1</NfeEnvironmentId>    
+            <AllowNonIcmsTaxMapping dtype="Boolean">true</AllowNonIcmsTaxMapping>
+            <EmailEnabled dtype="Boolean">true</EmailEnabled>
+            <AuthMethodCode dtype="String">BR::NFE::NFE_SERVICE</AuthMethodCode>
+            <TransThresholdForNfe dtype="BigDecimal">10000.00</TransThresholdForNfe>
+            <NfeExpirationDays dtype="Integer">1</NfeExpirationDays>
+            <NfeDestValidation dtype="Default">
+              <Telephone dtype="Boolean">true</Telephone>
+            </NfeDestValidation>
+            <IpiCst dtype="Default">
+              <!-- * All CST should be configured as either and no CST should be configured as both * If CST is 
+                not configured or configured both by mistake, Xstore will not include either of the IPI node, which will make NFe 
+                'REJECTED' -->
+              <IpiTrib dtype="String">00,49,50,99</IpiTrib>
+              <IpiNt dtype="String">01,02,03,04,05,51,52,53,54,55</IpiNt>
+            </IpiCst>
+            <CofinsCst dtype="Default">
+              <CofinsOutr dtype="String">49,50,51,52,53,54,55,56,60,61,62,63,64,65,66,67,70,71,72,73,74,75,98,99</CofinsOutr>
+              <CofinsNt dtype="String">04,06,07,08,09</CofinsNt>
+            </CofinsCst>
+            <PisCst dtype="Default">
+              <PisOutr dtype="String">49,50,51,52,53,54,55,56,60,61,62,63,64,65,66,67,70,71,72,73,74,75,98,99</PisOutr>
+              <PisNt dtype="String">04,06,07,08,09</PisNt>
+            </PisCst>
+            <CommercialCustomerFromOtherState dtype="Default">             
+              <ExcludeTransTypeCode dtype="String">I910AD,I910D,O910AC,O910C</ExcludeTransTypeCode>
+            </CommercialCustomerFromOtherState>            
+            <ContingencyCodes dtype="String">109</ContingencyCodes>
+            <DonationCfop dtype="String">5910,6910</DonationCfop>
+            <SkipNfeMaintenanceOnFailure dtype="Boolean">false</SkipNfeMaintenanceOnFailure>
+          </NfeConfig>
+          <NfceSatConfig dtype="Default">
+            <!-- Possible values): NFCE, SAT -->
+            <SaleMode dtype="String">NFCE</SaleMode>
+            <DefaultTransType dtype="String">O102</DefaultTransType>
+            <DefaultCfop dtype="String">5102</DefaultCfop>
+            <SeriesId dtype="Integer">88</SeriesId>
+          </NfceSatConfig>
+          <SatConfig dtype="Default">
+            <CRegTribISSQN dtype="String">4</CRegTribISSQN>
+            <IndRatISSQN dtype="String">N</IndRatISSQN>
+            <OracleCNPJ dtype="String">59456277000176</OracleCNPJ>
+            <QrAppName dtype="String">De olho na nota</QrAppName>
+          </SatConfig>
+        </Br>
+      </Country>
+    </FiscalConfig>
+    <MixedTransactionSettings dtype="Default">
+      <AllowSaleItemTypeInMixedTransaction dtype="Default">
+        <!-- What this section really means is the inverse of "Must this item type be exclusive in a 
+             transaction?" For example, if SALE is set to false, then SALE type items only can be 
+             added to transactions with no items or with other SALE type items. -->
+        <SALE dtype="Boolean">false</SALE>
+        <RETURN dtype="Boolean">false</RETURN>
+        <LAYAWAY dtype="Boolean">false</LAYAWAY>
+        <SPECIALORDER dtype="Boolean">false</SPECIALORDER>
+        <ORDER dtype="Boolean">false</ORDER>
+        <SENDSALE dtype="Boolean">false</SENDSALE>
+        <WORKORDER dtype="Boolean">false</WORKORDER>
+      </AllowSaleItemTypeInMixedTransaction>
+    </MixedTransactionSettings>
+    <ItemSale dtype="Default">
+      <AllowItemNotOnFile dtype="Boolean">false</AllowItemNotOnFile>
+    </ItemSale>
+    <ItemReturn dtype="Default">
+      <CustomerRecordRequired dtype="Boolean">true</CustomerRecordRequired>
+      <CrossBorderReturnsEnabled dtype="Boolean">false</CrossBorderReturnsEnabled>
+      <CrossStateReturnsEnabled dtype="Boolean">false</CrossStateReturnsEnabled>
+      <CrossStoreReturnsEnabled dtype="Boolean">true</CrossStoreReturnsEnabled>
+    </ItemReturn> 
+    <Layaway dtype="Default">
+	  <AddSetupFeeToLayawayAccount dtype="Boolean">false</AddSetupFeeToLayawayAccount>
+	</Layaway>   
+  </SystemConfig>
+</Store>

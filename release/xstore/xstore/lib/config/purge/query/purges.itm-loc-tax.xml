@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <!-- ***************************************************************** -->
+  <!-- ROOTS -->
+  <!-- ***************************************************************** -->
+  <Query name="itm_attached_items">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_attached_items
+          WHERE organization_id = ?
+            AND end_datetime < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="itm_item_msg">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_item_msg
+          WHERE organization_id = ?
+            AND expr_datetime < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="itm_item_prices">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_item_prices
+          WHERE organization_id = ?
+            AND expiration_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="itm_item_deal_prop">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_item_deal_prop
+          WHERE organization_id = ?
+            AND expiration_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="itm_item_restriction">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_item_restriction
+          WHERE organization_id = ?
+            AND expiration_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="itm_item_restrict_calendar">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_item_restrict_calendar
+          WHERE organization_id = ?
+            AND expiration_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="itm_refund_schedule">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_refund_schedule
+          WHERE organization_id = ?
+            AND expiration_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="itm_warranty">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_warranty
+          WHERE organization_id = ?
+            AND (warranty_expiration_date < ? Or /*UPPER*/ status_code = ?)
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+      <Parameter name="argStatus" />
+    </SQL>
+  </Query>
+
+  <Query name="loc_cycle_question_answers">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM loc_cycle_question_answers
+          WHERE organization_id = ?
+            AND answer_timestamp < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="loc_cycle_questions">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM loc_cycle_questions
+          WHERE organization_id = ?
+            AND expiration_datetime < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="loc_state_journal">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM loc_state_journal
+          WHERE organization_id = ?
+            AND time_stamp < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="tax_tax_exemption">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM tax_tax_exemption
+          WHERE organization_id = ?
+            AND expiration_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="tax_tax_rate_rule">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM tax_tax_rate_rule
+          WHERE organization_id = ?
+            AND expr_datetime < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="tax_tax_rate_rule_override">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM tax_tax_rate_rule_override
+          WHERE organization_id = ?
+            AND expr_datetime < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- itm_item_restriction <<< * -->
+  <!-- ************************************************ -->
+  <Query name="itm_item_restriction.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From itm_item_restriction p 
+                    Where p.organization_id = c.organization_id
+                      And p.restriction_category = c.restriction_category
+                      And p.restriction_code = c.restriction_code)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- itm_warranty <<< * -->
+  <!-- ************************************************ -->
+  <Query name="itm_warranty.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From itm_warranty p 
+                    Where p.organization_id = c.organization_id
+                      And p.warranty_typcode = c.warranty_typcode
+                      And p.warranty_nbr = c.warranty_nbr)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- loc_cycle_questions <<< * -->
+  <!-- ************************************************ -->
+  <Query name="loc_cycle_questions.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From loc_cycle_questions p 
+                    Where p.organization_id = c.organization_id
+                      And p.question_id = c.question_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+</QuerySet>

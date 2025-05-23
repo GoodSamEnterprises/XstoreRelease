@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+  <bean id="inventoryLookupServices" class="oracle.retail.xstore.inv.sim.InventoryLookupServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="inventoryMovementServices" class="oracle.retail.xstore.inv.sim.InventoryMovementServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="updateOrderShipStatusWorker" class="dtv.pos.order.maint.UpdateOrderShipStatusWorker" scope="prototype" />
+  <bean id="postVoidInventoryMovementWorker" class="oracle.retail.xstore.inv.sim.PostVoidInventoryMovementWorker" scope="prototype" />
+  <bean id="inventoryRequestRetry" parent="requestRetryService" class="oracle.retail.xstore.inv.sim.InventoryRequestRetryService" />
+
+  <!-- This is actually an override of the service handler definition for the order service that is responsible
+       for sending updates to available inventory to the order system. When using SIM, Xstore is not system
+       the or record for inventory. Therefore, it should not be sending inventory updates anywhere. It is up
+       to the order services provider to get the inventory information directly from SIM. -->
+  <bean id="UPDATE_AVAILABLE_INVENTORY" class="dtv.servicex.impl.NoOpHandler" />
+  
+  <bean id="simStoreInventoryJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="SIM_STORE_INVENTORY" />
+    <property name="serviceInterface" value="com.oracle.retail.sim.integration.services.storeinventoryservice.v1.StoreInventoryPortType" />
+    <property name="namespaceUri" value="http://www.oracle.com/retail/sim/integration/services/StoreInventoryService/v1" />
+    <property name="serviceName" value="StoreInventoryService" />
+    <property name="portName" value="StoreInventoryPort" />
+    <property name="customProperties">
+      <map>
+        <entry key="weblogic.wsee.security.wss.CredentialProviderList" value-ref="simAuthenticationCredentialProvider" />
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="simPosTransactionJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="SIM_POS_TRANSACTION" />
+    <property name="serviceInterface" value="com.oracle.retail.sim.integration.services.postransactionservice.v1.POSTransactionPortType" />
+    <property name="namespaceUri" value="http://www.oracle.com/retail/sim/integration/services/POSTransactionService/v1" />
+    <property name="serviceName" value="POSTransactionService" />
+    <property name="portName" value="POSTransactionPort" />
+    <property name="customProperties">
+      <map>
+        <entry key="weblogic.wsee.security.wss.CredentialProviderList" value-ref="simAuthenticationCredentialProvider" />
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="simUinJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="SIM_UIN_STORE_INVENTORY" />
+    <property name="serviceInterface" value="com.oracle.retail.sim.integration.services.storeinventoryuinservice.v1.StoreInventoryUinPortType" />
+    <property name="namespaceUri" value="http://www.oracle.com/retail/sim/integration/services/StoreInventoryUinService/v1" />
+    <property name="serviceName" value="StoreInventoryUinService" />
+    <property name="portName" value="StoreInventoryUinPort" />
+    <property name="customProperties">
+      <map>
+        <entry key="weblogic.wsee.security.wss.CredentialProviderList" value-ref="simAuthenticationCredentialProvider" />
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="simAuthenticationCredentialProvider" class="oracle.retail.xstore.inv.sim.SimCredentialFactory" factory-method="getCredentials">
+    <constructor-arg index="0" value="#{systemProperties['oracle.retail.xstore.sim.username']}" />
+    <constructor-arg index="1" value="#{systemProperties['oracle.retail.xstore.sim.password']}" />
+  </bean>
+  
+  <bean id="INVENTORY_INFO_RETRIEVE" class="oracle.retail.xstore.inv.sim.lookup.RetrieveInventoryInfoHandler">
+    <property name="serviceId" value="SIM_STORE_INVENTORY" />
+    <property name="servicePort" ref="simStoreInventoryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="inventoryInfoRetrieveExceptionHandler" />
+    <property name="bucketDescriptionMappings">
+      <props>
+        <prop key="back_room_qty">_simBackRoomQuantityDesc</prop>
+        <prop key="shop_floor_qty">_simShopFloorQuantityDesc</prop>
+        <prop key="delivery_bay_qty">_simDeliveryBayQuantityDesc</prop>
+        <prop key="available_qty">_simAvailableQuantityDesc</prop>
+        <prop key="nonsell_total_qty">_simNonSellableQuantityDesc</prop>
+        <prop key="in_transit_qty">_simInTransitQuantityDesc</prop>
+        <prop key="cust_reserved_qty">_simCustomerReservedQuantityDesc</prop>
+        <prop key="transfer_reserved_qty">_simTransferReservedQuantityDesc</prop>
+        <prop key="vendor_return_qty">_simVendorReturnQuantityDesc</prop>
+      </props>
+    </property>
+  </bean>
+  
+  <bean id="INVENTORY_AVAILABLE" class="oracle.retail.xstore.inv.sim.lookup.RetrieveAvailableServiceHandler">
+    <property name="serviceId" value="SIM_STORE_INVENTORY" />
+    <property name="servicePort" ref="simStoreInventoryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="inventoryAvailableExceptionHandler" />
+  </bean>
+  
+  <bean id="INVENTORY_LOCATOR_RETRIEVE" class="oracle.retail.xstore.inv.sim.lookup.RetrieveInventoryInProximityHandler">
+    <property name="serviceId" value="SIM_STORE_INVENTORY" />
+    <property name="servicePort" ref="simStoreInventoryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="inventoryAvailableExceptionHandler" />
+  </bean>
+  
+  <bean id="INVENTORY_PROCESS_TRANSACTION" parent="ABSTRACT_INVENTORY_PROCESS_TRANSACTION" class="oracle.retail.xstore.inv.sim.movement.PosTransactionServiceHandler" />
+  <bean id="INVENTORY_PROCESS_TRANSACTION_VOID" parent="ABSTRACT_INVENTORY_PROCESS_TRANSACTION" class="oracle.retail.xstore.inv.sim.movement.PosTransactionVoidServiceHandler" />
+  
+  <bean id="ABSTRACT_INVENTORY_PROCESS_TRANSACTION" abstract="true">
+    <property name="serviceId" value="SIM_POS_TRANSACTION" />
+    <property name="servicePort" ref="simPosTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="processTransactionExceptionHandler" />
+    <property name="reasonCodeMap">
+      <map>
+        <entry key="RET1" value="97" /> <!--Did not like -->
+        <entry key="RET2" value="97" /> <!--Better price somewhere else-->
+        <entry key="RET3" value="97" /> <!--Did not fit -->
+        <entry key="RET4" value="82" /> <!--Damaged -->
+        <entry key="RET5" value="97" /> <!--Exchange -->
+        <entry key="RET6" value="97" /> <!--Poor Quality -->
+        <entry key="RET41" value="97" /> <!--Open Box -->
+        <entry key="RET42" value="82" /> <!--Unusable -->
+        <entry key="RET43" value="97" /> <!--Repairable -->
+      </map>
+    </property>
+    <property name="reserveTypeTransCodeMappings">
+      <map key-type="java.lang.String" value-type="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+        <entry key="ITEM_SALE:ON_HAND:SOLD" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.NO_VALUE" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.SALE" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <entry key="ITEM_RETURN:null:ON_HAND" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.NO_VALUE" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.RETURN" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <entry key="POSTVOID_ITEM_SALE:SOLD:ON_HAND" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.NO_VALUE" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.VOID_SALE" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <entry key="POSTVOID_ITEM_RETURN:ON_HAND:null" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.NO_VALUE" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.VOID_RETURN" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <!-- LAYAWAY -->
+        <entry key="ITEM_LAYAWAY:ON_HAND:LAYAWAY" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.LAYAWAY" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.ORDER_NEW" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <entry key="ITEM_SALE:LAYAWAY:SOLD" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.LAYAWAY" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.ORDER_FULFILL" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <entry key="LAYAWAY_CANCEL:LAYAWAY:ON_HAND" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.LAYAWAY" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.ORDER_CANCEL" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <!-- ONHOLD -->
+        <entry key="ITEM_ONHOLD:ON_HAND:ONHOLD" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.ON_HOLD" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.ORDER_NEW" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <entry key="ITEM_SALE:ONHOLD:SOLD" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.ON_HOLD" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.ORDER_FULFILL" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <entry key="LAYAWAY_CANCEL:ONHOLD:ON_HAND" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.ON_HOLD" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.ORDER_CANCEL" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <!-- SPECIAL ORDER -->
+        <entry key="ITEM_SALE:SPECIAL_ORDER:SOLD" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.SPECIAL_ORDER" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.ORDER_FULFILL" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <!-- PRE-SALE -->
+        <entry key="ITEM_SALE:PRESALE:SOLD" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.NO_VALUE" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.SALE" />
+            </constructor-arg>
+          </bean>
+        </entry>
+        <!-- Distributed Orders -->
+        <entry key="ORDER_FULFILLED:ORDER:SOLD" >
+          <bean class="oracle.retail.xstore.inv.sim.movement.ReserveTransCodeContainer">
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnOrdResvType.WEB_ORDER" />
+            </constructor-arg>
+            <constructor-arg>
+              <util:constant static-field="com.oracle.retail.integration.base.bo.postrndesc.v1.PosTrnItmTranCode.ORDER_FULFILL" />
+            </constructor-arg>
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="PROCESS_TRANSACTION_RETRY" class="oracle.retail.xstore.inv.sim.movement.PosTransactionRetryHandler">
+    <property name="serviceId" value="SIM_POS_TRANSACTION" />
+    <property name="servicePort" ref="simPosTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="processTransactionExceptionHandler" />
+    <property name="parameters">
+      <map>
+        <entry key="Path" value="${user.dir}/log/sim/posTransaction" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="inventoryInfoRetrieveExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="oracle.retail.xstore.inv.sim.PosTransactionServiceResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_RECORDS_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="inventoryAvailableExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="oracle.retail.xstore.inv.sim.StoreInventoryServiceResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_INPUT:InvLocation:channelId" />
+              <property name="throws" value="oracle.retail.xstore.inv.sim.exceptions.InvalidChannelIdException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_INPUT:InvLocation:locType" />
+              <property name="throws" value="oracle.retail.xstore.inv.sim.exceptions.InvalidLocationTypeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INPUT_TOO_LARGE:InvAvailCriVo:items" />
+              <property name="throws" value="oracle.retail.xstore.inv.exceptions.ItemListTooLargeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INPUT_TOO_LARGE:InvAvailCriVo:invLocation" />
+              <property name="throws" value="oracle.retail.xstore.inv.exceptions.StoreListTooLargeException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="processTransactionExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="oracle.retail.xstore.inv.sim.StoreInventoryServiceResponseAdapter" />
+    </property>
+  </bean>
+  
+  <bean id="SERIAL_NUMBER_EXISTS" class="oracle.retail.xstore.inv.sim.lookup.SerialNumberExistsHandler">
+    <property name="serviceId" value="SIM_UIN_STORE_INVENTORY" />
+    <property name="servicePort" ref="simUinJaxWsServicePort" />
+    <property name="exceptionHandler" ref="serialNumberExistsExceptionHandler" />
+    <property name="validUinStatusMapping">
+      <props>
+<!--       A comma seperated valid SIM status for buckets in xstore-->
+        <prop key="ON_HAND">IN_STOCK</prop>
+      </props>
+    </property>
+    <!-- List of UIN status accepted as return -->
+    <property name="validReturnUinStatus">
+        <list value-type="java.lang.String">
+            <value>SOLD</value>
+            <value>CUSTOMER_FULFILLED</value>
+        </list>
+    </property>
+  </bean>
+  
+  <bean id="serialNumberExistsExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="oracle.retail.xstore.inv.sim.SerialNumberExistsResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_INPUT:SiUinRef:uin" />
+              <property name="throws" value="oracle.retail.xstore.inv.exceptions.InvalidSerialNumberException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="shipOrderWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="sendShippedOrderEmailWorker" />
+        <ref bean="updateOrderShipStatusWorker" />
+        <ref bean="closeOutDeliveryOrderWorker" />
+        <ref bean="populateFlashSalesTablesWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saleCompleteInventoryWorkers" parent="workerList" scope="prototype" >
+    <property name="workers">
+      <list>
+        <ref bean="processInventoryMovementWorker" />
+      </list>
+    </property>
+  </bean>
+  
+   <bean id="persistExchangeSerialTransAndObjWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="persistObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="postVoidInventoryWorkers" parent="workerList" scope="prototype" >
+    <property name="workers">
+      <list>
+        <ref bean="postVoidInventoryMovementWorker" />
+      </list>
+    </property>
+  </bean>
+  
+</beans>

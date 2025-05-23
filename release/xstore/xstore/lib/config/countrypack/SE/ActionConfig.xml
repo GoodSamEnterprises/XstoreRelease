@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://micros.com/xstore/config/action" xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       ABSTRACT
+       These incomplete actions define common properties to be inherited by other actions
+       *****************************************************************************************
+       ***************************************************************************************** -->
+
+  <Action name="COUNTRYPACK::XREPORT" category="Anywhere" keywords="back_office,fiscal" text="_countrypack.se.XReport.menuXReportTitle" chainKey="COUNTRYPACK.XREPORT" chainType="STACK">
+    <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+      <Parameter name="state" value="OPEN" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.se.pos.shared.visibilityrules.XReportVisibilityRule" />
+  </Action>  
+
+</ActionSet>

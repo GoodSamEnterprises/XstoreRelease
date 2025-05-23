@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="FMTTR_DoNothing" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DoNothingFormatter" />
+
+  <bean id="FMTTR_Text" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatter" />
+
+  <bean id="FMTTR_MultiLineText" class="com.micros_retail.xfgclient.interpret.i18n.formatter.MultilineTextFormatter" />
+
+  <bean id="FMTTR_TextUpperCase" class="com.micros_retail.xfgclient.interpret.i18n.formatter.UpperCaseFormatterWrapper">
+    <property name="formatter" ref="FMTTR_DoNothing" />
+  </bean>
+
+  <bean id="FMTTR_TextLowerCase" class="com.micros_retail.xfgclient.interpret.i18n.formatter.LowerCaseFormatterWrapper">
+    <property name="formatter" ref="FMTTR_DoNothing" />
+  </bean>
+
+  <bean id="FMTTR_TextSL" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ConstantContextFormatterWrapper">
+    <property name="outputContext" ref="OC_Store" />
+    <property name="formatter" ref="FMTTR_Text" />
+  </bean>
+
+  <bean id="FMTTR_ItemQuantityList" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemQuantityFormatter">
+    <property name="mode" value="SYMBOL" />
+    <property name="separator" value=" " />
+    <property name="decimalAlignmentChars" value="4" />
+    <property name="patternKey" value="Decimal3" />
+  </bean>
+
+  <bean id="FMTTR_TextItemQuantityList" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_ItemQuantityList" />
+  </bean>
+
+  <bean id="FMTTR_ItemQuantity2C" class="com.micros_retail.xfgclient.interpret.i18n.formatter.vfw.GServer2ColumnItemQuantityFormatter">
+    <property name="mode" value="SYMBOL" />
+    <property name="separator" value=" " />
+    <property name="patternKey" value="Decimal3" />
+  </bean>
+
+  <bean id="FMTTR_ItemQuantityUnitSymbol" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemQuantityFormatter">
+    <property name="mode" value="SYMBOL" />
+    <property name="separator" value=" " />
+    <property name="patternKey" value="Decimal3" />
+  </bean>
+
+  <bean id="FMTTR_TextItemQuantityUnitSymbol" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_ItemQuantityUnitSymbol" />
+  </bean>
+
+  <bean id="FMTTR_ItemQuantityUnitName" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemQuantityFormatter">
+    <property name="mode" value="NAME" />
+    <property name="separator" value=" " />
+    <property name="patternKey" value="Decimal3" />
+  </bean>
+
+  <bean id="FMTTR_TextItemQuantityUnitName" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_ItemQuantityUnitName" />
+  </bean>
+
+  <bean id="FMTTR_Money" class="com.micros_retail.xfgclient.interpret.i18n.formatter.MoneyFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="false" />
+  </bean>
+
+  <bean id="FMTTR_TextMoney" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_Money" />
+  </bean>
+
+  <bean id="FMTTR_Money2C" class="com.micros_retail.xfgclient.interpret.i18n.formatter.vfw.GServer2ColumnMoneyFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="false" />
+  </bean>
+
+  <bean id="FMTTR_MoneyLCL" class="com.micros_retail.xfgclient.interpret.i18n.formatter.MoneyFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="true" />
+  </bean>
+
+  <bean id="FMTTR_TextMoneyLCL" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_MoneyLCL" />
+  </bean>
+
+  <bean id="FMTTR_MoneyLCL2C" class="com.micros_retail.xfgclient.interpret.i18n.formatter.vfw.GServer2ColumnMoneyFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="true" />
+  </bean>
+
+  <bean id="FMTTR_MoneyNoCode" class="com.micros_retail.xfgclient.interpret.i18n.formatter.MoneyFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="noCurrencyCode" value="true" />
+  </bean>
+
+  <bean id="FMTTR_TextMoneyNoCode" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_MoneyNoCode" />
+  </bean>
+
+  <bean id="FMTTR_MoneyNoCode2C" class="com.micros_retail.xfgclient.interpret.i18n.formatter.vfw.GServer2ColumnMoneyFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="noCurrencyCode" value="true" />
+  </bean>
+
+  <bean id="FMTTR_UnitPriceSymbol" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemUnitPriceFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="false" />
+    <property name="mode" value="SYMBOL" />
+    <property name="separator" value="/" />
+  </bean>
+
+  <bean id="FMTTR_TextUnitPriceSymbol" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_UnitPriceSymbol" />
+  </bean>
+
+  <bean id="FMTTR_UnitPriceSymbolLCL" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemUnitPriceFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="true" />
+    <property name="mode" value="SYMBOL" />
+    <property name="separator" value="/" />
+  </bean>
+
+  <bean id="FMTTR_TextUnitPriceSymbolLCL" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_UnitPriceSymbolLCL" />
+  </bean>
+
+  <bean id="FMTTR_UnitPriceSymbolList" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemUnitPriceFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="false" />
+    <property name="mode" value="SYMBOL" />
+    <property name="decimalAlignmentChars" value="7" />
+    <property name="separator" value="/" />
+  </bean>
+
+  <bean id="FMTTR_TextUnitPriceSymbolList" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_UnitPriceSymbolList" />
+  </bean>
+
+  <bean id="FMTTR_UnitPriceSymbol2C"
+    class="com.micros_retail.xfgclient.interpret.i18n.formatter.vfw.GServer2ColumnItemUnitPriceFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="false" />
+    <property name="mode" value="SYMBOL" />
+    <property name="separator" value="/" />
+  </bean>
+
+  <bean id="FMTTR_UnitPriceSymbolLCLList" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemUnitPriceFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="true" />
+    <property name="mode" value="SYMBOL" />
+    <property name="decimalAlignmentChars" value="7" />
+    <property name="separator" value="/" />
+  </bean>
+
+  <bean id="FMTTR_TextUnitPriceSymbolLCLList" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_UnitPriceSymbolLCLList" />
+  </bean>
+
+  <bean id="FMTTR_UnitPriceSymbolLCL2C"
+    class="com.micros_retail.xfgclient.interpret.i18n.formatter.vfw.GServer2ColumnItemUnitPriceFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="true" />
+    <property name="mode" value="SYMBOL" />
+    <property name="separator" value="/" />
+  </bean>
+
+  <bean id="FMTTR_Decimal" class="com.micros_retail.xfgclient.interpret.i18n.formatter.NumberFormatter">
+    <property name="patternKey" value="Decimal" />
+  </bean>
+
+  <bean id="FMTTR_TextDecimal" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_Decimal" />
+  </bean>
+
+  <bean id="FMTTR_Decimal2" class="com.micros_retail.xfgclient.interpret.i18n.formatter.NumberFormatter">
+    <property name="patternKey" value="Decimal2" />
+  </bean>
+
+  <bean id="FMTTR_TextDecimal2" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_Decimal2" />
+  </bean>
+
+  <bean id="FMTTR_TextDecimal2C" class="com.micros_retail.xfgclient.interpret.i18n.formatter.vfw.GServer2ColumnNumberFormatter">
+    <property name="patternKey" value="Decimal2" />
+  </bean>
+
+  <bean id="FMTTR_Decimal3" class="com.micros_retail.xfgclient.interpret.i18n.formatter.NumberFormatter">
+    <property name="patternKey" value="Decimal3" />
+  </bean>
+
+  <bean id="FMTTR_TextDecimal3" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_Decimal3" />
+  </bean>
+
+  <bean id="FMTTR_Percent" class="com.micros_retail.xfgclient.interpret.i18n.formatter.NumberFormatter">
+    <property name="patternKey" value="XfgPercent" />
+  </bean>
+
+  <bean id="FMTTR_TextPercent" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_Percent" />
+  </bean>
+
+  <bean id="FMTTR_Integer" class="com.micros_retail.xfgclient.interpret.i18n.formatter.NumberFormatter">
+    <property name="patternKey" value="Integer" />
+  </bean>
+
+  <bean id="FMTTR_TextInteger" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_Integer" />
+  </bean>
+
+  <bean id="FMTTR_Password" class="com.micros_retail.xfgclient.interpret.i18n.formatter.PasswordFormatter">
+    <property name="patternKey" value="Password" />
+  </bean>
+
+  <bean id="FMTTR_DateFull" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateFull" />
+  </bean>
+
+  <bean id="FMTTR_DateLong" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateLong" />
+  </bean>
+
+  <bean id="FMTTR_DateMedium" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateMedium" />
+  </bean>
+
+  <bean id="FMTTR_DateShort" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateShort" />
+  </bean>
+
+  <bean id="FMTTR_DateTimeFull" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateTimeFull" />
+  </bean>
+
+  <bean id="FMTTR_DateTimeLong" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateTimeLong" />
+  </bean>
+
+  <bean id="FMTTR_DateTimeMedium" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateTimeMedium" />
+  </bean>
+
+  <bean id="FMTTR_DateTimeShort" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateTimeShort" />
+  </bean>
+
+  <bean id="FMTTR_DayOfWeekLong" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DayOfWeekLong" />
+  </bean>
+
+  <bean id="FMTTR_DayOfWeekShort" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DayOfWeekShort" />
+  </bean>
+
+  <bean id="FMTTR_MonthOfYearLong" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="MonthOfYearLong" />
+  </bean>
+
+  <bean id="FMTTR_MonthOfYearShort" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="MonthOfYearShort" />
+  </bean>
+
+  <bean id="FMTTR_TimeFull" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="TimeFull" />
+  </bean>
+
+  <bean id="FMTTR_TimeLong" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="TimeLong" />
+  </bean>
+
+  <bean id="FMTTR_TimeMedium" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="TimeMedium" />
+  </bean>
+
+  <bean id="FMTTR_TimeShort" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="TimeShort" />
+  </bean>
+
+  <bean id="FMTTR_UnitDate" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="XfgUnitDate" />
+  </bean>
+
+  <bean id="FMTTR_BasicAddress" class="com.micros_retail.xfgclient.interpret.i18n.formatter.BasicAddressFormatter">
+    <property name="patternKey" value="BasicAddress" />
+  </bean>
+
+  <bean id="FMTTR_TextBasicAddress" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_BasicAddress" />
+  </bean>
+
+  <bean id="FMTTR_BasicName" class="com.micros_retail.xfgclient.interpret.i18n.formatter.BasicNameFormatter">
+    <property name="patternKey" value="BasicName" />
+  </bean>
+
+  <bean id="FMTTR_TextBasicName" class="com.micros_retail.xfgclient.interpret.i18n.formatter.TextFormatterWrapper">
+    <property name="formatter" ref="FMTTR_BasicName" />
+  </bean>
+
+  <bean id="FMTTR_SerialNumber" class="com.micros_retail.xfgclient.interpret.i18n.formatter.VoucherSerialNumberFormatterWrapper">
+    <property name="formatter" ref="FMTTR_DoNothing" />
+  </bean>
+
+  <!-- TODO: SEE IF IT IS POSSIBLE TO GET RID OF DEPENDS-ON -->
+  <bean id="intpFormatterFactory" class="com.micros_retail.xfgclient.interpret.i18n.formatter.FormatterFactory"
+    depends-on="localeManager">
+    <property name="formatters">
+      <map>
+        <entry key="QTYLIST" value-ref="FMTTR_TextItemQuantityList" />
+        <entry key="QTYSYMBOL" value-ref="FMTTR_TextItemQuantityUnitSymbol" />
+        <entry key="QTYNAME" value-ref="FMTTR_TextItemQuantityUnitName" />
+        <entry key="QTY2C" value-ref="FMTTR_ItemQuantity2C" />
+        <entry key="MONEY" value-ref="FMTTR_TextMoney" />
+        <entry key="MONEYLCL" value-ref="FMTTR_TextMoneyLCL" />
+        <entry key="MONEYNOCODE" value-ref="FMTTR_TextMoneyNoCode" />
+        <entry key="MONEY2C" value-ref="FMTTR_Money2C" />
+        <entry key="MONEYLCL2C" value-ref="FMTTR_MoneyLCL2C" />
+        <entry key="MONEYNOCODE2C" value-ref="FMTTR_MoneyNoCode2C" />
+        <entry key="UNITPRICE" value-ref="FMTTR_TextUnitPriceSymbol" />
+        <entry key="UNITPRICELCL" value-ref="FMTTR_TextUnitPriceSymbolLCL" />
+        <entry key="UNITPRICELIST" value-ref="FMTTR_TextUnitPriceSymbolList" />
+        <entry key="UNITPRICELCLLIST" value-ref="FMTTR_TextUnitPriceSymbolLCLList" />
+        <entry key="UNITPRICE2C" value-ref="FMTTR_UnitPriceSymbol2C" />
+        <entry key="UNITPRICELCL2C" value-ref="FMTTR_UnitPriceSymbolLCL2C" />
+        <entry key="DECIMAL" value-ref="FMTTR_TextDecimal" />
+        <entry key="DECIMAL2" value-ref="FMTTR_TextDecimal2" />
+        <entry key="DECIMAL2C" value-ref="FMTTR_TextDecimal2C" />
+        <entry key="PERCENT" value-ref="FMTTR_TextPercent" />
+        <entry key="INTEGER" value-ref="FMTTR_TextInteger" />
+        <entry key="PASSWORD" value-ref="FMTTR_Password" />
+        <entry key="DATEFULL" value-ref="FMTTR_DateFull" />
+        <entry key="DATELONG" value-ref="FMTTR_DateLong" />
+        <entry key="DATEMEDIUM" value-ref="FMTTR_DateMedium" />
+        <entry key="DATESHORT" value-ref="FMTTR_DateShort" />
+        <entry key="DATETIMEFULL" value-ref="FMTTR_DateTimeFull" />
+        <entry key="DATETIMELONG" value-ref="FMTTR_DateTimeLong" />
+        <entry key="DATETIMEMEDIUM" value-ref="FMTTR_DateTimeMedium" />
+        <entry key="DATETIMESHORT" value-ref="FMTTR_DateTimeShort" />
+        <entry key="DAYOFWEEKLONG" value-ref="FMTTR_DayOfWeekLong" />
+        <entry key="DAYOFWEEKSHORT" value-ref="FMTTR_DayOfWeekShort" />
+        <entry key="MONTHOFYEARLONG" value-ref="FMTTR_MonthOfYearLong" />
+        <entry key="MONTHOFYEARSHORT" value-ref="FMTTR_MonthOfYearShort" />
+        <entry key="TIMEFULL" value-ref="FMTTR_TimeFull" />
+        <entry key="TIMELONG" value-ref="FMTTR_TimeLong" />
+        <entry key="TIMEMEDIUM" value-ref="FMTTR_TimeMedium" />
+        <entry key="TIMESHORT" value-ref="FMTTR_TimeShort" />
+        <entry key="UNITDATE" value-ref="FMTTR_UnitDate" />
+        <entry key="TEXT" value-ref="FMTTR_Text" />
+        <entry key="MLTEXT" value-ref="FMTTR_MultiLineText" />
+        <entry key="TEXT_UPPER" value-ref="FMTTR_TextUpperCase" />
+        <entry key="TEXT_LOWER" value-ref="FMTTR_TextLowerCase" />
+        <entry key="TEXTSL" value-ref="FMTTR_TextSL" />
+        <entry key="ADDRESS" value-ref="FMTTR_TextBasicAddress" />
+        <entry key="NAME" value-ref="FMTTR_TextBasicName" />
+        <entry key="SERIAL_NUMBER" value-ref="FMTTR_SerialNumber" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="intpFormatPatternFactory" class="com.micros_retail.xfgclient.interpret.i18n.formatter.FormatPatternFactory" />
+
+</beans>

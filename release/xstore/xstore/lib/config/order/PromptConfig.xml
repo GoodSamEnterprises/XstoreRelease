@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PromptSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/PromptConfig.xsd">
+  <Prompt name="ORDER_WORKLIST_RESULTS" type="List" title="_orderWorklistTitle" message="_orderSearchResultsInstructions">
+    <ListViewType dtype="String">ORDER_WORKLIST_RESULT</ListViewType>
+    <Action ref="CANCEL_BACK" />
+    <Action dataKey="ACCEPT_ORDER" text="_orderAcceptOrderAction" keyStroke="F2" />
+     <Action dataKey="ACCEPT_ALL_ORDER" text="_orderAcceptAll" keyStroke="F4" />
+    <Action dataKey="PRINT_PICK_LIST" text="_orderPrintPickList" keyStroke="F6" />
+    <Action ref="ACCEPT_ENTER" text="_orderViewDetailAction" />
+  </Prompt>
+  <Prompt name="ORDER_WORKLIST_NOTIFY" type="List" title="_orderWorklistNofityTitle" message="_orderWorklistNotifyMessage">
+    <ListViewType dtype="String">ORDER_WORKLIST_RESULT</ListViewType>
+    <Action ref="ACCEPT_ENTER" text="_continue" keyStroke="Enter"/>
+  </Prompt>
+  <Prompt name="ORDER_SEARCH_RESULTS" type="List" title="_orderSearchTitle" message="_orderSearchResultsInstructions">
+    <ListViewType dtype="String">ORDER_SEARCH_RESULT</ListViewType>
+  </Prompt>
+  <Prompt name="NO_ORDERS_FOUND" type="Notify" title="_orderSearchTitle" message="_orderNoOrdersFound" />
+  <Prompt name="NO_CANCELLABLE_ITEMS" type="Notify" title="_orderSearchTitle" message="_orderNoCancellableItems" />
+  <Prompt name="ORDER_SEARCH_RESULTS_REGISTER" type="List" title="_orderSearchTitle" message="_orderSearchResultsInstructions">
+    <ListViewType dtype="String">ORDER_SEARCH_RESULT</ListViewType>
+    <Action ref="CANCEL_BACK" />
+    <Action chainKey="ORDER_NEW_ORDER" text="_new" keyStroke="F9">
+      <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowMixedInTransWithSaleItemTypeRule">
+        <Parameter value="ORDER" name="Type" />
+      </VisibilityRule>
+    </Action>
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="NO_ORDERS_FOUND_REGISTER" type="Notify" title="_orderSearchTitle" message="_orderNoOrdersFound">
+    <Action dataKey="BACK" text="_back" keyStroke="Escape" />
+    <Action chainKey="ORDER_NEW_ORDER" text="_new" keyStroke="F9">
+      <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowMixedInTransWithSaleItemTypeRule">
+        <Parameter name="type" value="ORDER" />
+      </VisibilityRule>
+    </Action>
+  </Prompt>
+  <Prompt name="ORDER_CUSTOMER_INFO_MISSING" type="Notify" title="_formValidationFailedTitle" message="_orderCustomerInfoMissing" />
+  <Prompt name="ORDER_TYPE" type="Notify" title="_orderTitle" message="_orderSelectType">
+    <Action dataKey="STANDARD_DELIVERY" text="_orderTypeStandardDelivery" keyStroke="F4" />
+    <Action dataKey="STANDARD_PICKUP" text="_orderTypeStandardPickup" keyStroke="F6" />
+    <Action dataKey="DELAYED_PICKUP" text="_orderTypeDelayedPickup" keyStroke="F8" />
+  </Prompt>
+  <Prompt name="ORDER_ENTER_SCAN_ITEM" type="Text" title="_orderTitle" message="_orderEnterItemMessage" modal="false">
+    <DataField ref="IDLong" />
+    <IconGroup icon="_imagePromptSaleItem" pressIcon="_imagePromptSaleItemPressed" touch="ORDER::ITEM_MATRIX" />
+    <Action visible="false" keyStroke="Escape" />
+    <Action ref="ACCEPT_ENTRY" />
+    
+    <!-- Touch actions -->
+    <Action ref="TOUCH::DISPLAY_SELECTED_ITEM" />
+    <Action ref="TOUCH::ORDER.CHANGE_LINE_PRICE" />
+    <Action ref="TOUCH::ORDER.CHANGE_LINE_QUANTITY" />
+    <Action ref="TOUCH::ORDER.VOID_LINE" />
+    <Action ref="ORDER::CHANGE_COMMISSIONED_ASSOCIATES_TOUCH" visible="false" />
+  </Prompt>
+  <Prompt name="ORDER_SELECT_OPTION" type="Text" title="_orderTitle" message="_orderEnterItemDisabledMessage">
+    <DataField ref="Disabled" />
+  </Prompt>
+  <Prompt name="ORDER_CONFIRM_ON_HAND_ITEM" type="NotifyYesNo" title="_orderTitle" message="_orderConfirmOrderAvailableItem" />
+  <Prompt name="ORDER_ITEM_QUANTITY" type="Text" title="_orderTitle" message="_orderEnterItemQuantity" autoDecimalKeyboard="true" >
+    <DataField ref="Integer" />
+    <IconGroup icon="_imagePromptChangeQty" />
+  </Prompt>
+  <Prompt name="ORDER_LOCATE_ITEM_RESULTS" type="List" title="_orderLocateItemTitle" message="_orderLocateItemResults">
+    <ListViewType dtype="String">ORDER_LOCATE_ITEM_RESULT</ListViewType>
+  </Prompt>
+  <Prompt name="LOCATE_ITEM_NO_RESULTS" type="Notify" title="_orderLocateItemTitle" message="_orderLocateItemNoResults" />
+  <Prompt name="VERIFY_ITEMS_NO_RESULTS" type="Notify" title="_orderLocateItemTitle" message="_orderVerifyItemsNoResults" />
+  
+  <Prompt name="LOCATE_ITEM_SERVICE_UNAVAILABLE" type="Notify" title="_orderLocateItemTitle" message="_orderLocateItemServiceUnavailable" />
+  <Prompt name="ORDER_LOCATION_CONFIRMATION" type="Notify" title="_orderLocationConfirmationTitle" message="_orderLocationConfirmation">
+    <Action ref="CANCEL_BACK" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="ORDER_DEPOSIT_AMOUNT" type="Text" title="_orderTitle" message="_orderDepositEnterAmount" autoDecimalKeyboard="true" >
+    <DataField ref="Money" />
+    <IconGroup icon="_imagePromptTender" />
+  </Prompt>
+  <Prompt name="ORDER_SELECT_LINE" type="Viewport" title="_orderEditItemAction" message="_orderSelectLine">
+    <DataField ref="Disabled" />
+  </Prompt>
+  <Prompt name="ORDER_EDIT_NOTES" type="LongText" title="_orderTitle" message="_orderEditNotesMessage" />
+  <Prompt name="ORDER_CONFIRM_CANCEL" type="NotifyYesNo" title="_orderCancelOrderAction" message="_orderConfirmCancelOrder" />
+  <Prompt name="ORDER_CONFIRM_ACCEPT" type="NotifyYesNo" title="_orderAcceptOrderAction" message="_orderConfirmAcceptOrder" />
+  <Prompt name="ORDER_POST_ACCEPT_INSTRUCTIONS" type="Notify" title="_orderPostAcceptTitle" message="_orderPostAcceptInstructions" />
+  <Prompt name="ORDER_CONFIRM_REJECT" type="NotifyYesNo" title="_orderRejectOrderAction" message="_orderConfirmRejectOrder" />
+  <Prompt name="ORDER_CONFIRM_ADDITIONAL_ORDER" type="NotifyYesNo" title="_orderNotifyAdditionalOrderItemAction" message="_orderNotifyAdditionalOrderItem" />
+  <Prompt name="ORDER_CONFIRM_RESERVE" type="NotifyYesNo" title="_orderReserveOrderAction" message="_orderConfirmReserveOrder" />
+  <Prompt name="ORDER_CONFIRM_UNRESERVE" type="NotifyYesNo" title="_orderUnReserveOrderAction" message="_orderConfirmUnreserveOrder" />
+  <Prompt name="ORDER_POST_RESERVE_INSTRUCTIONS" type="Notify" title="_orderPostReserveTitle" message="_orderPostReserveInstructions" />
+  <Prompt name="ORDER_POST_RESERVE_SHIPPING_INSTRUCTIONS" type="Notify" title="_orderPostReserveTitle" message="_orderPostReserveShippingInstructions" />
+  <Prompt name="ORDER_CONFIRM_SHIP" type="NotifyYesNo" title="_orderShipOrderAction" message="_orderConfirmShipOrder" />
+  <Prompt name="ORDER_CONFIRM_ALLOCATE_ITEMS" type="NotifyYesNo" title="_orderAllocateItemsAction" message="_orderConfirmAllocateItems" />
+  <Prompt name="ORDER_ITEMS_TO_PICKUP" type="List" title="_orderPickupItemsAction" message="_orderPickupItems">
+    <ListViewType dtype="String">ORDER_ITEMS_TO_PICKUP</ListViewType>
+    <DataSelection selectionMode="MULTIPLE" />
+    <Action ref="CANCEL_BACK" />
+    <Action dataKey="SELECT_ALL" text="_orderPickupAllItemsAction" keyStroke="F8" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="ORDER_NO_ITEMS_TO_PICKUP" type="Notify" title="_orderPickupItemsAction" message="_orderNoItemsToPickup" />
+  <Prompt name="ORDER_VIEWED_ORDER_NOT_CURRENT" type="Notify" title="_orderViewedOrderNotCurrent" message="_orderViewedOrderNotCurrentMessage" />
+  <Prompt name="ORDER_SEARCH_SYSTEM_OFFLINE" type="Notify" title="_orderManagementSystemOffline" message="_orderSearchManagementSystemOffline" />
+  <Prompt name="ORDER_SHIPPING_METHOD" type="List" title="_orderShippingMethodTitle" message="_orderShippingMethodMessage">
+    <ListViewType dtype="String">SHIPPER_METHOD_LIST</ListViewType>
+    <Action ref="BACK_EXIT" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="ORDER_NO_SHIPPING_METHODS" type="Notify" title="_orderShippingMethodTitle" message="_orderNoShippingMethods" />
+  <Prompt name="ORDER_WORKLIST_NO_RESULTS" type="NotifyCancel" title="_orderSearchTitle" message="_orderWorklistNoResults" />
+  <Prompt name="ORDER_LINES_INVENTORY_LEVELS" type="List" title="_orderInventoryLevelsTitle" message="_orderInventoryLevelsMessage">
+    <ListViewRuleSet dtype="String">ORDER_LINES_INVENTORY_LEVELS</ListViewRuleSet>
+    <ListViewHeaderType dtype="String">ORDER_LINES_INVENTORY_LEVELS</ListViewHeaderType>
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="ORDER_CRITICAL_ERROR" type="Notify" title="_orderCriticalErrorTitle">
+    <Section type="MESSAGE">
+      <ParameterizedFormattable>
+        <TranslationKey dtype="String">_orderCriticalError</TranslationKey>
+        <Translatable bundle="dtv.pos.i18n.phone" name="_generalHelpDesk"></Translatable>
+      </ParameterizedFormattable>
+    </Section>
+  </Prompt>
+  <Prompt name="ORDER_REGISTER_NO_ACCESS" type="Notify" title="_orderRegisterNoAccessTitle" message="_orderRegisterNoAccess" />
+  
+  <Prompt name="ORDER_HAS_NON_CANCELLABLE_ITEMS_IN_ORIGINATING_LOCATION" type="Notify" title="_nonCancellableItemsInOriginatingLocationTitle" message="_nonCancellableItemsInOriginatingLocationMessage" />
+   <Prompt name="ORDER_HAS_NON_CANCELLABLE_ITEMS_IN_FULFILLING_LOCATION" type="Notify" title="_nonCancellableItemsInOriginatingLocationTitle" message="_nonCancellableItemsInFulfillingLocationMessage" />
+  <Prompt name="ORDER_LINE_ITEM_FULFILLING_LOCATION_LIST_PROMPT" type="List" title="_orderLineItemFulfillingLocationTitle" message="_orderLineItemFulfillingLocationMessage">
+    <ListViewType dtype="String">ORDER_LINE_ITEM_FULFILLING_LOCATION_LIST</ListViewType>
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  
+  <Prompt name="CANCELLABLE_ITEMS_LIST_PROMPT" type="List" title="_cancellableItemsListTitle" message="_cancellableItemsListMessage">
+    <ListViewType dtype="String">CANCELLABLE_ITEMS_LIST</ListViewType>
+    <DataSelection selectionMode="MULTIPLE" />
+    <Action dataKey="SELECT_ALL" text="_orderCancelAllItemsAction" keyStroke="F8" />
+    <Action dataKey="ACCEPT" text="_selectAndContinue" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="ORDER_NO_FULFILLING_LOCATION" type="Notify" title="_orderLocateItemTitle" message="_orderNoFulfillingLocationMessage" />
+  
+  <Prompt name="PRINT_PICK_SLIP_PROMPT" type="NotifyYesNo" title="_orderPickSlipTitle" message="_orderPickSlipMessage" />
+  <Prompt name="PRINT_PICK_SLIP_NO_DATA_PROMPT" type="Notify" title="_orderPickSlipTitle" message="_orderPickSlipReportNoData" />
+  <Prompt name="ACCEPT_ALL_NO_DATA_PROMPT" type="Notify" title="_orderAcceptAll" message="_orderAcceptAllNoData" />
+  <Prompt name="ORDER_CONFIRM_ACCEPT_ALL" type="NotifyYesNo" title="_orderAcceptAll" message="_orderConfirmAcceptAll" />
+  <Prompt name="ORDER_CHECK_INVENTORY_FAILED" type="Notify" title="_orderInventoryLevelsTitle" message="_orderInvServiceUnavailable" />
+  <Prompt name="ORDER_ITEM_EMPTY_NOTIFY" type="Notify" title="_orderItemListTitle" message="_orderEmptyList">
+    <Action ref="CANCEL_BACK" text="_ok" />
+  </Prompt>
+  <Prompt name="ORDER_LOCATE_MULTIPLE_ITEM_RESULTS" type="List" title="_orderLocateItemTitle" message="_orderLocateItemResults">
+    <ListViewType dtype="String">ORDER_LOCATE_MULTIPLE_ITEM_RESULT</ListViewType>
+  </Prompt>
+  <Prompt name="ORDER_ACCEPTED_EMPTY" type="Notify" title="_orderItemListTitle" message="_orderPickSlipNoAcceptedOrders">
+      <Action ref="CANCEL_BACK" text="_ok" />
+  </Prompt>
+  
+</PromptSet>

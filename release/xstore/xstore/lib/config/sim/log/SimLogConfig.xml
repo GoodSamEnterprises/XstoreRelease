@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/log/LogConfig.xsd">
+  
+  <RoutingRules>
+    <RoutingRule name="SIM.PROCESS_TRANSACTION" document="SIM.REQUEST" file="SIM.PROCESS_TRANSACTION">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="oracle.retail.xstore.inv.sim.movement.ProcessTransactionLogEntry" />
+    </RoutingRule>
+  </RoutingRules>
+
+  <LogFiles>
+    <LogFile id="SIM.PROCESS_TRANSACTION">
+      <Destination class="dtv.logbuilder.writers.LogEntryFileWriter">
+        <Parameter name="file_path" value="${user.dir}/log/sim/posTransaction" />
+        <Parameter name="file_per_object" value="true" />
+        <Parameter name="training_file_path" value="${user.dir}/log/training/sim/posTransaction" />
+      </Destination>
+    </LogFile>
+  </LogFiles>
+
+  <LogTypes>
+    <LogType document="SIM.REQUEST" sectionref="SIM.REQUEST" />
+  </LogTypes>
+
+  <sections>
+    <section name="SIM.REQUEST">
+      <row>
+        <field>
+          <aggregate class="oracle.retail.xstore.inv.sim.movement.ServiceRequestLogEntryField" />
+        </field>
+      </row>
+    </section>
+  </sections>
+</LogDefinitions>

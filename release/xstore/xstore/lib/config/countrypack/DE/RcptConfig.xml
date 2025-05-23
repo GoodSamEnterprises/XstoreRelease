@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+  <FormatterMap>
+    <Formatter name="DayAndMonth" class="dtv.pos.i18n.format.DateFormatter" format="MMMM dd" />
+  </FormatterMap>
+  
+  <sections>
+    <section name="LOCAL.HEADER_TOP">
+      <condition method="getFiscalNumber" comparison="NOT_BLANK" />   
+      <row />
+      <row>
+        <field text="_countrypack.de.fiscalNumber" />
+        <sp />
+        <field method="getFiscalNumber"/>
+      </row>
+    </section>  
+  </sections>
+</ReceiptDefinitions>

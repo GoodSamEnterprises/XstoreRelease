@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" >
+
+  <OpChain name="SALE_ITEM_AFTER_LOOKUP.finish" signal="TransactionModified">
+    <OpChainRoute chainKey="TAX_CHANGE_PERCENT_CHANGE_OPS"/>
+  </OpChain>
+  
+  <OpChain name="TAX_CHANGE_PERCENT" signal="TransactionModified">
+    <PromptOp class="dtv.pos.register.tax.PromptTaxPercentOp" validationsBean="taxPercentRules" />
+    <PromptOp class="dtv.pos.register.tax.op.PromptTaxPercentListOp" />
+    <PromptOp class="dtv.pos.register.tax.PromptTaxChangeReasonOp" />
+    <WorkerOp workersBean="changeTaxWorkers" />
+    <OpChainRoute chainKey="TAX_CHANGE_PERCENT_CHANGE_OPS"/>
+  </OpChain>
+
+  <OpChain name="TAX_CHANGE_PERCENT_CHANGE_OPS" signal="TransactionModified">
+    <Op class="dtv.pos.register.tax.op.ChangePriceByTaxChangeOp" />
+    <Op class="oracle.retail.xstore.countrypack.mx.register.tax.op.ChangeTaxModifiersOp" />
+  </OpChain>
+
+  <OpChain name="RESUME_TRANSACTION_IMPL" signal="TransactionModified">
+    <Op class="dtv.pos.register.suspendresume.CreateResumeTransOp" />
+    <WorkerOp workersBean="entireChainResumeTransWorkers" />
+    <Op class="dtv.pos.warranty.common.WarrantyTransIteratingOp">
+      <Parameter name="ChainKey" value="RESUME_WARRANTIES" />
+    </Op>
+    <Op class="dtv.tenderauth.impl.ajb.ResumePendingAuthOp">
+      <Parameter name="applicationResumeChain" value="RESUME_CREDIT_APP_AUTHORIZATION" />
+      <Parameter name="tenderResumeChain" value="RESUME_TENDER_AUTHORIZATION" />
+    </Op>
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <Op class="oracle.retail.xstore.countrypack.mx.register.suspendresume.SetSelectedTaxGroupOp" />
+  </OpChain>
+  
+  <OpChain name="SALE_COMPLETE_BEFORE_FINISH.local.pre">
+    <OpChainRoute chainKey="COUNTRYPACK.MX.SALE.GENERATE_CFDI" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.CREATE_INVOICE">
+    <OpChainRoute chainKey="COUNTRYPACK.MX.RENDERINVOICE" condition="oracle.retail.xstore.countrypack.mx.invoice.condition.RenderInvoice" /> 
+    <Op class="oracle.retail.xstore.countrypack.mx.register.op.MXCreateInvoiceOp" />
+    <WorkerOp workersBean="CFDIWorkers" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.MX.RENDERINVOICE">
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="COUNTRYPACK.INVOICE" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.mx.register.op.MXSetInvoiceBeanAsReportDataScourceOp" />
+    <Op class="dtv.pos.reporting.fill.FillReportNoUiOp" />
+    <Op class="dtv.pos.reporting.print.PrintReportOp" longRunning="true">
+      <Parameter name="continueOnError" value="true" />
+    </Op> 
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.INVOICE_ISSUE_INVOICE_FROM_EJ_IMPL" signal="TransactionComplete">
+    <PromptOp class="oracle.retail.xstore.countrypack.common.invoice.ejournal.op.PromptInvoiceConfirmationOp" key="COUNTRYPACK.INVOICE_ISSUE_FROM_EJ" />
+    <ValidationOp validationsBean="countryPack.invoice.validateIssueInvoiceFromEj" />
+    <OpChainRoute chainKey="COUNTRYPACK.INVOICE_REQUEST_IMPL" />
+    <!-- MX Start -->
+    <OpChainRoute chainKey="COUNTRYPACK.MX.EJ.GENERATE_CFDI" />
+    <!-- MX End -->
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.CreateDeferredInvoiceTransactionOp" >
+      <Parameter name="LinkTypeCode" value="DEFERRED_INVOICE_TRANSACTION" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.CREATE_INVOICE" condition="oracle.retail.xstore.countrypack.common.invoice.condition.IsPrintInvoice" />
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.CloseDeferredInvoiceTransactionOp" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.MX.EJ.GENERATE_CFDI">
+    <Op class="oracle.retail.xstore.countrypack.mx.register.op.GenerateCFDIOp" longRunning="true" >
+      <Parameter name="ErrorPromptKey" value="COUNTRYPACK.MX.BACK_OFFICE.CFDI_ERROR" />
+      <Parameter name="RetryPromptKey" value="COUNTRYPACK.MX.BACK_OFFICE.CFDI_ERROR_RETRY" />
+      <Parameter name="ConfirmationPromptKey" value="COUNTRYPACK.MX.BACK_OFFICE.CFDI_ERROR_CONFIRMATION" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.MX.EJ.GENERATE_CFDI.CONFIRMATION_NUMBER" condition="oracle.retail.xstore.countrypack.mx.invoice.condition.PromptForConfirmationCondition" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.MX.EJ.GENERATE_CFDI.CONFIRMATION_NUMBER">
+    <PromptOp class="oracle.retail.xstore.countrypack.mx.invoice.op.ConfirmationNumberPromptOp" validationsBean="cfdiConfirmationNumberRules" />
+    <OpChainRoute chainKey="COUNTRYPACK.MX.EJ.GENERATE_CFDI" />
+  </OpChain>
+  
+  <OpChain name="RETAIL_LOCATION_CLOSE.2">
+    <OpChainRoute chainKey="COUNTRYPACK.GLOBAL_INVOICE_WARNING_LIST" />
+    <Op class="oracle.retail.xstore.countrypack.mx.systemcycle.close.SetGlobalInvoiceType">
+      <Parameter name="GlobalInvoiceType" value="Global_Invoice" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.MX.GLOBAL_INVOICE.INIT" />
+    <Op class="oracle.retail.xstore.countrypack.mx.systemcycle.close.SetGlobalInvoiceType">
+      <Parameter name="GlobalInvoiceType" value="Global_Credit_Note" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.MX.GLOBAL_INVOICE.INIT" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.MX.GLOBAL_INVOICE.INIT">
+    <Op class="oracle.retail.xstore.countrypack.mx.systemcycle.close.CreateGlobalInvoiceTransactionOp" />
+    <OpChainRoute chainKey="COUNTRYPACK.MX.GLOBAL_INVOICE" condition="oracle.retail.xstore.countrypack.common.invoice.condition.IsPrintInvoice" />
+    <OpChainRoute chainKey="COUNTRYPACK.CREATE_INVOICE" condition="oracle.retail.xstore.countrypack.common.invoice.condition.IsPrintInvoice" />
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.CloseDeferredInvoiceTransactionOp" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.MX.GLOBAL_INVOICE">
+    <Op class="oracle.retail.xstore.countrypack.mx.register.op.GenerateCFDIOp" longRunning="true" breakpoint="true" >
+      <Parameter name="InvoiceType" value="Global_Invoice" />
+      <Parameter name="ErrorPromptKey" value="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_ERROR" />
+      <Parameter name="RetryPromptKey" value="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_ERROR_RETRY" />
+      <Parameter name="ConfirmationPromptKey" value="COUNTRYPACK.MX.CFDI_ERROR_CONFIRMATION.GLOBAL_INVOICE" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.MX.GLOBAL_INVOICE.CONFIRMATION_NUMBER" condition="oracle.retail.xstore.countrypack.mx.invoice.condition.PromptForConfirmationCondition" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.MX.GLOBAL_INVOICE.CONFIRMATION_NUMBER">
+    <PromptOp class="oracle.retail.xstore.countrypack.mx.invoice.op.ConfirmationNumberPromptOp" validationsBean="cfdiConfirmationNumberRules" />
+    <OpChainRoute chainKey="COUNTRYPACK.MX.GLOBAL_INVOICE" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.INVOICE_RETRY_FROM_EJ_IMPL" signal="TransactionComplete">
+    <Op class="oracle.retail.xstore.countrypack.mx.invoice.op.MXInvoiceIssueSetValueOp" >
+      <Parameter name="Value" value="true" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.MX.GLOBAL_INVOICE_RETRY_FROM_EJ_IMPL" />
+    <OpChainRoute chainKey="COUNTRYPACK.UPDATE_INVOICE" condition="oracle.retail.xstore.countrypack.common.invoice.condition.IsPrintInvoice" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.MX.GLOBAL_INVOICE_RETRY_FROM_EJ_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.mx.register.op.GenerateCFDIOp" longRunning="true" >
+      <Parameter name="InvoiceType" value="Global_Invoice" />
+      <Parameter name="ErrorPromptKey" value="COUNTRYPACK.MX.BACK_OFFICE.CFDI_ERROR" />
+      <Parameter name="RetryPromptKey" value="COUNTRYPACK.MX.BACK_OFFICE.CFDI_ERROR_RETRY" />
+      <Parameter name="ConfirmationPromptKey" value="COUNTRYPACK.MX.CFDI_ERROR_CONFIRMATION.GLOBAL_INVOICE" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.MX.EJ.GLOBAL_INVOICE.CONFIRMATION_NUMBER" condition="oracle.retail.xstore.countrypack.mx.invoice.condition.PromptForConfirmationCondition" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.MX.EJ.GLOBAL_INVOICE.CONFIRMATION_NUMBER">
+    <PromptOp class="oracle.retail.xstore.countrypack.mx.invoice.op.ConfirmationNumberPromptOp" validationsBean="cfdiConfirmationNumberRules" />
+    <OpChainRoute chainKey="COUNTRYPACK.MX.GLOBAL_INVOICE_RETRY_FROM_EJ_IMPL" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.UPDATE_INVOICE">
+    <Op class="oracle.retail.xstore.countrypack.mx.register.op.MXUpdateGlobalInvoiceOp" />
+    <OpChainRoute chainKey="COUNTRYPACK.MX.RENDERINVOICE" condition="oracle.retail.xstore.countrypack.mx.invoice.condition.RenderInvoice" /> 
+    <WorkerOp workersBean="CFDIWorkers" />
+  </OpChain>
+  
+  <OpChain name="RETAIL_LOCATION_OPEN_ACTIVITY.local.2">
+    <OpChainRoute chainKey="COUNTRYPACK.GLOBAL_INVOICE_WARNING_LIST" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.GLOBAL_INVOICE_WARNING_LIST">
+    <PromptOp class="oracle.retail.xstore.countrypack.mx.invoice.op.NotAuthGlobalInvoicePromptOp" />
+    <OpChainRoute chainKey="COUNTRYPACK.INVOICE_RETRY_ALL" condition="oracle.retail.xstore.countrypack.mx.invoice.condition.IsOnRetryProcess" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.INVOICE_RETRY_ALL">
+    <Op class="oracle.retail.xstore.countrypack.mx.invoice.op.RetryAllGlobalInvoiceWhileOp" >
+      <Parameter name="ChainKey" value="COUNTRYPACK.INVOICE_RETRY_ALL_PROCESS" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.mx.invoice.op.MXInvoiceIssueSetValueOp" >
+      <Parameter name="Value" value="false" />
+    </Op>
+    <PromptOp class="dtv.pos.framework.op.PromptOp" key="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_ERROR_RETRY_ALL_FINISH" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.INVOICE_RETRY_ALL_PROCESS">
+    <Op class="oracle.retail.xstore.countrypack.mx.invoice.op.MXInvoiceIssueSetValueOp" >
+      <Parameter name="Value" value="true" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.MX.INVOICE_RETRY_ALL_PROCESS" />
+    <OpChainRoute chainKey="COUNTRYPACK.UPDATE_INVOICE" condition="oracle.retail.xstore.countrypack.common.invoice.condition.IsPrintInvoice" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.MX.INVOICE_RETRY_ALL_PROCESS">
+    <Op class="oracle.retail.xstore.countrypack.mx.register.op.GenerateCFDIOp" longRunning="true" breakpoint="true">
+      <Parameter name="InvoiceType" value="Global_Invoice" />
+      <Parameter name="ErrorPromptKey" value="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_ERROR_RETRY_ALL" />
+      <Parameter name="ConfirmationPromptKey" value="COUNTRYPACK.MX.CFDI_ERROR_CONFIRMATION.GLOBAL_INVOICE" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.MX.INVOICE_RETRY_ALL_PROCESS.CONFIRMATION_NUMBER" condition="oracle.retail.xstore.countrypack.mx.invoice.condition.PromptForConfirmationCondition" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.MX.INVOICE_RETRY_ALL_PROCESS.CONFIRMATION_NUMBER">
+    <PromptOp class="oracle.retail.xstore.countrypack.mx.invoice.op.ConfirmationNumberPromptOp" validationsBean="cfdiConfirmationNumberRules" />
+    <OpChainRoute chainKey="COUNTRYPACK.MX.INVOICE_RETRY_ALL_PROCESS" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.MX.SALE.GENERATE_CFDI">
+    <Op class="oracle.retail.xstore.countrypack.mx.register.op.GenerateCFDIOp" longRunning="true"/>
+    <OpChainRoute chainKey="COUNTRYPACK.MX.SALE.GENERATE_CFDI.CONFIRMATION_NUMBER" condition="oracle.retail.xstore.countrypack.mx.invoice.condition.PromptForConfirmationCondition" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.MX.SALE.GENERATE_CFDI.CONFIRMATION_NUMBER">
+    <PromptOp class="oracle.retail.xstore.countrypack.mx.invoice.op.ConfirmationNumberPromptOp" validationsBean="cfdiConfirmationNumberRules" />
+    <OpChainRoute chainKey="COUNTRYPACK.MX.SALE.GENERATE_CFDI" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.INVOICE_REQUEST_IMPL.POST" >
+    <PromptOp class="oracle.retail.xstore.countrypack.mx.invoice.op.SelectUseCFDIPromptOp" />
+  </OpChain>
+
+</OpChainSet>

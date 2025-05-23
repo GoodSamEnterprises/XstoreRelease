@@ -1,0 +1,93 @@
+<dataTemplate name="cashDrawer" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="MIN" value="_rptMin"/>
+    <label name="MAX" value="_rptMax"/>
+    <label name="DATE" value="_rptRetailPeriodColon"/>
+    <label name="REGISTER" value="_rptRegisterColon"/>
+    <label name="REG_ID" value="_rptRegisterColon"/>
+    <label name="NET_DRAWER" value="_rptNetworkedDrawerColon"/>
+    <label name="SESSION" value="_rptSession"/>
+    <label name="TILL" value="_rptTill"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="TOTAL" value="_rptTotal"/>
+    <label name="CAT" value="_rptCategory"/>
+    <label name="UNASSOCIATED" value="_rptUnassociated"/>
+
+ </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+    <!-- User Parameters -->
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate">
+      <parameterDescription><![CDATA[_rptRetailPeriod;Date]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startReg" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptStartRegister;Text;Numeric;maximumIntegerDigits=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endReg" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptParamEndReg;Text;Numeric;maximumIntegerDigits=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[999999999]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+
+  <!--Data source and data Structure-->
+    <dataSource>
+    <queryReference name="Q_CASHDWR" key="CASH_DRAWER_REPORT">
+    <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>id_group</ResultField>
+        <ResultField>register</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>drawer_total</ResultField>
+        <ResultField>session_id</ResultField>
+        <ResultField>session_begin_time</ResultField>
+        <ResultField>till_id</ResultField>
+        <ResultField>drawer_id</ResultField>
+        <ResultField>drawer_type</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_CASHDWR" source="Q_CASHDWR">
+      <element name="DESC" value="description"/>
+      <element name="REG" value="register" />
+      <element name="DWR_TOT" value="drawer_total" formatter="Accounting" />
+      <element name="ID_GRP" value="id_group"/>
+      <element name="SESSN" value="session_id"/>
+      <element name="SESSN_TIME" value="session_begin_time"/>
+      <element name="TILL_ID" value="till_id"/>
+      <element name="DRWR_ID" value="drawer_id"/>
+      <element name="IP" value="drawer_type"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

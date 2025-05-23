@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">EMPLOYEE_MESSAGE_SEARCH</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <IconGroup icon="_imagePromptCustomerSearch" />
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="IntegerArray">0, 3, 0, 3</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="IntegerArray">30, 0, 30, 0</param_value>
+        </Parameter>
+        <Parameter name="addRowOffset">
+          <param_value dtype="Integer">13</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_messageStartDateColon</TextKey>
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">startDate</Resource>
+        <DataField ref="Date" />
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_messageEndDateColon</TextKey>
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">endDate</Resource>
+        <DataField ref="Date" />
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_messagePriority</TextKey>
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">priority</Resource>
+        <Font fontSize="+5" />
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action chainKey="EMPLOYEE_MESSAGE_MAINTENANCE" text="_messageNewMessageAction" keyStroke="F7" />
+      <Action ref="ACCEPT" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

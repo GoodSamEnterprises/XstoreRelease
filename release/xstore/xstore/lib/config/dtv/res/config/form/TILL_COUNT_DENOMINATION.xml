@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Sat Oct 11 10:02:11 EDT 2003 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">TILL_COUNT_DENOMINATION</FormKey>
+    <FormLocation dtype="String">TRANSACTION_LIST_AREA</FormLocation>
+    <FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+    <FormViewPanel componentId="TabbedPaneContext">
+      <PanelType dtype="String">TOP_INFO</PanelType>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">-3.0, -3.0, -2.0, -1.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">-1.0, -1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginFullView</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">false</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+1,1,0,1</param_value>
+      </ComponentParameter>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 4, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_denominationCountTitle</TextKey>
+        <Font fontSize="+3"  fontStyle="BOLD" />
+      </FormViewCell>      
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_tillCountFormCashier</TextKey>
+        <VisibilityGroup dtype="String">nonRollingCloseVisibility</VisibilityGroup>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">cashierId</Resource>
+        <VisibilityGroup dtype="String">nonRollingCloseVisibility</VisibilityGroup>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_workstationid</TextKey>
+        <VisibilityGroup dtype="String">rollingCloseVisibility</VisibilityGroup>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">registerId</Resource>
+        <VisibilityGroup dtype="String">rollingCloseVisibility</VisibilityGroup>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_tillCountFormTillName</TextKey>
+        <VisibilityGroup dtype="String">nonRollingCloseVisibility</VisibilityGroup>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">tillName</Resource>
+        <VisibilityGroup dtype="String">nonRollingCloseVisibility</VisibilityGroup>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_session</TextKey>
+        <VisibilityGroup dtype="String">rollingCloseVisibility</VisibilityGroup>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">sessionData</Resource>
+        <VisibilityGroup dtype="String">rollingCloseVisibility</VisibilityGroup>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">currentCountDescription</Resource>
+        <Font fontSize="+3" fontStyle="BOLD" />
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">LIST</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, -1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ColorGroup dtype="ColorGroup">
+        <BgColor dtype="Color">#ffffff</BgColor>
+      </ColorGroup>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 2, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">denominationListModel</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">TILL_COUNT_DENOMINATION</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">TILL_COUNT_DENOMINATION</Type>
+        </Renderer>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0,2,1,1,F,F</LayoutLocation>
+        <Type dtype="String">FormList</Type>
+        <Resource dtype="String">totalListModel</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">TILL_COUNT_TOTAL</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">TILL_COUNT_TOTAL</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+
+    <ActionGroup key="DEFAULT">
+      <Action ref="ABORT_CHANGES" />
+      <Action dataKey="PRIOR" text="_countPrior">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.ContainsPriorDenominationCountVisibilityRule" />
+      </Action>
+      <Action dataKey="NEXT" text="_countNext">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.ContainsNextDenominationCountVisibilityRule" />
+      </Action>
+      <Action dataKey="TILL_SUMMARY" text="_countSummary" >
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.HasMultipleCountsVisibilityRule" />
+      </Action>
+      <Action dataKey="DONE" text="_tillcountsummaryDoneKey" >
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.HasMultipleCountsVisibilityRule" inverted="true" />
+      </Action>
+      <Action keyStroke="F12"> <!-- Never let the user switch to Register mode while counting -->
+        <VisibilityRule class="dtv.pos.framework.action.access.AlwaysHideVisibilityRule" />
+      </Action>
+    </ActionGroup>
+    <ActionGroup key="AUDIT">
+      <Action ref="ABORT_CHANGES" />
+      <Action dataKey="DONE" text="_tillcountsummaryDoneKey" />
+      <Action keyStroke="F12"> <!-- Never let the user switch to Register mode while counting -->
+        <VisibilityRule class="dtv.pos.framework.action.access.AlwaysHideVisibilityRule" />
+      </Action>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <Query name="ALL_SCHEDULES_FOR_DATE_RANGE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.sch.ScheduleId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[        
+          WHERE organization_id = ?
+            AND business_date >= ?
+            AND business_date <= ?
+            AND (void_flag IS NULL OR void_flag = ?)        
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argStartDate" />
+      <Parameter name="argEndDate" />
+      <Parameter name="argVoidFlag" />
+    </SQL>
+  </Query>
+  <Query name="SCHEDULED_CHECK" pmType="SCHEDULING">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.ScheduleSearchResult</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="FirstName" type="String" />
+    <ResultField name="LastName" type="String" />
+    <ResultField name="Telephone" type="String" />
+    <ResultField name="EmployeeStatus" type="String" />
+    <ResultField name="StartTime" type="Date" />
+    <ResultField name="EndTime" type="Date" />
+    <ResultField name="WorkCode" type="String" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="EmployeeId" type="String" />
+    <ResultField name="ScheduleSeq" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT  p.organization_id, p.first_name, p.last_name, pt.telephone_number, 
+                emp.employee_work_status, s.start_time, 
+                s.end_time, s.work_code, s.business_date,
+                s.employee_id, s.schedule_seq
+        FROM sch_schedule s 
+          LEFT JOIN crm_party p ON 
+              /*UPPER*/ p.employee_id = s.employee_id AND 
+              p.organization_id = s.organization_id
+          LEFT JOIN crm_party_telephone pt ON 
+              pt.party_id = p.party_id AND
+              pt.organization_id = p.organization_id AND
+              pt.telephone_type = 'HOME'
+          LEFT JOIN hrs_employee emp ON 
+              emp.employee_id = s.employee_id AND
+              emp.organization_id = s.organization_id
+        WHERE (s.void_flag is null OR s.void_flag = ?) AND
+              ((s.start_time >= ? AND s.start_time <= ?) OR (s.end_time >= ? AND s.end_time <= ?)) AND
+              s.employee_id = ? AND 
+              s.organization_id = ?
+        ]]></Statement>
+      <Parameter name="argVoidFlag" />
+      <Parameter name="argStartTime" />
+      <Parameter name="argEndTime" />
+      <Parameter name="argStartTime" />
+      <Parameter name="argEndTime" />
+      <Parameter name="argEmployeeId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY p.last_name]]></Suffix>
+  </Query>
+  <Query name="SCHEDULES_FOR_DATE_RANGE_AND_EMPLOYEE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.sch.ScheduleId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[WHERE organization_id = ?
+                                  AND business_date >= ?
+                  AND business_date <= ?
+                                  AND (void_flag IS NULL OR void_flag = ?)
+                                  AND employee_id = ?]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argStartDate" />
+      <Parameter name="argEndDate" />
+      <Parameter name="argVoidFlag" />
+      <Parameter name="argEmployeeId" />
+    </SQL>
+  </Query>
+  <Query name="SCHEDULE_EMPLOYEE_DATA" pmType="SCHEDULING">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.TimecardPayrollEmployeeResult</ResultClass>
+    <ResultField name="OrganizationId" />
+    <ResultField name="PartyId" />
+    <ResultField name="EmployeeId" />
+    <ResultField name="LastName" />
+    <ResultField name="FirstName" />
+    <ResultField name="PhoneNumber" />
+    <ResultField name="WorkStatus" />
+    <ResultField name="PayStatus" />
+    <ResultField name="BasePay" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT DISTINCT emp.organization_id, emp.party_id, emp.employee_id,
+               party.last_name,
+               party.first_name,
+              (SELECT telephone_number 
+                 FROM crm_party_telephone phone
+                WHERE phone.organization_id = party.organization_id
+                  AND phone.party_id = party.party_id
+                  AND phone.telephone_type = /*UPPER*/ 'Home'),
+               emp.employee_work_status, emp.employee_pay_status,
+               emp.base_pay
+          FROM hrs_employee_store store, hrs_employee emp, crm_party party
+         WHERE emp.organization_id = store.organization_id
+           AND party.organization_id = emp.organization_id
+           AND party.party_id = emp.party_id
+           AND emp.employee_id = store.employee_id
+           AND emp.organization_id = ? and rtl_loc_id = ? 
+           AND (emp.terminated_date is null OR emp.terminated_date >= ?)
+      ORDER BY party.last_name, party.first_name
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+  <Query name="SHIFT_LOOKUP" pmType="SCHEDULING">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.ShiftSearchResult</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="ShiftId" type="Long" />
+    <ResultField name="Name" type="String" />
+    <ResultField name="Description" type="String" />
+    <ResultField name="WorkCode" type="String" />
+    <ResultField name="StartTime" type="Date" />
+    <ResultField name="EndTime" type="Date" />
+    <ResultField name="BreakDuration" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT organization_id, shift_id, name, description, work_code, start_time, end_time,
+           break_duration 
+        FROM sch_shift
+        WHERE organization_id = ? and ( void_flag is null OR void_flag = ? )
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argVoidFlag" />
+      <Expression parameters="argShiftName%" trigger="argShiftName"><![CDATA[/*UPPER*/ name like ?]]></Expression>
+      <Expression parameters="%argShiftDesc%" trigger="argShiftDesc"><![CDATA[/*UPPER*/ description like ?]]></Expression>
+      <Expression trigger="argShiftWorkCode"><![CDATA[/*UPPER*/ work_code = ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="TIME_OFF_BY_DATE_RANGE" pmType="SCHEDULING">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.TimeOffSearchResult</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="FirstName" type="String" />
+    <ResultField name="LastName" type="String" />
+    <ResultField name="Telephone" type="String" />
+    <ResultField name="EmployeeStatus" type="String" />
+    <ResultField name="StartTime" type="Date" />
+    <ResultField name="EndTime" type="Date" />
+    <ResultField name="ReasonCode" type="String" />
+    <ResultField name="TypeCode" type="String" />
+    <ResultField name="EmployeeId" type="String" />
+    <ResultField name="TimeOffSeq" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT  p.organization_id, p.first_name, p.last_name, pt.telephone_number, 
+                emp.employee_work_status, eto.start_datetime, 
+                eto.end_datetime, rsn.description, eto.time_off_typcode,
+                eto.employee_id, eto.time_off_seq
+        FROM sch_emp_time_off eto 
+          LEFT JOIN crm_party p ON 
+              /*UPPER*/ p.employee_id = eto.employee_id AND 
+              p.organization_id = eto.organization_id
+          LEFT JOIN crm_party_telephone pt ON 
+              pt.party_id = p.party_id AND 
+              pt.organization_id = p.organization_id AND
+              pt.telephone_type = 'HOME'
+          LEFT JOIN hrs_employee emp ON 
+              emp.employee_id = eto.employee_id AND 
+              emp.organization_id = eto.organization_id
+            LEFT OUTER JOIN com_reason_code rsn ON
+              rsn.organization_id = eto.organization_id AND
+              rsn.reason_code = /*UPPER*/ eto.reason_code AND
+              rsn.reason_typcode = 'TIME_OFF_REAS_CODE'
+        WHERE (eto.void_flag is null OR eto.void_flag = ?) AND 
+              ((eto.start_datetime >= ? AND eto.start_datetime <= ?) OR (eto.end_datetime >= ? AND eto.end_datetime <= ?)) AND
+              eto.organization_id = ?
+        ]]></Statement>
+      <Parameter name="argVoidFlag" />
+      <Parameter name="argStartTime" />
+      <Parameter name="argEndTime" />
+      <Parameter name="argStartTime" />
+      <Parameter name="argEndTime" />
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argEmployeeId"><![CDATA[eto.employee_id = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY p.last_name]]></Suffix>
+  </Query>
+  <Query name="TIME_OFF_CHECK" pmType="SCHEDULING">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.TimeOffSearchResult</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="FirstName" type="String" />
+    <ResultField name="LastName" type="String" />
+    <ResultField name="Telephone" type="String" />
+    <ResultField name="EmployeeStatus" type="String" />
+    <ResultField name="StartTime" type="Date" />
+    <ResultField name="EndTime" type="Date" />
+    <ResultField name="ReasonCode" type="String" />
+    <ResultField name="TypeCode" type="String" />
+    <ResultField name="EmployeeId" type="String" />
+    <ResultField name="TimeOffSeq" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT  p.organization_id, p.first_name, p.last_name, pt.telephone_number, 
+                emp.employee_work_status, eto.start_datetime,
+                eto.end_datetime, rsn.description, eto.time_off_typcode,
+                eto.employee_id, eto.time_off_seq
+        FROM sch_emp_time_off eto 
+          LEFT JOIN crm_party p ON 
+              /*UPPER*/ p.employee_id = eto.employee_id AND 
+              p.organization_id = eto.organization_id
+          LEFT JOIN crm_party_telephone pt ON 
+              pt.party_id = p.party_id AND 
+              pt.organization_id = p.organization_id AND
+              pt.telephone_type = 'HOME'
+          LEFT JOIN hrs_employee emp ON 
+              emp.employee_id = eto.employee_id AND 
+              emp.organization_id = eto.organization_id
+          LEFT OUTER JOIN com_reason_code rsn ON
+              rsn.organization_id = eto.organization_id AND
+              rsn.reason_code = /*UPPER*/ eto.reason_code AND
+              rsn.reason_typcode = 'TIME_OFF_REAS_CODE'
+        WHERE (eto.void_flag is null OR eto.void_flag = ?) AND
+              ((eto.start_datetime BETWEEN ? AND ?) OR (eto.end_datetime BETWEEN ? AND ?)) AND
+              eto.organization_id = ?
+        ]]></Statement>
+      <Parameter name="argVoidFlag" />
+      <Parameter name="argStartTime" />
+      <Parameter name="argEndTime" />
+      <Parameter name="argStartTime" />
+      <Parameter name="argEndTime" />
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argEmployeeId"><![CDATA[eto.employee_id = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY p.last_name]]></Suffix>
+  </Query>
+</QuerySet>

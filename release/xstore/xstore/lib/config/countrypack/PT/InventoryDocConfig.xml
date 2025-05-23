@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InventoryDocuments dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="InventoryDocConfig.xsd">
+  <!-- 
+  NOTE THAT FOR PORTUGAL, THE SHIPPING DOCUMENT SHOULD BE AUTOMATICALLY CLOSED ONCE GOODS ARE SHIPPED.
+  SO, ForceSingleShipment MUST ALWAYS BE SET TO true !!!
+   -->
+
+  <Document type="SHIPPING" name="STORE_TRANSFER">
+    <InventoryBucket dtype="String">ON_HAND</InventoryBucket>
+    <Addresing dtype="String">RETAIL_LOCATION</Addresing>
+    <SequenceType dtype="String">TRANSFER</SequenceType>
+    <DescriptionKey dtype="Translatable">_shippingDocumentTypeStoreTransfer</DescriptionKey>
+    <ShortDescriptionKey dtype="Translatable">_shippingDocumentTypeStoreTransfer3</ShortDescriptionKey>
+    <SortOrder dtype="Integer">0</SortOrder>
+    <DisplayForNew dtype="Boolean">true</DisplayForNew>
+    <DisplayForSearch dtype="Boolean">true</DisplayForSearch>
+    <AllowDocumentAddLine dtype="Boolean">true</AllowDocumentAddLine>
+    <ValidDestinationsByStore dtype="Boolean">true</ValidDestinationsByStore>
+    <ForceSingleShipment dtype="Boolean">true</ForceSingleShipment>
+    <UseControlNumber dtype="Boolean">true</UseControlNumber>
+    <AutoGenerateReceivingDoc dtype="Boolean">true</AutoGenerateReceivingDoc>
+    <GeneratedReceivingDocType dtype="String">STORE_TRANSFER</GeneratedReceivingDocType>
+    <SerialNumberCaptured dtype="Boolean">true</SerialNumberCaptured>
+  </Document>
+  <Document type="SHIPPING" name="DEFECTIVE_RETURN">
+    <InventoryBucket dtype="String">ON_HAND</InventoryBucket>
+    <Addresing dtype="String">PARTY</Addresing>
+    <SequenceType dtype="String">SHIPMENT_OUT</SequenceType>
+    <DescriptionKey dtype="Translatable">_shippingDocumentTypeDamaged</DescriptionKey>
+    <ShortDescriptionKey dtype="Translatable">_shippingDocumentTypeDamaged3</ShortDescriptionKey>
+    <SortOrder dtype="Integer">1</SortOrder>
+    <DisplayForNew dtype="Boolean">true</DisplayForNew>
+    <DisplayForSearch dtype="Boolean">true</DisplayForSearch>
+    <AllowDocumentAddLine dtype="Boolean">true</AllowDocumentAddLine>
+    <ValidDestinationsByStore dtype="Boolean">true</ValidDestinationsByStore>
+    <ForceSingleShipment dtype="Boolean">true</ForceSingleShipment>
+    <UseControlNumber dtype="Boolean">true</UseControlNumber>
+    <AutoGenerateReceivingDoc dtype="Boolean">false</AutoGenerateReceivingDoc>
+    <SerialNumberCaptured dtype="Boolean">true</SerialNumberCaptured>
+  </Document>
+  <Document type="SHIPPING" name="REPAIR">
+    <InventoryBucket dtype="String">ON_HAND</InventoryBucket>
+    <Addresing dtype="String">SERVICE_LOCATION</Addresing>
+    <SequenceType dtype="String">SHIPMENT_OUT</SequenceType>
+    <DescriptionKey dtype="Translatable">_shippingDocumentTypeRepair</DescriptionKey>
+    <ShortDescriptionKey dtype="Translatable">_shippingDocumentTypeRepair3</ShortDescriptionKey>
+    <SortOrder dtype="Integer">2</SortOrder>
+    <DisplayForNew dtype="Boolean">true</DisplayForNew>
+    <DisplayForSearch dtype="Boolean">true</DisplayForSearch>
+    <AllowDocumentAddLine dtype="Boolean">true</AllowDocumentAddLine>
+    <ValidDestinationsByStore dtype="Boolean">true</ValidDestinationsByStore>
+    <ForceSingleShipment dtype="Boolean">true</ForceSingleShipment>
+    <UseControlNumber dtype="Boolean">true</UseControlNumber>
+    <AutoGenerateReceivingDoc dtype="Boolean">false</AutoGenerateReceivingDoc>
+    <SerialNumberCaptured dtype="Boolean">true</SerialNumberCaptured>
+  </Document>
+  <Document type="SHIPPING" name="RETURN_TO_VENDOR">
+    <InventoryBucket dtype="String">ON_HAND</InventoryBucket>
+    <Addresing dtype="String">PARTY</Addresing>
+    <SequenceType dtype="String">RETURN_TO_VENDOR</SequenceType>
+    <DescriptionKey dtype="Translatable">_shippingDocumentTypeReturnToVendor</DescriptionKey>
+    <ShortDescriptionKey dtype="Translatable">_shippingDocumentTypeReturnToVendor3</ShortDescriptionKey>
+    <SortOrder dtype="Integer">4</SortOrder>
+    <DisplayForNew dtype="Boolean">true</DisplayForNew>
+    <DisplayForSearch dtype="Boolean">true</DisplayForSearch>
+    <AllowDocumentAddLine dtype="Boolean">true</AllowDocumentAddLine>
+    <ValidDestinationsByStore dtype="Boolean">true</ValidDestinationsByStore>
+    <ForceSingleShipment dtype="Boolean">true</ForceSingleShipment>
+    <UseControlNumber dtype="Boolean">true</UseControlNumber>
+    <AutoGenerateReceivingDoc dtype="Boolean">false</AutoGenerateReceivingDoc>
+    <SerialNumberCaptured dtype="Boolean">true</SerialNumberCaptured>
+  </Document>
+  <Document type="SHIPPING" name="CALL_BACK">
+    <InventoryBucket dtype="String">ON_HAND</InventoryBucket>
+    <Addresing dtype="String">PARTY</Addresing>
+    <SequenceType dtype="String">SHIPMENT_OUT</SequenceType>
+    <DescriptionKey dtype="Translatable">_shippingDocumentTypeCallBack</DescriptionKey>
+    <ShortDescriptionKey dtype="Translatable">_shippingDocumentTypeCallBack3</ShortDescriptionKey>
+    <SortOrder dtype="Integer">5</SortOrder>
+    <DisplayForNew dtype="Boolean">false</DisplayForNew>
+    <DisplayForSearch dtype="Boolean">true</DisplayForSearch>
+    <AllowDocumentAddLine dtype="Boolean">false</AllowDocumentAddLine>
+    <ValidDestinationsByStore dtype="Boolean">true</ValidDestinationsByStore>
+    <ForceSingleShipment dtype="Boolean">true</ForceSingleShipment>
+    <UseControlNumber dtype="Boolean">false</UseControlNumber>
+    <AutoGenerateReceivingDoc dtype="Boolean">false</AutoGenerateReceivingDoc>
+    <SerialNumberCaptured dtype="Boolean">true</SerialNumberCaptured>
+  </Document>
+  <Document type="SHIPPING" name="SALE">
+    <InventoryBucket dtype="String">ON_HAND</InventoryBucket>
+    <Addresing dtype="String">PARTY</Addresing>
+    <SequenceType dtype="String">SEND_SALE_INV_DOC</SequenceType>
+    <DescriptionKey dtype="Translatable">_shippingDocumentTypeSale</DescriptionKey>
+    <ShortDescriptionKey dtype="Translatable">_shippingDocumentTypeSale3</ShortDescriptionKey>
+    <SortOrder dtype="Integer">6</SortOrder>
+    <DisplayForNew dtype="Boolean">false</DisplayForNew>
+    <DisplayForSearch dtype="Boolean">true</DisplayForSearch>
+    <AllowDocumentAddLine dtype="Boolean">false</AllowDocumentAddLine>
+    <ValidDestinationsByStore dtype="Boolean">true</ValidDestinationsByStore>
+    <ForceSingleShipment dtype="Boolean">true</ForceSingleShipment>
+    <UseControlNumber dtype="Boolean">true</UseControlNumber>
+    <AutoGenerateReceivingDoc dtype="Boolean">false</AutoGenerateReceivingDoc>
+    <SerialNumberCaptured dtype="Boolean">true</SerialNumberCaptured>
+  </Document>
+  <Document type="SHIPPING" name="WORK_ORDER">
+    <InventoryBucket dtype="String">ON_HAND</InventoryBucket>
+    <Addresing dtype="String">PARTY</Addresing>
+    <SequenceType dtype="String">WORK_ORDER_SHIPMENT</SequenceType>
+    <DescriptionKey dtype="Translatable">_shippingDocumentTypeWorkOrder</DescriptionKey>
+    <ShortDescriptionKey dtype="Translatable">_shippingDocumentTypeWorkOrder3</ShortDescriptionKey>
+    <SortOrder dtype="Integer">7</SortOrder>
+    <DisplayForNew dtype="Boolean">false</DisplayForNew>
+    <DisplayForSearch dtype="Boolean">false</DisplayForSearch>
+    <AllowDocumentAddLine dtype="Boolean">true</AllowDocumentAddLine>
+    <ValidDestinationsByStore dtype="Boolean">true</ValidDestinationsByStore>
+    <ForceSingleShipment dtype="Boolean">true</ForceSingleShipment>
+    <UseControlNumber dtype="Boolean">true</UseControlNumber>
+    <AutoGenerateReceivingDoc dtype="Boolean">false</AutoGenerateReceivingDoc>
+    <SerialNumberCaptured dtype="Boolean">true</SerialNumberCaptured>
+  </Document>
+</InventoryDocuments>

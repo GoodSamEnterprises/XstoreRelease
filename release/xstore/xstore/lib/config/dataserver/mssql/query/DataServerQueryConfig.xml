@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <Query name="BACKUP_DATABASE" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          EXEC('BACKUP DATABASE {$argBackupName} TO DISK = ''' + ? + ? + ''' WITH INIT')        
+      ]]></Statement>
+      <Parameter name="$argBackupName" />
+      <Parameter name="argBackupDir" />
+      <Parameter name="argBackupDataFile" />
+    </SQL>
+  </Query>
+  <Query name="POST_RESTORE_DATABASE" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          ALTER DATABASE {$argRestoreName} SET multi_user        
+      ]]></Statement>
+      <Parameter name="$argRestoreName" />
+    </SQL>
+  </Query>
+  <Query name="PRE_RESTORE_DATABASE" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+        
+          IF DB_ID('{$argRestoreName}') IS NOT NULL
+            ALTER DATABASE {$argRestoreName} SET single_user WITH ROLLBACK IMMEDIATE        
+      ]]></Statement>
+      <Parameter name="$argRestoreName" />
+    </SQL>
+  </Query>
+  <Query name="REPLACE_TRAINING_ID" pmType="RESERVED_TRAINING">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <ResultField name="ReturnValue" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          {? = CALL sp_replace_org_id (?)}        
+      ]]></Statement>
+      <Parameter name="argNewOrgId" />
+      <Parameter name="argNewOrgId" />
+    </SQL>
+    <Property>
+      <Key dtype="String">QueryType</Key>
+      <Value dtype="String"><![CDATA[Procedure]]></Value>
+    </Property>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[true]]></Value>
+    </Property>
+  </Query>
+  <Query name="RESTORE_DATABASE" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          EXEC('RESTORE DATABASE {$argRestoreName} FROM DISK = ''' + ? + ? + ''' WITH REPLACE, MOVE ''' + ? + ''' TO ''' + ? + ''', REPLACE, MOVE ''' + ? + ''' TO ''' + ? + '''')        
+      ]]></Statement>
+      <Parameter name="$argRestoreName" />
+      <Parameter name="argBackupDir" />
+      <Parameter name="argBackupDataFile" />
+      <Parameter name="argDataFileName" />
+      <Parameter name="argRestoreDataLoc" />
+      <Parameter name="argLogFileName" />
+      <Parameter name="argRestoreLogLoc" />
+    </SQL>
+  </Query>
+  <Query name="TEST_CONNECTION_ACTIVE" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <SQL>
+      <Statement dtype="String"><![CDATA[ 
+        SELECT 1
+      ]]></Statement>
+    </SQL>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[true]]></Value>
+    </Property>
+  </Query>
+</QuerySet>

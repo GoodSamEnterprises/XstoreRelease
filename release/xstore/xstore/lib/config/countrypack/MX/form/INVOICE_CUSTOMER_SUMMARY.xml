@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner. ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet>
+  <FormView formKey="INVOICE_CUSTOMER_SUMMARY" formLocation="POPUP_VIEW_PANEL" formLayout="LEFT_TO_RIGHT">
+    
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_EXIT" text="_back" />
+      <Action ref="ACCEPT" />
+      <Action dataKey="CHANGE_CUSTOMER" text="_countrypack.invoice.summaryform.ChangeCustomer" keyStroke="F9" >
+        <VisibilityRule class="oracle.retail.xstore.countrypack.common.invoice.visibilityrules.InvoiceCustomerSelectableVisibilityRule" />
+      </Action>
+      <Action dataKey="EDIT" text="_editCustomer" keyStroke="F3" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+        <VisibilityRule class="oracle.retail.xstore.countrypack.mx.invoice.visibilityrules.DenyForGenericCustomerVisibilityRule" />
+      </Action>
+    </ActionGroup>
+    
+  </FormView>
+</FormViewSet>

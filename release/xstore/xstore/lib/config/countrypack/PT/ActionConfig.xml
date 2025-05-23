@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+
+  <!-- Additional limitations on returned items -->
+  <Action name="RETAIL::CHANGE_LINE_PRICE" category="Register" keywords="register_extended,actionForSelectedListItem" text="_menutext8" chainKey="PRE_CHANGE_ITEM_PRICE" privilege="CHANGE_PRICE">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyReturnLineItemVisibilityRule" inverted="true" />
+    <IconGroup icon="_iconMenuChange" />
+  </Action>
+  <Action name="RETAIL::CHANGE_DISCOUNT" category="Register" keywords="register_extended,isForDiscount_XstoreM,actionForSelectedListItem" text="_menutext50" chainKey="CHANGE_DISCOUNT" privilege="MODIFY_DISCOUNT">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyReturnLineItemVisibilityRule" inverted="true" />
+    <IconGroup icon="_iconMenuChange" />
+  </Action>
+  <Action name="RETAIL::MENU.MODIFY_LINE_TAX" category="Register" keywords="exclude,actionForSelectedListItem" text="_menutextChangeItemTax" privilege="CHANGE_TAX">
+    <IconGroup icon="_iconMenuChange" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyReturnLineItemVisibilityRule" inverted="true" />
+  </Action>
+  <Action name="RETAIL::MENU.MODIFY_TRANS_TAX" category="Register" keywords="exclude" text="_menutextChangeTranTax" privilege="CHANGE_TAX">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyReturnLineItemVisibilityRule" inverted="true" />
+  </Action>
+
+  <!-- Shipping -->
+  <Action name="SHIPPING::SAVE" category="Shipping" keywords="shipping" text="_shippingMenuSaveButton" keyStroke="F2" chainKey="SAVE_EXIT_SHIPPING">
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.AnyInvDocLineItemRule" />
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.ClosedInvDocRule" />
+  </Action>
+
+  <Action name="SHIPPING::CHANGE_QUANTITY" category="Shipping" keywords="actionForSelectedListItem" text="_shippingMenuChangeQuantity" keyStroke="F7" chainKey="SHIPPING_ITEM_CHANGE_QTY">
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.AnyInvDocLineItemRule" />
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.ClosedInvDocRule" />
+  </Action>
+
+  <Action name="SHIPPING::VOID_ITEM" category="Shipping" keywords="shipping,actionForSelectedListItem" text="_shippingMenuVoid" keyStroke="F8" chainKey="SHIPPING_ITEM_VOID">
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.AnyInvDocLineItemRule" />
+    <VisibilityRule class="dtv.pos.inventory.ship.ChangableDocumentVisibilityRule" />
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.ClosedInvDocRule" />
+  </Action>
+
+  <Action name="SHIPPING::SEARCH_FOR_ITEM" category="Shipping" keywords="shipping" ref="?SEARCH_FOR_ITEM?">
+    <Parameter name="AddItemChainKey" value="SHIPPING_ITEM_AFTER_LOOKUP" />
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.ClosedInvDocRule" />
+  </Action>
+
+  <Action name="SHIPPING::EDIT_DOCUMENT" category="Shipping" keywords="shipping" text="_shippingMenuEditDocument" keyStroke="F10" chainKey="SHIPPING_EDIT_DOCUMENT_CHAIN" privilege="INV_DOC_EDIT_CLOSED_DATA">
+    <VisibilityRule class="dtv.pos.inventory.ship.DocSubtypeVisibilityRule" inverted="true">
+      <Parameter name="type" value="ORDER" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.ClosedInvDocRule" />
+  </Action>
+
+  <Action name="SHIPPING::ADD_COMMENT" category="Shipping" keywords="shipping" text="_shippingMenuAddComment" keyStroke="F11" chainKey="SHIPPING_ADD_COMMENT_CHAIN">
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.ClosedInvDocRule" />
+  </Action>
+
+  <Action name="SHIPPING::PACKING_SLIP" category="Shipping" keywords="shipping" text="_shippingMenuPrint" keyStroke="F3" chainKey="SHIPPING_DOCUMENT_VIEW">
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.AnyInvDocLineItemRule" />
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.AnyShipmentItemsRule" />
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.ClosedInvDocRule" inverted="true" />
+  </Action>
+
+  <Action name="SHIPPING::PRINT_LABELS" category="Shipping" keywords="shipping" text="_shippingMenuPrintLabel" keyStroke="F4" chainKey="MANUAL_SHIPPING_PRINT_LABEL">
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.AnyInvDocLineItemRule" />
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.AnyShipmentItemsRule" />
+    <VisibilityRule class="dtv.pos.inventory.visibilityrules.ClosedInvDocRule" inverted="true" />
+  </Action>
+
+</ActionSet>

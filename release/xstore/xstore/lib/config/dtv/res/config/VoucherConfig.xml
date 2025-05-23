@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Vouchers dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VoucherConfig.xsd">
+  <!-- ******************************************************************** -->
+  <!-- **** GIFT_CARD voucher category ************************************ -->
+  <!-- ******************************************************************** -->
+  <VoucherCategory name="GIFT_CARD">
+    <Description dtype="Translatable">_giftcardtender</Description>
+  </VoucherCategory>
+  <!-- **************XPAY_GIFT_CARD****************************************************** -->
+  <!-- ****  voucher type ************************************ -->
+  <!-- ******************************************************************** -->
+  <Voucher name="XPAY_GIFT_CARD">
+    <VoucherCategory dtype="String">GIFT_CARD</VoucherCategory>
+    <Description dtype="Translatable">_giftcardtender</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">false</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">false</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">0</NumberOfDaysToExpire>
+    <Activity name="ISSUED">
+      <TenderId dtype="String">ISSUE_XPAY_GIFT_CARD</TenderId>
+      <ItemId dtype="String">1500</ItemId>
+      <ItemId dtype="String">1501</ItemId>
+      <ItemId dtype="String">1502</ItemId>
+      <ItemId dtype="String">1503</ItemId>
+      <ItemId dtype="String">1504</ItemId>
+      <ItemId dtype="String">2001</ItemId>
+      <ItemId dtype="String">68000</ItemId>
+      <ItemId dtype="String">68001</ItemId>
+      <ItemId dtype="String">68010</ItemId>
+      <ItemId dtype="String">68025</ItemId>
+      <ItemId dtype="String">68050</ItemId>
+      <ItemId dtype="String">68100</ItemId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <MaximumNumberPerTransaction dtype="Integer">1</MaximumNumberPerTransaction>
+      <MinimumAmount dtype="BigDecimal">0</MinimumAmount>
+      <MaximumAmount dtype="BigDecimal">1000</MaximumAmount>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="REDEEMED">
+      <TenderId dtype="String">XPAY_GIFT_CARD</TenderId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="CASHOUT">
+      <TenderId dtype="String">XPAY_GIFT_CARD</TenderId>
+      <ItemId dtype="String">1500</ItemId>
+      <ItemId dtype="String">1501</ItemId>
+      <ItemId dtype="String">1502</ItemId>
+      <ItemId dtype="String">1503</ItemId>
+      <ItemId dtype="String">1504</ItemId>
+      <ItemId dtype="String">2001</ItemId>
+      <ItemId dtype="String">68000</ItemId>
+      <ItemId dtype="String">68001</ItemId>
+      <ItemId dtype="String">68010</ItemId>
+      <ItemId dtype="String">68025</ItemId>
+      <ItemId dtype="String">68050</ItemId>
+      <ItemId dtype="String">68100</ItemId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+      <PromptForAmount dtype="Boolean">false</PromptForAmount>
+      <Voidable dtype="Boolean">false</Voidable>
+    </Activity>
+    <Activity name="RELOAD">
+      <TenderId dtype="String">RELOAD_XPAY_GIFT_CARD</TenderId>
+      <ItemId dtype="String">1505</ItemId>
+      <ItemId dtype="String">2001</ItemId>
+      <ItemId dtype="String">68001</ItemId>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="INQUIRE_BALANCE">
+      <TenderId dtype="String">XPAY_GIFT_CARD</TenderId>
+      <RequiresTransaction dtype="Boolean">true</RequiresTransaction>
+    </Activity>
+  </Voucher>
+  <!-- ******************************************************************** -->
+  <!-- **** POINTS_CARD voucher category ************************************ -->
+  <!-- ******************************************************************** -->
+  <VoucherCategory name="POINTS_CARD">
+    <Description dtype="Translatable">_pointscardtender</Description>
+  </VoucherCategory>
+  <Voucher name="XPAY_POINTS_CARD">
+    <VoucherCategory dtype="String">POINTS_CARD</VoucherCategory>
+    <Description dtype="Translatable">_pointscardtender</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">true</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">false</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">0</NumberOfDaysToExpire>
+    <Activity name="ISSUED">
+      <TenderId dtype="String">ISSUE_XPAY_POINTS_CARD</TenderId>
+      <ItemId dtype="String">1600</ItemId>
+      <ItemId dtype="String">1601</ItemId>
+      <ItemId dtype="String">1602</ItemId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <MaximumNumberPerTransaction dtype="Integer">999</MaximumNumberPerTransaction>
+      <MinimumAmount dtype="BigDecimal">0</MinimumAmount>
+      <MaximumAmount dtype="BigDecimal">1000</MaximumAmount>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+  </Voucher>
+  <!-- ******************************************************************** -->
+  <!-- **** STORE_CREDIT voucher type ************************************* -->
+  <!-- ******************************************************************** -->
+  <Voucher name="STORE_CREDIT">
+    <Description dtype="Translatable">_storecredittender</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">false</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">true</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">360</NumberOfDaysToExpire>
+    <Activity name="REDEEMED">
+      <TenderId dtype="String">STORE_CREDIT</TenderId>
+      <MultipleAllowed dtype="Boolean">false</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <RequireOverrideIfNotFound dtype="Boolean">true</RequireOverrideIfNotFound>
+    </Activity>
+    <Activity name="ISSUED">
+      <TenderId dtype="String">ISSUE_STORE_CREDIT</TenderId>
+      <MultipleAllowed dtype="Boolean">false</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+    </Activity>
+    <Activity name="INQUIRE_BALANCE">
+      <TenderId dtype="String">STORE_CREDIT</TenderId>
+      <RequiresTransaction dtype="Boolean">false</RequiresTransaction>
+    </Activity>
+  </Voucher>
+  <!-- ******************************************************************** -->
+  <!-- **** MERCHANDISE_CREDIT_CARD voucher type ************************** -->
+  <!-- ******************************************************************** -->
+  <Voucher name="MERCHANDISE_CREDIT_CARD">
+    <Description dtype="Translatable">_merchandisecreditcard</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">false</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">false</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">0</NumberOfDaysToExpire>
+    <Activity name="REDEEMED">
+      <TenderId dtype="String">MERCHANDISE_CREDIT_CARD</TenderId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <RequirePIN dtype="Boolean">false</RequirePIN>
+    </Activity>
+    <Activity name="CASHOUT">
+      <TenderId dtype="String">MERCHANDISE_CREDIT_CARD</TenderId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <RequirePIN dtype="Boolean">false</RequirePIN>
+    </Activity>
+    <Activity name="ISSUED">
+      <TenderId dtype="String">ISSUE_MERCHANDISE_CREDIT_CARD</TenderId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <RequirePIN dtype="Boolean">false</RequirePIN>
+    </Activity>
+    <Activity name="RELOAD">
+      <TenderId dtype="String">RELOAD_MERCHANDISE_CREDIT_CARD</TenderId>
+      <ItemId dtype="String">501</ItemId>
+      <RequirePIN dtype="Boolean">false</RequirePIN>
+    </Activity>
+    <Activity name="INQUIRE_BALANCE">
+      <TenderId dtype="String">MERCHANDISE_CREDIT_CARD</TenderId>
+      <RequirePIN dtype="Boolean">false</RequirePIN>
+      <RequiresTransaction dtype="Boolean">false</RequiresTransaction>
+    </Activity>
+  </Voucher>
+  <!-- ******************************************************************** -->
+  <!-- **** GIFT_CERTIFICATE voucher category ***************************** -->
+  <!-- ******************************************************************** -->
+  <VoucherCategory name="GIFT_CERTIFICATE">
+    <Description dtype="Translatable">_giftcertificatetender</Description>
+  </VoucherCategory>
+  <!-- ******************************************************************** -->
+  <!-- **** GIFT_CERTIFICATE voucher type ********************************* -->
+  <!-- ******************************************************************** -->
+  <Voucher name="GIFT_CERTIFICATE">
+    <VoucherCategory dtype="String">GIFT_CERTIFICATE</VoucherCategory>
+    <Description dtype="Translatable">_giftcertificatetender</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">false</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">true</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">0</NumberOfDaysToExpire>
+    <Activity name="REDEEMED">
+      <TenderId dtype="String">GIFT_CERTIFICATE</TenderId>
+      <MultipleAllowed dtype="Boolean">false</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <RequireOverrideIfNotFound dtype="Boolean">true</RequireOverrideIfNotFound>
+    </Activity>
+    <Activity name="ISSUED">
+      <TenderId dtype="String">ISSUE_GIFT_CERTIFICATE</TenderId>
+      <ItemId dtype="String">2003</ItemId>
+      <ItemId dtype="String">2103</ItemId>
+      <ItemId dtype="String">2104</ItemId>
+      <ItemId dtype="String">2105</ItemId>
+      <ItemId dtype="String">2106</ItemId>
+      <MultipleAllowed dtype="Boolean">false</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+    </Activity>
+    <Activity name="CASHOUT">
+      <TenderId dtype="String">GIFT_CERTIFICATE</TenderId>
+      <ItemId dtype="String">2003</ItemId>
+      <ItemId dtype="String">2103</ItemId>
+      <ItemId dtype="String">2104</ItemId>
+      <ItemId dtype="String">2105</ItemId>
+      <ItemId dtype="String">2106</ItemId>
+      <MultipleAllowed dtype="Boolean">false</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <RequireOverrideIfNotFound dtype="Boolean">true</RequireOverrideIfNotFound>
+    </Activity>
+    <Activity name="INQUIRE_BALANCE">
+      <TenderId dtype="String">GIFT_CERTIFICATE</TenderId>
+      <RequiresTransaction dtype="Boolean">false</RequiresTransaction>
+    </Activity>
+    <!--Activity dtype="Activity" name="RELOAD" /-->  </Voucher>
+  <!-- ******************************************************************** -->
+  <!-- **** MALL_CERTIFICATE voucher category ***************************** -->
+  <!-- ******************************************************************** -->
+  <VoucherCategory name="MALL_CERTIFICATE">
+    <Description dtype="Translatable">_mallcertificatetender</Description>
+  </VoucherCategory>
+  <!-- ******************************************************************** -->
+  <!-- **** MALL_CERTIFICATE voucher type ********************************* -->
+  <!-- ******************************************************************** -->
+  <Voucher name="MALL_CERTIFICATE">
+    <Description dtype="Translatable">_mallcertificatetender</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">false</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">false</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">0</NumberOfDaysToExpire>
+    <Activity name="REDEEMED">
+      <TenderId dtype="String">MALL_CERTIFICATE</TenderId>
+      <MultipleAllowed dtype="Boolean">false</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <RequireOverrideIfNotFound dtype="Boolean">false</RequireOverrideIfNotFound>
+    </Activity>
+  </Voucher>
+  <!-- ******************************************************************** -->
+  <!-- **** UNAPPLIED VOUCHER voucher type ************************************* -->
+  <!-- ******************************************************************** -->
+  <Voucher name="UNAPPLIED_VOUCHER">
+    <Description dtype="Translatable">_unappliedVoucherTender</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">false</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">true</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">0</NumberOfDaysToExpire>
+    <Activity name="ISSUED">
+      <TenderId dtype="String">UNAPPLIED_VOUCHER</TenderId>
+      <MultipleAllowed dtype="Boolean">false</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <RequireOverrideIfNotFound dtype="Boolean">false</RequireOverrideIfNotFound>
+    </Activity>
+  </Voucher>
+  <!-- ******************************************************************** -->
+  <!-- **** COUPON_VOUCHER voucher type ************************************* -->
+  <!-- ******************************************************************** -->
+  <Voucher name="COUPON_VOUCHER">
+    <Description dtype="Translatable">_voucherTypeCouponVoucher</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">false</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">false</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">0</NumberOfDaysToExpire>
+    <!-- cannot be issued or reloaded through POS; only redeemed -->
+    <Activity name="REDEEMED">
+      <TenderId dtype="String">AJB_GIFT_CARD</TenderId>
+      <DiscountCode dtype="String">COUPON_VOUCHER</DiscountCode>
+      <MultipleAllowed dtype="Boolean">false</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="CASHOUT">
+      <TenderId dtype="String">AJB_GIFT_CARD</TenderId>
+      <DiscountCode dtype="String">COUPON_VOUCHER</DiscountCode>
+      <MultipleAllowed dtype="Boolean">false</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="RELOAD"/>
+    <Activity name="ISSUED"/>
+  </Voucher>
+</Vouchers>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/AuthConfig.xsd">
+  <!-- ***** AuthProcess XPAY_CREDIT_MWHSE_STORE_SETTINGS **************** -->
+  <AuthProcess name="XPAY_CREDIT_MWHSE_STORE_SETTINGS" extends="XPAY_CREDIT_REQUESTS" Abstract="true">
+    <Parameter name="TokenizationEnabled" value="true" />
+    <!-- 
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-MWHSE" /> 
+    <Parameter name="organizationName" value="-DEFAULT-organizationName-MWHSE" /> 
+    <Parameter name="SiteID" value="-DEFAULT-SiteID-MWHSE" />
+    -->
+    <!-- Used for testing purposes, commented out for production -->
+    <Parameter name="merchantNumber" value="6N4G6-ZNBTA-CY6M1-6HZPH-8C438" />
+    <Parameter name="organizationName" value="MicrosQA" />
+    <Parameter name="SiteID" value="74E8RVX2" />
+  </AuthProcess>
+  <!-- *********** AuthProcess XPAY_CREDIT_MWHSE ************************* -->
+  <AuthProcess name="XPAY_CREDIT_MWHSE" extends="XPAY_CREDIT_MWHSE_STORE_SETTINGS" Abstract="true">
+    <!-- not specifying a value will value cause it to be cleared to null -->
+    <Parameter name="clearTrack2With" value="" />
+  </AuthProcess>
+  <!-- ***** AuthProcesses that extend XPAY_CREDIT_MWHSE ***************** -->
+  <!-- ***** AuthProcess XPAY_MASTERCARD_MWHSE *************************** -->
+  <AuthProcess name="XPAY_MASTERCARD_MWHSE" extends="XPAY_CREDIT_MWHSE">
+    <Parameter name="TenderID" value="MASTER_CARD" />
+    <Parameter name="soapMsgType" value="XPAY-MASTER_CARD" />
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_AMEX_MWHSE ********************************* -->
+  <AuthProcess name="XPAY_AMEX_MWHSE" extends="XPAY_CREDIT_MWHSE">
+    <Parameter name="TenderID" value="AMERICAN_EXPRESS" />
+    <Parameter name="soapMsgType" value="XPAY-AMERICAN_EXPRESS" />
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_VISA_MWHSE ********************************* -->
+  <AuthProcess name="XPAY_VISA_MWHSE" extends="XPAY_CREDIT_MWHSE">
+    <Parameter name="TenderID" value="VISA" />
+    <Parameter name="soapMsgType" value="XPAY-VISA" />
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_DISCOVER_MWHSE ***************************** -->
+  <AuthProcess name="XPAY_DISCOVER_MWHSE" extends="XPAY_CREDIT_MWHSE">
+    <Parameter name="TenderID" value="DISCOVER" />
+    <Parameter name="soapMsgType" value="XPAY-DISCOVER" />
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_JCB_MWHSE ********************************** -->
+  <AuthProcess name="XPAY_JCB_MWHSE" extends="XPAY_CREDIT_MWHSE">
+    <Parameter name="TenderID" value="JCB" />
+    <Parameter name="soapMsgType" value="XPAY-JCB" />
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_DINERS_CLUB_MWHSE ************************** -->
+  <AuthProcess name="XPAY_DINERS_CLUB_MWHSE" extends="XPAY_CREDIT_MWHSE">
+    <Parameter name="TenderID" value="DINERS_CLUB" />
+    <Parameter name="soapMsgType" value="XPAY-DINERS_CLUB" />
+  </AuthProcess>
+  <AuthRequestMap name="XPAY_CREDIT_MWHSE">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_PURCHASE" />
+      <Parameter name="AcceptPartialAuth" ref="partialApprovals" />
+      <Parameter name="AcceptBalanceReturn" value="Y" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_RETURN" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_VOID" />
+    </AuthRequest>
+    <AuthRequest key="VOID_REFUND_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_RETURN_VOID" />
+    </AuthRequest>
+    <AuthRequest key="CAPTURE_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CAPTURE" />
+    </AuthRequest>
+    <AuthRequest key="CAPTURE_REFUND_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_RETURN" />
+    </AuthRequest>
+    <AuthRequest key="CAPTURE_VOID_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_VOID" />
+    </AuthRequest>
+    <AuthRequest key="CAPTURE_VOID_REFUND_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_RETURN_VOID" />
+    </AuthRequest>
+  </AuthRequestMap>
+  <!-- ***** AuthProcess XPAY_DEBIT_MWHSE_STORE_SETTINGS ***************** -->
+  <AuthProcess name="XPAY_DEBIT_MWHSE_STORE_SETTINGS" extends="XPAY_DEBIT" Abstract="true">
+    <Parameter name="TokenizationEnabled" value="true" />
+    <!-- <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-DEBIT" /> 
+    <Parameter name="organizationName" value="-DEFAULT-organizationName-MWHSE" /> 
+    <Parameter name="SiteID" value="-DEFAULT-SiteID-DEBIT-MWHSE" /> -->
+    <!-- Used for testing purposes, commented out for production -->
+    <Parameter name="merchantNumber" value="6N4G6-ZNBTA-CY6M1-6HZPH-8C438" />
+    <Parameter name="organizationName" value="MicrosQA" />
+    <Parameter name="SiteID" value="74E8RVX2" />
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_DEBIT_MWHSE ******************************** -->
+  <AuthProcess name="XPAY_DEBIT_MWHSE" extends="XPAY_DEBIT_MWHSE_STORE_SETTINGS">
+    <Parameter name="communicatorReceiveTimeoutMillis" value="120000" />
+    <Parameter name="CreditToAccountAllowed" value="false" />
+  </AuthProcess>
+  <!-- ***** AuthRequestMap XPAY_DEBIT_MWHSE ***************************** -->
+  <AuthRequestMap name="XPAY_DEBIT_MWHSE">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.xpay.XpayDebitAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" value="DebitTender" />
+      <Parameter name="TransactionType" value="DEBIT_PURCHASE" />
+      <Parameter name="LanguageID" value="USA" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCountry" value="USA" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="DebitAccountType" value="CHK" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+  </AuthRequestMap>
+  <!-- ***** AuthProcess XPAY_BINSMART_LOOKUP_MWHSE ********************** -->
+  <AuthProcess name="XPAY_BINSMART_LOOKUP_MWHSE" extends="XPAY_CREDIT_MWHSE">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.xpay.XpayBINSmartLookupAuthProcess</AuthProcessClass>
+    <!-- +++++ XPAY_BINSMART_LOOKUP_MWHSE java-xml marshalling parameters +++++ -->
+    <Parameter name="authResponseClass">
+      <param_value dtype="Class">dtv.tenderauth.impl.xpay.XpayBINSmartLookupResponse</param_value>
+    </Parameter>
+    <Parameter name="soapMsgType" value="XPAY-BIN_INQUIRY" />
+  </AuthProcess>
+  <AuthRequestMap name="XPAY_BINSMART_LOOKUP_MWHSE">
+    <AuthRequest key="BINSMART_LOOKUP" class="dtv.tenderauth.impl.xpay.XpayBINSmartLookupRequest" enabled="true">
+      <Parameter name="AuthorizationType" value="BinInquiry" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="OrganizationName" ref="organizationName" />
+      <Parameter name="SiteID" ref="SiteID" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="BIN_INQUIRY" />
+    </AuthRequest>
+  </AuthRequestMap>
+</AuthConfig>

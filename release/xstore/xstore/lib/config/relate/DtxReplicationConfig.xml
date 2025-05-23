@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DtxReplicationConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/DtxReplicationConfig.xsd">
+  
+  <!-- **************************************************************** -->
+  <!-- REPLICATED ASYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+  <!-- These services should be enabled when writes to Relate should be processed through 
+      replication rather than done directly. They will need to be disabled, however, when 
+      PersistenceManagerConfig.xml is configured to target Relate directly through the 
+      ConcurrentStoreRelate datasource. -->
+  <!-- **************************************************************** -->
+  <service name="StorePrimary->Relate" expireAfter="never" enabled="false">
+    <condition class="dtv.data2.replication.dtximpl.condition.CurrentDataSourceCondition">
+      <conditionParam key="currentDataSource" value="StorePrimary" />
+    </condition>
+    <destination type="DataSource" dataSourceName="Relate" />
+    <subscriber name="dtv.xst.dao.crm.impl" />
+    <subscriber name="dtv.xst.dao.cat.impl.CustomerLoyaltyCardDAO" />
+  </service>
+  <service name="Local->Relate" expireAfter="never" enabled="true">
+    <condition class="dtv.data2.replication.dtximpl.condition.CurrentDataSourceCondition">
+      <conditionParam key="currentDataSource" value="Local" />
+    </condition>
+    <destination type="DataSource" dataSourceName="Relate" />
+    <subscriber name="dtv.xst.dao.crm.impl" />
+    <subscriber name="dtv.xst.dao.cat.impl.CustomerLoyaltyCardDAO" />
+  </service>
+  <!-- **************************************************************** -->
+  <!-- /REPLICATED ASYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+
+  <!-- **************************************************************** -->
+  <!-- CONCURRENT SYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+  <!-- These services will be invoked when writes to Relate are done directly and concurrently with Store 
+      Primary, with replication only being used as a fallback when the Relate data source is offline/non-responsive. 
+      There is no need to disable these services; they will simply never be invoked if 
+      PersistenceManagerConfig.xml is configured not to target them. -->
+  <!-- **************************************************************** -->
+  <!--  When the Relate portion of ConcurrentStoreRelate initially had a failover. -->
+  <service name="ConcurrentStoreRelate->Relate" expireAfter="never">
+    <condition class="dtv.data2.replication.dtximpl.condition.CurrentDataSourceCondition">
+      <conditionParam key="currentDataSource" value="ConcurrentStoreRelate|Relate" />
+    </condition>
+    <destination type="DataSource" dataSourceName="Relate" />
+    <subscriber name="*" />
+  </service>
+  <!-- When the StorePrimary portion of ConcurrentStoreRelate initially had a failover. -->
+  <service name="ConcurrentStoreRelate->StorePrimary" expireAfter="never">
+    <condition class="dtv.data2.replication.dtximpl.condition.CurrentDataSourceCondition">
+      <conditionParam key="currentDataSource" value="ConcurrentStoreRelate|StorePrimary" />
+    </condition>
+    <destination type="DataSource" dataSourceName="StorePrimary" />
+    <subscriber name="*" />
+  </service>
+  <!-- **************************************************************** -->
+  <!-- /CONCURRENT SYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+  
+</DtxReplicationConfig>

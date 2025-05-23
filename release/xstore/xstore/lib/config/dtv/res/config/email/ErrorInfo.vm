@@ -1,0 +1,23 @@
+#set ($subject = "Store $rtlLocId Error Occurred")
+<html>
+  <body>
+    Xstore has encountered an error.  If available, the Xstore log file from the point at which the error occurred is attached.<br>
+    <br>
+    Store Number: $rtlLocId<br>
+    Register: $wkstnId<br>
+    Time: $date<br>
+    <br>
+    #if($userName != "")
+    Reported by: $userName<br>
+    <br>
+    #end
+    #if($errorDescription != "")
+    Problem Description: $errorDescription<br>
+    <br>
+    #end
+    #if($errorModule != "")
+    Module: $errorModule<br>
+    <br>
+    #end
+  </body>
+</html>

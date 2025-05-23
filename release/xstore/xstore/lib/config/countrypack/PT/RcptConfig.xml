@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions>
+  <FormatterMap>
+    <Formatter name="Money" class="oracle.retail.xstore.countrypack.pt.docbuilding.PtMoneyFormatter" ctx="RECEIPT" />
+    <Formatter name="Money$" class="oracle.retail.xstore.countrypack.pt.docbuilding.PtMoneyFormatter" ctx="RECEIPT" includeCurrencySymbol="true" />
+    <Formatter name="DayAndMonth" class="dtv.pos.i18n.format.DateFormatter" format="dd MMMM" />
+  </FormatterMap>
+
+  <ReceiptCopyRules>
+    <ReceiptCopyRule name="POSTVOID" document="POSTVOID">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.IsInstanceCopyRule" value="oracle.retail.xstore.countrypack.pt.PtVoidReceiptSource" />
+    </ReceiptCopyRule>
+  </ReceiptCopyRules>
+
+  <receipts>
+    <receipt document="POSTVOID" sectionref="COUNTRYPACK.PT.POSTVOID" />
+  </receipts>
+
+  <sections>
+    <section name="COUNTRYPACK.PT.POSTVOID">
+      <iterator>
+        <impl dtype="Class">oracle.retail.xstore.countrypack.pt.docbuilding.PtVoidRcptIterator</impl>
+        <sectionref>COUNTRYPACK.PT.VOID_LABEL</sectionref>
+      </iterator>
+    </section>
+
+    <section name="transaction_store_location">
+      <sectionref>COUNTRYPACK.PT.TRANSACTION_STORE_LOCATION</sectionref>
+      <sectionref>COUNTRYPACK.PT.TRANSACTION_STORE_LOCATION.TRAINING</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.PT.TRANSACTION_STORE_LOCATION.TRAINING">
+      <condition class="dtv.pos.docbuilding.conditions.TrainingModeCondition" />
+      <row align="C">
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PropertyMessageBuilderField" />
+          <Parameter name="Key" value="TrainingModeHeader1" />
+        </field>
+      </row>
+      <row align="C">
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PropertyMessageBuilderField" />
+          <Parameter name="Key" value="TrainingModeHeader2" />
+        </field>
+      </row>
+      <row align="C">
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PropertyMessageBuilderField" />
+          <Parameter name="Key" value="TrainingModeHeader3" />
+        </field>
+      </row>
+      <row align="C">
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PropertyMessageBuilderField" />
+          <Parameter name="Key" value="TrainingModeHeader4" />
+        </field>
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.PT.TRANSACTION_STORE_LOCATION">
+      <condition class="dtv.pos.docbuilding.conditions.TrainingModeCondition" inverted="true" />
+      <call method="getRetailLocationIdObject" impl="dtv.pos.docbuilding.RetailLocationLookupCall">
+        <row />
+        <row align="C">
+          <field method="getStoreName" />
+        </row>
+        <region left_margin="1" alignment="C">
+          <field method="." formatter="BasicAddress" />
+        </region>
+        <row align="C">
+          <condition method="getTelephone1" comparison="NOT_BLANK" />
+          <field method="getTelephone1" formatter="Phone" />
+        </row>
+      </call>
+    </section>
+
+    <section name="LOCAL.HEADER_TOP">
+      <sectionref>COUNTRYPACK.PT.NON_FISCAL_DOC_TYPE</sectionref>
+      <sectionref>COUNTRYPACK.PT.FISCAL_DOC_TYPE</sectionref>
+      <sectionref>COUNTRYPACK.PT.SIGNATURE</sectionref>
+      <sectionref>COUNTRYPACK.PT.FISCAL_DOC_NUMBER</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.PT.NON_FISCAL_DOC_TYPE">
+      <condition method="getStringProperty" method_param="PT_DOCUMENT_SIGNATURE" comparison="IS_NULL" />
+      <sectionref>COUNTRYPACK.NON_FISCAL_STATEMENT</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.PT.FISCAL_DOC_TYPE">
+      <condition method="getStringProperty" method_param="PT_DOCUMENT_SIGNATURE" comparison="NOT_BLANK" />
+      <row />
+      <row align="C" charsize="X2HW">
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.FiscalDocumentTypeBuilderField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.PT.VOID_LABEL">
+      <row align="C" charsize="X2HW">
+        <field text="_voidRcptBottom" style="BOLD" />
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.PT.SIGNATURE">
+      <condition method="getStringProperty" method_param="PT_DOCUMENT_SIGNATURE" comparison="NOT_BLANK" />
+      <row />
+      <region align="C">
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.SaftSignFieldDocBuilderField" />
+        </field>
+      </region>
+    </section>
+
+    <section name="COUNTRYPACK.PT.FISCAL_DOC_NUMBER">
+      <condition method="getStringProperty" method_param="PT_DOCUMENT_SIGNATURE" comparison="NOT_BLANK" />
+      <row />
+      <row>
+        <field text="_countrypack.pt.documentNumber" />
+        <sp />
+        <field method="getStringProperty" method_param="PT_DOCUMENT_NUMBER" />
+      </row>
+      <row />
+    </section>
+
+    <section name="CUSTOMER_INFO">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransaction" />
+      <sectionref>COUNTRYPACK.PT.CUSTOMER_DETAILS</sectionref>
+      <sectionref>COUNTRYPACK.PT.NO_CUSTOMER_DETAILS</sectionref>
+      <sectionref>LOYALTY_INFO</sectionref>
+      <sectionref>LOCAL.CUSTOMER_INFO</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.PT.CUSTOMER_DETAILS">
+      <condition method="getCustomerParty" comparison="NOT_NULL" />
+      <sectionref>CUSTOMER_DETAILS</sectionref>
+      <region>
+        <field method="getCustomerParty.getPrimaryLocaleInformation" formatter="BasicAddress" />
+      </region>
+      <row>
+        <field text="_countrypack.PT.customerNIF" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PtCustomerCodeNIFDocBuilderField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.PT.NO_CUSTOMER_DETAILS">
+      <condition method="getCustomerParty" comparison="IS_NULL" />
+      <row>
+        <field text="_rcptCustomerLabel" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PropertyMessageBuilderField" />
+          <Parameter name="Key" value="GenericCustomerMessage" />
+        </field>
+      </row>
+      <row>
+        <field text="_countrypack.PT.customerNIF" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PropertyMessageBuilderField" />
+          <Parameter name="Key" value="GenericCustomerRcptNIF" />
+        </field>
+      </row>
+    </section>
+
+    <section name="return_verification">
+      <condition class="dtv.pos.docbuilding.conditions.ReturnTypeCondition">
+        <Parameter name="VALUE" value="VERIFIED" />
+        <Parameter name="VALUE2" value="UNVERIFIED" />
+      </condition>
+      <row />
+      <row>
+        <field text="_return" loc="4" />
+      </row>
+      <row>
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.OriginalDocumentTypeDocBuilderField" />
+          <Parameter name="DescriptionResourceName" value="_countrypack.pt.originalFiscalDocumentDescr" />
+        </field>
+      </row>
+      <row>
+        <condition method="getOriginalRetailLocationId" comparison="NOT_EQUAL" value="0" />
+        <field text="_store" loc="4" />
+        <sp />
+        <field method="getOriginalRetailLocationId" />
+      </row>
+      <row>
+        <field text="_date" loc="4" />
+        <sp />
+        <field method="getOriginalBusinessDate" formatter="DateShort" />
+      </row>
+      <row>
+        <condition method="getOriginalTransactionSequence" comparison="NOT_EQUAL" value="0" />
+        <field text="_ticket" loc="4" />
+        <sp />
+        <field method="getOriginalTransactionSequence" />
+      </row>
+      <row>
+        <condition method="getOriginalWorkstationId" comparison="NOT_EQUAL" value="0" />
+        <field text="_register" loc="4" />
+        <sp />
+        <field method="getOriginalWorkstationId" />
+      </row>
+      <row />
+    </section>
+
+    <section name="CUST_COPY_FOOTER_DB" dbRef="CUSTOMER_COPY_FOOTER::DEFAULT::getBusinessDate">
+      <row />
+      <sectionref>COUNTRYPACK.PT.VAT_STATEMENT</sectionref>
+      <row />
+      <sectionref>COUNTRYPACK.PT.FISCAL_STATEMENT</sectionref>
+      <row />
+    </section>
+
+    <section name="COUNTRYPACK.PT.VAT_STATEMENT" dbRef="PT_VAT_STATEMENT::DEFAULT::getBusinessDate" />
+    <section name="COUNTRYPACK.PT.FISCAL_STATEMENT" dbRef="PT_FISCAL_STATEMENT::DEFAULT::getBusinessDate" />
+
+    <section name="reprint">
+      <row>
+        <field text="%IF_REPRINT%" />
+      </row>
+      <horizontal_rule />
+      <row align="C" charsize="X2HW">
+        <field style="BOLD">
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PropertyMessageBuilderField" />
+          <Parameter name="Key" value="ReprintMessage" />
+        </field>
+      </row>
+      <horizontal_rule />
+      <row>
+        <field text="%END_IF%" />
+      </row>
+    </section>
+
+    <section name="item_header">
+      <row style="STRONGUNDERLINE">
+        <field text="_item" />
+        <field text="_qty" align="R" loc="12" />
+        <field text="_tax" align="R" loc="20" />
+        <field text="_price" align="R" loc="-13" />
+        <field text="_amount" align="R" loc="-3" />
+      </row>
+      <sectionref>item_details</sectionref>
+      <row />
+    </section>
+
+    <section name="item_details_listing">
+      <row>
+        <field method="getItem.getItemId" />
+        <field method="getQuantity" formatter="Quantity" align="R" loc="12" />
+        <field formatter="Percent" align="R" loc="20">
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.TaxPercentageDocBuilderField" />
+        </field>
+        <field formatter="Money" align="R" loc="-13">
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.NetItemPriceDocBuilderField" />
+        </field>
+        <field method="getExtendedAmount" formatter="Money" align="R" loc="-3" />
+        <field loc="-1">
+          <aggregate class="dtv.pos.register.tax.TaxFlagDocBuilderField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="LOCAL.NONVOIDED_ITEM">
+      <sectionref>COUNTRYPACK.PT.ITEM_EXEMPTION</sectionref>
+    </section>
+
+    <section name="item_discounts">
+      <condition class="dtv.pos.docbuilding.conditions.SaleLineItemTypeCondition" value="RETURN" inverted="true" />
+      <iterator method="getRetailPriceModifiers">
+        <sectionref>item_amount_discount</sectionref>
+        <sectionref>item_percent_discount</sectionref>
+        <sectionref>competitive_discount_percent</sectionref>
+        <sectionref>competitive_discount_amount</sectionref>
+        <sectionref>item_deal</sectionref>
+        <sectionref>manufac_coupon</sectionref>
+      </iterator>
+    </section>
+
+    <section name="COUNTRYPACK.PT.ITEM_EXEMPTION">
+      <condition class="oracle.retail.xstore.countrypack.pt.docbuilding.conditions.PtTaxExemptionCondition"/>
+      <region>
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PtItemTaxExemptionDocBuilder" />
+        </field>
+      </region>
+    </section>
+
+    <section name="COUNTRYPACK.NON_FISCAL_STATEMENT">
+      <row />
+      <horizontal_rule />
+      <region align="C">
+        <field style="BOLD">
+          <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.PropertyMessageBuilderField" />
+          <Parameter name="Key" value="NonFiscalStatementMessage" />
+        </field>
+      </region>
+      <horizontal_rule />
+      <row />
+    </section>
+
+  <section name="LOCAL.VOUCHER_HEADER">
+      <call method="getParentTransaction">
+        <sectionref>LOCAL.PT.VOUCHER_HEADER</sectionref>
+      </call>
+  </section>
+
+  <section name="LOCAL.PT.VOUCHER_HEADER">
+    <condition method="getStringProperty" method_param="PT_DOCUMENT_SIGNATURE" comparison="NOT_BLANK" />
+    <row />
+    <region align="C">
+      <field>
+        <aggregate class="oracle.retail.xstore.countrypack.pt.docbuilding.SaftInfoFieldDocBuilderField" />
+      </field>
+    </region>
+  </section>
+
+    <section name="LOCAL.GIFT_RECEIPT_HEADER_TOP">
+      <sectionref>COUNTRYPACK.NON_FISCAL_STATEMENT</sectionref>
+    </section>
+
+    <section name="LOCAL.REBATE_RECEIPT_HEADER_TOP">
+      <sectionref>COUNTRYPACK.NON_FISCAL_STATEMENT</sectionref>
+    </section>
+
+  </sections>
+
+</ReceiptDefinitions>

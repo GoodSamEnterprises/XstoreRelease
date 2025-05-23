@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery" 
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="STTN_TemplateQuantity" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition"
+    abstract="true">
+    <property name="key" ref="KEY_Quantity" />
+    <property name="privilege" ref="PRV_ChangeQuantity" />
+  </bean>
+
+  <bean id="STTN_TemplatePrice" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition"
+    abstract="true">
+    <property name="key" ref="KEY_Price" />
+    <property name="privilege" ref="PRV_ChangePrice" />
+  </bean>
+
+  <bean id="STTN_STD_AlphaNumericInput" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.AlphaNumericKeyDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_KeyInput" />
+  </bean>
+
+  <bean id="STTN_STD_AlphaNumericInputWithEnter" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.AlphaNumericKeyDescriptor" />
+        <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+          <property name="key" ref="KEY_Enter" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_KeyInput" />
+  </bean>
+
+  <bean id="STTN_STD_InvalidKeyError" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="type" value="ENDMOST" />
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.AnyKeyDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_InvalidKey" />
+  </bean>
+
+  <bean id="STTN_STD_QuitOnHardwareExit" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.EventEnumDescriptor">
+        <property name="eventEnum">
+          <util:constant static-field="com.micros_retail.xfgclient.event.ClientEvents.EXIT" />
+        </property>
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_HWFailureShutdown" />
+  </bean>
+
+  <bean id="STTN_STD_DepartmentLookup" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_DepartmentLookup" />
+    <property name="transitionChain" ref="TCN_DepartmentLookupButtonPressed" />
+  </bean>
+
+  <bean id="STTN_STD_QuickPick" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_QuickPick" />
+    <property name="transitionChain" ref="TCN_QuickPickButtonPressed" />
+  </bean>
+
+  <bean id="STTN_STD_ItemSelection" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_ItemSelection" />
+    <property name="transitionChain" ref="TCN_ItemSelectionButtonPressed" />
+  </bean>
+
+  <bean id="STTN_STD_Pause" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+          <property name="timerName" value="IDLE_TIMER" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+          <property name="key" ref="KEY_Pause" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_OperatorPause" />
+  </bean>
+
+  <bean id="STTN_STD_StoreCloseWarning" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+        <property name="timerName" value="STORE_CLOSE_WARNING_TIMER" />
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_HandleRollingCloseTimerEvent" />
+  </bean>
+
+  <bean id="STTN_STD_StoreCloseGrace" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+        <property name="timerName" value="STORE_CLOSE_GRACE_TIMER" />
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_HandleRollingCloseTimerEvent" />
+  </bean>
+
+  <bean id="STTN_STD_StoreCloseExpired" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+        <property name="timerName" value="STORE_CLOSE_EXPIRED_TIMER" />
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_HandleRollingCloseTimerEvent" />
+  </bean>
+
+  <bean id="STTN_STD_StoreCloseMessage" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+        <property name="descriptors">
+          <list>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.StoreCloseEventNotEmptyDescriptor" />
+            <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+              <property name="timerName" value="STORE_CLOSE_TIMER" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_ShowStoreCloseMessage" />
+  </bean>
+
+  <bean id="STTN_STD_CheckForUpdates" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+        <property name="timerName" value="CHECK_UPDATE_TIMER" />
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_CheckForUpdates" />
+  </bean>
+
+  <bean id="STTN_STD_RegisterWorkstationActive" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+        <property name="timerName" value="REGISTER_WORKSTATION_ACTIVE_TIMER" />
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_RegisterWorkstationActive" />
+  </bean>
+
+  <bean id="STTN_STD_TransListUpSelection" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Up" />
+    <property name="transitionChain" ref="TCN_SelectTransListUpSelection" />
+  </bean>
+
+  <bean id="STTN_STD_TransListDownSelection" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Down" />
+    <property name="transitionChain" ref="TCN_SelectTransListDownSelection" />
+  </bean>
+
+  <bean id="STTN_STD_ExecuteCode" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Code" />
+    <property name="transitionChain" ref="TCN_ExecuteCode" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="privilege" ref="PRV_ExecuteCode" />
+  </bean>
+
+  <bean id="STTN_STD_IgnoreCode" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Code" />
+    <property name="transitionChain" ref="TCN_Fail" />
+  </bean>
+
+  <bean id="STTN_STD_PriceEnquiry" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_PriceEnquiry" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_SalePriceEnquiry" />
+    <property name="privilege" ref="PRV_PriceEnquiry" />
+  </bean>
+
+  <bean id="STTN_STD_ClockInOut" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_ClockInOut" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_ClockInOut" />
+  </bean>
+
+  <bean id="STTN_STD_PostVoid" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_PostVoid" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_PostVoid" />
+    <property name="privilege" ref="PRV_PostVoid" />
+  </bean>
+
+  <bean id="STTN_STD_Manual_GS1_Entry" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Manual_GS1_Entry" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_ManualGS1Entry" />
+  </bean>
+
+  <bean id="STTN_STD_Paid_In" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Paid_In" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_PaidIn" />
+    <property name="privilege" ref="PRV_PaidIn" />
+  </bean>
+
+  <bean id="STTN_STD_Paid_Out" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Paid_Out" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_PaidOut" />
+    <property name="privilege" ref="PRV_PaidOut" />
+  </bean>
+
+  <bean id="STTN_STD_SuspendTransaction" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Suspend_Transaction" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_SuspendTransaction" />
+  </bean>
+
+  <bean id="STTN_STD_ResumeTransaction" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <!-- <property name="type" value="SUBSTATE_INHERIT" /> -->
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="INPUT_TRANSACTION" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+          <property name="key" ref="KEY_Resume_Transaction" />
+        </bean>
+      </list>
+    </property>
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_ResumeTransaction" />
+  </bean>
+
+  <bean id="STTN_STD_VerifyTransactionForReturn" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="INPUT_TRANSACTION" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+          <property name="key" ref="KEY_Enter" />
+        </bean>
+      </list>
+    </property>
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_VerifyTransactionForReturn" />
+    <property name="successState" ref="STATE_ReturnMode" />
+  </bean>
+
+  <bean id="STTN_STD_InterpretKeyboardInput" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_PLU" />
+    <property name="transitionChain" ref="TCN_InterpretKeyboardInput" />
+  </bean>
+
+  <bean id="STTN_STD_InterpretScannerInput" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.ScanDataDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_InterpretScannerInput" />
+  </bean>
+
+  <bean id="STTN_STD_ShowCurrencyRates" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="transitionChain" ref="TCN_ShowCurrencyRates" />
+  </bean>
+
+  <bean id="STTN_STD_ItemSale" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="INPUT_ITEM" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="OTHERS" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_SaleItemSale" />
+  </bean>
+
+  <bean id="STTN_STD_ProcessInventoryAdjustment" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="INPUT_ITEM" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="OTHERS" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_ProcessInventoryAdjustment" />
+  </bean>
+
+  <bean id="STTN_STD_BottleReturn" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="BOTTLE_RETURN" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_BottleReturn" />
+  </bean>
+
+  <bean id="STTN_STD_BottleReturnDisallowed" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="BOTTLE_RETURN" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_BottleReturnDisallowed" />
+  </bean>
+
+  <bean id="STTN_STD_CustomerAdd" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="CUSTOMER" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_AddCustomerToTransaction" />
+    <property name="type" value="SUBSTATE_PRESERVE_EVENT" />
+  </bean>
+
+  <bean id="STTN_STD_CustomerByCustIdAdd" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="INPUT_CUSTOMER_CARD" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_AddCustomerByCustIdToTransaction" />
+  </bean>
+
+  <bean id="STTN_STD_RemoveCustomer" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_CustomerRemove" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_RemoveCustomerFromTransaction" />
+  </bean>
+
+  <bean id="STTN_STD_ViewCustomerInformation" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_View" />
+    <property name="transitionChain" ref="TCN_ViewCustomerInformation" />
+  </bean>
+
+  <bean id="STTN_STD_UnverifiedReturn" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="INPUT_ITEM" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="OTHERS" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_VerifiedOrUnverifiedReturn" />
+  </bean>
+
+  <bean id="STTN_STD_ProcessItemForVerifiedReturn" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="INPUT_ITEM" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+          <property name="inputType" value="OTHERS" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_VerifiedReturn" />
+  </bean>
+
+  <bean id="STTN_STD_VerifiedReturn" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_VerifiedReturnMode" />
+    <property name="transitionChain" ref="TCN_Succeed" />
+    <property name="successState" ref="STATE_VerifiedReturnMode" />
+    <property name="privilege" ref="PRV_Return" />
+  </bean>
+
+  <bean id="STTN_STD_VoidLineItem" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_Void" />
+    <property name="privilege" ref="PRV_VoidItemLine" />
+    <property name="validations" ref="saleItemVoidLineRules" />
+    <property name="transitionChain" ref="TCN_SaleItemVoidLine" />
+  </bean>
+
+  <bean id="STTN_STD_VoidSelectedLineItem" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_VoidSelected" />
+    <property name="privilege" ref="PRV_VoidItemLine" />
+    <property name="validations" ref="saleItemVoidLineRules" />
+    <property name="transitionChain" ref="TCN_SaleItemVoidSelectedLine" />
+  </bean>
+
+  <bean id="STTN_STD_ActivateRcptPrinting" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_Activate_Rcpt_Printing" />
+    <property name="transitionChain" ref="TCN_ActivateRcptPrinting" />
+  </bean>
+
+  <bean id="STTN_STD_VoidTenderLine" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_Void" />
+    <property name="privilege" ref="PRV_VoidTenderLine" />
+    <property name="transitionChain" ref="TCN_TenderVoidLine" />
+  </bean>
+
+  <bean id="STTN_STD_TransactionCancel" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_TransactionCancel" />
+    <property name="privilege" ref="PRV_VoidTransaction" />
+    <property name="transitionChain" ref="TCN_SaleTransactionCancel" />
+  </bean>
+
+  <bean id="STTN_STD_InventoryAdjustmentCancel" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_TransactionCancel" />
+    <property name="transitionChain" ref="TCN_CancelInventoryAdjustment" />
+    <property name="successState" ref="STATE_LoggedIn" />
+  </bean>
+
+  <bean id="STTN_STD_ZeroSetScale" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_ScaleZero" />
+    <property name="transitionChain" ref="TCN_ScaleZeroSet" />
+  </bean>
+
+  <bean id="STTN_STD_TareScale" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_ScaleTare" />
+    <property name="transitionChain" ref="TCN_ScaleRemoteTare" />
+  </bean>
+
+  <bean id="STTN_STD_ScaleInformation" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_ScaleInfo" />
+    <property name="transitionChain" ref="TCN_ScaleInfo" />
+  </bean>
+
+  <bean id="STTN_STD_Entry_CancelOnESC" class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+    <property name="events">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+          <property name="key" ref="KEY_Escape" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitionChain" ref="TCN_Succeed" />
+    <property name="successState" ref="STATE_ReturnCancel" />
+  </bean>
+
+  <bean id="STTN_STD_Entry_CancelOnESCOrDelete" parent="STTN_STD_Entry_CancelOnESC">
+    <property name="events">
+      <list merge="true">
+        <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+          <property name="key" ref="KEY_Delete" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STTN_STD_Entry_CaptureOnEnter" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+        <property name="descriptors">
+          <list>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+              <property name="key" ref="KEY_Enter" />
+            </bean>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.InputBufferValidDescriptor" />
+          </list>
+        </property>
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_Succeed" />
+    <property name="successState" ref="STATE_ReturnCapture" />
+  </bean>
+
+  <bean id="STTN_STD_Entry_ErrorInvalidOnEnter" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+        <property name="descriptors">
+          <list>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+              <property name="key" ref="KEY_Enter" />
+            </bean>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.InputBufferInvalidDescriptor" />
+          </list>
+        </property>
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_InvalidInputError" />
+  </bean>
+
+  <bean id="STTN_STD_PasteData" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.PasteDataDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_PasteData" />
+  </bean>
+
+  <bean id="STTN_STD_IgnorePasteData" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.PasteDataDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_Succeed" />
+  </bean>
+
+  <bean id="STTN_STD_ListItemSelection" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor">
+        <property name="list" ref="DEV_TransactionList" />
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_ListItemSelect" />
+  </bean>
+
+  <bean id="STTN_STD_ListTenderSelection" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor">
+        <property name="list" ref="DEV_TransactionList" />
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_ListTenderSelect" />
+  </bean>
+
+  <bean id="STTN_STD_IgnoreListSelection" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_Succeed" />
+  </bean>
+
+  <bean id="STTN_STD_ListClick" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.ListClickDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_ChangeItem" />
+  </bean>
+
+  <bean id="STTN_STD_TillCountListSelection" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor">
+        <property name="list" ref="DEV_TransactionList" />
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_ListTillCountSelect" />
+  </bean>
+
+  <bean id="STTN_STD_TillCountEntryListSelection" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor">
+        <property name="list" ref="DEV_TransactionList" />
+      </bean>
+    </property>
+    <property name="transitionChain" ref="TCN_ListTillCountEntrySelect" />
+  </bean>
+
+  <bean id="STTN_STD_IgnoreListClick" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.ListClickDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_Succeed" />
+  </bean>
+
+  <bean id="STTN_STD_Auth_CaptureOnEvent" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+        <property name="descriptors">
+          <list>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.NotDescriptor">
+              <property name="descriptor">
+                <bean class="com.micros_retail.xfgclient.statemachine.event.AnyKeyDescriptor" />
+              </property>
+            </bean>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.NotDescriptor">
+              <property name="descriptor">
+                <bean class="com.micros_retail.xfgclient.statemachine.event.SwipeEventDescriptor" />
+              </property>
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+    <property name="type" value="SUBSTATE_PRESERVE_EVENT" />
+    <property name="transitionChain" ref="TCN_Succeed" />
+    <property name="successState" ref="STATE_ReturnCapture" />
+  </bean>
+
+  <bean id="STTN_STD_DrawerOpened" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.DrawerOpenedDescriptor" />
+    </property>
+    <property name="transitionChain">
+      <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+        <property name="transitions">
+          <bean class="com.micros_retail.xfgclient.transition.hardware.cashdrawer.WaitForDrawerCloseTN">
+            <property name="promptState" ref="STATE_WaitForDrawerClose" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="STTN_STD_IgnoreDrawerOpened" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event"> <!-- IGNORE DRAWER OPENED EVENTS HERE -->
+      <bean class="com.micros_retail.xfgclient.statemachine.event.DrawerOpenedDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_Succeed" />
+  </bean>
+
+  <bean id="STTN_STD_CompleteTillCountEntry" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_CompleteTillCount" />
+    <property name="transitionChain" ref="TCN_ShowTillCountSummary" />
+    <property name="successState" ref="STATE_ReturnCapture" />
+  </bean>
+
+  <bean id="STTN_STD_SwipeEvent" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="event">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.SwipeEventDescriptor" />
+    </property>
+    <property name="transitionChain" ref="TCN_Succeed" />
+  </bean>
+
+  <bean id="STTN_STD_ViewCamera" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Camera" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain">
+      <bean id="TCN_ViewCamera" class="com.micros_retail.xfgclient.transition.TransitionChain">
+        <property name="transitions">
+          <bean class="com.micros_retail.xfgclient.transition.hardware.camera.DisplayCameraTN">
+            <property name="promptState" ref="STATE_Notification" />
+            <property name="promptKeyword" ref="KW_ShowCamera" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="STTN_STD_ViewStoreMessages" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_StoreMessages" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_ViewStoreMessages" />
+  </bean>
+
+  <bean id="STTN_STD_NextKeyboardLocale" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Next_Keyboard_Language" />
+    <property name="transitionChain">
+      <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+        <property name="transitions">
+          <bean class="com.micros_retail.xfgclient.transition.util.NextOutputContextLocaleNoPopupTN">
+            <property name="context" ref="OC_Keyboard" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="STTN_STD_PreviousKeyboardLocale" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Previous_Keyboard_Language" />
+    <property name="transitionChain">
+      <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+        <property name="transitions">
+          <bean class="com.micros_retail.xfgclient.transition.util.PreviousOutputContextLocaleNoPopupTN">
+            <property name="context" ref="OC_Keyboard" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="STTN_STD_ToggleShift" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Toggle_Shift" />
+    <property name="transitionChain">
+      <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+        <property name="transitions">
+          <bean class="com.micros_retail.xfgclient.transition.hardware.virtualkeyboard.ToggleShiftTN">
+            <property name="context" ref="OC_Keyboard" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="STTN_STD_ViewItemSearch" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="key" ref="KEY_ItemSearch" />
+    <property name="transitionChain" ref="TCN_ViewItemSearch" />
+  </bean>
+
+  <bean id="STTN_STD_ViewCustomerSearch" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="key" ref="KEY_CustomerSearch" />
+    <property name="transitionChain" ref="TCN_ViewCustomerSearch" />
+  </bean>
+
+  <bean id="STTN_STD_ShowXEnvironment" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_Show_Xenvironment" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_ShowXEnvironment" />
+  </bean>
+
+  <bean id="STTN_STD_CloseVirtualKeyboard" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_CloseVirtualKeyboard" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_CloseVirtualKeyboard" />
+  </bean>
+
+  <bean id="STTN_STD_HouseAccountPayment" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_HouseAccountPayment" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_HouseAccountPayment" />
+  </bean>
+
+  <bean id="STTN_STD_HouseAccountReversal" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="key" ref="KEY_HouseAccountReversal" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_HouseAccountReversal" />
+  </bean>
+
+  <bean id="STTN_STD_ShowAboutScreen" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+    <property name="type" value="SUBSTATE_INHERIT" />
+    <property name="key" ref="KEY_AboutScreen" />
+    <property name="validations" ref="notReentrantRules" />
+    <property name="transitionChain" ref="TCN_ShowAboutScreen" />
+  </bean>
+
+  <bean id="standardStateTransitionAppender" class="com.micros_retail.xfgclient.statemachine.StandardStateTransitionAppender">
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_DepartmentLookup" />
+        <ref bean="STTN_STD_QuickPick" />
+        <ref bean="STTN_STD_ItemSelection" />
+        <ref bean="STTN_STD_ZeroSetScale" />
+        <ref bean="STTN_STD_TareScale" />
+        <ref bean="STTN_STD_ExecuteCode" />
+        <ref bean="STTN_STD_ViewCamera" />
+        <ref bean="STTN_STD_ViewStoreMessages" />
+        <ref bean="STTN_STD_NextKeyboardLocale" />
+        <ref bean="STTN_STD_PreviousKeyboardLocale" />
+        <ref bean="STTN_STD_ToggleShift" />
+        <ref bean="STTN_STD_QuitOnHardwareExit" />
+        <ref bean="STTN_STD_DrawerOpened" />
+        <ref bean="STTN_STD_SwipeEvent" />
+        <ref bean="STTN_STD_ViewItemSearch" />
+        <ref bean="STTN_STD_ViewCustomerSearch" />
+        <ref bean="STTN_STD_Manual_GS1_Entry" />
+        <ref bean="STTN_STD_Paid_In" />
+        <ref bean="STTN_STD_Paid_Out" />
+        <ref bean="STTN_STD_ShowXEnvironment" />
+        <ref bean="STTN_STD_CloseVirtualKeyboard" />
+        <ref bean="STTN_STD_ShowAboutScreen" />
+        <ref bean="STTN_STD_TransListUpSelection" />
+        <ref bean="STTN_STD_TransListDownSelection" />
+        <ref bean="STTN_STD_StoreCloseWarning" />
+        <ref bean="STTN_STD_StoreCloseGrace" />
+        <ref bean="STTN_STD_StoreCloseExpired" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+           
+  <OpChain name="XCOMMERCE" contextKey="SALE">
+    <Op class="dtv.pos.common.op.CreateTransactionAsNeededOp">
+      <Parameter name="TransactionType" value="RETAIL_SALE" />
+    </Op>
+    <Op class="dtv.cheetah.operations.CheetahLaunchXcommerceOp" />
+    <OpChainRoute chainKey="XCOMMERCE_LIST_PROMPT" chainType="STACK" />
+  </OpChain>
+  
+</OpChainSet>

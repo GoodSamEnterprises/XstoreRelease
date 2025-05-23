@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="MNU_Discount_Type_Selection" class="com.micros_retail.xfgclient.menu.Menu">
+    <property name="entries">
+      <list>
+        <bean class="com.micros_retail.xfgclient.menu.MenuEntry">
+          <property name="text" value="_xfgclient.menu.discounttypes.lineitem" />
+          <property name="visibilityRule" ref="anySaleReturnLineItemVisibilityRule" />
+          <property name="chain" ref="TCN_SaleLastItemDiscount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.menu.MenuEntry">
+          <property name="text" value="_xfgclient.menu.discounttypes.transaction" />
+          <property name="visibilityRule" ref="anySaleReturnLineItemVisibilityRule" />
+          <property name="chain" ref="TCN_SaleTransactionDiscount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.menu.MenuEntry">
+          <property name="text" value="_xfgclient.menu.discounttypes.award" />
+          <property name="visibilityRule" ref="awardVisibilityRule" />
+          <property name="chain" ref="TCN_RedeemAwardDiscount" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="MNU_Sell_Non_Merch_Items" class="com.micros_retail.xfgclient.menu.Menu">
+    <property name="entries">
+      <list>
+        <bean class="com.micros_retail.xfgclient.menu.MenuEntry">
+          <property name="text" value="_xfgclient.menu.sellnonmerch.sellNonMerchItems" />
+          <property name="visibilityRule" ref="sellNonMerchRule" />
+          <property name="chain" ref="TCN_SellNonMerchItem" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.menu.MenuEntry">
+          <property name="text" value="_xfgclient.menu.sellnonmerch.sellGiftCard" />
+          <property name="visibilityRule" ref="sellGiftCardRule" />
+          <property name="chain" ref="TCN_SellNonMerchGiftCard" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.menu.MenuEntry">
+          <property name="text" value="_xfgclient.menu.sellnonmerch.sellGiftCertificate" />
+          <property name="visibilityRule" ref="sellGiftCertficateRule" />
+          <property name="chain" ref="TCN_SellNonMerchGiftCertificate" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="MNU_Return_Non_Merch_Items" class="com.micros_retail.xfgclient.menu.Menu">
+    <property name="entries">
+      <list>
+        <bean class="com.micros_retail.xfgclient.menu.MenuEntry">
+          <property name="text" value="_xfgclient.menu.sellnonmerch.returnNonMerchItems" />
+          <property name="visibilityRule" ref="returnNonMerchRule" />
+          <property name="chain" ref="TCN_ReturnNonMerchItem" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.menu.MenuEntry">
+          <property name="text" value="_xfgclient.menu.sellnonmerch.returnGiftCard" />
+          <property name="visibilityRule" ref="returnGiftCardRule" />
+          <property name="chain" ref="TCN_ReturnNonMerchGiftCard" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.menu.MenuEntry">
+          <property name="text" value="_xfgclient.menu.sellnonmerch.returnGiftCertificate" />
+          <property name="visibilityRule" ref="returnGiftCertficateRule" />
+          <property name="chain" ref="TCN_ReturnNonMerchGiftCertificate" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+</beans>

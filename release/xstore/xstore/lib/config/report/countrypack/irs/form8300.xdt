@@ -1,0 +1,148 @@
+<dataTemplate name="FORM8300" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+
+    <label name="ID_PASSPORT" value="_rptForm8500PassportID" />
+    <label name="NATURE_OF_BUSINESS" value="_rptForm8300NatureOfBusinessValue" />
+ 
+
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>  
+
+    <!-- User Parameters -->   
+    <parameter name="HELPER" class="dtv.pos.iframework.reporting.IReportHelper" isForPrompting="false"/>
+  </parameters>
+
+   <dataSource>
+    <dataReference name="O_FORM_8300">
+      <ResultFields>
+        <ResultField>CustLastName</ResultField>
+        <ResultField>CustFirstName</ResultField>
+        <ResultField>CustMiddleName</ResultField>   
+        <ResultField>CustAddress1</ResultField>
+        <ResultField>CustAddress2</ResultField>
+        <ResultField>CustCity</ResultField>
+        <ResultField>CustState</ResultField>
+        <ResultField>CustPostalCode</ResultField>
+        <ResultField>CustForeignState</ResultField>
+        <ResultField>CustForeignPostalCode</ResultField>
+        <ResultField>CustCountry</ResultField>
+        <ResultField>CustSocialSecurityNumber</ResultField>
+        <ResultField>CustDateOfBirth</ResultField>
+        <ResultField>CustPassportNumber</ResultField>
+        <ResultField>CustPassportCountry</ResultField>
+        <ResultField>CustAlienRegistrationNumber</ResultField>
+        <ResultField>CustAlienCountryOfOrigin</ResultField>
+        <ResultField>CustBusinessName</ResultField>
+        <ResultField>CustOtherIdTypeDescription</ResultField>
+        <ResultField>CustOtherIdNumber</ResultField>
+        <ResultField>CustOtherIdIssuer</ResultField>
+        <ResultField>ThirdPartyFirstName</ResultField>
+        <ResultField>ThirdPartyLastName</ResultField>
+        <ResultField>ThirdPartyOrganizationName</ResultField>
+        <ResultField>ThirdPartyAddress1</ResultField>
+        <ResultField>ThirdPartyCity</ResultField>
+        <ResultField>ThirdPartyState</ResultField>
+        <ResultField>ThirdPartyPostalCode</ResultField>
+        <ResultField>ThirdPartyForeignState</ResultField>
+        <ResultField>ThirdPartyForeignPostalCode</ResultField>
+        <ResultField>ThirdPartyCountry</ResultField>
+        <ResultField>ThirdPartySocialSecurityNumber</ResultField>
+        <ResultField>ThirdPartyEmployerId</ResultField>
+        <ResultField>ThirdPartyDateOfBirth</ResultField>
+        <ResultField>ThirdPartyPassportNumber</ResultField>
+        <ResultField>ThirdPartyPassportCountry</ResultField>
+        <ResultField>ThirdPartyAlienRegistrationNumber</ResultField>
+        <ResultField>ThirdPartyAlienCountryOfOrigin</ResultField>
+        <ResultField>ThirdPartyBusinessName</ResultField>
+        <ResultField>ThirdPartyOtherIdTypeDescription</ResultField>
+        <ResultField>ThirdPartyOtherIdNumber</ResultField>
+        <ResultField>ThirdPartyOtherIdIssuer</ResultField>
+        <ResultField>SaleLinesFormatted</ResultField>
+        <ResultField>TransDate</ResultField>
+        <ResultField>CashSum</ResultField>
+        <ResultField>RetailLocationAddress</ResultField>
+        <ResultField>RetailLocationCity</ResultField>
+        <ResultField>RetailLocationZip</ResultField>
+        <ResultField>IrsMerchantIdNumber</ResultField>
+        <ResultField>RetailLocationState</ResultField>
+        <ResultField>TransTypeMerchandisePurchsed</ResultField>
+        <ResultField>TransTypePaymentsOnCreditAccount</ResultField>
+        <ResultField>TransTypeDepositOnLayaway</ResultField>
+        <ResultField>ThirdPartyMiddleName</ResultField>
+        <ResultField>USCurrency</ResultField>
+        <ResultField>ForeignCurrency</ResultField>
+        <ResultField>CashiersChecks</ResultField>
+        <ResultField>MoneyOrders</ResultField>
+        <ResultField>BankDrafts</ResultField>
+        <ResultField>TravelersChecks</ResultField>
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+
+  <dataStructure>
+      <group name="G_FRM8300" source="O_FORM_8300">
+        <element name="CSTLN" value="CustLastName"/>
+        <element name="CSTFN" value="CustFirstName"/>
+        <element name="CSTMN" value="CustMiddleName"/>   
+        <element name="CSTADD1  " value="CustAddress1"/>
+        <element name="CSTADD2" value="CustAddress2"/>
+        <element name="CSTCITY" value="CustCity"/>
+        <element name="CSTST" value="CustState"/>
+        <element name="CSTPC" value="CustPostalCode"/>
+        <element name="CSTFST" value="CustForeignState"/>
+        <element name="CSTFPC" value="CustForeignPostalCode"/>
+        <element name="CSTCTRY" value="CustCountry"/>
+        <element name="CSTSSN" value="CustSocialSecurityNumber"/>
+        <element name="CSTDOB" value="CustDateOfBirth" formatter="DateMedium"/>
+        <element name="CSTPPN" value="CustPassportNumber"/>
+        <element name="CSTPPCTRY" value="CustPassportCountry"/>
+        <element name="CSTARN" value="CustAlienRegistrationNumber"/>
+        <element name="CSTACTRYORIG" value="CustAlienCountryOfOrigin"/>
+        <element name="CSTBSN" value="CustBusinessName"/>
+        <element name="CSTOIDDESC" value="CustOtherIdTypeDescription"/>
+        <element name="CSTOIDNBR" value="CustOtherIdNumber"/>
+        <element name="CSTOIDISSUER" value="CustOtherIdIssuer" />
+        <element name="TPYFN" value="ThirdPartyFirstName"/>
+        <element name="TPYLN" value="ThirdPartyLastName"/>
+        <element name="TPYORG" value="ThirdPartyOrganizationName"/>
+        <element name="TPYADD1" value="ThirdPartyAddress1"/>
+        <element name="TPYCITY" value="ThirdPartyCity"/>
+        <element name="TPYST" value="ThirdPartyState"/>
+        <element name="TPYPC" value="ThirdPartyPostalCode"/>
+        <element name="TPYFST" value="ThirdPartyForeignState"/>
+        <element name="TPYFPC" value="ThirdPartyForeignPostalCode"/>
+        <element name="TPYCTRY" value="ThirdPartyCountry"/>
+        <element name="TPYSSN" value="ThirdPartySocialSecurityNumber"/>
+        <element name="TPYEMPID" value="ThirdPartyEmployerId"/>
+        <element name="TPYDOB" value="ThirdPartyDateOfBirth"/>
+        <element name="TPYPPN" value="ThirdPartyPassportNumber"/>
+        <element name="TPYPPCTRY" value="ThirdPartyPassportCountry"/>
+        <element name="TPYARN" value="ThirdPartyAlienRegistrationNumber"/>
+        <element name="TPYACTRYORIG" value="ThirdPartyAlienCountryOfOrigin"/>
+        <element name="TPYBSN" value="ThirdPartyBusinessName"/>
+        <element name="TPYOIDDESC" value="ThirdPartyOtherIdTypeDescription"/>
+        <element name="TPYOIDNBR" value="ThirdPartyOtherIdNumber"/>
+        <element name="TPYODIISSUER" value="ThirdPartyOtherIdIssuer" />
+        <element name="TPYSLF" value="SaleLinesFormatted"/>
+        <element name="TRANDATE" value="TransDate" formatter="DateMedium"/>
+        <element name="CASHSUM" value="CashSum" formatter="Accounting"/>
+        <element name="RTLLOCADDR" value="RetailLocationAddress"/>
+        <element name="RTLLOCCTY" value="RetailLocationCity"/>
+        <element name="RTLLOCZIP" value="RetailLocationZip"/>
+        <element name="IRSMRCHID" value="IrsMerchantIdNumber"/>
+        <element name="RTLLOCST" value="RetailLocationState"/>
+        <element name="TRANTYPEMERCH" value="TransTypeMerchandisePurchsed"/>
+        <element name="TRANTYPEPMTCRD" value="TransTypePaymentsOnCreditAccount"/>
+        <element name="TRANTYPELAYDEP" value="TransTypeDepositOnLayaway"/>
+        <element name="TPYMN" value="ThirdPartyMiddleName"/>
+        <element name="TRANUSCASH" value="USCurrency" formatter="Accounting"/>
+        <element name="TRANFORCUR" value="ForeignCurrency" formatter="Accounting"/>
+        <element name="TRANCSHRCHK" value="CashiersChecks" formatter="Accounting"/>
+        <element name="TRANMORD" value="MoneyOrders" formatter="Accounting"/>
+        <element name="TRANBNKDFT" value="BankDrafts" formatter="Accounting"/>
+        <element name="TRANTRVCHECK" value="TravelersChecks" formatter="Accounting"/>
+      </group>
+    </dataStructure>   
+</dataTemplate>

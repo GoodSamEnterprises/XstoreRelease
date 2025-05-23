@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActivityStream xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ActivityStreamConfig.xsd" >
+  <DataSet>
+    <Data class="dtv.pos.customer.activitystream.dataretriever.ActivityStreamModelBuilder">
+      <Parameter name="Rule" value="CUSTOMER_BIRTHDATE" />
+      <Parameter name="Date">
+        <EvaluatedFormattable method="toDateWithinMargin" >
+          <method_param>
+            <EvaluatedFormattable method="getCurrentCustomer.getBirthDate" />
+          </method_param>
+        </EvaluatedFormattable>
+      </Parameter>
+      <Parameter name="Source">
+        <EvaluatedFormattable method="getCurrentCustomer" />
+      </Parameter>
+      <Parameter name="Icon">
+        <param_value dtype="IconRef" >_imageIconHappyBirthday</param_value>
+      </Parameter>
+      <Parameter name="DayMargin">
+        <EvaluatedFormattable method="getConfigurationMgr.getActivityStreamBirthDateReminderDays" />
+      </Parameter>
+      <VisibilityRule class="dtv.pos.customer.activitystream.visibilityrules.YearDateIsBeforeOrAfterVisibilityRule" >
+        <Parameter name="Date">
+          <EvaluatedFormattable method="getSource.getBirthDate" />
+        </Parameter>
+        <Parameter name="DayMargin">
+          <EvaluatedFormattable method="getConfigurationMgr.getActivityStreamBirthDateReminderDays" />
+        </Parameter>
+      </VisibilityRule>
+    </Data>
+    
+    <Data class="dtv.pos.customer.activitystream.dataretriever.ActivityStreamModelBuilder">
+      <Parameter name="Rule" value="CUSTOMER_ANNIVERSARY" />
+      <Parameter name="Date">
+        <EvaluatedFormattable method="toDateWithinMargin" >
+          <method_param>
+            <EvaluatedFormattable method="getCurrentCustomer.getAnniversaryDate" />
+          </method_param>
+        </EvaluatedFormattable>
+      </Parameter>
+      <Parameter name="Source">
+        <EvaluatedFormattable method="getCurrentCustomer" />
+      </Parameter>
+      <Parameter name="Icon">
+        <param_value dtype="IconRef" >_imageIconAnniversary</param_value>
+      </Parameter>
+      <Parameter name="DayMargin">
+        <EvaluatedFormattable method="getConfigurationMgr.getActivityStreamAnniversaryDateReminderDays" />
+      </Parameter>
+      <VisibilityRule class="dtv.pos.customer.activitystream.visibilityrules.YearDateIsBeforeOrAfterVisibilityRule" >
+        <Parameter name="Date">
+          <EvaluatedFormattable method="getSource.getAnniversaryDate" />
+        </Parameter>
+        <Parameter name="DayMargin">
+          <EvaluatedFormattable method="getConfigurationMgr.getActivityStreamAnniversaryDateReminderDays" />
+        </Parameter>
+      </VisibilityRule>
+    </Data>
+    
+    <Data class="dtv.pos.customer.activitystream.dataretriever.ActivityStreamModelBuilder">
+      <Parameter name="Rule" value="CUSTOMER_LOYALTY_EXPIRATION" />
+      <Parameter name="Date">
+        <EvaluatedFormattable method="getSystemDate" />
+      </Parameter>
+      <Parameter name="Source">
+        <EvaluatedFormattable method="invokeMethod" asObjectArray="true" >
+          <method_param dtype="String">getCurrentCustomer.getExpiringLoyaltyCards</method_param>
+          <method_param>
+            <EvaluatedFormattable method="getSystemDate" />
+          </method_param>
+          <method_param>
+            <EvaluatedFormattable method="getConfigurationMgr.getActivityStreamLoyaltyExpirationReminderDays" />
+          </method_param>
+        </EvaluatedFormattable>
+      </Parameter>
+      <Parameter name="AltSource">
+        <EvaluatedFormattable method="getCurrentCustomer" />
+      </Parameter>
+      <Parameter name="Icon">
+        <param_value dtype="IconRef" >_imageIconAlert</param_value>
+      </Parameter>
+      <VisibilityRule class="dtv.pos.customer.activitystream.visibilityrules.ShowCardExpDateVisibilityRule"/>
+      <VisibilityRule class="dtv.pos.customer.activitystream.visibilityrules.ListIsEmptyVisibilityRule" inverted="true" >
+        <Parameter name="List">
+          <EvaluatedFormattable method="getSource" />
+        </Parameter>
+      </VisibilityRule>
+    </Data>
+    
+    <Data class="dtv.pos.customer.activitystream.dataretriever.ActivityStreamTransactionHistoryRetriever">
+      <Parameter name="SALE" >
+        <Condition class="dtv.i18n.condition.LogicalAndCondition">
+          <Condition class="dtv.i18n.condition.EqualsToCondition" method="getSaleItemType" >
+            <Parameter name="primitive" value="SALE" />
+          </Condition> 
+          <Condition class="dtv.i18n.condition.IsNullCondition" method="getCustAcctCode" />
+          <Condition class="dtv.i18n.condition.LogicalOrCondition">
+            <Condition class="dtv.i18n.condition.IsNullCondition" method="getNonPhysTypeCode" />
+            <Condition class="dtv.i18n.condition.EqualsToCondition" method="getNonPhysTypeCode" inverted="true" >
+              <Parameter name="primitive" value="NON_PHYSICAL" />
+            </Condition>
+          </Condition>
+        </Condition>
+      </Parameter>
+      <Parameter name="RETURN" >
+        <Condition class="dtv.i18n.condition.LogicalAndCondition">
+          <Condition class="dtv.i18n.condition.EqualsToCondition" method="getSaleItemType" >
+            <Parameter name="primitive" value="RETURN" />
+          </Condition>
+          <Condition class="dtv.i18n.condition.LogicalOrCondition">
+            <Condition class="dtv.i18n.condition.IsNullCondition" method="getNonPhysTypeCode" />
+            <Condition class="dtv.i18n.condition.EqualsToCondition" method="getNonPhysTypeCode" inverted="true" >
+              <Parameter name="primitive" value="NON_PHYSICAL" />
+            </Condition>
+          </Condition>
+        </Condition>
+      </Parameter>
+      <Parameter name="LAYAWAY" >
+        <Condition class="dtv.i18n.condition.LogicalAndCondition" >
+          <Condition class="dtv.i18n.condition.EqualsToCondition" method="getSaleItemType" >
+            <Parameter name="primitive" value="LAYAWAY" />
+          </Condition>
+          <Condition class="dtv.i18n.condition.LogicalOrCondition">
+            <Condition class="dtv.i18n.condition.IsNullCondition" method="getNonPhysTypeCode" />
+            <Condition class="dtv.i18n.condition.EqualsToCondition" method="getNonPhysTypeCode" inverted="true" >
+              <Parameter name="primitive" value="NON_PHYSICAL" />
+            </Condition>
+          </Condition>
+        </Condition> 
+      </Parameter>
+      <Parameter name="ORDER" >
+        <Condition class="dtv.i18n.condition.LogicalAndCondition" >
+          <Condition class="dtv.i18n.condition.EqualsToCondition" method="getSaleItemType" >
+            <Parameter name="primitive" value="ORDER" />
+          </Condition>
+          <Condition class="dtv.i18n.condition.LogicalOrCondition">
+            <Condition class="dtv.i18n.condition.IsNullCondition" method="getNonPhysTypeCode" />
+            <Condition class="dtv.i18n.condition.EqualsToCondition" method="getNonPhysTypeCode" inverted="true" >
+              <Parameter name="primitive" value="NON_PHYSICAL" />
+            </Condition>
+          </Condition>
+        </Condition> 
+      </Parameter>
+      <Parameter name="SEND_SALE" >
+        <Condition class="dtv.i18n.condition.LogicalAndCondition" >
+          <Condition class="dtv.i18n.condition.EqualsToCondition" method="getSaleItemType" >
+            <Parameter name="primitive" value="SEND_SALE" />
+          </Condition>
+          <Condition class="dtv.i18n.condition.LogicalOrCondition">
+            <Condition class="dtv.i18n.condition.IsNullCondition" method="getNonPhysTypeCode" />
+            <Condition class="dtv.i18n.condition.EqualsToCondition" method="getNonPhysTypeCode" inverted="true" >
+              <Parameter name="primitive" value="NON_PHYSICAL" />
+            </Condition>
+          </Condition>
+        </Condition> 
+      </Parameter>
+      <Parameter name="SPECIAL_ORDER" >
+        <Condition class="dtv.i18n.condition.LogicalAndCondition" >
+          <Condition class="dtv.i18n.condition.LogicalOrCondition">
+            <Condition class="dtv.i18n.condition.EqualsToCondition" method="getSaleItemType" >
+              <Parameter name="primitive" value="SPECIAL_ORDER" />
+            </Condition>
+            <Condition class="dtv.i18n.condition.LogicalAndCondition">
+              <Condition class="dtv.i18n.condition.IsNullCondition" method="getCustAcctCode" inverted="true" />
+              <Condition class="dtv.i18n.condition.EqualsToCondition" method="getCustAcctCode" >
+                <Parameter name="primitive" value="SPECIAL_ORDER" />
+              </Condition> 
+            </Condition>
+          </Condition>
+          <Condition class="dtv.i18n.condition.LogicalOrCondition">
+            <Condition class="dtv.i18n.condition.IsNullCondition" method="getNonPhysTypeCode" />
+            <Condition class="dtv.i18n.condition.EqualsToCondition" method="getNonPhysTypeCode" inverted="true" >
+              <Parameter name="primitive" value="NON_PHYSICAL" />
+            </Condition>
+          </Condition>
+        </Condition>
+      </Parameter>
+    </Data>
+  </DataSet>
+
+  <RuleSet>
+    <Rule name="CUSTOMER_BIRTHDATE" >
+      <Parameter name="title">
+        <ParameterizedFormattable translationKey="_activityStreamCustomerBirthdate" >
+          <EvaluatedFormattable method="getSource.getFirstName" />
+          <EvaluatedFormattable method="getSource.getBirthDate" formatter="DateMonthNameDay" />
+        </ParameterizedFormattable>
+      </Parameter>
+    </Rule>
+    <Rule name="CUSTOMER_ANNIVERSARY" >
+      <Parameter name="title">
+        <Translatable name="_activityStreamCustomerAnniversary" />
+      </Parameter>
+      <Parameter name="details">
+        <ParameterizedFormattable translationKey="_activityStreamCustomerAnniversaryDetails" >
+          <EvaluatedFormattable method="getSource.getFirstName" />
+          <EvaluatedFormattable method="getSource.getAnniversaryDate" formatter="DateYear" />
+        </ParameterizedFormattable>
+      </Parameter>
+    </Rule>
+    <Rule name="CUSTOMER_LOYALTY_EXPIRATION" >
+      <Parameter name="title">
+        <ConditionalFormattable>
+          <Condition class="dtv.i18n.condition.DateExpiredCondition">
+            <Parameter name="expirationDate" >
+              <EvaluatedFormattable method="getSource.get(0).getExpirationDate" />
+            </Parameter>
+            <Parameter name="evaluatedDate" >
+              <EvaluatedFormattable method="getDate" />
+            </Parameter>
+          </Condition>
+          <Parameter name="true" >
+            <ParameterizedFormattable translationKey="_activityStreamLoyaltyExpiredToday" >
+              <EvaluatedFormattable method="getAlternativeSource.getFirstName" />
+            </ParameterizedFormattable>
+          </Parameter>
+          <Parameter name="false" >
+            <ParameterizedFormattable translationKey="_activityStreamLoyaltyExpiring" >
+              <EvaluatedFormattable method="getAlternativeSource.getFirstName" />
+              <EvaluatedFormattable method="getSource.get(0).getExpirationDate" formatter="DateMonthNameDay" />
+            </ParameterizedFormattable>
+          </Parameter>
+        </ConditionalFormattable>
+      </Parameter>
+    </Rule>
+    <Rule name="SALE">
+      <Parameter name="title">
+        <ConditionalFormattable>
+          <Condition class="dtv.i18n.condition.EqualsToCondition">
+            <Parameter name="method" value="getItemCount" />
+            <Parameter name="primitive" >
+              <param_value dtype="Integer" >1</param_value>
+            </Parameter>
+          </Condition>
+          <Parameter name="true" >
+			      <param_value dtype="ParameterizedFormattable">
+			        <TranslationKey dtype="String">_activityStreamSaleSingle</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+              <EvaluatedFormattable method="getTotalAmount" formatter="Money" />
+	          </param_value>
+          </Parameter>
+          <Parameter name="false" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamSalePlural</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+              <EvaluatedFormattable method="getTotalAmount" formatter="Money" />
+            </param_value>
+          </Parameter>
+        </ConditionalFormattable>
+      </Parameter>
+      <Parameter name="icon">
+        <param_value dtype="IconRef">_imageIconSale</param_value>
+      </Parameter>
+    </Rule>
+    <Rule name="RETURN">
+      <Parameter name="title">
+        <ConditionalFormattable>
+          <Condition class="dtv.i18n.condition.EqualsToCondition">
+            <Parameter name="method" value="getItemCount" />
+            <Parameter name="primitive" >
+              <param_value dtype="Integer" >1</param_value>
+            </Parameter>
+          </Condition>
+          <Parameter name="true" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamReturnSingle</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+              <EvaluatedFormattable method="getTotalAmount" formatter="Money" />
+            </param_value>
+          </Parameter>
+          <Parameter name="false" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamReturnPlural</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+              <EvaluatedFormattable method="getTotalAmount" formatter="Money" />
+            </param_value>
+          </Parameter>
+        </ConditionalFormattable>
+      </Parameter>
+      <Parameter name="icon">
+        <param_value dtype="IconRef">_imageIconReturn</param_value>
+      </Parameter>
+    </Rule>
+    <Rule name="LAYAWAY">
+      <Parameter name="title">
+        <ConditionalFormattable>
+          <Condition class="dtv.i18n.condition.EqualsToCondition">
+            <Parameter name="method" value="getItemCount" />
+            <Parameter name="primitive" >
+              <param_value dtype="Integer" >1</param_value>
+            </Parameter>
+          </Condition>
+          <Parameter name="true" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamLayawaySingle</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+            </param_value>
+          </Parameter>
+          <Parameter name="false" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamLayawayPlural</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+            </param_value>
+          </Parameter>
+        </ConditionalFormattable>
+      </Parameter>
+      <Parameter name="icon">
+        <param_value dtype="IconRef">_imageIconLayaway</param_value>
+      </Parameter>
+    </Rule>
+    <Rule name="ORDER">
+      <Parameter name="title">
+        <ConditionalFormattable>
+          <Condition class="dtv.i18n.condition.EqualsToCondition">
+            <Parameter name="method" value="getItemCount" />
+            <Parameter name="primitive" >
+              <param_value dtype="Integer" >1</param_value>
+            </Parameter>
+          </Condition>
+          <Parameter name="true" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamOrderSingle</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+            </param_value>
+          </Parameter>
+          <Parameter name="false" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamOrderPlural</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+            </param_value>
+          </Parameter>
+        </ConditionalFormattable>
+      </Parameter>
+      <Parameter name="icon">
+        <param_value dtype="IconRef">_imageIconOrder</param_value>
+      </Parameter>
+    </Rule>
+    <Rule name="SEND_SALE">
+      <Parameter name="title">
+        <ConditionalFormattable>
+          <Condition class="dtv.i18n.condition.EqualsToCondition">
+            <Parameter name="method" value="getItemCount" />
+            <Parameter name="primitive" >
+              <param_value dtype="Integer" >1</param_value>
+            </Parameter>
+          </Condition>
+          <Parameter name="true" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamSendSaleSingle</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+            </param_value>
+          </Parameter>
+          <Parameter name="false" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamSendSalePlural</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+            </param_value>
+          </Parameter>
+        </ConditionalFormattable>
+      </Parameter>
+      <Parameter name="icon">
+        <param_value dtype="IconRef">_imageIconSendSale</param_value>
+      </Parameter>
+    </Rule>
+    <Rule name="SPECIAL_ORDER">
+      <Parameter name="title">
+        <ConditionalFormattable>
+          <Condition class="dtv.i18n.condition.EqualsToCondition">
+            <Parameter name="method" value="getItemCount" />
+            <Parameter name="primitive" >
+              <param_value dtype="Integer" >1</param_value>
+            </Parameter>
+          </Condition>
+          <Parameter name="true" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamSpecialOrderSingle</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+            </param_value>
+          </Parameter>
+          <Parameter name="false" >
+            <param_value dtype="ParameterizedFormattable">
+              <TranslationKey dtype="String">_activityStreamSpecialOrderPlural</TranslationKey>
+              <EvaluatedFormattable method="getSource.getFirstName" />
+              <EvaluatedFormattable method="getItemCount" />
+            </param_value>
+          </Parameter>
+        </ConditionalFormattable>
+      </Parameter>
+      <Parameter name="icon">
+        <param_value dtype="IconRef">_imageIconSpecialOrder</param_value>
+      </Parameter>
+    </Rule>
+  </RuleSet>
+</ActivityStream>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri Apr 29 14:40:47 EDT 2005 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">SCHED_TIME_OFF</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL, FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0, -1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, 10.0, PREFERRED, 10.0, PREFERRED, 10.0, PREFERRED, 10.0, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0
+          </param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_toStartDate</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, F, B</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">startDate</Resource>
+        <Required dtype="Boolean">true</Required>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 0, 1, 0, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_toEndDate</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">endDate</Resource>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_toReason</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">reasonCode</Resource>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 2, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_toAnd</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 5, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_toHalfDay</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">dayType</Resource>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 7, 2, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_toOr</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 9, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_toStartTime</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 9, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">startTime</Resource>
+        <DataField ref="Time" />
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 9, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_toEndTime</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 9, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">endTime</Resource>
+        <DataField ref="Time" />
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT_SAVE" />
+      <Action dataKey="DELETE_ENTRY" text="_shiftDelete" keyStroke="F4" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

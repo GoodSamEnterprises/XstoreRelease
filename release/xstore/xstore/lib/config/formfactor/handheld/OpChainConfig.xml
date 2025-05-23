@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+  <OpChain name="XSTOREM_STARTUP" contextKey="XSTOREM_MAIN_MENU">
+    <OpChainRoute chainKey="XSTOREM_STARTUP.pre" />
+    <WorkerOp workersBean="startupWorkers" />
+    <PromptOp class="dtv.pos.appmanagement.preflight.check.op.PromptPreFlightOp" />
+    <Op class="dtv.cheetah.operations.XstoremModeInitializedOp" />
+    <Op class="dtv.pos.systemcycle.access.SynchStateJournalOp">
+      <Parameter name="SilentChange" value="true" />
+    </Op>
+    <OpChainRoute chainKey="XSTOREM_STARTUP.1"/>
+    
+    <OpChainRoute chainKey="INITIALIZE_FACTORIES" />
+    <OpChainRoute chainKey="XSTOREM_STARTUP.ORDER" />
+    <Op class="dtv.pos.hardware.op.WaitForHardwareSetupOp" required="false" />
+    <OpChainRoute chainKey="XSTOREM_STARTUP.2"/>
+    <Op class="dtv.pos.hardware.op.IdleCustomerDisplayOp" required="false" />
+    <OpChainRoute chainKey="INITIALIZE_BACKGROUND_PROCESSES"/>
+    <OpChainRoute chainKey="INITIALIZE_REFRESH_PROMOTIONS_PROCESSES" />    
+    <OpChainRoute chainKey="XSTOREM_STARTUP.post" />
+    <OpChainRoute chainKey="XSTOREM_STARTUP.local.post" />
+    <OpChainRoute chainKey="XSTOREM_MAIN_MENU" chainType="START" />
+  </OpChain>
+  <OpChain name="XSTOREM_STARTUP.pre" />
+  <OpChain name="XSTOREM_STARTUP.1" />
+  <OpChain name="XSTOREM_STARTUP.2" />
+  <OpChain name="XSTOREM_STARTUP.post" />
+  <OpChain name="XSTOREM_STARTUP.local.post" />
+  <OpChain name="XSTOREM_STARTUP.ORDER" />
+  
+  <OpChain name="XSTOREM_MAIN_MENU" rollbackLevel="0" contextKey="XSTOREM_MAIN_MENU">
+    <Op class="dtv.pos.startup.orphanedtrans.PostProcessOrphanedTransactionsOp">
+      <Parameter name="chainKey" value="POST_PROCESS_ORPHANED_TRANSACTIONS" /> 
+    </Op>
+    <OpChainRoute chainKey="SECURITY_LOGOUT" />  
+    <Op class="dtv.pos.framework.op.PromptMenuOp">
+      <Parameter name="MenuKey" value="XSTOREM::XSTOREM_MENU" />
+    </Op>
+  </OpChain>
+  
+  <OpChain name="XSTOREM_LOGIN" contextKey="REGISTER_LOGIN">
+    <!--The user is logging in to the register from within the register app. -->
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <Op class="dtv.pos.register.itemmessages.DefaultIdleMsgOp" />
+    <Op class="dtv.pos.security.op.PosLoginOp" />
+    <OpChainRoute chainKey="VALIDATE_XSTOREM_STARTUP" />
+    <PromptOp class="dtv.pos.payroll.op.PromptPayrollNotYetPostMsgOp" />
+    <OpChainRoute chainKey="PRE_SALE_TRANSACTION" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="VALIDATE_XSTOREM_STARTUP">
+    <Op class="dtv.pos.assistance.access.ValidateEmployeeRestrictedAccessOp" />
+    <Op class="dtv.pos.systemcycle.access.SynchStateJournalOp" />
+    <Op class="dtv.pos.systemcycle.access.RetailLocationOpenAccessCheckOp" />
+    <Op class="dtv.pos.systemcycle.access.WorkstationOpenAccessCheckOp" />
+    <Op class="dtv.pos.timeclock.ValidateNeedToClockInOp" />
+    <!-- 24x7 warning messages -->
+    <WorkerOp workersBean="saveSystemTimeWorkers" />
+    <PromptOp class="dtv.pos.register.StoreCloseWarningOp" key="WORKSTATION_WARNING" />
+    <PromptOp class="dtv.pos.register.StoreCloseGraceOp" key="WORKSTATION_GRACE" />
+    <PromptOp class="dtv.pos.register.StoreCloseGraceExpiredOp" key="WORKSTATION_GRACE_EXPIRED" />
+  </OpChain>
+
+  <OpChain name="RESET_AFTER_NO_TRANS" signal="TransactionCancelled">
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />   
+    <Op class="dtv.pos.hardware.op.IdleCustomerDisplayOp" required="false" />
+    <OpChainRoute chainKey="XSTOREM_MAIN_MENU" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="BACK_OFFICE_LOGIN" contextKey="BACK_OFFICE_LOGIN">
+    <!--The user is logging in to the register from within the register app. -->
+<!--     <Op class="dtv.pos.register.itemmessages.ClearMsgOp" /> -->
+    <Op class="dtv.pos.register.itemmessages.DefaultIdleMsgOp" />    
+    <Op class="dtv.pos.security.op.PosLoginOp" >
+      <Parameter name="IdPrompt" value="BACK_OFFICE_LOGIN_USER_ID" />
+      <Parameter name="PasswordPrompt" value="BACK_OFFICE_LOGIN_USER_PWD" />
+    </Op>
+    <PromptOp class="dtv.pos.security.op.PromptPasswordChallengeQuestionsOp" />
+    <OpChainRoute chainKey="VALIDATE_BACKOFFICE_STARTUP" /> 
+    <PromptOp class="dtv.pos.payroll.op.PromptPayrollNotYetPostMsgOp" />
+    <OpChainRoute chainKey="BACK_OFFICE_MAIN_MENU" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="BACK_OFFICE_INVENTORY_LOGIN" contextKey="BACK_OFFICE_LOGIN">
+    <Op class="dtv.pos.register.itemmessages.DefaultIdleMsgOp" />    
+    <Op class="dtv.pos.security.op.PosLoginOp" >
+      <Parameter name="IdPrompt" value="BACK_OFFICE_LOGIN_USER_ID" />
+      <Parameter name="PasswordPrompt" value="BACK_OFFICE_LOGIN_USER_PWD" />
+      <Parameter name="LoginMode" value="BACK_OFFICE" />
+    </Op>
+    <OpChainRoute chainKey="VALIDATE_BACKOFFICE_STARTUP" /> 
+    <PromptOp class="dtv.pos.payroll.op.PromptPayrollNotYetPostMsgOp" />
+    <OpChainRoute chainKey="BACK_OFFICE_INVENTORY_MENU" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="BACK_OFFICE_MAIN_MENU" contextKey="BACK_OFFICE_MAIN_MENU" rollbackLevel="10">
+    <OpChainRoute chainKey="UPDATE_PROMPTS_ROLLBACK" />
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <Op class="dtv.pos.framework.op.PromptMenuOp">
+      <Parameter name="MenuKey" value="ADMIN::BACK_OFFICE_OPTIONS" />
+    </Op>
+  </OpChain>
+  <OpChain name="BACK_OFFICE_INVENTORY_MENU" contextKey="BACK_OFFICE_MAIN_MENU" rollbackLevel="10">
+    <OpChainRoute chainKey="UPDATE_PROMPTS_ROLLBACK" />
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <Op class="dtv.pos.framework.op.PromptMenuOp">
+      <Parameter name="MenuKey" value="INVENTORY::OPTIONS" />
+    </Op>
+  </OpChain>
+  
+  <OpChain name="XSTOREM_SHIPPING" contextKey="BACK_OFFICE_LOGIN">
+    <!--The user is logging in to the register from within the register app. -->
+<!--     <Op class="dtv.pos.register.itemmessages.ClearMsgOp" /> -->
+    <Op class="dtv.pos.register.itemmessages.DefaultIdleMsgOp" />    
+    <Op class="dtv.pos.security.op.PosLoginOp" >
+      <Parameter name="IdPrompt" value="BACK_OFFICE_LOGIN_USER_ID" />
+      <Parameter name="PasswordPrompt" value="BACK_OFFICE_LOGIN_USER_PWD" />
+    </Op>
+    <PromptOp class="dtv.pos.security.op.PromptPasswordChallengeQuestionsOp" />
+    <OpChainRoute chainKey="VALIDATE_BACKOFFICE_STARTUP" /> 
+    <PromptOp class="dtv.pos.payroll.op.PromptPayrollNotYetPostMsgOp" />
+    <OpChainRoute chainKey="SHIPPING" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="XSTOREM_RECEIVING" contextKey="BACK_OFFICE_LOGIN">
+    <!--The user is logging in to the register from within the register app. -->
+<!--     <Op class="dtv.pos.register.itemmessages.ClearMsgOp" /> -->
+    <Op class="dtv.pos.register.itemmessages.DefaultIdleMsgOp" />    
+    <Op class="dtv.pos.security.op.PosLoginOp" >
+      <Parameter name="IdPrompt" value="BACK_OFFICE_LOGIN_USER_ID" />
+      <Parameter name="PasswordPrompt" value="BACK_OFFICE_LOGIN_USER_PWD" />
+    </Op>
+    <PromptOp class="dtv.pos.security.op.PromptPasswordChallengeQuestionsOp" />
+    <OpChainRoute chainKey="VALIDATE_BACKOFFICE_STARTUP" /> 
+    <PromptOp class="dtv.pos.payroll.op.PromptPayrollNotYetPostMsgOp" />
+    <!-- In Xstore, this is protected by Action but XStoreM doesnt support this so validation was added for this privilege -->
+    <ValidationOp validationsBean="receivingAccessRules" />
+    <OpChainRoute chainKey="RECEIVING" chainType="START" />
+  </OpChain>
+ 
+ 
+  <OpChain name="BACK_OFFICE_ITEM_LOOKUP">
+    <OpChainRoute chainKey="GENERIC_ITEM_LOOKUP" />
+  </OpChain>
+
+</OpChainSet>

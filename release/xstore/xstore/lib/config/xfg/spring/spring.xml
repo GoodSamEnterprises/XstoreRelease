@@ -1,0 +1,1016 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+<!-- Spring beans that are singletons or framework beans can be defined 
+  in this file. Any realm-specific beans (validations, services, workers, etc) 
+  should be defined in their relevant Spring file that should be in the same 
+  directory as this file. -->
+
+  <context:annotation-config />
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="debugHelper" class="com.micros_retail.xfgclient.DebugHelper" factory-method="getInstance" lazy-init="false" />
+
+  <bean id="versionHelper" class="com.micros_retail.xfgclient.VersionHelper" />
+
+  <bean id="validationHelper" class="com.micros_retail.xfgclient.validation.ValidationHelper">
+    <property name="userPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="State" ref="STATE_UserAuthEntry" />
+      </bean>
+    </property>
+    <property name="passwordPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig" />
+    </property>
+    <property name="privilegePrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig" />
+    </property>
+  </bean>
+
+  <bean id="promptHelper" class="com.micros_retail.xfgclient.statemachine.PromptHelper">
+    <property name="helpDeskErrorState" ref="STATE_HelpDeskError" />
+    <property name="errorState" ref="STATE_Error" />
+    <property name="notificationState" ref="STATE_Notification" />
+    <property name="yesNoCaptureState" ref="STATE_YesNoEntry" />
+    <property name="choiceCaptureState" ref="STATE_Choice3Entry" />
+    <property name="stringCaptureState" ref="STATE_StringEntry" />
+    <property name="numericCaptureState" ref="STATE_BigDecimalEntry" />
+    <property name="passwordCaptureState" ref="STATE_PasswordEntry" />
+  </bean>
+
+  <bean id="clientDiscountHelper" class="com.micros_retail.xfgclient.discount.DiscountHelper">
+    <property name="amountPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_MoneyEntry" />
+        <property name="parameters" value="_xfgclient.discount.prompt.amount" />
+      </bean>
+    </property>
+    <property name="percentPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_BigDecimalEntry" />
+        <property name="context" ref="CTX_PercentEntry" />
+        <property name="parameters" value="_xfgclient.discount.prompt.percentage" />
+      </bean>
+    </property>
+    <property name="newPricePrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_MoneyEntry" />
+        <property name="parameters" value="_xfgclient.discount.prompt.newprice" />
+      </bean>
+    </property>
+    <property name="compPricePrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_MoneyEntry" />
+        <property name="parameters" value="_xfgclient.discount.prompt.compPriceAmount" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="itemPromptPropertyHelper" class="com.micros_retail.xfgclient.property.ItemPromptPropertyHelper">
+    <property name="simplePrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_AlphanumericStringEntry" />
+        <property name="keyword" ref="KW_ItemPropertyEntry" />
+      </bean>
+    </property>
+    <property name="listPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_ChoiceEntry" />
+        <property name="keyword" ref="KW_SelectList" />
+      </bean>
+    </property>
+    <property name="listInitKeyword" ref="KW_GS_SelectListInit" />
+    <property name="listAddKeyword" ref="KW_GS_SelectListAdd" />
+    <property name="datePrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_DateEntry" />
+        <property name="keyword" ref="KW_ItemPropertyEntry" />
+      </bean>
+    </property>
+    <property name="numericPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_BigDecimalEntry" />
+        <property name="context" ref="CTX_IntegerEntry" />
+        <property name="keyword" ref="KW_ItemPropertyEntry" />
+      </bean>
+    </property>
+    <property name="decimalPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_BigDecimalEntry" />
+        <property name="keyword" ref="KW_ItemPropertyEntry" />
+      </bean>
+    </property>
+    <property name="moneyPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_MoneyEntry" />
+        <property name="keyword" ref="KW_ItemPropertyEntry" />
+      </bean>
+    </property>
+    <property name="notifyPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_Notification" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="transactionPromptPropertyHelper" class="com.micros_retail.xfgclient.property.TransactionPromptPropertyHelper">
+    <property name="simplePrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_AlphanumericStringEntry" />
+      </bean>
+    </property>
+    <property name="listPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_ChoiceEntry" />
+        <property name="keyword" ref="KW_SelectList" />
+      </bean>
+    </property>
+    <property name="listInitKeyword" ref="KW_GS_SelectListInit" />
+    <property name="listAddKeyword" ref="KW_GS_SelectListAdd" />
+    <property name="datePrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_DateEntry" />
+      </bean>
+    </property>
+    <property name="numericPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_BigDecimalEntry" />
+        <property name="context" ref="CTX_IntegerEntry" />
+      </bean>
+    </property>
+    <property name="decimalPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_BigDecimalEntry" />
+      </bean>
+    </property>
+    <property name="moneyPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_MoneyEntry" />
+      </bean>
+    </property>
+    <property name="notifyPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_Notification" />
+      </bean>
+    </property>
+    <property name="maskPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_MaskEntry" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="remotePromptHelper" class="com.micros_retail.xfgclient.statemachine.RemotePromptHelper" />
+
+  <bean id="remoteTranslationHelper" class="com.micros_retail.xfgclient.interpret.RemoteTranslationHelper" />
+
+  <bean id="transactionDisplayHelper" class="com.micros_retail.xfgclient.dealengine.XstoreDealEngineTransactionDisplayHelper">
+    <property name="disableListSelectionKeyword" ref="KW_GS_TransactionList_DisableSelection" />
+    <property name="enableListSelectionKeyword" ref="KW_GS_TransactionList_EnableSelection" />
+    <property name="lineItemKeyword" ref="KW_GS_ItemSoldList" />
+    <property name="lineItemVoidKeyword" ref="KW_GS_ItemVoidedList" />
+    <property name="tenderKeyword" ref="KW_GS_TenderAddedList" />
+    <property name="tenderVoidKeyword" ref="KW_GS_TenderVoidedList" />
+    <property name="dealUpdateKeyword" ref="KW_GS_DealUpdatedList" />
+    <property name="transactionKeyword" ref="KW_GS_TransactionChanged" />
+    <property name="enableTransactionDiscountLineKeyword" ref="KW_GS_EnableTransactionDiscountLine" />
+    <property name="disableTransactionDiscountLineKeyword" ref="KW_GS_DisableTransactionDiscountLine" />
+    <property name="comparator">
+      <bean class="com.micros_retail.xfgclient.pricing2.order.ApplicationOrderDealSummaryComparator" />
+    </property>
+  </bean>
+
+  <bean id="tillCountDisplayHelper" class="com.micros_retail.xfgclient.till.TillCountDisplayHelper">
+    <property name="disableListSelectionKeyword" ref="KW_GS_TillCountList_DisableSelection" />
+    <property name="enableListSelectionKeyword" ref="KW_GS_TillCountList_EnableSelection" />
+    <property name="selectionKeyword" ref="KW_SelectItemInTransactionList" />
+    <property name="countItemKeyword" ref="KW_GS_TillCountList" />
+    <property name="initCountKeyword" ref="KW_InitUnitCount" />
+  </bean>
+
+  <bean id="invDisplayHelper" class="com.micros_retail.xfgclient.inventory.InventoryAdjustmentDisplayHelper">
+    <property name="invDocumentLineItemKeyword" ref="KW_GS_ItemInvAdjustmentAddedList" />
+    <property name="invDocumentLineItemVoidKeyword" ref="KW_GS_InventoryAdjustmentItemVoidedList" />
+  </bean>
+
+  <bean id="transactionStateManager" class="com.micros_retail.xfgclient.dealengine.TransactionStateManager" />
+
+  <bean id="trainingModeHelper" class="com.micros_retail.xfgclient.training.XfgTrainingModeHelper" />
+
+  <bean id="transactionHelper" class="com.micros_retail.xfgclient.trans.TransactionHelper" />
+
+  <bean id="transactionActivityTracker" class="com.micros_retail.xfgclient.trans.XfgTransactionActivityTracker" />
+
+  <bean id="xfgCustomerHelper" class="com.micros_retail.xfgclient.customer.XfgCustomerHelper" />
+
+  <bean id="storeMessageTask" class="com.micros_retail.xfgclient.status.StoreMessageTask">
+    <property name="updateChain">
+      <bean id="TCN_UpdateStatus" class="com.micros_retail.xfgclient.transition.TransitionChain">
+        <property name="transitions">
+          <bean class="com.micros_retail.xfgclient.transition.util.InvokeInterpreterTN">
+            <property name="keyword" ref="KW_ShowStoreMessageCount" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="clearXenvironmentMessageTimer" class="com.micros_retail.xfgclient.statemachine.timer.transition.RunTransitionTimer">
+    <property name="name" value="CLEAR_XENVIRONMENT_MESSAGE_TIMER" />
+    <property name="delay" value="60000" />
+    <property name="chain" ref="TCN_ClearEnvironmentMessage" />
+  </bean>
+
+  <bean id="availableDatabaseTask" class="com.micros_retail.xfgclient.status.AvailableDatabaseTask">
+    <property name="updateChain">
+      <bean id="TCN_UpdateStatus" class="com.micros_retail.xfgclient.transition.TransitionChain">
+        <property name="transitions">
+          <bean class="com.micros_retail.xfgclient.transition.util.InvokeInterpreterTN">
+            <property name="keyword" ref="KW_DatabaseStatus" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="storeStatusTask" class="com.micros_retail.xfgclient.status.StoreStatusTask">
+    <property name="updateChain">
+      <bean id="TCN_UpdateStatus" class="com.micros_retail.xfgclient.transition.TransitionChain">
+        <property name="transitions">
+          <bean class="com.micros_retail.xfgclient.transition.util.InvokeInterpreterTN">
+            <property name="keyword" ref="KW_StoreStatus" />
+          </bean>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="statusHelper" class="com.micros_retail.xfgclient.status.StatusHelper">
+    <property name="refreshRate" value="10000" />
+    <property name="tasks">
+      <list>
+        <ref bean="availableDatabaseTask" />
+        <ref bean="storeStatusTask" />
+        <ref bean="storeMessageTask" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="urlHelper" class="com.micros_retail.xfgclient.browser.UrlHelper" />
+
+  <bean id="xfgTaxHelper" class="com.micros_retail.xfgclient.tax.XfgTaxHelper" />
+
+  <bean id="feeHelper" class="com.micros_retail.xfgclient.fee.FeeHelper" />
+
+  <bean id="inputHelper" class="com.micros_retail.xfgclient.input.InputHelper">
+    <property name="escOnClear" value="${xfgclient.input.useClearAsEscape}" />
+    <property name="escOnDelete" value="${xfgclient.input.useDeleteAsEscape}" />
+    <property name="showPasteData" value="${xfgclient.input.showPasteData}" />
+    <property name="clearKey" ref="KEY_Delete" />
+    <property name="deleteKey" ref="KEY_Backspace" />
+    <property name="escKey" ref="KEY_Escape" />
+    <property name="enterKey" ref="KEY_Enter" />
+  </bean>
+
+  <bean id="inputConversionHelper" class="com.micros_retail.xfgclient.input.InputConversionHelper" />
+
+  <bean id="cashDrawerHelper" class="com.micros_retail.xfgclient.hardware.cashdrawer.CashDrawerHelper">
+    <property name="drawerRole" ref="HWRT_CashDrawer" />
+  </bean>
+
+  <bean id="scaleHelper" class="com.micros_retail.xfgclient.hardware.scale.ScaleHelper">
+    <property name="scaleRole" ref="HWRT_Scale" />
+  </bean>
+
+  <bean id="cameraHelper" class="com.micros_retail.xfgclient.hardware.camera.CameraHelper">
+    <property name="cameraRole" ref="HWRT_Camera" />
+  </bean>
+
+  <bean id="gs1DatabarHelper" class="com.micros_retail.xfgclient.gs1databar.GS1DatabarHelper" />
+
+  <bean id="gs1Databar" class="com.micros_retail.util.gs1.GS1Databar" />
+
+  <bean id="registerHelper" class="com.micros_retail.xfgclient.register.RegisterHelper" />
+
+  <bean id="xfgTenderHelper" class="com.micros_retail.xfgclient.tender.XfgTenderHelper" />
+
+  <bean id="itemHelper" class="com.micros_retail.xfgclient.item.ItemHelper" />
+
+  <bean id="xfgItemMixingHelper" class="com.micros_retail.xfgclient.item.XfgItemMixingHelper" />
+
+  <bean id="queryHelper" class="com.micros_retail.xfgclient.query.QueryHelper" />
+
+  <bean id="ioUtils" class="com.micros_retail.xfgclient.util.IOUtils" />
+
+  <bean id="threadUtils" class="com.micros_retail.xfgclient.util.ThreadUtils" />
+
+  <bean id="measurementHelper" class="com.micros_retail.util.measurement.MeasurementHelperBean">
+    <property name="source">
+      <bean class="com.micros_retail.util.measurement.datasource.FileUnitOfMeasureDataSource">
+        <property name="fileLocation" value="res/measurement/" />
+      </bean>
+    </property>
+    <property name="defaultUnitCode" value="EA" />
+  </bean>
+
+  <bean id="receiptManager" class="com.micros_retail.xfgclient.rcpt.ReceiptManager" />
+
+  <!-- Helper Singletons End -->
+
+  <bean id="defaultScope" class="com.micros_retail.xfgclient.scope.XfgDefaultScope" />
+
+  <bean id="transactionScope" class="com.micros_retail.xfgclient.scope.XfgTransactionScope" primary="true" />
+
+  <bean id="applicationScope" class="com.micros_retail.xfgclient.scope.XfgApplicationScope" />
+
+  <bean id="persistentScope" class="com.micros_retail.xfgclient.scope.XfgPersistentScope" />
+
+  <bean id="chainExecutor" class="com.micros_retail.xfgclient.statemachine.ChainExecutor" init-method="init">
+    <property name="chainCompleteSignalEvent">
+      <util:constant static-field="dtv.pos.iframework.op.IOpChain.OP_CHAIN_COMPLETE" />
+    </property>
+    <property name="chainFailedSignalEvent">
+      <util:constant static-field="dtv.pos.iframework.op.IOpChain.OP_CHAIN_NOT_COMPLETE" />
+    </property>
+    <property name="chainStartedSignalEvent">
+      <util:constant static-field="dtv.pos.iframework.op.IOpChain.OP_CHAIN_STARTED" />
+    </property>
+  </bean>
+
+  <bean id="timerManager" class="com.micros_retail.xfgclient.statemachine.timer.TimerManager" />
+
+  <bean name="transactionInProgressWriter" class="com.micros_retail.xfgclient.statemachine.listener.TransactionInProgressWriter" />
+
+  <bean id="visibilityRuleHelper" class="com.micros_retail.xfgclient.visibilityrule.VisibilityRuleHelper" />
+
+  <bean id="remoteVisibilityRuleHelper" class="com.micros_retail.xfgclient.visibilityrule.RemoteVisibilityRuleHelper" />
+
+  <bean id="stateMachineEventGateway" class="com.micros_retail.xfgclient.statemachine.eventmanager.StateMachineEventGateway" />
+
+  <bean id="stateMachine" class="com.micros_retail.xfgclient.statemachine.StateMachine">
+    <property name="startState" ref="STATE_StartUp" />
+    <property name="returnCaptureState" ref="STATE_ReturnCapture" />
+    <property name="returnCancelState" ref="STATE_ReturnCancel" />
+    <property name="defaultEventManager">
+      <bean class="com.micros_retail.xfgclient.statemachine.eventmanager.InternalFirstEventManager" />
+    </property>
+    <property name="recorders">
+      <list>
+        <ref bean="recorder" />
+        <ref bean="eventWriter" />
+      </list>
+    </property>
+    <property name="activationListeners">
+      <list>
+        <ref bean="busyScreenManager" /> <!-- ATTN: This needs to be the very first in the list (filters pending events!) -->
+        <bean name="currentStateLogger" class="com.micros_retail.xfgclient.statemachine.listener.CurrentStateLogger" />
+        <ref bean="INPFMTTR_TotalAmount" />
+        <bean name="deviceModeSetter" class="com.micros_retail.xfgclient.statemachine.listener.DeviceModeSetter">
+          <property name="updateInIdleOnly" value="${xfgclient.statemachnine.updateUIInIdleOnly}" />
+        </bean>
+        <bean name="gridVisibilityListener" class="com.micros_retail.xfgclient.statemachine.listener.GridVisibilityListener">
+          <property name="animation" value="MOVE_FUNCTION_GRID_TO_START_POSITION_ANIMATION" />
+          <property name="device" ref="DEV_Screen" />
+        </bean>
+        <bean name="severalGridVisibilityListener" class="com.micros_retail.xfgclient.statemachine.listener.SeveralGridVisibilityListener">
+          <property name="device" ref="DEV_Screen" />
+          <property name="gridIds">
+            <list>
+              <value>QUICK_TAB_BAR</value>
+              <value>SINGLE_BUTTONS</value>
+            </list>
+          </property>
+        </bean>
+        <bean name="uiUpdater" class="com.micros_retail.xfgclient.statemachine.listener.UIUpdater">
+          <property name="updateInIdleOnly" value="${xfgclient.statemachnine.updateUIInIdleOnly}" />
+        </bean>
+        <bean name="persistentStorageWriter" class="com.micros_retail.xfgclient.statemachine.listener.PersistentStorageWriter" />
+        <!-- transactionInProgressWriter must not be an inner bean because of IHasFlowListener interface -->
+        <ref bean="transactionInProgressWriter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="recorder" class="com.micros_retail.xfgclient.statemachine.xfgunit.XMLCompactingRecorder">
+    <property name="abortChain" ref="TCN_AbortRecorder" />
+    <property name="configHelper">
+      <bean class="com.micros_retail.xfgclient.xfgunit.XfgUnitConfigHelper" />
+    </property>
+  </bean>
+
+  <bean id="eventWriter" class="com.micros_retail.xfgclient.statemachine.xfgunit.EventWriter" />
+
+  <bean id="player" class="com.micros_retail.xfgclient.statemachine.xfgunit.XMLInteractivePlayer">
+    <property name="exitChain" ref="TCN_StopReplay" />
+    <property name="pauseChain" ref="TCN_PauseReplay" />
+    <property name="resetChain" ref="TCN_ResetReplay" />
+    <property name="activateSingleStepModeChain" ref="TCN_ActivateSingleStepReplay" />
+    <property name="deactivateSingleStepModeChain" ref="TCN_DeactivateSingleStepReplay" />
+    <property name="stopPlayerAfterErrorChain" ref="TCN_StopReplayAfterError" />
+    <property name="configHelper">
+      <bean class="com.micros_retail.xfgclient.xfgunit.XfgUnitConfigHelper" />
+    </property>
+  </bean>
+
+  <bean id="autoPlayer" class="com.micros_retail.xfgclient.statemachine.xfgunit.XMLAutoPlayer">
+    <property name="exitChain" ref="TCN_StopAutoReplay" />
+    <property name="resetChain" ref="TCN_ResetAutoReplay" />
+    <property name="initFile" value="init" />
+    <property name="firstInput" value="0011" />
+    <property name="lastInput" value="0011" />
+    <property name="numberOfLoops" value="1" />
+    <property name="stepDelayMs" value="200" />
+    <property name="realTimeMode" value="false" />
+    <property name="configHelper">
+      <bean class="com.micros_retail.xfgclient.xfgunit.XfgUnitConfigHelper" />
+    </property>
+  </bean>
+
+  <bean id="xfgunitConsole" class="com.micros_retail.xfgclient.xfgunit.console.swing.XfgUnitConsole" init-method="init">
+    <property name="enable" value="true" />
+    <property name="xPosition" value="100" />
+    <property name="yPosition" value="100" />
+    <property name="width" value="750" />
+    <property name="height" value="410" />
+    <property name="borderWidth" value="20" />
+    <property name="outputLines" value="50000" />
+    <property name="scrollLock" value="false" />
+    <property name="stopKey" ref="KEY_PlayerStop" />
+    <property name="pauseKey" ref="KEY_PlayerPause" />
+    <property name="singleStepKey" ref="KEY_PlayerSingleStep" />
+    <property name="disableSingleStepKey" ref="KEY_PlayerDisableSingleStep" />
+  </bean>
+
+  <bean id="xfgUnitEftLinkAdminMessageConfig" class="com.micros_retail.xfgclient.xfgunit.config.auth.eftlink.EftLinkAdminMessageConfig" scope="prototype" />
+  <bean id="xfgUnitEftLinkRequestMessageConfig" class="com.micros_retail.xfgclient.xfgunit.config.auth.eftlink.EftLinkRequestMessageConfig" scope="prototype" />
+  <bean id="xfgUnitEftLinkResponseConfig" class="com.micros_retail.xfgclient.xfgunit.config.auth.eftlink.EftLinkResponseConfig" scope="prototype" />
+  <bean id="xfgUnitAuthTenderFailedResponseConfig" class="com.micros_retail.xfgclient.xfgunit.config.auth.AuthTenderFailedResponseConfig" scope="prototype" />
+  <bean id="xfgUnitAuthTenderMoreInfoNeededResponseConfig" class="com.micros_retail.xfgclient.xfgunit.config.auth.AuthTenderMoreInfoNeededResponseConfig" scope="prototype" />
+  <bean id="xfgUnitAuthSuccessResponseConfig" class="com.micros_retail.xfgclient.xfgunit.config.auth.AuthSuccessResponseConfig" scope="prototype" />
+  <bean id="xfgUnitGiftCardResponseConfig" class="com.micros_retail.xfgclient.xfgunit.config.auth.giftcard.GiftCardResponseConfig" scope="prototype" />
+
+  <bean id="xfgUnitEventPayloadDependentConigFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="com.micros_retail.xfgclient.xfgunit.config.IEventPayloadDependentConfigFactory" />
+    <property name="serviceMappings">
+      <props>
+        <prop key="dtv.tenderauth.impl.eftlink.event.EftLinkAdminMessageEvent">xfgUnitEftLinkAdminMessageConfig</prop>
+        <prop key="dtv.tenderauth.impl.eftlink.event.EftLinkRequestMessageEvent">xfgUnitEftLinkRequestMessageConfig</prop>
+        <prop key="dtv.tenderauth.impl.eftlink.response.EftLinkResponse">xfgUnitEftLinkResponseConfig</prop>
+        <prop key="dtv.tenderauth.impl.event.AuthTenderFailedResponse">xfgUnitAuthTenderFailedResponseConfig</prop>
+        <prop key="dtv.tenderauth.impl.event.AuthTenderMoreInfoNeededResponse">xfgUnitAuthTenderMoreInfoNeededResponseConfig</prop>
+        <prop key="dtv.tenderauth.impl.event.AuthSuccessResponse">xfgUnitAuthSuccessResponseConfig</prop>
+        <prop key="dtv.tenderauth.storedvalue.relate.RelateAuthResponse">xfgUnitGiftCardResponseConfig</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="stationController" class="com.micros_retail.xfgclient.StationController" />
+
+  <bean id="hardwareManager" class="com.micros_retail.xfgclient.hardware.HardwareManager">
+    <property name="defaultStatusKeyword" ref="KW_HWStartupStatus" />
+    <property name="retryStartupPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_YesNoEntry" />
+        <property name="parameters" value="_xfgclient.error.HardwareManager.retryhardwarestartup" />
+      </bean>
+    </property>
+    <property name="essentialHardwareFailedPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_Error" />
+        <property name="parameters" value="_xfgclient.error.HardwareManager.essentialhardwarefailed" />
+      </bean>
+    </property>
+    <property name="fatalErrorPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_Error" />
+        <property name="parameters" value="_xfgclient.error.HardwareManager.fatal" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="translateInputHelper" class="com.micros_retail.xfgclient.input.TranslateInputHelper"
+    init-method="initialize">
+    <property name="itemEntryTypes">
+      <list>
+        <value>OTHERS</value>
+        <value>INPUT_RECEIPT</value>
+        <value>INPUT_CUSTOMER_CARD</value>
+        <value>INPUT_EMPLOYEE_CARD</value>
+        <value>INPUT_ENCODED_PRICE</value>
+        <value>ITEM</value>
+        <value>BOTTLE_RETURN</value>
+        <!-- SN 150319: these are for card cids - they don't belong here -->
+        <!-- 
+        <value>ISSUE_XPAY_GIFT_CARD</value>
+        <value>RELOAD_XPAY_GIFT_CARD</value>
+        <value>ISSUE_XPAY_POINTS_CARD</value>
+         -->
+      </list>
+    </property>
+    <property name="giftCardTypes">
+      <list>
+        <value>OTHERS</value>
+        <value>GIFT_CARD</value>
+      </list>
+    </property>
+    <property name="loyaltyCardTypes">
+      <list>
+        <value>OTHERS</value>
+        <value>LOYALTY_CARD</value>
+      </list>
+    </property>
+    <property name="gs1GTINTypes">
+      <list>
+      </list>
+    </property>
+    <property name="tenderEntryTypes">
+      <list>
+        <value>OTHERS</value>
+        <value>GIFT_CERTIFICATE</value>
+        <value>MALL_CERTIFICATE</value>
+        <value>STORE_CREDIT</value>
+        <value>COUPON_VOUCHER</value>
+        <value>BOUNCE_BACK_COUPON</value>
+        <value>CUSTOMER</value>
+        <value>EMPLOYEE</value>
+        <value>COUPON</value>
+        <value>CREDIT_CARD</value>
+        <value>GIFT_CARD</value>
+      </list>
+    </property>
+    <property name="unusedTypes"> <!-- these are in base InputConfig.xml but not yet used in xfg-client -->
+      <list>
+        <value>INPUT_DRIVERS_LICENSE</value>
+        <value>INPUT_LAYAWAY_ID</value>
+        <value>INPUT_SP_ORDER_ID</value>
+        <value>ASN</value>
+        <value>STORE_TRANSFER</value>
+        <value>RETURN_TO_VENDOR</value>
+        <value>SHIPMENT_OUT</value>
+      </list>
+    </property>
+    <property name="expansionTypes">
+      <map>
+        <entry key="CUSTOMER">
+          <list>
+            <value>INPUT_CUSTOMER_CARD</value>
+            <value>INPUT_ACCOUNT_RECEIVABLE</value>
+            <value>INPUT_EMPLOYEE_CARD</value>
+            <value>INPUT_CUSTOMER</value>
+            <value>ACCOUNT_RECEIVABLE</value>
+            <value>INPUT_ID_CARD</value>
+            <value>INPUT_MSR_OTHER</value>
+            <value>LOYALTY</value>
+            <value>RELATE_LOYALTY</value>
+          </list>
+        </entry>
+        <entry key="EMPLOYEE">
+          <list>
+            <value>INPUT_EMPLOYEE_CARD</value>
+          </list>
+        </entry>
+        <entry key="COUPON">
+          <list>
+            <value>INPUT_COUPON</value>
+            <value>MANUFACTURER_COUPON</value>
+            <value>IN-STORE_COUPON</value>
+          </list>
+        </entry>
+        <entry key="CREDIT_CARD">
+          <list>
+            <value>INPUT_CREDIT_CARD</value>
+            <value>PRIVATE_LABEL</value>
+            <value>DEBIT_CARD</value>
+            <value>VISA</value>
+            <value>MASTERCARD</value>
+            <value>DISCOVER</value>
+            <value>AMERICAN_EXPRESS</value>
+            <value>JCB</value>
+            <value>DINERS_CLUB</value>
+          </list>
+        </entry>
+        <entry key="ACCOUNT_RECEIVABLE">
+          <list>
+            <value>INPUT_ACCOUNT_RECEIVABLE</value>
+            <value>ACCOUNT_RECEIVABLE</value>
+          </list>
+        </entry>
+        <entry key="ITEM">
+          <list>
+            <value>INPUT_ITEM</value>
+          </list>
+        </entry>
+        <entry key="GIFT_CARD">
+          <list>
+            <value>MERCHANDISE_CREDIT_CARD</value>
+            <value>XPAY_GIFT_CARD</value>
+            <value>AJB_GIFT_CARD</value>
+            <value>INPUT_VOUCHER</value>
+          </list>
+        </entry>
+        <entry key="LOYALTY_CARD">
+          <list>
+            <value>RELATE_LOYALTY</value>
+          </list>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="buttonMatrixManager" class="com.micros_retail.xfgclient.matrix.ButtonMatrixManager" />
+
+  <bean id="merchHierarchyMatrixManager" class="com.micros_retail.xfgclient.matrix.MerchHierarchyMatrixManager">
+    <property name="itemMatrixComponentId" value="ITEM_MATRIX" />
+    <property name="itemMatrixBreadcrumbComponentId" value="ITEM_MATRIX_BREADCRUMBS" />
+    <property name="itemMatrixRootName" value="ITEM_MATRIX_ROOT" />
+    <property name="imagesFeatureId" value="DEPARTMENT_LOOKUP" />
+    <property name="itemMatrixColor">
+      <map>
+        <entry key="DEFAULT">
+          <map>
+            <entry key="bgColor" value="#34322F" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="GRAY">
+          <map>
+            <entry key="bgColor" value="#AAAAAA" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="RED">
+          <map>
+            <entry key="bgColor" value="#EF5959" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="ORANGE">
+          <map>
+            <entry key="bgColor" value="#EDA030" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="AQUA">
+          <map>
+            <entry key="bgColor" value="#AADFEE" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="BLUE">
+          <map>
+            <entry key="bgColor" value="#88AAD9" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="BRONZE">
+          <map>
+            <entry key="bgColor" value="#B5AD81" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="BROWN">
+          <map>
+            <entry key="bgColor" value="#B35B24" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="GREEN">
+          <map>
+            <entry key="bgColor" value="#49B664" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="MAROON">
+          <map>
+            <entry key="bgColor" value="#C96F6D" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="PURPLE">
+          <map>
+            <entry key="bgColor" value="#A091B3" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="TEAL">
+          <map>
+            <entry key="bgColor" value="#87C3A7" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="YELLOW">
+          <map>
+            <entry key="bgColor" value="#FBFA4A" />
+            <entry key="style" value="8" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#FFFFFF" />
+            <entry key="fontIdx" value="11" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+        <entry key="WHITE">
+          <map>
+            <entry key="bgColor" value="#FFFFFF" />
+            <entry key="style" value="3" />
+            <entry key="captionX" value="0" />
+            <entry key="captionY" value="15" />
+            <entry key="fgColor" value="#000000" />
+            <entry key="fontIdx" value="8" />
+            <entry key="keyName" value="KEY_PLU" />
+            <entry key="mediaX" value="0" />
+            <entry key="mediaY" value="0" />
+          </map>
+        </entry>
+      </map>
+    </property>
+    <property name="breadcrumbColors">
+      <map>
+        <entry key="text" value="_empty" />
+        <entry key="bgColor" value="#34322F" />
+        <entry key="fgColor" value="#FFFFFF" />
+        <entry key="style" value="8" />
+        <entry key="rowId" value="1" />
+        <entry key="arrowImage" value="res/graphics/gserver/${gserver.graphics.resolution}/arrow/style_e/right.png" />
+        <entry key="captionX" value="30" />
+        <entry key="captionY" value="0" />
+        <entry key="mediaX" value="1" />
+        <entry key="mediaY" value="0" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="busyScreenManager" class="com.micros_retail.xfgclient.screen.BusyScreenManager">
+    <property name="closeBusyScreenKeyword" ref="KW_GS_CloseBusyScreen" />
+    <property name="openBusyScreenWindowKeyword" ref="KW_GS_OpenBusyScreenWindow" />
+    <property name="openBusyScreenKeyword" ref="KW_GS_OpenBusyScreen" />
+    <property name="busyStateEventFilter">
+      <bean class="com.micros_retail.xfgclient.statemachine.event.AnyDescriptor">
+        <property name="descriptors">
+          <list>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.AnyKeyDescriptor" />
+            <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor" />
+            <bean class="com.micros_retail.xfgclient.statemachine.event.SwipeEventDescriptor" />
+            <bean class="com.micros_retail.xfgclient.statemachine.event.PasteDataDescriptor" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="defaultAuthHandler" class="com.micros_retail.xfgclient.auth.DefaultAuthHandler">
+    <property name="authPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_AuthorizationEntry" />
+        <!-- The handler class expects the default text to be configured here; it will add the cancelable flag 
+          as parameter #2 -->
+        <property name="parameters" value="_xfgclient.tender.authorization" />
+      </bean>
+    </property>
+    <property name="choice2Prompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_YesNoEntry" />
+        <property name="keyword" ref="KW_CustomYesNoEntry" />
+      </bean>
+    </property>
+    <property name="choice3Prompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_Choice3Entry" />
+      </bean>
+    </property>
+    <property name="successPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_Notification" />
+      </bean>
+    </property>
+    <property name="displayInfoPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_Notification" />
+        <property name="keyword" ref="KW_AuthDisplayInfo" />
+      </bean>
+    </property>
+    <property name="captureInputPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_StringEntry" />
+        <property name="keyword" ref="KW_AuthCaptureInput" />
+      </bean>
+    </property>
+    <property name="errorPrompt">
+      <bean class="com.micros_retail.xfgclient.statemachine.PromptConfig">
+        <property name="state" ref="STATE_Error" />
+      </bean>
+    </property>
+    <property name="actionGroupMap">
+      <map>
+        <entry key="DEFAULT">
+          <array>
+            <bean class="com.micros_retail.xfgclient.auth.AuthUserAction">
+              <property name="description" value="_authActionCancel" />
+              <property name="action" value="CANCEL" />
+            </bean>
+            <bean class="com.micros_retail.xfgclient.auth.AuthUserAction">
+              <property name="description" value="_authRetry" />
+              <property name="action" value="RETRY" />
+            </bean>
+            <bean class="com.micros_retail.xfgclient.auth.AuthUserAction">
+              <property name="description" value="_authManual" />
+              <property name="action" value="MANUAL_AUTH" />
+            </bean>
+          </array>
+        </entry>
+        <entry key="CONTINUE_ON_CANCEL">
+          <array>
+            <bean class="com.micros_retail.xfgclient.auth.AuthUserAction">
+              <property name="description" value="_continue" />
+              <property name="action" value="CANCEL" />
+            </bean>
+            <bean class="com.micros_retail.xfgclient.auth.AuthUserAction">
+              <property name="description" value="_authRetry" />
+              <property name="action" value="RETRY" />
+            </bean>
+            <bean class="com.micros_retail.xfgclient.auth.AuthUserAction">
+              <property name="description" value="_authManual" />
+              <property name="action" value="MANUAL_AUTH" />
+            </bean>
+          </array>
+        </entry>
+        <entry key="NON_AUTH_COMMAND">
+          <array>
+            <bean class="com.micros_retail.xfgclient.auth.AuthUserAction">
+              <property name="description" value="_authActionCancel" />
+              <property name="action" value="CANCEL" />
+            </bean>
+            <bean class="com.micros_retail.xfgclient.auth.AuthUserAction">
+              <property name="description" value="_ok" />
+              <property name="action" value="CONTINUE" />
+            </bean>
+            <bean class="com.micros_retail.xfgclient.auth.AuthUserAction">
+              <property name="description" value="_authRetry" />
+              <property name="action" value="RETRY" />
+            </bean>
+          </array>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="tenderAuthHandlerFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="com.micros_retail.xfgclient.auth.IAuthHandlerFactory" />
+    <property name="serviceMappings">
+      <props>
+        <prop key="DEFAULT">defaultAuthHandler</prop>
+        <prop key="EFT_LINK_CREDIT">eftlinkAuthHandler</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="unknownEventLogger" class="com.micros_retail.xfgclient.event.EventLogger">
+    <constructor-arg index="0" value="#{T(com.micros_retail.xfgclient.event.EventHierarchy).UNHANDLED}" />
+    <constructor-arg index="1">
+      <util:constant static-field="${unknownEventLogger.Priority}" />
+    </constructor-arg>
+  </bean>
+
+  <bean id="infoEventLogger" class="com.micros_retail.xfgclient.event.EventLogger">
+    <constructor-arg index="0" value="#{T(com.micros_retail.xfgclient.event.EventHierarchy).LOGGING}" />
+    <constructor-arg index="1">
+      <util:constant static-field="${infoEventLogger.Priority}" />
+    </constructor-arg>
+  </bean>
+
+  <bean id="XfgBeanDefinitionRegistry" class="com.micros_retail.xfgclient.spring.XfgBeanDefinitionRegistry" />
+
+  <!-- these are application mode scope beans in XfR - move to default scope in XfG -->
+  <bean id="modeController" class="com.micros_retail.xfgclient.mock.DummyModeController" />
+  <bean id="accountManager" class="com.micros_retail.xfgclient.customer.account.XfgAccountManager" />
+  <bean id="loyaltyMgr" class="dtv.pos.customer.loyalty.LoyaltyMgr" />
+  <bean id="priceCodeProvider" class="dtv.pos.pricing.CustomerBasedPriceCodeProvider" />
+  <bean id="itemRestrictionHelper" class="dtv.pos.item.restriction.ItemRestrictionHelper" />
+  <!-- application mode scope bean override end -->
+
+  <!-- these are transaction mode scope beans in XfR - move to default scope in XfG -->
+  <bean id="rtlTransactionMgr" class="com.micros_retail.xfgclient.pricing.XfgRetailTransMgr">
+    <property name="calculators" ref="calculators" />
+  </bean>
+  <bean id="pricingHelper" class="com.micros_retail.xfgclient.pricing.XfgPricingHelper" init-method="create" destroy-method="destroy" />
+  <bean id="returnManager" class="com.micros_retail.xfgclient.register.returns.XfgReturnManager" />
+  <!-- FIXME: these won't work correctly in XfG -->
+  <bean id="warrantyManager" class="dtv.pos.warranty.WarrantyManager" />
+  <bean id="warrantyHistoricalAddHelper" class="dtv.pos.warranty.WarrantyHistoricalAddHelper" />
+  <bean id="airportManager" class="dtv.pos.flight.AirportHelper" />
+  <!-- trasaction scope bean override end -->  
+
+  <!-- these beans need database to initialize - use different initialization in XfG -->
+  <bean id="sessionManager" class="dtv.pos.till.SessionManager" />
+  <bean id="securityUtil" class="com.micros_retail.xfgclient.security.XfgSecurityUtil" />
+  <bean id="authFactory" class="dtv.tenderauth.AuthFactory" factory-method="getInstance" depends-on="dataFactoryAssistant" />
+  <!-- database init override end -->
+  
+  <!-- make this bean a singleton in xfg -->
+  <bean id="transDateProvider" class="dtv.pos.framework.systemcycle.TransDateProvider">
+    <property name="useSystemDate" value="#{T(dtv.pos.common.ConfigurationMgr).useSystemDate()}" />
+  </bean>
+
+  <bean id="gatedMainKeyEventDispatcher" class="com.micros_retail.xfgclient.event.XfgEventDispatcher" primary="true" />
+
+  <bean id="globalDealSpace" class="com.micros_retail.xfgclient.pricing.XfgDealSpaceGlobal">
+    <property name="refreshStrategy" ref="pricingRefreshStrategy" />
+  </bean>
+
+</beans>

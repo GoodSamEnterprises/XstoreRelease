@@ -1,0 +1,1986 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <!-- ***************************************************** -->
+  <!-- ** ROUTING RULES -->
+  <!-- ***************************************************** -->
+  <RoutingRules>
+    <RoutingRule name="RETAIL_SALE" document="RETAIL_SALE" transType="RETAIL_SALE" file="POSLOG" />
+    <RoutingRule name="CREDIT_APPLICATION" document="RETAIL_SALE" transType="CREDIT_APPLICATION" file="POSLOG" />
+    <RoutingRule name="POST_VOID" document="POST_VOID" transType="POST_VOID" file="POSLOG" />
+    <RoutingRule name="NO_SALE" document="NO_SALE" transType="NO_SALE" file="POSLOG" />
+    <RoutingRule name="SYSTEM_CLOSE" document="SYSTEM_CYCLE" transType="SYSTEM_CLOSE" file="POSLOG" />
+    <RoutingRule name="SYSTEM_OPEN" document="SYSTEM_CYCLE" transType="SYSTEM_OPEN" file="POSLOG" />
+    <RoutingRule name="CASHDRAWER_OPEN" document="SYSTEM_CYCLE" transType="CASHDRAWER_OPEN" file="POSLOG" />
+    <RoutingRule name="CASHDRAWER_CLOSE" document="SYSTEM_CYCLE" transType="CASHDRAWER_CLOSE" file="POSLOG" />
+    <RoutingRule name="WORKSTATION_OPEN" document="SYSTEM_CYCLE" transType="WORKSTATION_OPEN" file="POSLOG" />
+    <RoutingRule name="WORKSTATION_CLOSE" document="SYSTEM_CYCLE" transType="WORKSTATION_CLOSE" file="POSLOG" />
+    <RoutingRule name="WORKSTATION_START_REMOTE_CLOSE" document="SYSTEM_CYCLE" transType="WORKSTATION_START_REM_CLOSE" file="POSLOG" />
+    <RoutingRule name="WORKSTATION_COMPLETE_REMOTE_CLOSE" document="SYSTEM_CYCLE" transType="WORKSTATION_COMPLETE_REM_CLOSE" file="POSLOG" />
+    <RoutingRule name="INVENTORY_CONTROL" document="INVENTORY_CONTROL" transType="INVENTORY_CONTROL" file="POSLOG">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.pos.inventory.count.IInventoryCountLogModel" inverted="true" />
+    </RoutingRule>
+    <RoutingRule name="SESSION_CONTROL" document="SESSION_CONTROL" transType="SESSION_CONTROL" file="POSLOG" />
+    <RoutingRule name="TILL_CONTROL" document="TILL_CONTROL" transType="TILL_CONTROL" file="POSLOG" />
+    <RoutingRule name="TENDER_CONTROL" document="TENDER_CONTROL" transType="TENDER_CONTROL" file="POSLOG" />
+    <RoutingRule name="TENDER_EXCHANGE" document="TENDER_EXCHANGE" transType="TENDER_EXCHANGE" file="POSLOG" />
+    <RoutingRule name="EXCHANGE_RATE_TRANS" document="EXCHANGE_RATE_TRANS" transType="EXCHANGE_RATE" file="POSLOG" />
+    <RoutingRule name="TIMECLOCK" document="TIMECLOCK" transType="TIMECLOCK" file="POSLOG" />
+    <RoutingRule name="BALANCE_INQUIRY" document="BALANCE_INQUIRY" transType="BALANCE_INQUIRY" file="POSLOG" />
+    <RoutingRule name="TRAINING_MODE_ENTRY" document="TRAINING_MODE_ENTRY" transType="TRAINING_MODE_ENTRY" file="POSLOG" />
+    <RoutingRule name="TRAINING_MODE_EXIT" document="TRAINING_MODE_EXIT" transType="TRAINING_MODE_EXIT" file="POSLOG" />
+    <RoutingRule name="ESCROW" document="ESCROW" transType="ESCROW" file="POSLOG" />
+    <RoutingRule name="BATCH_CLOSE" document="BATCH_CLOSE" transType="BATCH_CLOSE" file="POSLOG" />
+    <RoutingRule name="RAIN_CHECK" document="RAIN_CHECK" transType="RAIN_CHECK" file="POSLOG" />
+    <RoutingRule name="INVENTORY_SUMMARY_COUNT" document="INVENTORY_CONTROL" transType="INVENTORY_SUMMARY_COUNT" file="POSLOG" />
+    <RoutingRule name="GIFT_REGISTRY" document="GIFT_REGISTRY" transType="GIFT_REGISTRY" file="POSLOG" />
+    <!-- 344027: Inventory Replenishment -->
+    <!--<RoutingRule name="INVENTORY_CONTROL_REPLENISHMENT_SUBMIT" document="INVENTORY_CONTROL_REPLENISHMENT" file="POSLOG">
+      <condition class="dtv.pos.docbuilding.conditions.TransactionTypeCondition" type="INVENTORY_CONTROL" /> 
+      <condition class="dtv.pos.inventory.InventoryTransactionTypeCondition" type="REPLENISHMENT" />
+    </RoutingRule> -->
+    <!-- /344027: Inventory Replenishment -->
+    
+    <!-- COUNTRYPACK INVOICE START -->
+    <RoutingRule name="DEFERRED_INVOICE" document="DEFERRED_INVOICE" transType="DEFERRED_INVOICE" file="POSLOG" />
+    <!-- COUNTRYPACK INVOICE END -->
+    <RoutingRule name="SERIAL_EXCHANGE" document="SERIAL_EXCHANGE" transType="SERIAL_EXCHANGE" file="POSLOG" />
+  </RoutingRules>
+  
+  <!-- ***************************************************** -->
+  <!-- ** LOG DOCUMENT TYPES -->
+  <!-- ***************************************************** -->
+  <LogTypes>
+    <LogType document="RETAIL_SALE" sectionref="TRANSACTION" argContent="SALE_BODY" />
+    <LogType document="POST_VOID" sectionref="TRANSACTION" argContent="POST_VOID_TRANSACTION" />
+    <LogType document="NO_SALE" sectionref="TRANSACTION" argContent="NOSALE_BODY" />
+    <LogType document="SYSTEM_CYCLE" sectionref="TRANSACTION" argContent="SYSTEM_CYCLE" />
+    <LogType document="INVENTORY_CONTROL" sectionref="TRANSACTION" argContent="INV_TRANS_BODY" />
+    <LogType document="SESSION_CONTROL" sectionref="TRANSACTION" argContent="SESSION_CONTROL_BODY" />
+    <LogType document="TILL_CONTROL" sectionref="TRANSACTION" argContent="TILL_CONTROL_BODY" />
+    <LogType document="TENDER_CONTROL" sectionref="TRANSACTION" argContent="TENDER_CONTROL_BODY" />
+    <LogType document="TENDER_EXCHANGE" sectionref="TRANSACTION" argContent="TENDER_EXCHANGE_BODY" />
+    <LogType document="EXCHANGE_RATE_TRANS" sectionref="TRANSACTION" argContent="EXCHANGE_RATE_TRANS_BODY" />
+    <LogType document="TIMECLOCK" sectionref="TRANSACTION" argContent="TIMECLOCK_BODY" />
+    <LogType document="BALANCE_INQUIRY" sectionref="TRANSACTION" argContent="BALANCE_INQUIRY_BODY" />
+    <LogType document="TRAINING_MODE_ENTRY" sectionref="TRANSACTION" argContent="TRAINING_MODE_ENTRY" />
+    <LogType document="TRAINING_MODE_EXIT" sectionref="TRANSACTION" argContent="TRAINING_MODE_EXIT" />
+    <LogType document="ESCROW" sectionref="TRANSACTION" argContent="ESCROW_BODY" />
+    <LogType document="BATCH_CLOSE" sectionref="TRANSACTION" />
+    <LogType document="RAIN_CHECK" sectionref="TRANSACTION" />
+    <LogType document="GIFT_REGISTRY" sectionref="TRANSACTION" />
+    <!-- 344027: Inventory Replenishment -->
+    <!-- <LogType document="INVENTORY_CONTROL_REPLENISHMENT" sectionref="TRANSACTION" argContent="REPLENISHMENT_ORDER_BODY" /> -->
+    <!-- /344027: Inventory Replenishment -->
+    
+    <!-- COUNTRYPACK INVOICE START -->
+    <LogType document="DEFERRED_INVOICE" sectionref="TRANSACTION" argContent="DEFERRED_INVOICE_TRANSACTION" />
+    <!-- COUNTRYPACK INVOICE END -->
+    <LogType document="SERIAL_EXCHANGE" sectionref="TRANSACTION" argContent="EXCHANGE_BODY" />
+  </LogTypes>
+  
+  <!-- ***************************************************** -->
+  <!-- ** SECTIONS -->
+  <!-- ***************************************************** -->
+  <sections>
+    <section name="TRANSACTION">
+      <xml><![CDATA[
+        <?sectionref name="STANDARD_TRANSACTION_HEADER"?>
+        <?sectionref name="INVENTORY_TRANSACTION_HEADER"?>
+      ]]></xml>     
+    </section>
+   
+    <section name="STANDARD_TRANSACTION_HEADER">
+          <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.inv.IInventoryTransaction" inverted="true" />
+      <xml><![CDATA[
+        <Transaction xmlns:dtv="http://www.datavantagecorp.com/xstore/" 
+             CancelFlag="#{getTransactionStatusCode}[isCancel]"
+             TrainingModeFlag="#{getOrganizationId}[trainingMode]"
+             OfflineFlag="#{getKeyedOffline}[boolean]"
+             dtv:AppVersion="#{dtv.pos.Version.getReleaseVersion}"
+             dtv:TransactionType="#{getTransactionTypeCode}"
+             dtv:crossChannelReturn="!{dtv.pos.register.returns.CrossChannelReturnIndicatorDocBuilderField}">
+          <?sectionref name="tran_header_detail"?>
+          <?sectionref name="@argContent"?>
+        </Transaction>
+      ]]></xml>     
+    
+    </section>  
+    
+    <section name="INVENTORY_TRANSACTION_HEADER">
+         <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.inv.IInventoryTransaction" />
+      <xml><![CDATA[
+        <Transaction xmlns:dtv="http://www.datavantagecorp.com/xstore/" 
+             CancelFlag="#{getTransactionStatusCode}[isCancel]"
+             TrainingModeFlag="#{getOrganizationId}[trainingMode]"
+             OfflineFlag="#{getKeyedOffline}[boolean]"
+             dtv:AppVersion="#{dtv.pos.Version.getReleaseVersion}"
+             dtv:TransactionType="#{getTransactionTypeCode}"
+             dtv:crossChannelReturn="!{dtv.pos.register.returns.CrossChannelReturnIndicatorDocBuilderField}"
+             dtv:InventoryDocumentType="#{getDocumentTypeCode}"
+             dtv:InventoryDocumentSubType="#{getInventoryDocument.getDocumentSubtypeCode}" >
+
+          <?sectionref name="tran_header_detail"?>
+          <?sectionref name="@argContent"?>
+        </Transaction>
+      ]]></xml>     
+    
+    </section>
+    
+    <section name="POST_VOID_TRANSACTION">
+      <sectionref>SALE_BODY</sectionref>
+      <sectionref>POST_VOID_BODY</sectionref>
+    </section>
+    
+    <section name="tran_header_detail">
+      <xml><![CDATA[
+        <dtv:OrganizationID>#{getOrganizationId}</dtv:OrganizationID>
+        <RetailStoreID>#{getRetailLocationId}</RetailStoreID>
+        <WorkstationID>#{getWorkstationId}</WorkstationID>
+        <TillID>#{getSessionId}</TillID>
+        <dtv:CashDrawerID>#{getCashDrawerId}</dtv:CashDrawerID>
+        <SequenceNumber>#{getTransactionSequence}</SequenceNumber>
+        <BusinessDayDate>#{getBusinessDate}[date]</BusinessDayDate>
+        <BeginDateTime>#{getBeginDatetimestamp}[datetime]</BeginDateTime>
+        <EndDateTime>#{getEndDatetimestamp}[datetime]</EndDateTime>
+        <OperatorID>#{getOperatorParty.getEmployeeId}</OperatorID>
+        <CurrencyCode>#{dtv.pos.common.ConfigurationMgr.getLocalCurrencyId}</CurrencyCode>
+        
+        <?iterator method="getProperties"?>
+        <dtv:PosTransactionProperties>
+          <dtv:PosTransactionPropertyCode>#{getPropertyCode}</dtv:PosTransactionPropertyCode>
+          <dtv:PosTransactionPropertyValue>#{getPropertyValue}</dtv:PosTransactionPropertyValue>
+        </dtv:PosTransactionProperties>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+    
+    <section name="SALE_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransaction" />
+      <xml><![CDATA[
+        <RetailTransaction TypeCode="Transaction" TransactionStatus="#{getTransactionStatusCode}[transactionStatus]">
+          <?sectionref name="line_items"?>
+          <Total TotalType="TransactionGrandAmount">#{getTotal}[money]</Total>
+          <RoundedTotal>#{getRoundedAmount}[money]</RoundedTotal>
+          <?sectionref name="customer"?>
+          
+          <?iterator method="getTransactionLinks"?>
+          <?sectionref name="resume_trans_link"?>
+          <?_iterator?>
+          
+          <?sectionref name="cancel_tran_reasoncode"?>
+          <?sectionref name="employee_sale_id"?>
+          <?sectionref name="airport_flight_information"?>
+        </RetailTransaction>
+      ]]></xml>  
+    </section>
+    
+    <section name="POST_VOID_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trn.IPostVoidTransaction" />
+      <xml><![CDATA[
+        <RetailTransaction TypeCode="Transaction" TransactionStatus="#{getTransactionStatusCode}[transactionStatus]">
+          <?call method="getVoidedTransaction"?>
+            <?sectionref name="line_items"?>                 
+            <?condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransaction"?>
+              <Total TotalType="TransactionGrandAmount">#{getTotal}[money]</Total>
+              <RoundedTotal>#{getRoundedAmount}[money]</RoundedTotal>
+            <?_condition?>
+            <?sectionref name="employee_sale_id"?>
+            <?sectionref name="airport_flight_information"?>
+          <?_call?>
+          
+          <?sectionref name="customer"?>
+          <?sectionref name="post_void_link"?>
+          <?sectionref name="post_void_reason"?>
+          <?sectionref name="cancel_tran_reasoncode"?>
+        </RetailTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="NOSALE_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trn.INoSaleTransaction" />
+      <xml><![CDATA[
+        <ControlTransaction>
+          <ReasonCode>#{getNoSaleReasonCode}</ReasonCode>
+          <NoSale>#{getBeginDatetimestamp}[datetime]</NoSale>
+          <?sectionref name="cancel_tran_reasoncode"?>
+        </ControlTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="SYSTEM_CYCLE">
+      <xml><![CDATA[
+        <ControlTransaction>
+          <ReasonCode>!{dtv.logbuilder.SystemCycleTypeDocBuilderField}[systemCycleType]</ReasonCode>
+          <dtv:SystemCycleType>!{dtv.logbuilder.SystemCycleTypeDocBuilderField}[systemCycleType]</dtv:SystemCycleType>
+        </ControlTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="INV_TRANS_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.inv.IInventoryTransaction" />
+      <sectionref>inv_trans_ship_receive</sectionref>
+      <sectionref>inv_trans_adjustment</sectionref>
+      <sectionref>inventory_count_trans</sectionref>
+      <sectionref>order_inv_trans</sectionref>
+      <sectionref>REPLENISHMENT_ORDER_BODY</sectionref>
+      <sectionref>item_transfer</sectionref>
+    </section>
+
+    <section name="SESSION_CONTROL_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.tsn.ISessionControlTransaction" />
+      <xml><![CDATA[
+        <POSLogControlTransaction>
+          <OperatorID>#{getOperatorParty.getEmployeeId}</OperatorID>
+          <?sectionref name="issue_till_session_control_trans"?>
+          <?sectionref name="attach_till_session_control_trans"?>
+          <?sectionref name="remove_till_session_control_trans"?>
+          
+          <?iterator method="getTransactionNotes"?>
+          <Comment>#{getNote}</Comment>
+          <?_iterator?>
+          
+          <?sectionref name="cancel_tran_reasoncode"?>
+        </POSLogControlTransaction>
+      ]]></xml>
+    </section>
+        
+    <section name="SESSION_CONTROL_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.tsn.ISessionControlTransaction" />
+      <xml><![CDATA[
+        <POSLogControlTransaction>
+          <OperatorID>#{getOperatorParty.getEmployeeId}</OperatorID>
+          <?sectionref name="issue_till_session_control_trans"?>
+          <?sectionref name="attach_till_session_control_trans"?>
+          <?sectionref name="remove_till_session_control_trans"?>
+          
+          <?iterator method="getTransactionNotes"?>
+          <dtv:Comment>#{getNote}</dtv:Comment>
+          <?_iterator?>
+          
+          <?sectionref name="cancel_tran_reasoncode"?>
+        </POSLogControlTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="TILL_CONTROL_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.tsn.ITillControlTransaction" />
+      <xml><![CDATA[
+        <TillControlTransaction>
+          <Type>#{getTypeCode}</Type>
+          <EmployeeID>#{getEmployeeId}</EmployeeID>
+          <ReasonCode>#{getReasonCode}</ReasonCode>
+          
+          <?iterator method="getTransactionNotes"?>
+          <TillControlComment>#{getNote}</TillControlComment>
+          <?_iterator?>
+          
+          <?iterator method="getTillControlTransactionDetails"?>
+          <TillControlDetail>
+            <AffectedTenderRepositoryID>#{getAffectedTenderRepositoryId}</AffectedTenderRepositoryID>
+            <AffectedWorkstationID>#{getAffectedWorkstationId}</AffectedWorkstationID>
+            <OldAmount>#{getOldAmount}[money]</OldAmount>
+            <NewAmount>#{getNewAmount}[money]</NewAmount>
+          </TillControlDetail>
+          <?_iterator?>
+        </TillControlTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="TENDER_CONTROL_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.tsn.ITenderControlTransaction" />
+      <xml><![CDATA[
+        <TenderControlTransaction>
+          <OperatorID>#{getOperatorParty.getEmployeeId}</OperatorID>
+          <dtv:SafeBagId>#{getSafeBagId}</dtv:SafeBagId>
+          
+          <?sectionref name="paid_in"?>
+          <?sectionref name="paid_out"?>
+          <?sectionref name="till_count"?>
+          <?sectionref name="associate_advance"?>
+          
+          <GLAccountNumber>#{getReasonCodeObject.getGlAccountNumber}</GLAccountNumber>
+          
+          <?iterator method="getTransactionNotes"?>
+          <Comment>#{getNote}</Comment>
+          <?_iterator?>
+          
+          <?sectionref name="cancel_tran_reasoncode"?>
+        </TenderControlTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="TENDER_EXCHANGE_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.tsn.ITenderControlTransaction" />
+      <xml><![CDATA[
+        <TenderExchange>
+          <?iterator method="getPosLogRetailLineItems" itemComparator="dtv.logbuilder.TLogLineItemComparator"?>
+          <LineItem VoidFlag="#{getVoid}[boolean]" EntryMethod="!{dtv.logbuilder.LineItemEntryMethodDocBuilderField}[entryMethod]">
+            <SequenceNumber>#{getTLogSequence}</SequenceNumber>
+            <BeginDateTime>#{getBeginDateTimestamp}[datetime]</BeginDateTime>
+            <EndDateTime>#{getEndDateTimestamp}[datetime]</EndDateTime>
+            
+            <?sectionref name="sale_line"?>
+            <?sectionref name="min_special_order_line"?>
+            <?sectionref name="return_line"?>
+            <?sectionref name="account_payment_line"?>
+            <?sectionref name="configurable_cust_acct_payment_line"?>
+            <?sectionref name="layaway_line"?>
+            <?sectionref name="prev_layaway_line"?>
+            <?sectionref name="special_order_line"?>
+            <?sectionref name="configurable_cust_acct_line"?>
+            <?sectionref name="prev_spec_order_line"?>
+            <?sectionref name="prev_configurable_cust_acct_line"?>
+            <?sectionref name="send_sale_line"?>
+            <?sectionref name="prev_send_sale_line"?>
+            <?sectionref name="work_order_line"?>
+            <?sectionref name="prev_work_order_line"?>
+            <?sectionref name="discount_line"?>
+            <?sectionref name="tax_line"?>
+            <?sectionref name="tender_line"?>
+            <?sectionref name="generic_lineitem_storage"?>
+          </LineItem>
+          <?_iterator?>
+        </TenderExchange>
+      ]]></xml>
+    </section>
+    
+    <section name="EXCHANGE_RATE_TRANS_BODY">
+      <xml><![CDATA[
+        <?iterator method="getExchangeRateTransLineItems"?>
+        <dtv:ForeignCurrencyExchangeRate>
+          <dtv:BaseCurrency>#{getBaseCurrency}</dtv:BaseCurrency>
+          <dtv:TargetCurrency>#{getTargetCurrency}</dtv:TargetCurrency>
+          <dtv:OldRate>#{getOldExchangeRate}</dtv:OldRate>
+          <dtv:NewRate>#{getNewExchangeRate}</dtv:NewRate>
+          <dtv:Comment>#{getNotes}</dtv:Comment>
+        </dtv:ForeignCurrencyExchangeRate>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+    
+    <section name="TIMECLOCK_BODY">
+      <xml><![CDATA[
+        <dtv:TimeClockTransaction>
+          <dtv:EntryCode>#{getTimeclockEntryCodes.toString.trim}</dtv:EntryCode>          
+          <dtv:WorkCode>#{getWorkCodes.getWorkCode.toString.trim}</dtv:WorkCode>
+          
+          <?call method="getTimecardJournal.getPartyIdObject{TIMECLOCK}"?>
+          <dtv:TimecardEmployeeId>#{getEmployeeId}</dtv:TimecardEmployeeId>
+          <?_call?>
+          
+          <dtv:ClockInTime>#{getTimecardJournal.getClockInDateTime}[datetime]</dtv:ClockInTime>
+          <dtv:ClockOutTime>#{getTimecardJournal.getClockOutDateTime}[datetime]</dtv:ClockOutTime>
+          <?condition method="getTimecardJournal" comparison="NOT_NULL"?>
+          <dtv:DeleteFlag>#{getTimecardJournal.getDelete}[boolean]</dtv:DeleteFlag>
+          <?_condition?>
+          
+          <?iterator method="getTransactionNotes"?>
+          <dtv:Comment>#{getNote}</dtv:Comment>
+          <?_iterator?>
+
+          <?condition method="getWorkCodes" comparison="NOT_NULL"?>
+          <dtv:SellingFlag>#{getWorkCodes.getSelling}[boolean]</dtv:SellingFlag>
+          <?_condition?>        
+          <dtv:TimecardEntryId>#{getTimecardEntryId}</dtv:TimecardEntryId>
+          
+          
+          <?sectionref name="cancel_tran_reasoncode"?>
+        </dtv:TimeClockTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="BALANCE_INQUIRY_BODY">
+      <xml><![CDATA[
+        <dtv:GiftCardBalanceInquiry>
+          <?sectionref name="line_items"?>
+        </dtv:GiftCardBalanceInquiry>
+      ]]></xml>
+    </section>
+    
+    <section name="TRAINING_MODE_ENTRY">
+      <condition class="dtv.pos.docbuilding.conditions.TrainingModeAccessCondition" />
+      <xml><![CDATA[
+        <dtv:TrainingModeTransaction>
+          <dtv:Type>TrainingModeEntry</dtv:Type>
+        </dtv:TrainingModeTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="TRAINING_MODE_EXIT">
+      <condition class="dtv.pos.docbuilding.conditions.TrainingModeAccessCondition" />
+      <xml><![CDATA[
+        <dtv:TrainingModeTransaction>
+          <dtv:Type>TrainingModeExit</dtv:Type>
+        </dtv:TrainingModeTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="ESCROW_BODY">
+      <xml><![CDATA[
+        <EscrowTransaction>
+          <TransactionType>#{getTransactionTypeCode}</TransactionType>
+          <?sectionref name="escrow_customer"?>
+          
+          <dtv:EscrowTransferToAccount>
+            <dtv:AccountNumber>#{getCustAccountId}</dtv:AccountNumber>
+            <dtv:Amount>#{getEscrowAmount}[money]</dtv:Amount>
+          </dtv:EscrowTransferToAccount>
+          <dtv:EscrowTransferFromAccount>
+            <dtv:AccountNumber>#{getEscrowAccountActivity.getSourceCustAccountId}</dtv:AccountNumber>
+            <dtv:AccountCode>#{getEscrowAccountActivity.getSourceCustAccountCode}</dtv:AccountCode>
+          </dtv:EscrowTransferFromAccount>
+        </EscrowTransaction>
+      ]]></xml>
+    </section>
+
+    <section name="line_items">
+      <xml><![CDATA[
+        <?iterator method="getPosLogRetailLineItems" itemComparator="dtv.logbuilder.TLogLineItemComparator"?>
+        <LineItem VoidFlag="#{getVoid}[boolean]" EntryMethod="!{dtv.logbuilder.LineItemEntryMethodDocBuilderField}[entryMethod]">
+          <SequenceNumber>#{getTLogSequence}</SequenceNumber>
+          <BeginDateTime>#{getBeginDateTimestamp}[datetime]</BeginDateTime>
+          <EndDateTime>#{getEndDateTimestamp}[datetime]</EndDateTime>
+          
+          <?sectionref name="sale_line"?>
+          <?sectionref name="min_special_order_line"?>
+          <?sectionref name="return_line"?>
+          <?sectionref name="account_payment_line"?>
+          <?sectionref name="configurable_cust_acct_payment_line"?>
+          <?sectionref name="order_line"?>
+          <?sectionref name="prev_order_line"?>
+          <?sectionref name="layaway_line"?>
+          <?sectionref name="prev_layaway_line"?>
+          <?sectionref name="special_order_line"?>
+          <?sectionref name="configurable_cust_acct_line"?>
+          <?sectionref name="prev_spec_order_line"?>
+          <?sectionref name="prev_configurable_cust_acct_line"?>
+          <?sectionref name="send_sale_line"?>
+          <?sectionref name="prev_send_sale_line"?>
+          <?sectionref name="work_order_line"?>
+          <?sectionref name="prev_work_order_line"?>
+          <?sectionref name="discount_line"?>
+          <?sectionref name="tax_line"?>
+          <?sectionref name="tender_line"?>
+          <?sectionref name="generic_lineitem_storage"?>
+          <?sectionref name="coupon_line"?>
+          <?sectionref name="transaction_deal"?>
+          <?sectionref name="document_line"?>
+          <?sectionref name="exchange_line"?>
+        </LineItem>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+
+    <section name="customer">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransaction" />
+      <sectionref>customer_common</sectionref>
+      <sectionref>loyalty_account</sectionref>
+    </section>
+    
+    <section name="escrow_customer">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IEscrowTransaction" />
+        <condition method="getCustomerParty" comparison="NOT_NULL" />
+    <sectionref>customer_common</sectionref>
+    </section>
+    
+    <section name="customer_common">
+      <condition method="getCustomerParty" comparison="NOT_NULL" />
+
+      <xml><![CDATA[
+          <Customer>
+            <Name>#{getCustomerParty.getSalutation}
+                  #{getCustomerParty.getFirstName}
+                  #{getCustomerParty.getMiddleName}
+                  #{getCustomerParty.getLastName}
+                  #{getCustomerParty.getSuffix}
+            </Name>
+            <ActiveFlag>#{getCustomerParty.getActive}</ActiveFlag>
+            <Address>
+            <AddressLine>#{getCustomerParty.getPrimaryLocaleInformation.getAddress1}</AddressLine>
+            <City>#{getCustomerParty.getPrimaryLocaleInformation.getCity}</City>
+            <State>#{getCustomerParty.getPrimaryLocaleInformation.getState}</State>
+            <PostalCode>#{getCustomerParty.getPrimaryLocaleInformation.getPostalCode}</PostalCode>
+            </Address>
+            <eMail>#{getCustomerParty.getEmailAddress}</eMail>
+            <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+            <?sectionref name="customer_id_sections"?>
+          </Customer>
+      ]]></xml>
+    </section>
+
+    <section name="loyalty_account" /> <!-- placeholder overwritten by relate config -->
+
+    <section name="party_locale_information">
+      <call method="getCustomerParty.getPrimaryLocaleInformation">
+        <sectionref>party_address</sectionref>
+      </call>
+      <iterator method="getCustomerParty.getTelephoneInformation">
+        <sectionref>party_telephone</sectionref>
+      </iterator>
+    </section>
+    
+    <section name="customer_id_sections">
+      <xml><![CDATA[
+        <AccountNumber>#{getLoyaltyCard}</AccountNumber>
+        <dtv:CustomerID>#{getCustomerParty.getCustomerId}</dtv:CustomerID>
+        <AlternateKey TypeCode="XSTORE_ID">
+          <AlternateID>#{getCustomerParty.getPartyId}</AlternateID>
+        </AlternateKey>
+        <AlternateKey TypeCode="XSTORE_CUST_ID">
+          <AlternateID>#{getCustomerParty.getCustomerId}</AlternateID>
+        </AlternateKey>
+      ]]></xml>
+    </section>
+
+    
+    <section name="resume_trans_link">
+      <condition method="getLinkTypeCode" comparison="EQUAL" value="RESUME_TRANSACTION" />
+      <xml><![CDATA[
+        <TransactionLink ReasonCode="Resume">
+          <RetailStoreID>#{getLinkRetailLocationId}</RetailStoreID>
+          <WorkstationID>#{getLinkWorkstationId}</WorkstationID>
+          <SequenceNumber>#{getLinkTransactionSequence}</SequenceNumber>
+          <BusinessDayDate>#{getLinkBusinessDate}[date]</BusinessDayDate>
+        </TransactionLink>
+      ]]></xml>
+    </section>
+    
+    <section name="cancel_tran_reasoncode">
+      <condition method="getTransactionCancelledReasonCode" comparison="NOT_NULL" />
+      <xml><![CDATA[
+        <dtv:TransCancelReasonCode>#{getTransactionCancelledReasonCode}</dtv:TransCancelReasonCode>
+      ]]></xml>
+    </section>
+    
+    <section name="employee_sale_id">
+      <condition class="dtv.pos.docbuilding.conditions.EmployeeSaleCondition" />
+      <xml><![CDATA[
+        <dtv:EmployeeSaleId>#{getCustomerParty.getEmployeeId}</dtv:EmployeeSaleId>
+      ]]></xml>
+    </section>
+    
+    <section name="post_void_link">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trn.IPostVoidTransaction" />
+      <xml><![CDATA[
+        <?call method="getVoidedTransaction"?>
+        <TransactionLink ReasonCode="Voided" EntryMethod="#{getVoidedTransactionEntryCode}">
+          <RetailStoreID>#{getRetailLocationId}</RetailStoreID>
+          <WorkstationID>#{getWorkstationId}</WorkstationID>
+          <SequenceNumber>#{getTransactionSequence}</SequenceNumber>
+          <BusinessDayDate>#{getBusinessDate}[date]</BusinessDayDate>
+        </TransactionLink>
+        <?_call?>
+      ]]></xml>
+    </section>
+    
+    <section name="post_void_reason">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trn.IPostVoidTransaction" />
+      <xml><![CDATA[
+        <dtv:PostVoidReasonCode>#{getPostVoidReasonCode}</dtv:PostVoidReasonCode>
+        
+        <?iterator method="getTransactionNotes"?>
+        <PostVoidComment>#{getNote}</PostVoidComment>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+
+    <section name="item_transfer">
+      <condition class="dtv.pos.inventory.InventoryTransactionTypeCondition" type="INVENTORY_MOVEMENT" />
+      <condition method="getInventoryDocument.getDocumentSubtypeCode" comparison="EQUAL" value="ITEM_TRANSFER" />
+      <xml><![CDATA[
+        <InventoryTransaction>
+          <ItemTransfer>
+            <DocumentStatus>#{getInventoryDocument.getStatusCode}</DocumentStatus>
+            <DocumentID>#{getDocumentId}</DocumentID>
+            <RetailStoreID>#{getRetailLocationId}</RetailStoreID>
+            <DocumentTypeDescription>#{getDocumentTypeCode}_#{getInventoryDocument.getDocumentSubtypeCode}</DocumentTypeDescription>
+            <DocumentType>#{getDocumentTypeCode}</DocumentType>
+            <DocumentSubType>#{getInventoryDocument.getDocumentSubtypeCode}</DocumentSubType>
+            <Description>#{getInventoryDocument.getDescription}</Description>
+            <RecordCreationType>#{getInventoryDocument.getRecordCreationType}</RecordCreationType>
+            <CreationTimestamp>#{getInventoryDocument.getCreateDateTime}[datetime]</CreationTimestamp>
+            
+            <?iterator method="getInventoryDocument.getInventoryDocumentLineItems"?>
+              <?iterator method="getDocumentInventoryLocationModifiers"?>
+              <ItemTransferLine>
+                <LineSequence>#{getDocumentLineNumber}</LineSequence>
+                <ItemID>#{getItemId}</ItemID>
+                <SourceLocationId>#{getSourceLocationId}</SourceLocationId>
+                <SourceBucketId>#{getSourceBucketId}</SourceBucketId>
+                <DestinationLocationId>#{getDestinationLocationId}</DestinationLocationId>
+                <DestinationBucketId>#{getDestinationBucketId}</DestinationBucketId>
+                <Quantity>#{getQuantity}</Quantity>
+              </ItemTransferLine>
+              <?_iterator?>
+            <?_iterator?>
+          </ItemTransfer>            
+        </InventoryTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="inv_trans_ship_receive">
+      <condition class="dtv.pos.inventory.InventoryTransactionTypeCondition">
+        <Parameter name="TypeCode" value="SHIPPING" />
+        <Parameter name="TypeCode" value="RECEIVING" />
+      </condition>
+      <xml><![CDATA[
+        <InventoryTransaction>
+          <?element name="!{dtv.pos.logbuilder.InventoryTransactionTypeDocBuilderField}[invTransType]"?>
+            <?call method="getInventoryDocument"?>
+            <DocumentStatus>#{getStatusCode}</DocumentStatus>
+            <DocumentID>#{getDocumentId}</DocumentID>
+            <RetailStoreID>#{getRetailLocationId}</RetailStoreID>
+            <OriginatorID>#{getOriginatorId}</OriginatorID>
+            <OriginatorName>#{getOriginatorName}</OriginatorName>
+            <DocumentTypeDescription>#{getDocumentTypeCode}_#{getDocumentSubtypeCode}</DocumentTypeDescription>
+            <DocumentType>#{getDocumentTypeCode}</DocumentType>
+            <DocumentSubType>#{getDocumentSubtypeCode}</DocumentSubType>
+            <Description>#{getDescription}</Description>
+            <POReferenceNumber>#{getPoReferenceNumber}</POReferenceNumber>
+            <RecordCreationType>#{getRecordCreationType}</RecordCreationType>
+            <CreationTimestamp>#{getCreateDateTime}[datetime]</CreationTimestamp>
+            <ExpectedDeliveryDate>#{getExpectedDeliveryDate}[datetime]</ExpectedDeliveryDate>
+            <CompletionTimestamp>#{getCompleteDateTime}[datetime]</CompletionTimestamp>
+            <LastActivityTimestamp>#{getLastActivityDate}[datetime]</LastActivityTimestamp>
+            
+            <?sectionref name="inventory_doc_common"?>            
+            <?_call?>
+            
+            <?iterator method="getInventoryTransactionDetails"?>
+            <?call method="getInventoryDocumentLineItem"?>
+            <LineItem VoidFlag="!{dtv.pos.inventory.InventoryLineVoidedLogField}[boolean]">
+              <ItemID>#{getInventoryItem.getItemId}</ItemID>
+              
+              <?condition class="dtv.pos.docbuilding.conditions.InventoryLineTypeCondition" value="RECEIVING"?>
+              <QuantityOrdered>#{getExpectedCount}[quantity]</QuantityOrdered>
+              <QuantityReceived>#{getUnitCount}[quantity]</QuantityReceived>
+              <?_condition?> 
+
+              <?condition class="dtv.pos.docbuilding.conditions.InventoryLineTypeCondition" value="SHIPPING"?>
+              <dtv:QuantityShipped>#{getUnitCount}[quantity]</dtv:QuantityShipped>
+              <?_condition?> 
+
+              <UnitCost>#{getInventoryItem.getUnitCost}[money]</UnitCost>
+              <CartonNumber>#{getCartonId}</CartonNumber>
+              <LineItemNumber>#{getInventoryDocumentLineNumber}</LineItemNumber>
+              <Description>#{getInventoryItem.getDescription}</Description>
+              <dtv:SerialNbr>#{getSerialNumber}</dtv:SerialNbr>              
+            </LineItem>
+            <?_call?>
+            <?_iterator?>
+            
+          <?_element?>
+          
+          <?sectionref name="cancel_tran_reasoncode"?>
+        </InventoryTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="inv_trans_adjustment">
+      <condition class="dtv.pos.inventory.InventoryTransactionTypeCondition" type="ADJUSTMENT" />
+      <xml><![CDATA[
+        <InventoryTransaction>
+          <CountID>#{getInventoryDocument.getDocumentId}</CountID>
+          <CountType>#{getInventoryDocument.getDocumentTypeCode}</CountType>
+          <CountStatus>#{getInventoryDocument.getStatusCode}</CountStatus>
+          <ReasonCode>#{getReasonCode}</ReasonCode>
+          
+          <?iterator method="getTransactionNotes"?>
+            <Comment>#{getNote}</Comment>
+          <?_iterator?>
+          
+          <?iterator method="getInventoryDocument.getInventoryDocumentLineItems"?>
+          <ItemCount VoidFlag="!{dtv.pos.inventory.InventoryLineVoidedLogField}[boolean]">
+            <ItemID>#{getInventoryItemId}</ItemID>
+            <Quantity>#{getUnitCount}[quantity]</Quantity>
+            <dtv:InventoryBucketId>#{getOriginalBucketId}</dtv:InventoryBucketId>
+          </ItemCount>
+          <?_iterator?>
+        </InventoryTransaction>
+      ]]></xml>
+    </section>
+        
+    <section name="inventory_count_trans">
+      <condition class="dtv.pos.inventory.InventoryTransactionTypeCondition" type="INVENTORY_COUNT" />
+      <xml><![CDATA[
+        <InventoryTransaction>
+          <InventoryCount>
+            <CountID>#{getDocumentId}</CountID>
+            <DueDate>#{DueDate}[date]</DueDate>
+            <CountType>#{getReasonCode}</CountType>
+            <CountStatus>#{getNewStatusCode}</CountStatus>
+          </InventoryCount>
+        </InventoryTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="order_inv_trans">
+      <condition class="dtv.pos.inventory.InventoryTransactionTypeCondition" type="ORDER" />
+      <xml><![CDATA[
+        <InventoryTransaction>
+          <DocumentID>#{getDocumentId}</DocumentID>
+          <DocumentType>#{getDocumentTypeCode}</DocumentType>
+          <ReasonCode>#{getReasonCode}</ReasonCode>
+          
+          <?iterator method="getInventoryTransactionDetails"?>
+          <?call method="getNewInventoryLocationModifiers.get(0)"?>
+          <ItemCount>
+            <ItemID>#{getItemId}</ItemID>
+            <Quantity>#{getQuantity.negate}[quantity]</Quantity>
+            <dtv:InventoryBucketId>#{getSourceBucketId}</dtv:InventoryBucketId>
+          </ItemCount>
+          <ItemCount>
+            <ItemID>#{getItemId}</ItemID>
+            <Quantity>#{getQuantity}[quantity]</Quantity>
+            <dtv:InventoryBucketId>#{getDestinationBucketId}</dtv:InventoryBucketId>
+          </ItemCount>
+          <?_call?>
+          <?_iterator?>
+        </InventoryTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="issue_till_session_control_trans">
+      <condition class="dtv.pos.docbuilding.conditions.SessionControlTransTypeCondition" value="ISSUE_TILL" />
+      <xml><![CDATA[
+        <dtv:AssignTill>
+          <dtv:TillID>#{getSession.getTenderRepositoryId}</dtv:TillID>
+        </dtv:AssignTill>
+      ]]></xml>
+    </section>
+    
+    <section name="attach_till_session_control_trans">
+      <condition class="dtv.pos.docbuilding.conditions.SessionControlTransTypeCondition" value="ATTACH_TILL" />
+      <xml><![CDATA[
+        <dtv:AttachTill>
+          <dtv:TillID>#{getSession.getTenderRepositoryId}</dtv:TillID>
+          <dtv:WorkstationID>#{getSessionWorkstation.getWorkstationId}</dtv:WorkstationID>
+          <dtv:CashDrawer>#{getSessionWorkstation.getCashDrawerId}</dtv:CashDrawer>
+        </dtv:AttachTill>
+      ]]></xml>
+    </section>
+    
+    <section name="remove_till_session_control_trans">
+      <condition class="dtv.pos.docbuilding.conditions.SessionControlTransTypeCondition" value="REMOVE_TILL" />
+      <xml><![CDATA[
+        <dtv:RemoveTill>
+          <dtv:TillID>#{getSession.getTenderRepositoryId}</dtv:TillID>
+          <dtv:WorkstationID>#{getSessionWorkstation.getWorkstationId}</dtv:WorkstationID>
+          <dtv:CashDrawer>#{getSessionWorkstation.getCashDrawerId}</dtv:CashDrawer>
+        </dtv:RemoveTill>
+      ]]></xml>
+    </section>
+    
+    <section name="paid_in">
+      <condition class="dtv.pos.docbuilding.conditions.TenderControlTransTypeCondition" value="PAID_IN" />
+      <xml><![CDATA[
+        <PaidIn>
+          <?sectionref name="trans_link_property_data"?>
+          <?sectionref name="fund_xfer_data"?>
+        </PaidIn>
+      ]]></xml>
+    </section>
+    
+    <section name="paid_out">
+      <condition class="dtv.pos.docbuilding.conditions.TenderControlTransTypeCondition" value="PAID_OUT" />
+      <xml><![CDATA[
+        <PaidOut>
+          <?sectionref name="fund_xfer_data"?>
+        </PaidOut>
+      ]]></xml>
+    </section>
+    
+    <section name="fund_xfer_data">
+      <xml><![CDATA[
+        <Amount>#{getAmount}[money]</Amount>
+        <Reason>#{getReasonCode}</Reason>
+        <ReasonDescription>#{getReasonCodeObject.getDescription}</ReasonDescription>
+      ]]></xml>
+    </section>
+    
+    <section name="trans_link_property_data">
+      <xml><![CDATA[
+        <?iterator method="getTransactionLinks"?>
+          <PosTransactionLink>
+            <?sectionref name="properties"?>
+            <?call method="getLinkedTransaction"?>                
+              <TransactionID>#{getTransactionSequence}</TransactionID>
+            <?_call?>
+          </PosTransactionLink>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+    
+    <section name="till_count">
+      <condition class="dtv.pos.docbuilding.conditions.TenderControlTransTypeCondition" value="PAID_IN" inverted="true" />
+      <condition class="dtv.pos.docbuilding.conditions.TenderControlTransTypeCondition" value="PAID_OUT" inverted="true" />
+      <xml><![CDATA[
+        <?element name="#{getTypeCode}[tillCountType]"?>
+          <dtv:InboundTillID>#{getInboundTenderRepository.getTenderRepositoryId}</dtv:InboundTillID>
+          <dtv:InboundTillEmployeePartyID>#{getInboundSession.getEmployeePartyId}</dtv:InboundTillEmployeePartyID>
+          <dtv:OutboundTillID>#{getOutboundTenderRepository.getTenderRepositoryId}</dtv:OutboundTillID>
+          <dtv:OutboundTillEmployeePartyID>#{getOutboundSession.getEmployeePartyId}</dtv:OutboundTillEmployeePartyID>
+          <?iterator method="getOutboundTenderRepository.getTenderRepositoryFloat"?>
+            <dtv:CashRemainedInTill Currency="#{getCurrencyId}">#{getLastClosingCashAmt}[money]</dtv:CashRemainedInTill>
+          <?_iterator?>
+          
+          <?iterator method="getTenderTypeCounts"?>
+          <dtv:TenderTypeCount TenderType="#{getTenderTypeCode}">
+            <dtv:TenderTypeTotal>
+              <dtv:Amount>#{getAmount}[money]</dtv:Amount>
+              <dtv:DifferenceAmount>#{getDifferenceAmount}[money]</dtv:DifferenceAmount>
+            </dtv:TenderTypeTotal>
+
+            <?iterator method="getTenderCounts"?>
+            <dtv:TenderCount TenderId="#{getTenderId}">
+              <dtv:TenderTotal>
+                <dtv:Amount>#{getAmount}[money]</dtv:Amount>
+                <dtv:LocalCurrencyAmount>#{getLocalCurrencyAmount}[money]</dtv:LocalCurrencyAmount>
+                <dtv:DifferenceAmount>#{getDifferenceAmount}[money]</dtv:DifferenceAmount>
+              </dtv:TenderTotal>
+          
+              <?iterator method="getTenderDenominationCounts"?>
+              <dtv:TenderDenominationCount TenderDenominationId="#{getDenominationId}">
+                <dtv:TenderDenominationTotal>
+                  <dtv:Amount>#{getAmount}[money]</dtv:Amount>
+                  <dtv:DifferenceAmount>#{getDifferenceAmount}[money]</dtv:DifferenceAmount>
+                </dtv:TenderDenominationTotal>
+              </dtv:TenderDenominationCount>
+              <?_iterator?>
+            </dtv:TenderCount>
+            <?_iterator?>
+          
+            <?iterator method="getTenderSerializedCounts"?>
+            <dtv:TenderTypeSerializedCount TenderType="#{getTenderTypeCode}">
+              <dtv:TenderCount TenderId="#{getTender.getTenderId}">
+                <dtv:TenderTypeSerializedTotal>
+                  <dtv:Amount>#{getAmount}[money]</dtv:Amount>
+                </dtv:TenderTypeSerializedTotal>
+              </dtv:TenderCount>
+            </dtv:TenderTypeSerializedCount>
+            <?_iterator?>
+          </dtv:TenderTypeCount>
+          <?_iterator?>
+        <?_element?>
+      ]]></xml>
+    </section>
+    
+    <section name="associate_advance">
+      <condition class="dtv.pos.docbuilding.conditions.TenderControlTransTypeCondition" value="ASSOCIATE_ADVANCE" />
+      <xml><![CDATA[
+        <dtv:AssociateAdvance>
+          <dtv:AssociateID>#{getFundsReceiptParty.getEmployeeId}</dtv:AssociateID>
+          <dtv:Amount>#{getAmount}[money]</dtv:Amount>
+        </dtv:AssociateAdvance>
+      ]]></xml>
+    </section>
+    
+    <section name="line_common">
+      <xml><![CDATA[
+        <dtv:ScannedItemID>#{getScannedItemId.trim}</dtv:ScannedItemID>
+        <dtv:AuthorizationCode>#{getAuthorizationCode}</dtv:AuthorizationCode>
+        <SerialNumber>#{getSerialNumber}</SerialNumber>
+        <GiftReceiptFlag>#{getGiftReceiptCount}[boolean]</GiftReceiptFlag>
+        <dtv:VoidReason>#{getVoidLineItemReasonCode}</dtv:VoidReason>
+        <?sectionref name="item_commisions"?>
+        <?sectionref name="item_commisions_pct_of_item"?>
+        <?sectionref name="item_price_modifiers"?>
+        <?sectionref name="item_taxes"?>
+        <?sectionref name="sale_kit"?>
+      ]]></xml>
+    </section>
+    
+    <section name="item_commisions">
+      <xml><![CDATA[
+        <?iterator method="getCommissionModifiers"?>
+        <?condition method="getEmployeeParty.getEmployeeId" comparison="NOT_BLANK"?>
+        <Associate>
+          <AssociateID>#{getEmployeeParty.getEmployeeId}</AssociateID>
+        </Associate>
+        <?_condition?>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+    
+    <section name="item_commisions_pct_of_item">
+      <xml><![CDATA[
+        <?condition method="getCommissionModifiers" comparison="IS_EMPTY"?>
+        <dtv:PercentageOfItem>
+          <dtv:AssociateID />
+          <dtv:Percentage>0</dtv:Percentage>
+        </dtv:PercentageOfItem>
+        <?_condition?>
+      
+        <?iterator method="getCommissionModifiers"?>
+        <dtv:PercentageOfItem>
+          <dtv:AssociateID>#{getEmployeeParty.getEmployeeId}</dtv:AssociateID>
+          <dtv:Percentage>#{getPercentageOfItem}</dtv:Percentage>
+        </dtv:PercentageOfItem>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+    
+    <section name="item_price_modifiers">
+      <xml><![CDATA[
+        <?iterator method="getRetailPriceModifiers"?>
+        <RetailPriceModifier MethodCode="#{getRetailPriceModifierReasonCode}[priceModifierMethodCode]" VoidFlag="#{getVoid}[boolean]">
+          <SequenceNumber>#{getRetailPriceModifierSequenceNbr}</SequenceNumber>
+          
+          <?condition method="getRetailPriceModifierReasonCode" comparison="EQUAL" value="PRICE_OVERRIDE"?>
+          <Amount Action="Replace">#{getPriceChangeAmount}[money]</Amount>
+          <?_condition?>
+          <?condition method="getRetailPriceModifierReasonCode" comparison="EQUAL" value="PROMPT_PRICE_CHANGE"?>
+          <Amount Action="Replace">#{getPriceChangeAmount}[money]</Amount>
+          <?_condition?>
+          <?condition method="getRetailPriceModifierReasonCode" comparison="EQUAL" value="BASE_PRICE_RULE"?>
+          <Amount Action="dtv:BasePrice">#{getAmount}[money]</Amount>
+          <?_condition?>
+
+          <?condition method="getRetailPriceModifierReasonCode" comparison="NOT_EQUAL" value="PRICE_OVERRIDE"?>
+          <?condition method="getRetailPriceModifierReasonCode" comparison="NOT_EQUAL" value="PROMPT_PRICE_CHANGE"?>
+          <?condition method="getRetailPriceModifierReasonCode" comparison="NOT_EQUAL" value="BASE_PRICE_RULE"?>
+          <Amount Action="Subtract">#{getExtendedAmount}[money]</Amount>
+          <?_condition?>
+          <?_condition?>
+          <?_condition?>
+
+          <?condition method="getDiscount" comparison="NOT_NULL"?>
+          <PromotionID>#{getDiscount.getDiscountCode}</PromotionID>
+          <?_condition?>
+          <?condition method="getDiscount" comparison="IS_NULL"?>
+          <PromotionID>#{getPromotionId}</PromotionID>
+          <?_condition?>
+          <?condition method="getRetailPriceModifierReasonCode" comparison="EQUAL" value="DEAL"?>
+          <PromotionID>#{getDealId}</PromotionID>
+          <?_condition?>
+          
+          <?condition method="getRetailPriceModifierReasonCode" comparison="EQUAL" value="PRICE_OVERRIDE"?>
+          <ReasonCode>#{getPriceChangeReasonCode}</ReasonCode>
+          <PreviousPrice>#{getPreviousPrice}[money]</PreviousPrice>
+          <NewPrice>#{getPriceChangeAmount}[money]</NewPrice>
+          <?_condition?>
+          
+          <?condition method="getRetailPriceModifierReasonCode" comparison="NOT_EQUAL" value="PRICE_OVERRIDE"?> 
+          <ReasonCode>#{getRetailPriceModifierReasonCode}</ReasonCode>
+          <?_condition?>
+          
+          <?condition method="getSerialNumber" comparison="NOT_NULL"?>
+          <dtv:SerialNumber>#{getSerialNumber}</dtv:SerialNumber>
+          <Coupon>
+            <ScanCode>#{getSerialNumber}</ScanCode>
+          </Coupon>
+          <?_condition?>
+          
+          <dtv:DiscountReasonCode>#{getDiscountReasonCode}</dtv:DiscountReasonCode>
+          <dtv:DiscountReasonCodeComment>#{getNotes}</dtv:DiscountReasonCodeComment>
+        </RetailPriceModifier>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+    
+    <section name="item_taxes">
+      <iterator method="getTaxModifiers">
+        <sectionref>tax_info</sectionref>
+      </iterator>
+    </section>
+    
+    <section name="tax_info">
+      <xml><![CDATA[
+        <Tax TaxType="#{getSaleTaxGroupRule.getTaxTypeCode}[taxType]" dtv:VoidFlag="#{getVoid}[boolean]">
+          <TaxAuthority>#{getSaleTaxGroupRule.getTaxAuthority.getTaxAuthorityId}</TaxAuthority>
+          <TaxableAmount>#{getTaxableAmount}[money]</TaxableAmount>
+          <Amount>#{getTaxAmount}[decimal]</Amount>
+          <Percent>#{getTaxPercentage}[decimal]</Percent>
+          
+          <?condition method="getTaxExemptionId" comparison="NOT_BLANK"?>
+          <TaxExemption>
+            <CustomerExemptionID>#{getTaxExemptionIdObject{TRANSACTION}.getTaxExemptionId}</CustomerExemptionID>
+            <ExemptTaxAmount>#{getExemptTaxAmount}[money]</ExemptTaxAmount>
+            <ExemptTaxableAmount>#{getTaxExemptAmount}[money]</ExemptTaxableAmount>
+            
+            <?call method="getTaxExemptionIdObject{TRANSACTION}"?>
+            <ReasonCode>#{getReasonCode}</ReasonCode>
+            <CertificateNumber>#{getCertificateNbr}</CertificateNumber>
+            <CertificateHolderName>#{getCertificateHolderName}</CertificateHolderName>
+            <dtv:DiplomaticTitle>#{getDiplomaticTitle}</dtv:DiplomaticTitle>
+            <dtv:CertificateHolderFirstName>#{getCertHolderFirstName}</dtv:CertificateHolderFirstName>
+            <dtv:CertificateHolderLastName>#{getCertHolderLastName}</dtv:CertificateHolderLastName>
+            
+            <?call method="getAddress"?>
+            <dtv:Address1>#{getAddress1}</dtv:Address1>
+            <dtv:Address2>#{getAddress2}</dtv:Address2>
+            <dtv:Address3>#{getAddress3}</dtv:Address3>
+            <dtv:Address4>#{getAddress4}</dtv:Address4>
+            <dtv:City>#{getCity}</dtv:City>
+            <dtv:Territory>#{getTerritory}</dtv:Territory>
+            <dtv:PostalCode>#{getPostalCode}</dtv:PostalCode>
+            <dtv:Country>#{getCountry}</dtv:Country>
+            <?_call?>
+  
+            <dtv:Region>#{getRegion}</dtv:Region>
+            <dtv:PhoneNumber>#{getPhoneNumber}</dtv:PhoneNumber>
+            <dtv:Comments>#{getNotes}</dtv:Comments>
+            <?_call?>
+          </TaxExemption>
+          <?_condition?>
+          
+          <?condition method="getTaxOverride" comparison="TRUE"?>
+          <TaxOverride>
+            <OriginalTaxPercent>#{getRawTaxPercentage}</OriginalTaxPercent>
+            <OriginalTaxAmount>#{getRawTaxAmount}[decimal]</OriginalTaxAmount>
+            <NewTaxPercent>#{getTaxPercentage}[decimal]</NewTaxPercent>
+            <NewTaxAmount>#{getTaxAmount}[decimal]</NewTaxAmount>
+            <ReasonCode>#{getTaxOverrideReasonCode}</ReasonCode>
+            <Comment>#{getTaxOverrideComment}</Comment>
+          </TaxOverride>
+          <?_condition?>
+          
+          <dtv:TaxLocationId>#{getSaleTaxGroupRule.getTaxLocationId}</dtv:TaxLocationId>
+          <dtv:TaxGroupId>#{getTaxGroupId}</dtv:TaxGroupId>
+        </Tax>
+      ]]></xml>
+    </section>
+
+    
+    <section name="line_properties">
+      <xml><![CDATA[
+        <?iterator method="getProperties"?>
+        <dtv:LineItemProperty>
+          <dtv:LineItemPropertyCode>#{getPropertyCode}</dtv:LineItemPropertyCode>
+          <dtv:LineItemPropertyType>#{getType}</dtv:LineItemPropertyType>
+          <dtv:LineItemPropertyValue>#{getStringValue}</dtv:LineItemPropertyValue>
+          <dtv:LineItemPropertyDate>#{getDateValue}[DateTime]</dtv:LineItemPropertyDate>
+          <dtv:LineItemPropertyDecimal>#{getDecimalValue}[Decimal]</dtv:LineItemPropertyDecimal>
+        </dtv:LineItemProperty>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+    
+
+    <section name="sale_line">
+      <condition class="dtv.pos.docbuilding.conditions.SaleLineItemTypeCondition" value="SALE" />
+      <condition method="getReturn" comparison="FALSE" />
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountLineItemTypeCondition" value="SPECIAL_ORDER" inverted="true" />     
+      <xml><![CDATA[
+        <Sale ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]">
+        <?sectionref name="sale_return_item"?>
+        <?sectionref name="line_common"?>
+        <?sectionref name="line_properties"?>
+        <?iterator method="getLineItemAssociationModifiers"?>
+          <dtv:LineItemAssociation>
+            <dtv:LineItemAssociationModifierSequence>#{getLineItemAssociationModifierSequence}</dtv:LineItemAssociationModifierSequence>
+            <dtv:ChildRetailLocationId>#{getChildRetailLocationId}</dtv:ChildRetailLocationId>
+            <dtv:ChildBusinessDate>#{getChildBusinessDate}[datetime]</dtv:ChildBusinessDate>
+            <dtv:ChildWorkstationId>#{getChildWorkstationId}</dtv:ChildWorkstationId>
+            <dtv:ChildTransactionSequence>#{getChildTransactionSequence}</dtv:ChildTransactionSequence>
+            <dtv:ChildRetailTransactionLineItemSequence>#{getChildRetailTransactionLineItemSequence}</dtv:ChildRetailTransactionLineItemSequence>
+            <dtv:LineItemAssociationTypeCodeString>#{getLineItemAssociationTypeCodeString}</dtv:LineItemAssociationTypeCodeString>
+          </dtv:LineItemAssociation>
+          <?_iterator?>
+        </Sale>
+      ]]></xml>
+    </section>
+    
+    <section name="sale_kit">
+      <condition class="dtv.pos.kits.rcpt.IsKitCondition" />
+      <xml><![CDATA[
+        <Kit>
+          <?iterator method="getKitComponentModifiers"?>
+          <Member>
+            <Sale ItemType="Stock">
+              <?sectionref name="kit_component_details"?>
+            </Sale>
+          </Member>
+          <?_iterator?>
+        </Kit>
+      ]]></xml>
+    </section>
+    
+    <section name="kit_component_details">
+      <xml><![CDATA[
+        <ItemID>#{getComponentItemId}</ItemID>
+        <Description>#{getComponentItemDesc}</Description>
+        <Quantity>#{getQuantity}[quantity]</Quantity>
+        <SerialNumber>#{getSerialNumber}</SerialNumber>
+      ]]></xml>
+    </section>
+    
+    <section name="sale_return_item">
+      <xml><![CDATA[
+        <ItemID>#{getItemId.trim}</ItemID>
+        <Description>#{getItemDescription}[translateIfKey]</Description>
+        <UnitCostPrice>#{getItem.getOptions.getUnitCost}[money]</UnitCostPrice>
+        <UnitListPrice>#{getItem.getListPrice}[money]</UnitListPrice>
+        <RegularSalesUnitPrice>#{getRegularBasePrice}[money]</RegularSalesUnitPrice>
+        <ActualSalesUnitPrice>#{getUnitPrice}[money]</ActualSalesUnitPrice>
+        <ExtendedAmount>#{getExtendedAmount}[money]</ExtendedAmount>
+        <Quantity>#{getQuantity}[quantity]</Quantity>
+        <dtv:UnitOfMeasureCode>#{getItem.getOptions.getUnitOfMeasureCode}</dtv:UnitOfMeasureCode>     
+      ]]></xml>
+    </section>
+    
+   <section name="return_line">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.ISaleReturnLineItem" />
+      <condition method="getReturn" comparison="TRUE" />
+      <xml><![CDATA[
+        <Return ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]">
+          <?sectionref name="sale_return_item"?>
+          <?sectionref name="item_commisions"?>
+          <?sectionref name="item_commisions_pct_of_item"?>
+          <?sectionref name="item_price_modifiers"?>
+          <?sectionref name="item_taxes"?>
+          <?sectionref name="RETURN_KIT"?>
+          
+          <?condition method="getOriginalBusinessDate" comparison="NOT_NULL"?>
+          <TransactionLink ReasonCode="Return">
+            <RetailStoreID>#{getOriginalRetailLocationId}</RetailStoreID>
+            <WorkstationID>#{getOriginalWorkstationId}</WorkstationID>
+            <SequenceNumber>#{getOriginalTransactionSequence}</SequenceNumber>
+            <LineItemSequenceNumber>#{getOriginalLineItemSequence}</LineItemSequenceNumber>
+            <BusinessDayDate>#{getOriginalBusinessDate}[date]</BusinessDayDate>
+          </TransactionLink>
+          <?_condition?>
+          <?sectionref name="line_properties"?>
+          
+          <?literal value="!{dtv.pos.register.returns.IxRetailReturnDisposalDocBuilderField}"?>
+          <Reason>#{getReturnReasonCode}</Reason>
+          <dtv:ReturnType>#{getReturnTypeCode}</dtv:ReturnType>
+          <dtv:ReasonComment>#{getReturnComment}</dtv:ReasonComment>
+          <?literal value="!{dtv.pos.register.returns.ReturnLocationAndBucketDocBuilderField}"?>
+          
+          
+          <SerialNumber>#{getSerialNumber}</SerialNumber>
+          <dtv:PostVoidReasonCode>#{getVoidLineItemReasonCode}</dtv:PostVoidReasonCode>
+         </Return>
+      ]]></xml>
+    </section>
+    
+    <section name="return_kit">
+      <condition class="dtv.pos.kits.rcpt.IsKitCondition" />
+      <xml><![CDATA[
+        <Kit>
+          <?iterator method="getKitComponentModifiers"?>
+          <Member>
+            <Return ItemType="Stock">
+              <?sectionref name="kit_component_details"?>
+            </Return>
+          </Member>
+          <?_iterator?>
+        </Kit>
+      ]]></xml>
+    </section>
+    
+    <section name="account_payment_line">
+      <condition class="dtv.pos.docbuilding.conditions.PaymentOnAccountLineItemTypeCondition" />
+      <xml><![CDATA[
+        <PaymentOnAccount>
+          <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+          <Amount>#{getCustomerAccountModifier.getItemAccountExtendedPrice}[money]</Amount>
+          <dtv:VoidReason>#{getVoidLineItemReasonCode}</dtv:VoidReason>
+        </PaymentOnAccount>
+      ]]></xml>
+    </section>
+    
+    <section name="layaway_line">
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountLineItemTypeCondition" value="LAYAWAY" />
+      <xml><![CDATA[
+        <Layaway ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]"
+                 dtv:Status="!{dtv.pos.customer.account.CustomerAccountStateCodeDocBuilderField}">
+
+            <?sectionref name="cust_account_line_common" ?>
+            <?sectionref name="item_commisions"?>
+            <?sectionref name="item_commisions_pct_of_item"?>
+            <?sectionref name="item_price_modifiers"?>
+            <?sectionref name="item_taxes"?>
+            <?sectionref name="sale_kit"?>
+            <?sectionref name="line_properties"?>
+
+          <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+          <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+
+        </Layaway>
+      ]]></xml>
+    </section>
+
+    <section name="prev_layaway_line">
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountCorrectedLineItemTypeCondition" value="LAYAWAY" />
+      <xml><![CDATA[
+        <PreviousLayaway Action="!{dtv.logbuilder.LogCustAcctActionTypeDocBuilderField}[previousLayawayAction]" 
+                         ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]"
+                         dtv:Status="!{dtv.pos.customer.account.CustomerAccountStateCodeDocBuilderField}">
+
+            <?sectionref name="cust_account_line_common" ?>
+            <?sectionref name="item_commisions"?>
+            <?sectionref name="item_commisions_pct_of_item"?>
+            <?sectionref name="item_price_modifiers"?>
+            <?sectionref name="item_taxes"?>
+            <?sectionref name="sale_kit"?>
+            <?sectionref name="line_properties"?>
+            
+          <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+          <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+        </PreviousLayaway>
+      ]]></xml>
+    </section>
+
+    <section name="cust_account_line_common">
+      <xml><![CDATA[
+
+          <ItemID>#{getItem.getItemId}</ItemID>
+          <Description>#{getItemDescription}[translateIfKey]</Description>
+          <dtv:FiscalItemID>#{getItem.getOptions.getFiscalItemId}</dtv:FiscalItemID>
+          <dtv:FiscalItemDescription>#{getItem.getOptions.getFiscalItemDescription}</dtv:FiscalItemDescription>
+          <UnitCostPrice>#{getItem.getOptions.getUnitCost}[money]</UnitCostPrice>
+          <UnitListPrice>#{getItem.getListPrice}[money]</UnitListPrice>
+          <RegularSalesUnitPrice>#{getRegularBasePrice}[money]</RegularSalesUnitPrice>
+          <ActualSalesUnitPrice>#{getUnitPrice}[money]</ActualSalesUnitPrice>
+          <ExtendedAmount>#{getCustomerAccountModifier.getItemAccountExtendedPrice}[money]</ExtendedAmount>
+          <Quantity>#{getQuantity}[quantity]</Quantity>
+          <dtv:UnitOfMeasureCode>#{getItem.getOptions.getUnitOfMeasureCode}</dtv:UnitOfMeasureCode>
+      ]]></xml>
+    </section>
+
+
+    <section name="cust_order_lineitem">
+      <xml><![CDATA[
+        <ItemID>#{getItem.getItemId}</ItemID>
+        <Description>#{getItemDescription}[translateIfKey]</Description>
+        <dtv:FiscalItemID>#{getItem.getOptions.getFiscalItemId}</dtv:FiscalItemID>
+        <dtv:FiscalItemDescription>#{getItem.getOptions.getFiscalItemDescription}</dtv:FiscalItemDescription>
+        <UnitCostPrice>#{getItem.getOptions.getUnitCost}[money]</UnitCostPrice>
+        <RegularSalesUnitPrice>#{getRegularBasePrice}[money]</RegularSalesUnitPrice>
+        <ActualSalesUnitPrice>#{getUnitPrice}[money]</ActualSalesUnitPrice>
+        <ExtendedAmount>#{getCustomerAccountModifier.getItemAccountExtendedPrice}[money]</ExtendedAmount>
+        <Quantity>#{getQuantity}[quantity]</Quantity>
+        <dtv:UnitOfMeasureCode>#{getItem.getOptions.getUnitOfMeasureCode}</dtv:UnitOfMeasureCode>
+     
+        <?sectionref name="line_common"?>      
+
+        <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+        <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+      
+      ]]></xml>
+    </section>
+
+    <section name="min_special_order_line">
+      <condition class="dtv.pos.docbuilding.conditions.MinimalSpecialOrderActiveCondition" />
+      <condition class="dtv.pos.docbuilding.conditions.SaleLineItemTypeCondition" value="SPECIAL_ORDER" />
+      <condition method="getReturn" comparison="FALSE" />
+      <xml><![CDATA[
+      <!-- min_special_order_line -->
+        <Sale ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]">
+          <?sectionref name="sale_return_item"?>
+          <?sectionref name="line_common"?>
+        </Sale>
+      ]]></xml>
+    </section>
+    
+    <section name="special_order_line">
+      <condition class="dtv.pos.docbuilding.conditions.MinimalSpecialOrderActiveCondition" inverted="true" />
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountLineItemTypeCondition" value="SPECIAL_ORDER" />
+      <sectionref>special_order_line_delivery</sectionref>
+      <sectionref>special_order_line_pickup</sectionref>
+    </section>
+    
+    <section name="special_order_line_delivery">
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountLineItemTypeCondition" value="SPECIAL_ORDER" />
+      <condition class="dtv.pos.docbuilding.conditions.CustomerOrderDeliveryTypeCondition" value="CUSTOMER" />
+      <xml><![CDATA[
+        <CustomerOrderForDelivery ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]">
+        <ItemID>#{getItem.getItemId}</ItemID>
+        <Description>#{getItemDescription}[translateIfKey]</Description>
+        <dtv:FiscalItemID>#{getItem.getOptions.getFiscalItemId}</dtv:FiscalItemID>
+        <dtv:FiscalItemDescription>#{getItem.getOptions.getFiscalItemDescription}</dtv:FiscalItemDescription>
+        <UnitCostPrice>#{getItem.getOptions.getUnitCost}[money]</UnitCostPrice>
+        <UnitListPrice>#{getItem.getListPrice}[money]</UnitListPrice>
+        <RegularSalesUnitPrice>#{getRegularBasePrice}[money]</RegularSalesUnitPrice>
+        <ActualSalesUnitPrice>#{getUnitPrice}[money]</ActualSalesUnitPrice>
+        <ExtendedAmount>#{getCustomerAccountModifier.getItemAccountExtendedPrice}[money]</ExtendedAmount>
+        <Quantity>#{getQuantity}[quantity]</Quantity>
+        
+        <?sectionref name="line_common"?>     
+        
+        <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+        
+        <?sectionref name="delivery"?>
+        <From>#{getRetailLocationId}</From>
+        <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+        </CustomerOrderForDelivery>
+      ]]></xml>
+    </section>
+
+   
+    <section name="special_order_line_pickup">
+    <condition class="dtv.pos.docbuilding.conditions.CustAccountLineItemTypeCondition" value="SPECIAL_ORDER" />
+      <condition class="dtv.pos.docbuilding.conditions.CustomerOrderDeliveryTypeCondition" value="STORE" /> 
+      <xml><![CDATA[
+        <CustomerOrderForPickup ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]" 
+                                OrderStatus="!{dtv.pos.customer.account.IxRetailCustomerAccountStatusField}">
+
+          <?sectionref name="cust_account_line_common"?>
+          <?sectionref name="line_common"?>  
+          <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>   
+          <From>#{getRetailLocationId}</From>
+          <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+        </CustomerOrderForPickup>
+      ]]></xml>
+    </section>
+
+    
+    <section name="prev_spec_order_line">
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountCorrectedLineItemTypeCondition" value="SPECIAL_ORDER" />
+      <xml><![CDATA[
+        <PreviousCustomerOrder Action="!{dtv.logbuilder.LogCustAcctActionTypeDocBuilderField}[previousLayawayAction]"
+                               ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]">
+        <?sectionref name="cust_account_line_common" ?>
+        
+        <?sectionref name="line_common"?>     
+        
+        <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+        <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+
+        </PreviousCustomerOrder>
+      ]]></xml>
+    </section>
+    
+    <section name="configurable_cust_acct_line">
+      <condition class="dtv.pos.docbuilding.conditions.ConfigurableCustAcctLineItemTypeCondition"/>
+      <sectionref>configurable_cust_acct_line_pickup</sectionref>
+    </section>
+    
+    <section name="configurable_cust_acct_line_pickup">
+      <xml><![CDATA[
+        <CustomerOrderForPickup ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]" 
+                                OrderStatus="!{dtv.pos.customer.account.IxRetailCustomerAccountStatusField}">
+
+          <?sectionref name="cust_account_line_common"?>
+          <?sectionref name="line_common" ?>
+
+          <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+          <From>#{getRetailLocationId}</From>
+          <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+        </CustomerOrderForPickup>
+      ]]></xml>
+    </section>
+   
+    <section name="prev_configurable_cust_acct_line">
+      <condition class="dtv.pos.docbuilding.conditions.ConfigurableCustAcctCorrectedLineItemTypeCondition" />
+      <xml><![CDATA[
+        <PreviousCustomerOrder Action="!{dtv.logbuilder.LogCustAcctActionTypeDocBuilderField}[previousLayawayAction]"
+                               ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]">
+
+        <?sectionref name="cust_account_line_common"?>
+        <?sectionref name="line_common"?>     
+        
+        <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+        <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+
+        </PreviousCustomerOrder>
+      ]]></xml>
+    </section>
+    
+    <section name="configurable_cust_acct_payment_line">
+      <condition class="dtv.pos.docbuilding.conditions.ConfigurablePaymentOnAccountLineItemTypeCondition" />
+      <xml><![CDATA[
+        <PaymentOnAccount>
+          <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+          <Amount>#{getCustomerAccountModifier.getItemAccountExtendedPrice}[money]</Amount>
+          <dtv:VoidReason>#{getVoidLineItemReasonCode}</dtv:VoidReason>
+        </PaymentOnAccount>
+      ]]></xml>
+    </section>   
+   
+    <section name="prev_send_sale_line">
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountCorrectedLineItemTypeCondition" value="SEND_SALE" />
+      <xml><![CDATA[
+        <PreviousCustomerOrder Action="!{dtv.logbuilder.LogCustAcctActionTypeDocBuilderField}[previousLayawayAction]"
+                               ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]">
+        
+          <?sectionref name="cust_account_line_common"?>
+          <?sectionref name="line_common" ?>
+
+        <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+        <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+ 
+        </PreviousCustomerOrder>
+      ]]></xml>
+    </section>
+    
+   <section name="send_sale_line">
+      <condition class="dtv.pos.docbuilding.conditions.SaleLineItemTypeCondition" value="SEND_SALE" />
+      <condition method="getReturn" comparison="FALSE" />
+      <xml><![CDATA[
+        <SaleForDelivery ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]" OrderStatus="Completed">
+          <ItemID>#{getItem.getItemId}</ItemID>
+          <Description>#{getItemDescription}[translateIfKey]</Description>
+          <UnitCostPrice>#{getItem.getOptions.getUnitCost}[money]</UnitCostPrice>
+          <UnitListPrice>#{getItem.getListPrice}[money]</UnitListPrice>
+          <RegularSalesUnitPrice>#{getRegularBasePrice}[money]</RegularSalesUnitPrice>
+          <ActualSalesUnitPrice>#{getUnitPrice}[money]</ActualSalesUnitPrice>
+          <ExtendedAmount>#{getExtendedAmount}[money]</ExtendedAmount>
+          <Quantity>#{getQuantity}[quantity]</Quantity>
+          <dtv:UnitOfMeasureCode>#{getItem.getOptions.getUnitOfMeasureCode}</dtv:UnitOfMeasureCode>
+          <SellingLocation Level="RetailLocation">#{getRetailLocationId}</SellingLocation>
+          
+          <?sectionref name="line_common"?>
+          <?sectionref name="line_properties"?>
+          <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+          <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+          <?sectionref name="delivery"?>
+        </SaleForDelivery>
+      ]]></xml>
+    </section>    
+    <section name="work_order_line">
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountLineItemTypeCondition" value="WORK_ORDER" />
+      <xml><![CDATA[
+        <CustomerOrderForPickup ItemType="Alteration">
+
+          <?sectionref name="work_order_body"?>
+        </CustomerOrderForPickup>
+      ]]></xml>
+    </section>
+    
+    <section name="work_order_line">
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountLineItemTypeCondition" value="WORK_ORDER" />
+      <xml><![CDATA[
+        <CustomerOrderForPickup ItemType="Alteration">
+          <?sectionref name="work_order_body"?>
+        </CustomerOrderForPickup>
+      ]]></xml>
+    </section>
+
+   <section name="prev_work_order_line">
+      <condition class="dtv.pos.docbuilding.conditions.CustAccountCorrectedLineItemTypeCondition" value="WORK_ORDER" />
+      <xml><![CDATA[
+        <PreviousCustomerOrder ItemType="Alteration" 
+                               Action="!{dtv.logbuilder.LogCustAcctActionTypeDocBuilderField}[previousLayawayAction]">
+
+          <?sectionref name="work_order_body"?>
+        </PreviousCustomerOrder>
+      ]]></xml>
+    </section>
+    
+   <section name="work_order_body">
+      <xml><![CDATA[
+        <ItemID>#{getItem.getItemId}</ItemID>
+        <Description>#{getItemDescription}[translateIfKey]</Description>
+        <ActualSalesUnitPrice>#{getUnitPrice}[money]</ActualSalesUnitPrice>
+        <ExtendedAmount>#{getCustomerAccountModifier.getItemAccountExtendedPrice}[money]</ExtendedAmount>
+        <Quantity>#{getQuantity}[quantity]</Quantity>
+        <dtv:UnitOfMeasureCode>#{getItem.getOptions.getUnitOfMeasureCode}</dtv:UnitOfMeasureCode>
+        <SerialNumber>#{getSerialNumber}</SerialNumber>
+        <GiftReceiptFlag>#{getGiftReceiptCount}[boolean]</GiftReceiptFlag>
+        <dtv:VoidReason>#{getVoidLineItemReasonCode}</dtv:VoidReason>
+        
+        <?sectionref name="item_commisions"?>
+        <?sectionref name="item_commisions_pct_of_item"?>
+        <?sectionref name="item_price_modifiers"?>
+        <?sectionref name="item_taxes"?>
+
+
+        <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+        <AccountNumber>#{getCustomerAccountModifier.getCustAccountId}</AccountNumber>
+        <MerchandiseHierarchy Level="Department">#{getItem.getDepartmentId}</MerchandiseHierarchy>
+        
+        <?call method="getCustomerAccountModifier.getCustomerAccountIdObject{TRANSACTION}"?>
+        <?iterator method="getWorkItemsRelationship"?>
+        <Kit>
+          <Member Action="IsPartOf">
+            <SaleForPickup ItemType="Stock">
+              <ItemID>#{getItemId}</ItemID>
+              
+              <?call method="getItemIdObject{TRANSACTION}"?>
+              <MerchandiseHierarchy Level="Department">#{getDepartmentId}</MerchandiseHierarchy>
+              <?_call?>
+              
+              <Description>#{getDescription}</Description>
+              <UnitCostPrice>#{getValueAmount}[money]</UnitCostPrice>
+              <ExtendedAmount>0.00</ExtendedAmount>
+              <Quantity>1</Quantity>
+            </SaleForPickup>
+          </Member>
+        </Kit>
+        <?_iterator?>
+        <?_call?>
+        
+      ]]></xml>
+    </section>
+    
+    <section name="discount_line">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IDiscountLineItem" />
+      <xml><![CDATA[
+        <Discount>
+          <Rounding>0</Rounding>
+          <dtv:DiscountId>#{getDiscountCode}</dtv:DiscountId>
+          <Amount>#{getAmount}[money]</Amount>
+          <dtv:PercentOff>#{getPercent}</dtv:PercentOff>
+          <dtv:VoidReason>#{getVoidLineItemReasonCode}</dtv:VoidReason>
+        </Discount>
+      ]]></xml>
+    </section>
+    
+    <section name="tax_line">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.ITaxLineItem" />
+      <sectionref>tax_info</sectionref>
+    </section>
+    
+    <section name="tender_line">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.ITenderLineItem" />
+      <xml><![CDATA[
+        <Tender TenderType="#{getTender}[tenderTypeFromTender]" 
+                TypeCode="#{getTenderStatusCode}[tenderTypeCode]" 
+                dtv:ChangeFlag="#{getTenderStatusCode}[tenderChangeFlag]">
+        
+          <?condition class="dtv.pos.docbuilding.conditions.HasPropertyCondition" 
+                      value="TR::TYP" inverted="true"?>
+          <TenderID>#{getTender.getTenderId}</TenderID>
+          <?_condition?>
+          
+          <?condition class="dtv.pos.docbuilding.conditions.HasPropertyCondition" 
+                      value="TR::TYP"?>
+          <TenderID>!{dtv.tenderretail.TRTlogTenderIdField}</TenderID>
+          <?_condition?>
+          
+          <?condition class="dtv.pos.docbuilding.conditions.ForeignTenderLineCondition" inverted="true"?>
+          <Amount Currency="#{getTender.getCurrencyId}">#{getAmount}[money]</Amount>
+          <?_condition?>
+                
+          <?condition class="dtv.pos.docbuilding.conditions.ForeignTenderLineCondition"?>
+          <ForeignCurrency>
+            <DateTime>#{getBeginDateTimestamp}[datetime]</DateTime>
+            <CurrencyCode>#{getTender.getCurrencyId}</CurrencyCode>
+            <OriginalFaceAmount>#{getForeignAmount}[money]</OriginalFaceAmount>
+            <ExchangeRate>#{getExchangeRate}</ExchangeRate>
+          </ForeignCurrency>
+          <Amount Currency="#{getTender.getCurrencyId}" ForeignAmount="#{getForeignAmount}">#{getAmount}[money]</Amount>
+          <?_condition?>
+          
+          <?sectionref name="authorization_tender"?>
+          
+          <?iterator method="getIdentityVerifications"?>
+          <?sectionref name="customer_verification"?>
+          <?_iterator?>
+          
+          <?sectionref name="send_check_tender"?>
+          <?sectionref name="check_tender"?>
+          <?sectionref name="travelers_check_tender"?>
+          <?sectionref name="credit_debit_tender"?>
+          <?sectionref name="coupon_tender"?>
+          <?sectionref name="voucher_tender"?>
+          <?sectionref name="account_credit_tender"?>
+          <?sectionref name="line_properties"?>
+          
+          <?condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.IAccountReceivableTenderLineItem"?>
+          <StoreAccount>
+            <AccountID>#{getAccountNumber}</AccountID>
+          </StoreAccount>
+          <dtv:UserName>#{getAccountUserName}</dtv:UserName>
+          <dtv:PONumber>#{getPoNumber}</dtv:PONumber>
+          <?_condition?>
+          
+          <dtv:VoidReason>#{getVoidLineItemReasonCode}</dtv:VoidReason>
+          <dtv:SerialNumber>#{getSerialNumber}</dtv:SerialNumber>
+        </Tender>
+      ]]></xml>
+    </section>
+    
+    <section name="customer_verification">
+      <xml><![CDATA[
+        <CustomerVerification>
+          <PersonalID IDType="#{getIdTypeCode}[identificationType]">
+            <IDNumber>#{getIdNumber}</IDNumber>
+            <Issuer>#{getIssuingAuthority}</Issuer>
+            <Province>#{getIssuingAuthority}</Province>
+          </PersonalID>
+          <Birthdate>#{getParentLine.getCustomerBirthDate}[date]</Birthdate>
+        </CustomerVerification>
+      ]]></xml>
+    </section>
+    
+    <section name="authorization_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.IAuthorizableTenderLineItem" />
+      <condition method="getAuthorizationCode" comparison="NOT_NULL" />
+      <xml><![CDATA[
+        <Authorization>
+          <RequestedAmount>#{getAmount}[money]</RequestedAmount>
+          <AuthorizationCode>#{getAuthorizationCode}</AuthorizationCode>
+          <ReferenceNumber>#{getBankReferenceNumber}</ReferenceNumber>
+          <AuthorizationDateTime>#{getBeginDateTimestamp}[datetime]</AuthorizationDateTime>
+          
+          <?condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.ICreditDebitTenderLineItem"?>
+          <dtv:Ps2000>#{getPs2000}</dtv:Ps2000>
+          <dtv:Tax>#{getTaxAmount}[money]</dtv:Tax>
+          <dtv:Discount>#{getDiscountAmount}[money]</dtv:Discount>
+          <dtv:Freight>#{getFreightAmount}[money]</dtv:Freight>
+          <dtv:Duty>#{getDutyAmount}[money]</dtv:Duty>
+          <dtv:CardLevelIndicator>#{getCardLevelIndicator}</dtv:CardLevelIndicator>
+          <?_condition?>
+          
+          <dtv:AdjudicationCode>!{dtv.pos.docbuilding.AdjudicationCodeDocBuilderField}</dtv:AdjudicationCode>
+          <dtv:ResponseCode>!{dtv.pos.docbuilding.ResponseCodeDocBuilderField}</dtv:ResponseCode>
+          
+          <?sectionref name="authorization_tender_impl"?>
+        </Authorization>
+      ]]></xml>
+    </section>
+    
+    <section name="authorization_tender_impl" />
+    
+    <section name="generic_lineitem_storage">
+      <condition method="getGenericStorage" comparison="TRUE" />
+      <xml><![CDATA[
+        <?call method="getLineItemGenericStorage{TRANSACTION}"?>
+        <dtv:GenericData>#{getDataStorage}</dtv:GenericData>
+        <?_call?>
+      ]]></xml>
+    </section>
+    
+    <section name="check_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.ICheckTenderLineItem" />
+      <condition method="getTender.getTenderTypecode" comparison="NOT_EQUAL" value="TRAVELERS_CHECK" />
+      <xml><![CDATA[
+        <Check>
+          <BankID>#{getBankId}</BankID>
+          <CheckNumber>#{getCheckSequenceNumber}</CheckNumber>
+          <AccountNumber>#{getCheckAccountNumber}</AccountNumber>
+        </Check>
+      ]]></xml>
+    </section>
+    
+    <section name="travelers_check_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.ICheckTenderLineItem" />
+      <condition method="getTender.getTenderTypecode" comparison="EQUAL" value="TRAVELERS_CHECK" />
+      <xml><![CDATA[
+        <TravelersCheck>
+          <BankID>#{getBankId}</BankID>
+          <CheckNumber>#{getCheckSequenceNumber}</CheckNumber>
+          <AccountNumber>#{getCheckAccountNumber}</AccountNumber>
+          <CheckCount>1</CheckCount>
+        </TravelersCheck>
+      ]]></xml>
+    </section>
+    
+    <section name="send_check_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.ISendCheckTenderLineItem" />
+      <xml><![CDATA[
+        <Address>
+          <Name>#{getPayableToName}</Name>
+          <AddressLine>#{getAddress1}</AddressLine>
+          <City>#{getCity}</City>
+          <State>#{getState}</State>
+          <PostalCode>#{getPostalCode}</PostalCode>
+        </Address>
+        <SendCheck>
+          <ReasonCode>#{getSendCheckReasonCode}</ReasonCode>
+        </SendCheck>
+      ]]></xml>
+    </section>
+    
+    <section name="credit_debit_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.ICreditDebitTenderLineItem" />
+      <xml><![CDATA[
+        <CreditDebit>
+          <IssuerIdentificationNumber>#{getMediaIssuerId}</IssuerIdentificationNumber>
+          <PrimaryAccountNumber>#{getAccountNumberEncrypted}</PrimaryAccountNumber>
+          <ReconciliationCode>#{getAuthorizationCode}</ReconciliationCode>
+          <dtv:ExpirationDateEncrypted>#{getExpirationDateStringEncrypted}</dtv:ExpirationDateEncrypted>
+          <dtv:MaskedCardNumber>#{getMaskAccountNumberDao}</dtv:MaskedCardNumber>
+          <dtv:AuthorizationToken>#{getAuthorizationToken}</dtv:AuthorizationToken>
+          <?condition class="dtv.pos.docbuilding.conditions.IncludeHashedCardNumberCondition"?>
+            <dtv:HashedCardNumber>#{getAccountNumberHash}</dtv:HashedCardNumber>
+          <?_condition?>
+        </CreditDebit>
+      ]]></xml>
+    </section>
+    
+    <section name="coupon_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.ICouponTenderLineItem" />
+      <xml><![CDATA[
+        <Coupon>
+          <PrimaryLabel>#{getScanCode}</PrimaryLabel>
+          <ManufacturerID>#{getManufacturerId}</ManufacturerID>
+          <FamilyCode>#{getManufacturerFamilyCode}</FamilyCode>
+          <ExpirationDate>#{getExpirationDate}[date]</ExpirationDate>
+          <PromotionCode>#{getPromotionCode}</PromotionCode>
+          <ScanCode>#{getScanCode}</ScanCode>
+        </Coupon>
+      ]]></xml>
+    </section>
+        
+    <section name="voucher_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.IVoucherTenderLineItem" />
+      <xml><![CDATA[
+        <Voucher TypeCode="#{getTender.getTenderId}[voucherTag]">
+          <Description>#{getIssueTypeCode} -#{getVoucherTypeCode}</Description>
+          <FaceValueAmount>#{getFaceValueAmount}</FaceValueAmount>
+          
+          <?element name="#{getTender.getTenderId}[voucherSerialNumberTag]" value="#{getSerialNumber}"?>
+          
+          <ExpirationDate>#{getExpirationDate}[date]</ExpirationDate>
+          <StatusCode>#{getVoucherStatusCode}</StatusCode>
+          <UnspentAmount>#{getUnspentBalanceAmount}</UnspentAmount>
+        </Voucher>
+      ]]></xml>
+    </section>
+        
+    <section name="account_credit_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.IAccountCreditTenderLineItem" />
+      <xml><![CDATA[
+        <dtv:AccountCredit>
+          <dtv:AccountNumber>#{getCustAccountId}</dtv:AccountNumber>
+        </dtv:AccountCredit>
+      ]]></xml>
+    </section>
+    
+    <section name="coupon_line">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.ICouponLineItem" />
+      <xml><![CDATA[
+        <dtv:Coupon>
+          <dtv:CouponId>#{getCouponId}</dtv:CouponId>
+        </dtv:Coupon>
+      ]]></xml>
+    </section>  
+
+    <section name="transaction_deal">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransactionDealLineItem" />
+      <xml><![CDATA[
+        <dtv:TransactionDeal MethodCode="#{getReasonCode}[priceModifierMethodCode]" VoidFlag="#{getVoid}[boolean]">
+          <?condition method="getReasonCode" comparison="EQUAL" value="DEAL"?>
+          <dtv:Amount Action="Subtract">#{getAmount}[money]</dtv:Amount>
+          <dtv:PromotionID>#{getDealId}</dtv:PromotionID>
+          <?_condition?>
+          
+          <?condition method="getReasonCode" comparison="NOT_EQUAL" value="PRICE_OVERRIDE"?>
+          <dtv:ReasonCode>#{getReasonCode}</dtv:ReasonCode>
+          <?_condition?>
+          
+          <dtv:DiscountReasonCodeComment>#{getNotes}</dtv:DiscountReasonCodeComment>
+        </dtv:TransactionDeal>
+      ]]></xml>
+    </section>
+
+    <section name="document_line">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.doc.IDocumentLineItem" />
+      <xml><![CDATA[
+        <dtv:DocumentType>#{getDocumentType}</dtv:DocumentType>
+        <dtv:DocumentId>#{getDocumentId}</dtv:DocumentId>
+        <dtv:SeriesId>#{getSeriesId}</dtv:SeriesId>
+        <dtv:ActivityCode>#{getActivityCode}</dtv:ActivityCode>
+      ]]></xml>
+    </section>
+    
+    <!-- Refactored to conform to PosLogAddress type -->
+    <section name="delivery">
+      <condition class="dtv.pos.docbuilding.conditions.CustomerOrderDeliveryTypeCondition" value="CUSTOMER" />
+      <xml><![CDATA[
+        <Delivery>
+          <?iterator class="dtv.pos.logbuilder.DeliveryModifierTlogIterator"?>
+          <Name>#{getFirstName} #{getLastName}</Name>
+          <Address>
+          <AddressLine>#{getAddress1}</AddressLine>
+          <City>#{getCity}</City>
+          <State>#{getState}</State>
+          <PostalCode>#{getPostalCode}</PostalCode>
+          </Address>
+          <TelephoneNumber>#{getTelephone1}</TelephoneNumber>
+          <?_iterator?>
+          
+          <?call method="getInventoryDocumentLineItem.getParentDocument.getShipments.get(0)"?>
+          <Method>#{getShippingCarrier}</Method>
+          <TrackingNumber>#{getTrackingNumber}</TrackingNumber>
+          <?_call?>
+        </Delivery>
+      ]]></xml>
+    </section>
+
+    <section name="order_line" />
+    <section name="prev_order_line" />
+    
+    <!-- 344027: Inventory Replenishment -->
+    <section name="REPLENISHMENT_ORDER_BODY">
+      <condition class="dtv.pos.inventory.InventoryTransactionTypeCondition">
+        <Parameter name="TypeCode" value="REPLENISHMENT" />
+      </condition>
+      <xml><![CDATA[
+        <InventoryTransaction Version="2.1">
+          <ReplenishmentOrder>
+            <?call method="getInventoryDocument"?>
+            <OrderId>#{getDocumentId}</OrderId>
+            <CreationType>#{getRecordCreationType}</CreationType>
+            <OrderStatus>#{getStatusCode}</OrderStatus>
+            <RetailLocationId>#{getRetailLocationId}</RetailLocationId>
+            <CreatedTimestamp>#{getCreateDateTime}[datetime]</CreatedTimestamp>
+            
+            <?iterator method="getNotes"?>
+            <HeaderComment>
+              <CommentType>#{getNoteType}</CommentType>
+              <CommentText>#{getNote}</CommentText>
+              <CommentID>#{getNoteId}</CommentID>
+              <CreatedTimestamp>#{getNoteDatetimestamp}[datetime]</CreatedTimestamp>
+              <CreatedUserId>#{getCreatorPartyId}</CreatedUserId>
+            </HeaderComment>
+            <?_iterator?>
+            <?_call?>
+            
+            <?iterator method="getInventoryTransactionDetails"?>
+            <?call method="getInventoryDocumentLineItem"?>
+            <?sectionref name="replenishment_order_line"?>
+            <?_call?>
+            <?_iterator?>
+          </ReplenishmentOrder>
+        </InventoryTransaction>
+      ]]></xml>
+    </section>
+    
+    <section name="replenishment_order_line">
+      <xml><![CDATA[
+        <OrderLineItem VoidFlag="!{dtv.pos.inventory.InventoryLineVoidedLogField}[boolean]">
+          <LineItemSequence>#{getInventoryDocumentLineNumber}</LineItemSequence>
+          <ItemId>#{getInventoryItemId}</ItemId>
+          <Description>#{getInventoryItem.getDescription}</Description>
+          <Status>#{getStatusCode}</Status>
+          
+          <?call method="getInventoryReplenishmentDocumentLineItem"?>
+          <SuggestedOrderQuantity>#{getSuggestedOrderQuantity}[quantity]</SuggestedOrderQuantity>
+          <OrderQuantity>#{getOrderQuantity}[quantity]</OrderQuantity>
+          <SourceId>#{getSourceId}</SourceId>
+          <SourceType>#{getSourceType}</SourceType>
+          <?_call?>
+          
+          <SourceName>!{dtv.pos.inventory.replenishment.docbuilding.ReplenishmentSourceNameDocBuilderField}</SourceName>
+          
+          <?iterator method="getNotes"?>
+          <LineComment>
+            <CommentType>#{getNoteType}</CommentType>
+            <CommentText>#{getNote}</CommentText>
+            <CommentID>#{getNoteId}</CommentID>
+            <CreatedTimestamp>#{getNoteDatetimestamp}[datetime]</CreatedTimestamp>
+            <CreatedUserId>#{getCreatorPartyId}</CreatedUserId>
+          </LineComment>
+          <?_iterator?>
+        </OrderLineItem>
+      ]]></xml>
+    </section>
+    <!-- /344027: Inventory Replenishment -->
+    <!-- XSTORE-8094: Airport flight information -->
+    <section name="airport_flight_information">
+    <condition method="getFlightInformation" comparison="NOT_NULL" />
+      <xml><![CDATA[
+        <dtv:FlightInformation>
+          <dtv:BuyerCategory>!{dtv.pos.flight.rcpt.BuyerCategoryDocBuilderField}</dtv:BuyerCategory>
+          <dtv:TaxCategory>!{dtv.pos.flight.rcpt.AirportTaxCategoryDocBuilderField}</dtv:TaxCategory>
+          <dtv:FlightCarrier>!{dtv.pos.flight.rcpt.FlightCarrierDocBuilderField}</dtv:FlightCarrier>
+          <dtv:FlightNumber>!{dtv.pos.flight.rcpt.FlightNumberDocBuilderField}</dtv:FlightNumber>
+          <?call method="getFlightInformation"?>
+            <dtv:OriginAirport>#{getOriginAirport}</dtv:OriginAirport>
+            <dtv:DestinationAirport>#{getDestinationAirport}</dtv:DestinationAirport>
+          <?_call?>
+        </dtv:FlightInformation>
+      ]]></xml>      
+    </section>
+    <!-- /XSTORE-8094: Airport flight information -->
+
+    <section name="properties">
+      <condition class="dtv.pos.docbuilding.conditions.HasPropertiesCondition" />
+      <xml><![CDATA[
+        <dtv:Properties>
+          <?iterator method="getProperties"?>
+          <dtv:Property>
+            <dtv:PropertyCode>#{getPropertyCode}</dtv:PropertyCode>
+            <dtv:PropertyType>#{getType}</dtv:PropertyType>
+            <dtv:PropertyValue>#{getStringValue}</dtv:PropertyValue>
+            <dtv:PropertyDate>#{getDateValue}[DateTime]</dtv:PropertyDate>
+            <dtv:PropertyDecimal>#{getDecimalValue}[Decimal]</dtv:PropertyDecimal>
+          </dtv:Property>
+          <?_iterator?>
+        </dtv:Properties>
+      ]]></xml>
+    </section>
+    
+    <!-- COUNTRYPACK INVOICE START -->
+    <section name="DEFERRED_INVOICE_TRANSACTION">
+      <sectionref>DEFERRED_INVOICE_TRAN_BODY</sectionref>
+    </section>
+    
+    <section name="DEFERRED_INVOICE_TRAN_BODY">
+      <xml><![CDATA[
+        <RetailTransaction TypeCode="Transaction" TransactionStatus="#{getTransactionStatusCode}[transactionStatus]">
+          <?iterator method="getTransactionLinks"?>
+            <?call method="getLinkedTransaction"?>
+              <?sectionref name="line_items"?>
+              <?condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransaction"?>
+                <Total TotalType="TransactionGrandAmount">#{getTotal}[money]</Total>
+                <RoundedTotal>#{getRoundedAmount}[money]</RoundedTotal>
+              <?_condition?>
+              <?sectionref name="employee_sale_id"?>
+              <?sectionref name="airport_flight_information"?>
+            <?_call?>
+            <TransactionLink ReasonCode="InvoiceOperation">
+              <RetailStoreID>#{getLinkRetailLocationId}</RetailStoreID>
+              <WorkstationID>#{getLinkWorkstationId}</WorkstationID>
+              <SequenceNumber>#{getLinkTransactionSequence}</SequenceNumber>
+              <BusinessDayDate>#{getLinkBusinessDate}[date]</BusinessDayDate>
+              <dtv:LinkTypeCode>#{getLinkTypeCode}</dtv:LinkTypeCode>
+            </TransactionLink>
+          <?_iterator?>
+        </RetailTransaction>
+      ]]></xml>
+    </section>
+    <!-- COUNTRYPACK INVOICE END -->
+    
+    <section name="EXCHANGE_BODY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransaction" />
+      <xml><![CDATA[
+        <RetailTransaction TypeCode="Transaction" TransactionStatus="#{getTransactionStatusCode}[transactionStatus]">
+          <?sectionref name="line_items"?>
+          <Total TotalType="TransactionGrandAmount">#{getTotal}[money]</Total>
+          <RoundedTotal>#{getRoundedAmount}[money]</RoundedTotal>
+          <?sectionref name="customer"?>
+          
+          <?iterator method="getTransactionLinks"?>
+          <?sectionref name="exchange_trans_link"?>
+          <?_iterator?>
+          
+          <?sectionref name="cancel_tran_reasoncode"?>
+          <?sectionref name="employee_sale_id"?>
+        </RetailTransaction>
+      ]]></xml>  
+    </section>
+
+    <section name="exchange_line">
+      <condition class="dtv.pos.docbuilding.conditions.ExchangeLineItemConditions" />
+      <xml><![CDATA[
+        <Exchange ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]">
+            <ItemID>#{getItemId.trim}</ItemID>
+            <Description>#{getItemDescription}[translateIfKey]</Description>
+            <Quantity>#{getQuantity}[quantity]</Quantity>
+            <dtv:UnitOfMeasureCode>#{getItem.getOptions.getUnitOfMeasureCode}</dtv:UnitOfMeasureCode> 
+            <dtv:NewSerialNumber>#{getNewSerialNumber}</dtv:NewSerialNumber>
+            <dtv:OriginalSerialNumber>#{getOriginalSerialNumber}</dtv:OriginalSerialNumber>
+            <Reason>#{getExchangeReasonCode}</Reason>
+            <dtv:ReasonComment>#{getExchangeComment}</dtv:ReasonComment>
+            <TransactionLink ReasonCode="Exchange">
+            <RetailStoreID>#{getOriginalRetailLocationId}</RetailStoreID>
+            <WorkstationID>#{getOriginalWorkstationId}</WorkstationID>
+            <SequenceNumber>#{getOriginalTransactionSequence}</SequenceNumber>
+            <LineItemSequenceNumber>#{getOiginalLineItemSequence}</LineItemSequenceNumber>
+            <BusinessDayDate>#{getOriginalBusinessDate}[date]</BusinessDayDate>
+            </TransactionLink>
+        </Exchange>
+      ]]></xml>
+    </section>
+
+    <section name="exchange_trans_link">
+      <condition method="getLinkTypeCode" comparison="EQUAL" value="RESUME_TRANSACTION" />
+      <xml><![CDATA[
+        <TransactionLink ReasonCode="Exchange">
+          <RetailStoreID>#{getLinkRetailLocationId}</RetailStoreID>
+          <WorkstationID>#{getLinkWorkstationId}</WorkstationID>
+          <SequenceNumber>#{getLinkTransactionSequence}</SequenceNumber>
+          <BusinessDayDate>#{getLinkBusinessDate}[date]</BusinessDayDate>
+        </TransactionLink>
+      ]]></xml>
+    </section>
+
+   </sections>
+</LogDefinitions>

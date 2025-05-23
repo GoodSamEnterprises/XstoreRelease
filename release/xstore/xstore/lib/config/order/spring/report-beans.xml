@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+      
+  <bean id="ORDER_STATUS_REPORT" class="dtv.pos.framework.reporting.ReportDefinition">
+    <property name="title" value="_orderStatusReport" />
+    <property name="parameterPromptMessage" value="_orderStatusReportParamMessage" />
+    <property name="dataTemplate" value="classpath:report/base/order/orderStatus.xdt" />
+    <property name="layoutTemplate" value="classpath:report/base/order/orderStatus.rtf" />
+  </bean> 
+  <bean id="PICK_SLIP_REPORT" class="dtv.pos.framework.reporting.ReportDefinition">
+    <property name="title" value="_orderPickSlipReportHeader" />
+    <property name="dataTemplate" value="classpath:report/base/order/orderPickList.xdt" />
+    <property name="layoutTemplate" value="classpath:report/base/order/orderPickList.rtf" />
+  </bean>
+  <bean id="UNFULFILLABLE_ORDER_STATUS_REPORT" class="dtv.pos.framework.reporting.ReportDefinition">
+    <property name="title" value="_orderStatusReportUnfulfillable" />
+    <property name="parameterPromptMessage" value="_orderStatusReportParamMessage" />
+    <property name="dataTemplate" value="classpath:report/base/order/unfulfillableOrderStatus.xdt" />
+    <property name="layoutTemplate" value="classpath:report/base/order/orderStatus.rtf" />
+  </bean>
+  
+</beans>

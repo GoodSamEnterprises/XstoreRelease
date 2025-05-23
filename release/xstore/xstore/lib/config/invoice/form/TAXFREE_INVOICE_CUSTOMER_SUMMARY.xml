@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Tue Mar 08 18:03:50 CET 2016 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner. ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView formKey="TAXFREE_INVOICE_CUSTOMER_SUMMARY" formLocation="MULTI_PURPOSE_VIEW" formLayout="TOP_TO_BOTTOM_TRANSPARENT">
+    <FormViewPanel panelType="MASTER" formTabKey="DEFAULT">
+      <Touch ref="CANCEL_BACK" paintTouch="true" />
+      <TabOrder dtype="Integer">1</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCustomerMaintHeaderPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter name="setOpaque">
+        <param_value dtype="Boolean"><![CDATA[true]]></param_value>
+      </ComponentParameter>
+      <ComponentParameter name="setBorder">
+        <param_value dtype="Border"><![CDATA[_colorBorder+0,0,1,0]]></param_value>
+      </ComponentParameter>
+      <ColorGroup bgColorRef="_colorTransactionInformationPanel"/>
+      <FormViewCell type="FormLabelEmphasized" textKey="_countrypack.taxfree.summaryform.TaxFreeInvoiceCustomerSummaryTitleText">
+        <Font fontSize="+4"/>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel panelType="DETAIL" formTabKey="DEFAULT">
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">20.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewPanel componentId="TabbedPaneContext">
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">0, 0, 2, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">-1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">-1.0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+          <Parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginCustomerMaintHeaderPanel</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <ComponentParameter name="setPreferredSize">
+          <param_value dtype="DimensionRef">_sizeFormSubheader</param_value>
+        </ComponentParameter>
+        <FormViewCell layoutLocation="0, 0, 1, 1, F, T" type="FormLabelEmphasized" textKey="_countrypack.taxfree.summaryform.TaxFreeInvoiceCustomerSummaryInstruction">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewSectionRef name="DETAIL_TAXFREE_INVOICE_CUSTOMER_DATA" />
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" dataKey="EXIT" />
+      <Action dataKey="ACCEPT" textKey="_countrypack.taxfree.summaryform.PrintTaxFree" keyStroke="F4" />
+      <Action dataKey="SEARCH_TRAVELLER" text="_countrypack.taxfree.LookupTraveller" keyStroke="F9" />
+    </ActionGroup>
+    <FormViewSection name="DETAIL_TAXFREE_INVOICE_CUSTOMER_DATA">
+      <FormViewPanel>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">
+              -2.0, -2.0, -2.0, -2.0, 10.0, -2.0, -2.0, -2.0, -1.0
+            </param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">
+              -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0
+            </param_value>
+          </Parameter>
+          <Parameter name="setMargins">
+            <param_value dtype="IntegerArray">5, 5, 5, 5</param_value>
+          </Parameter>
+          <Parameter name="setGaps">
+            <param_value dtype="IntegerArray">1, 0, 1, 0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewPanel layoutLocation="1, 0, 5, 1, F, F">
+          <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+          <LayoutParameters dtype="ParameterList">
+            <Parameter name="setGaps">
+              <param_value dtype="IntegerArray">0, 0, 0, 5</param_value>
+            </Parameter>
+          </LayoutParameters>
+          <FormViewCell type="FormIcon" textKey="_imagePersonIcon" />
+          <FormViewCell type="FormLabelDiminished" textKey="_countrypack.taxfree.summaryform.customerData">
+            <FontRef fontSize="+4" fontKey="_fontLabelMedium" />
+          </FormViewCell>
+        </FormViewPanel>
+        <FormViewPanel layoutLocation="0, 1, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <component_value dtype="DimensionRef">_sizePreferredCustomerMaintananceSpacing</component_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="1, 2, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.firstName">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="5, 2, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.lastName">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewPanel layoutLocation="0, 3, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredCustomerMaintananceSpacing]]></param_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="1, 4, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.address">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewPanel layoutLocation="0, 5, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredCustomerMaintananceSpacing]]></param_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="1, 6, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.city">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="5, 6, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.state">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewPanel layoutLocation="0, 7, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredCustomerMaintananceSpacing]]></param_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="1, 8, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.postalCode">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="5, 8, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.countryResidence">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewPanel layoutLocation="0, 9, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredCustomerMaintananceSpacing]]></param_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="2, 2, 2, 1, F, F" type="FormTextField" resource="firstName">
+          <TabOrder dtype="Integer">1</TabOrder>
+          <DataField EditFormat="CaseProperName">
+            <Parameter name="maxCharacters">
+              <param_value dtype="Integer"><![CDATA[32]]></param_value>
+            </Parameter>
+            <Parameter name="regexPolicy">
+              <param_value dtype="String"><![CDATA[[\w\s\'\&\-\u00C0-\u00FF]*]]></param_value>
+            </Parameter>
+          </DataField>>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="6, 2, 2, 1, F, F" type="FormTextField" resource="lastName">
+          <TabOrder dtype="Integer">2</TabOrder>
+          <DataField EditFormat="CaseProperName">
+            <Parameter name="maxCharacters">
+              <param_value dtype="Integer"><![CDATA[32]]></param_value>
+            </Parameter>
+            <Parameter name="regexPolicy">
+              <param_value dtype="String"><![CDATA[[\w\s\'\&\-\u00C0-\u00FF]*]]></param_value>
+            </Parameter>
+          </DataField>>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="2, 4, 5, 1, F, F" type="FormTextField" resource="street">
+          <TabOrder dtype="Integer">3</TabOrder>
+          <DataField EditFormat="CaseProperName">
+            <Parameter name="maxCharacters">
+              <param_value dtype="Integer"><![CDATA[100]]></param_value>
+            </Parameter>
+            <Parameter name="regexPolicy">
+              <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+            </Parameter>
+          </DataField>>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="2, 6, 2, 1, F, F" type="FormTextField" resource="city">
+          <TabOrder dtype="Integer">4</TabOrder>
+          <DataField EditFormat="CaseProperName">
+            <Parameter name="maxCharacters">
+              <param_value dtype="Integer"><![CDATA[50]]></param_value>
+            </Parameter>
+            <Parameter name="regexPolicy">
+              <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+            </Parameter>
+          </DataField>>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="6, 6, 1, 1, F, F" type="FormTextField" resource="state">
+          <TabOrder dtype="Integer">5</TabOrder>
+          <DataField EditFormat="CaseProperName">
+            <Parameter name="maxCharacters">
+              <param_value dtype="Integer"><![CDATA[50]]></param_value>
+            </Parameter>
+            <Parameter name="regexPolicy">
+              <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+            </Parameter>
+          </DataField>>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="2, 8, 1, 1, F, F" type="FormTextField" resource="postalCode">
+          <TabOrder dtype="Integer">6</TabOrder>
+          <DataField ref="PostalCode" />
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="6, 8, 1, 1, F, F" type="FormComboBox" resource="countryCode">
+          <TabOrder dtype="Integer">7</TabOrder>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewPanel layoutLocation="1, 10, 5, 1, F, F">
+          <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+          <LayoutParameters dtype="ParameterList">
+            <Parameter name="setGaps">
+              <param_value dtype="IntegerArray">0, 0, 0, 5</param_value>
+            </Parameter>
+          </LayoutParameters>
+          <FormViewCell type="FormIcon" textKey="_imageClipboardIcon">
+          </FormViewCell>
+          <FormViewCell type="FormLabelDiminished" textKey="_countrypack.taxfree.summaryform.customerTaxFreeFields">
+            <FontRef fontSize="+4" fontKey="_fontLabelMedium" />
+          </FormViewCell>
+        </FormViewPanel>
+        <FormViewPanel layoutLocation="0, 11, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <component_value dtype="DimensionRef">_sizePreferredCustomerMaintananceSpacing</component_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="1, 12, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.passportNumber">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="5, 12, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.passportCountry">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewPanel layoutLocation="0, 13, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <component_value dtype="DimensionRef">_sizePreferredCustomerMaintananceSpacing</component_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="0, 14, 2, 1, R, F" type="FormLabel" textKey="_birthDateLabel">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewPanel layoutLocation="0, 15, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <component_value dtype="DimensionRef">_sizePreferredCustomerMaintananceSpacing</component_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="1, 16, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.emailAddress">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="5, 16, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.finalDestination">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewPanel layoutLocation="0, 17, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <component_value dtype="DimensionRef">_sizePreferredCustomerMaintananceSpacing</component_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="1, 18, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.arrivalDate">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="5, 18, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.departureDate">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewPanel layoutLocation="0, 19, 5, 1, F, F">
+          <ComponentParameter name="setPreferredSize">
+            <component_value dtype="DimensionRef">_sizePreferredCustomerMaintananceSpacing</component_value>
+          </ComponentParameter>
+        </FormViewPanel>
+        <FormViewCell layoutLocation="1, 20, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.service" visibilityGroup="taxFreeServiceVisibility">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="5, 20, 1, 1, R, F" type="FormLabel" textKey="_countrypack.taxfree.summaryform.refundMethod" visibilityGroup="taxFreeRefundVisibility">
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="2, 12, 1, 1, F, F" type="FormTextField" resource="passportNumber">
+          <TabOrder dtype="Integer">20</TabOrder>
+          <DataField EditFormat="CaseAllUpper">
+            <Parameter name="maxCharacters">
+              <param_value dtype="Integer"><![CDATA[20]]></param_value>
+            </Parameter>
+            <Parameter name="regexPolicy">
+              <param_value dtype="String"><![CDATA[[A-Z0-9\-]*]]></param_value>
+            </Parameter>
+          </DataField>>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="6, 12, 1, 1, F, F" type="FormComboBox" resource="passportCountryCode">
+          <TabOrder dtype="Integer">21</TabOrder>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="2, 14, 1, 1, F, F" type="FormTextField" resource="birthDate">
+          <TabOrder dtype="Integer">22</TabOrder>
+          <DataField Ref="BirthDate" />
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="2, 16, 1, 1, F, F" type="FormTextField" resource="emailAddress">
+          <TabOrder dtype="Integer">23</TabOrder>
+          <DataField ref="Email" >
+            <Parameter name="maxCharacters">
+              <param_value dtype="Integer"><![CDATA[100]]></param_value>
+            </Parameter>
+          </DataField>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="6, 16, 1, 1, F, F" type="FormComboBox" resource="finalDestination">
+          <TabOrder dtype="Integer">24</TabOrder>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="2, 18, 1, 1, F, F" type="FormTextField" resource="arrivalDate">
+          <TabOrder dtype="Integer">25</TabOrder>
+          <DataField ref="Date" />
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="6, 18, 1, 1, F, F" type="FormTextField" resource="departureDate">
+          <TabOrder dtype="Integer">26</TabOrder>
+          <DataField ref="Date" />
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="2, 20, 1, 1, F, F" type="FormComboBox" resource="serviceId" visibilityGroup="taxFreeServiceVisibility">
+          <TabOrder dtype="Integer">27</TabOrder>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell layoutLocation="6, 20, 1, 1, F, F" type="FormComboBox" resource="refundMethod" visibilityGroup="taxFreeRefundVisibility">
+          <TabOrder dtype="Integer">28</TabOrder>
+          <ComponentParameter name="setPreferredSize">
+            <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+          </ComponentParameter>
+          <Font fontSize="+1" />
+        </FormViewCell>
+      </FormViewPanel>
+    </FormViewSection>
+  </FormView>
+</FormViewSet>

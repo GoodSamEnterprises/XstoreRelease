@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OpChainConfig.xsd">
+  <!-- -->
+  <!-- Manual Credit or Debit -->
+  <!-- TODO BR: manual credit and debit are supposed to be misc tenders, review it to use the credit_card tenders -->
+
+  <OpChain name="BR:TENDER_MANUAL_CREDIT" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <!-- TODO BR: check if it works the rollback chain -->
+    <Op class="dtv.pos.tender.CreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderId" value="MANUAL_CREDIT" />
+    </Op>
+    <OpChainRoute chainKey="BR:TENDER_MANUAL_CREDIT_DEBIT" />
+  </OpChain>
+  <OpChain name="BR:TENDER_MANUAL_DEBIT" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <!-- TODO BR: check if it works the rollback chain -->
+    <Op class="dtv.pos.tender.CreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderId" value="MANUAL_DEBIT" />
+    </Op>
+    <OpChainRoute chainKey="BR:TENDER_MANUAL_CREDIT_DEBIT" />
+  </OpChain>
+  <OpChain name="BR:TENDER_MANUAL_CREDIT_DEBIT" signal="TransactionModified">
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.misc.PromptMiscTenderNumberOp" validationsBean="serialNumberRules" />
+    <PromptOp class="dtv.pos.tender.PromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.PromptTenderAmtOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.pos.tender.PromptCardNetworkListOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.pos.tender.PromptNumberOfInstallmentsOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.pos.tender.PromptAuthDocOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.pos.tender.PromptAuthCodeOp" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>  
+  
+  <!-- *************************************************************** -->
+  <!-- ########################################################################### -->
+  <!-- ################### RESET and ROLLBACKS ################### -->
+  <!-- ########################################################################### -->
+
+  <OpChain name="REGISTER_STARTUP.local.pre">
+    <!-- <Op class="oracle.retail.xstore.countrypack.br.sitef.op.SiTeFInitOp" /> -->  <!-- TODO BR: SiTef Payment SiTeFInitOp, Enable this later -->
+    <!-- <Op class="oracle.retail.xstore.countrypack.br.sitef.op.RecoverPowerLossOp" /> --> <!-- TODO BR: SiTef Payment RecoverPowerLossOp, this later -->
+    <!-- <Op class="oracle.retail.xstore.countrypack.br.sitef.op.PostVoidTransForSiTeFCancelOp" /> --> <!-- TODO BR: SiTef Payment PostVoidTransForSiTeFCancelOp, Enable this later -->
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.StartNfeProcessorOp" />
+  </OpChain>
+  
+  <OpChain name="VALIDATE_REGISTER_STARTUP_FINISH.local">
+    <OpChainRoute chainKey="VALIDATE_REGISTER_STARTUP_FINISH.pre" />
+    <!-- Fiscal logic goes here -->
+    <OpChainRoute chainKey="COUNTRYPACK.BR.SAT_SETUP" />
+    <OpChainRoute chainKey="VALIDATE_REGISTER_STARTUP_FINISH.post" />
+  </OpChain>
+   
+  <!-- -->  
+  <OpChain name="ROLLBACK_TRANS_FINISH_IMPL">
+    <WorkerOp workersBean="calculateTlogSequenceWorkers" />
+    <Op class="dtv.pos.customer.award.VoidAwardsFromTransactionOp" />
+    <Op class="dtv.pos.customer.loyalty.VoidLoyaltyPurchaseFromTransactionOp" />
+    <Op class="dtv.pos.coupon.VoidAuthorizedCouponsOp" />   
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RefreshNfeQueueOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RollbackNfeOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PersistNfeQueueOp">
+      <Parameter name="updateOnly" value="true" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RemoveNfeQueueOp" />
+    <!-- CHANGE FROM BASE END -->
+    <WorkerOp workersBean="completeCancelTransWorkers" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+    <Op class="dtv.pos.hardware.op.BuildRcptsOp" />
+    <WorkerOp workersBean="emailRcptsWorkers" />
+    <Op class="dtv.pos.hardware.op.PrintRcptsOp" />
+    <WorkerOp workersBean="saveRcptsWorkers" />
+    <Op class="dtv.pos.hardware.op.WaitForRcptPrintOp" required="false" />
+    <OpChainRoute chainKey="PRINT_FISCAL_RECEIPTS.local" />
+  </OpChain>
+  
+  <OpChain name="RESET_AFTER_TRANS">
+    <!-- CHANGE FROM BASE START -->
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RemoveNfeQueueOp" />
+    <!-- CHANGE FROM BASE END -->
+    <Op class="dtv.pos.framework.op.OpChainRollbackToTopOp">
+      <Parameter name="ProcessTopChain" value="false" />
+    </Op>
+    <Op class="dtv.pos.register.ResetAfterTransactionOp" />
+   
+  </OpChain> 
+  <!-- Disable completely change tax options -->
+  <OpChain name="APPLY_CUST_TAX_EXEMPT">  
+<!--     <PromptOp class="dtv.pos.register.tax.PromptApplyTransTaxExemptionOp" breakpoint="true" /> -->
+<!--     <PromptOp class="dtv.pos.register.tax.PromptTransTaxExemptionOp" breakpoint="true" /> -->
+<!--     <PromptOp class="dtv.pos.register.tax.PromptTaxExemptReasonOp" /> -->
+  </OpChain> 
+
+  <!-- ########################################################################### -->
+  <!-- ###################### BACK OFFICE ######################## -->
+  <!-- ########################################################################### -->
+
+
+
+  <!-- ########################################################################### -->
+  <!-- ######################## CUSTOMER ######################### -->
+  <!-- ########################################################################### -->
+
+  <OpChain name="COUNTRYPACK.BR.CUST_ASSOC" rollbackChainKey="COUNTRYPACK.BR.ROLLBACK_TO_TOP">
+    <!-- TODO BR: was BrCustomerAssociateIfOp check if it used only in the sale and it's ok to check the current transaction -->
+    <Op class="dtv.pos.customer.EnsureCustomerAssignedOp" />
+  </OpChain>
+
+  <!-- ########################################################################### -->
+  <!-- ########################## RETURN ######################### -->
+  <!-- ########################################################################### -->
+
+  
+  <OpChain name="ADD_RETURN_ITEM_TO_TRAN" signal="TransactionModified">
+    <!-- CHANGE FROM BASE START -->
+    <OpChainRoute chainKey="BR:ADD_RETURN_ITEM_TO_TRAN:PRE" />
+    <!-- CHANGE FROM BASE END -->
+    <Op class="dtv.pos.register.tax.ext.op.SetLineItemTaxSystemLocationOp" />
+    <Op class="dtv.pos.register.returns.AddReturnItemToSaleTranOp" />
+    <Op class="dtv.pos.register.returns.CopyCrossChannelTransPropertiesOp" />
+    <Op class="dtv.pos.register.itemmessages.DisplayItemMessagesOp" />
+    <Op class="dtv.pos.register.returns.verification.UpdateReturnPriceModsOp" />
+    <OpChainRoute chainKey="SALE_TAXING" />
+    <Op class="dtv.pos.register.returns.verification.UpdateVerifiedReturnTaxOp" />
+    <Op class="dtv.pos.register.returns.AddRestockingFeeOp" />
+    <Op class="dtv.pos.kits.returns.CopyKitComponentModifiersOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <!-- CHANGE FROM BASE START -->
+    <OpChainRoute chainKey="BR:ADD_RETURN_ITEM_TO_TRAN:POST" />
+    <!-- CHANGE FROM BASE END -->
+  </OpChain>
+
+  <!-- -->
+  <OpChain name="BR:ADD_RETURN_ITEM_TO_TRAN:POST" />
+  
+  <OpChain name="BR:ADD_RETURN_ITEM_TO_TRAN:PRE">
+    <ValidationOp class="oracle.retail.xstore.countrypack.br.nfe.op.ValidateCustomerForNfeOp" validationsBean="countryPack.br.nfeCustomerRules" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.CreateNfeForReversalOp">
+      <Parameter name="nfeUsageType" value="NFE_RETURN" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PromptCfopOp" />
+  </OpChain>
+  
+
+  <!-- ########################################################################### -->
+  <!-- ########################## SALE ########################### -->
+  <!-- ########################################################################### -->
+  <OpChain name="SALE_COMPLETE_AFTER_START.local.2">
+    <OpChainRoute chainKey="BR:BEFORE_COMPLETE_SALE:PRE" />
+    <OpChainRoute chainKey="BR:BEFORE_COMPLETE_SALE:POST" />
+  </OpChain>
+  <OpChain name="BR:BEFORE_COMPLETE_SALE:PRE">
+    <OpChainRoute chainKey="COUNTRYPACK.BR.CUST_INFO_IN_CF" />
+  </OpChain>
+  <!-- -->
+  <OpChain name="BR:BEFORE_COMPLETE_SALE:POST">
+    <OpChainRoute chainKey="BR:BEFORE_COMPLETE_SALE:POST:PRE" />
+    <OpChainRoute chainKey="BR:BEFORE_COMPLETE_SALE:POST:FISCAL_AUTH" />
+    <OpChainRoute chainKey="BR:BEFORE_COMPLETE_SALE:POST:ROLLBACK_TRAN" />
+  </OpChain>
+  <OpChain name="BR:BEFORE_COMPLETE_SALE:POST:PRE">
+  </OpChain>
+    
+  <OpChain name="BR:BEFORE_COMPLETE_SALE:POST:FISCAL_AUTH">
+    <Op class="oracle.retail.xstore.countrypack.br.nfce.op.AuthNfeOrNfceForSaleOp" breakpoint="true">
+      <Parameter name="nfeAuthChain" value="COUNTRYPACK.BR.NFE_AUTH_NFE_FOR_TRANS" />
+      <Parameter name="nfceAuthChain" value="COUNTRYPACK.BR.NFE_AUTH_NFCE_FOR_TRANS" />
+      <Parameter name="nfeModifyChain" value="COUNTRYPACK.BR.NFE_MODIFY_NFE_START" />
+    </Op>
+  </OpChain>  
+  
+  <OpChain name="COUNTRYPACK.BR.NFE_AUTH_NFCE_FOR_TRANS">
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFCE_SALE" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.SaveDefaultTranNfeInfCplOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PromptNfeInfCplOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfce.op.SaveNfceCardTenderInformationOp" />    
+    <Op class="oracle.retail.xstore.countrypack.br.nfce.op.UpdateNfceOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.AuthNfeOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RefreshNfeQueueOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.SaveNfeNumberToTransactionOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfce.op.SaveNfceDataToTransOp">
+      <Parameter name="nfeUsageType" value="NFE_SALE" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.sat.op.AddSatReceiptSourceOp" />    
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_AUTH_NFE_FOR_TRANS:POST" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.BR.NFCE_SALE">
+    <Op class="oracle.retail.xstore.countrypack.br.nfce.op.CreateNfceOp">
+      <Parameter name="nfeUsageType" value="NFE_SALE" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.nfce.op.PromptNfceCfopOp" />
+  </OpChain>
+  
+  <OpChain name="BR:BEFORE_COMPLETE_SALE:POST:ROLLBACK_TRAN">
+    <Op class="oracle.retail.xstore.countrypack.br.pos.common.op.PromptNotifyRollbackTransactionOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.pos.common.op.RollbackTransactionOp">
+      <Parameter name="rollbackChain" value="ROLLBACK_TRANS_START" />
+    </Op>
+  </OpChain>
+
+  <!-- Override base empty chain -->
+  <OpChain name="SALE_ITEM_VALIDATE.local.pre">
+    <PromptOp class="oracle.retail.xstore.countrypack.br.pos.register.PromptItemNcmOp" validationsBean="countryPack.br.itemNcmRules" />
+    <Op class="oracle.retail.xstore.countrypack.br.pos.register.SetNcmOnLineItemOp" />
+    <ValidationOp validationsBean="countryPack.br.disalowMixSaleReturnNFe"/>
+  </OpChain>
+
+
+  
+  <!-- ########################################################################### -->
+  <!-- ######################### TENDERS ######################### -->
+  <!-- ########################################################################### -->
+
+  <!-- New Injection Chains -->
+  <OpChain name="BR:PRE_TENDERING:PRE" />
+  <!-- -->
+
+  <!-- NFe Tender: Donation -->
+  <OpChain name="BR:TENDER_DONATION" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.CreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderCategory" value="TENDER_DONATION" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.PromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <OpChainRoute chainKey="CHECK_TENDERED_CASH.local" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <!-- NFe Tender: Complimentary Sale Tender -->
+  <OpChain name="BR:COMP_SALE_TENDER" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.CreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderCategory" value="COMP_SALE_TENDER" />
+    </Op>
+    <!-- TODO BR: Optimization, All the next section is the same of BR:TENDER_DONATION -->
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.PromptTenderAmtOp" />
+    <OpChainRoute chainKey="CHECK_TENDERED_CASH.local" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+
+  <!-- -->
+  <OpChain name="PRE_TENDERING_ACTIVITY.local.pre">
+    <OpChainRoute chainKey="BR:PRE_TENDERING:PRE" />
+    <OpChainRoute chainKey="COUNTRYPACK.BR.SAT_STATUS" condition="oracle.retail.xstore.countrypack.br.sat.condition.SatCfeFiscalDocumentRunCondition" />
+    <ValidationOp validationsBean="countryPack.br.preTenderingRules" />
+    <ValidationOp class="oracle.retail.xstore.countrypack.br.nfe.op.ValidateCustomerForNfeOp" validationsBean="countryPack.br.nfeCustomerRules">
+      <Parameter name="checkHasNfe" value="true" />
+    </ValidationOp>
+    <ValidationOp class="oracle.retail.xstore.countrypack.br.nfe.op.ValidateSubmitNfeOp" validationsBean="countryPack.br.submitNfeRules" />
+  </OpChain>
+
+  <!-- ################################# -->
+  <!-- ########## NFe ########## -->
+  <!-- ################################# -->
+
+  <OpChain name="COUNTRYPACK.BR.NFE_SALE">
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_SALE:PRE" />
+    <OpChainRoute chainKey="COUNTRYPACK.BR.CUST_ASSOC" />
+    <ValidationOp class="oracle.retail.xstore.countrypack.br.nfe.op.ValidateCustomerForNfeOp" validationsBean="countryPack.br.nfeCustomerRules" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.CreateNfeOp">
+      <Parameter name="nfeUsageType" value="NFE_SALE" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PromptCfopOp" />
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_SALE:POST" />
+  </OpChain>
+  <!-- -->
+  <OpChain name="COUNTRYPACK.BR.NFE_SALE:PRE" />
+  <OpChain name="COUNTRYPACK.BR.NFE_SALE:POST" />
+
+  <!-- -->
+  <OpChain name="COUNTRYPACK.BR.NFE_AUTH_NFE_FOR_TRANS">
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_AUTH_NFE_FOR_TRANS:PRE" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.SaveReturnItemOrigTranNfeRefOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.SaveDefaultTranNfeInfCplOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.SaveDefaultReturnTransNfeInfCplOp" />    
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PromptNfeInfCplOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfce.op.SaveNfceCardTenderInformationOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.UpdateNfeOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.reversal.op.CaptureNfeReversalOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.AuthNfeOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RefreshNfeQueueOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.SaveNfeNumberToTransactionOp" />
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_AUTH_NFE_FOR_TRANS:POST" />
+  </OpChain>
+  <!-- -->
+  <OpChain name="COUNTRYPACK.BR.NFE_AUTH_NFE_FOR_TRANS:PRE">
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_EMAIL" condition="oracle.retail.xstore.countrypack.br.nfe.condition.IsNfeEmailEnabled"/>
+    <ValidationOp class="oracle.retail.xstore.countrypack.br.nfe.op.ValidateCustomerForNfeOp" validationsBean="countryPack.br.nfeCustomerRules">
+      <Parameter name="checkHasNfe" value="true" />
+    </ValidationOp>
+    <ValidationOp class="oracle.retail.xstore.countrypack.br.nfe.op.ValidateSubmitNfeOp" validationsBean="countryPack.br.submitNfeRules" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_EMAIL">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RefreshNfeQueueOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.BrNfeEmailAddressPromptOp" />
+    <Op class="dtv.pos.email.receipt.UpdateCustomerEmailAddressOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.BrNfeUpdateDestinationEmailOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PersistNfeQueueOp">
+      <Parameter name="updateOnly" value="true" />
+    </Op>
+  </OpChain>
+  <!-- -->
+  <OpChain name="COUNTRYPACK.BR.NFE_AUTH_NFE_FOR_TRANS:POST" />
+  <!-- -->
+  
+  <!-- ########################## Start 407572 - reprint of NFe ########################## -->
+  <OpChain name="COUNTRYPACK.BR.NFE_REPRINT">
+    <Op class="oracle.retail.xstore.countrypack.br.nfce.op.NfceLookupNfeForTransactionOp" />
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_REPRINT_IMPL" />
+  </OpChain>
+  <!-- -->
+  <OpChain name="COUNTRYPACK.BR.NFE_REPRINT_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.br.nfce.op.NfceInactiveNfceOp" />
+    <PromptOp class="oracle.retail.xstore.countrypack.br.nfe.op.PromptReprintNfeOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.ReprintNfeOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RemoveNfeQueueOp" />
+  </OpChain>
+  <!-- ########################## End 407572 - reprint of NFe ########################## -->
+
+  <!-- ####################### Edit NFe during sale transaction ###################### -->
+
+  <OpChain name="COUNTRYPACK.BR.NFE_MODIFY_NFE_START">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PromptModifyNfeOp" />
+  </OpChain>
+  <!-- -->
+  <OpChain name="COUNTRYPACK.BR.NFE_EDIT_NFE">
+    <!-- need to be able to modify nfe for resubmitting -->
+    <!-- <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.ClearNfeSearchModelOp" /> -->
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditSaleTransactionNfeOp" breakpoint="true" />
+  </OpChain>
+  <!-- -->
+  <OpChain name="COUNTRYPACK.BR.NFE_SALE_ABORT_RESUBMIT_NFE">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.AbortResubmitNfeOp" />
+  </OpChain>  
+  <OpChain name="COUNTRYPACK.BR.NFE_SALE_RESUBMIT_NFE">
+    <Operation class="oracle.retail.xstore.countrypack.br.nfe.op.ResubmitSaleNfeOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_SALE_ITEM_EDIT">
+    <Operation class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditNfeMaintenanceItemOp" />
+    <Operation class="oracle.retail.xstore.countrypack.br.nfe.op.RefreshNfeQueueOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_SALE_TOTAL_EDIT">
+    <Operation class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditNfeMaintenanceTotalOp" />
+    <Operation class="oracle.retail.xstore.countrypack.br.nfe.op.RefreshNfeQueueOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_SALE_DESTINATION_EDIT">
+    <Operation class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditNfeMaintenanceDestinationOp" />
+    <Operation class="oracle.retail.xstore.countrypack.br.nfe.op.RefreshNfeQueueOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_SALE_INF_CPL_EDIT">
+    <Operation class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditNfeMaintenanceInfCplOp" />
+    <Operation class="oracle.retail.xstore.countrypack.br.nfe.op.RefreshNfeQueueOp" />
+  </OpChain>
+  
+  
+  
+
+  <!-- ##################### END Edit NFe during sale transaction ###################### -->
+
+
+
+  <OpChain name="COUNTRYPACK.BR.CUST_INFO_IN_CF">
+    <PromptOp class="oracle.retail.xstore.countrypack.br.nfe.op.PromptToIncludeCustInfoInNfOp" />
+    <OpChainRoute chainKey="COUNTRYPACK.BR.CUST_INFO" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.BR.CUST_INFO">
+    <!-- TODO BR: at least move the package name -->
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PromptDiffCustInfoOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PromptForCustTaxIdOp" contextKey="EMPTY" />
+  </OpChain>
+
+<!--   <OpChain name="COUNTRYPACK.BR.NFE_ISSUE_NFE_FROM_EJOURNAL"> -->
+<!--     <ValidationOp class="oracle.retail.xstore.countrypack.br.nfe.op.ValidateCreateNfeFromEjournalOp" validationsBean="nfeCreatefromEjRules" /> -->
+<!--     <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_REPRINT" /> -->
+<!--     <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RouteNfeFromEjournalOp" /> -->
+<!--   </OpChain> -->
+  
+  <!-- ############# Start BR NFe Maintenance Module [NFe EJournal] ####################### -->
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE" rollbackLevel="30">
+    <!-- <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.ClearNfeSearchModelOp" /> --> <!-- TODO BR: Victor, need to find a way to clear the form (is this needed?) -->
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.NfeSearchOp" longRunning="true" />
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_VIEW" chainType="START" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_VIEW" rollbackLevel="35">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.ViewNfeMaintenanceOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.NoNfeFoundPromptOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_DETAIL" rollbackLevel="40">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditNfeMaintenanceOp" longRunning="true" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_TRAN_DETAIL" rollbackLevel="50">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.ViewNfeMaintenanceTranOp" />
+  </OpChain>  
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_ITEM_EDIT" rollbackLevel="50">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditNfeMaintenanceItemOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_TOTAL_EDIT" rollbackLevel="50">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditNfeMaintenanceTotalOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_DESTINATION_EDIT" rollbackLevel="50">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditNfeMaintenanceDestinationOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_INF_CPL_EDIT" rollbackLevel="50">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.EditNfeMaintenanceInfCplOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_RESUBMIT_NFE">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.SetNfeForMaintOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.SetNfeStatusForReSubmitOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PersistNfeQueueOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.AuthNfeResubmitOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_REVERSE_NFE">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.SetNfeForMaintOp" />
+    <ValidationOp validationsBean="countryPack.br.nfeIssueReverseRules" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.PromptReverseNfeOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.PersistNfeQueueOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.AuthNfeReverseOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_REPRINT_NFE">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.SetNfeForMaintOp" />
+    <ValidationOp validationsBean="countryPack.br.nfeIssueReprintRules" />
+    <OpChainRoute chainKey="COUNTRYPACK.BR.NFE_REPRINT_IMPL" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.NFE_MAINTENANCE_EMAIL_NFE">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.maintenance.op.SetNfeForMaintOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.BrNfeMaintenanceEmailAddressPromptOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.BrNfeUpdateDestinationEmailOp" />    
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.EmailNfeOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.RemoveNfeQueueOp" />
+  </OpChain>
+  <!-- ############# End BR NFe Maintenance Module [NFe EJournal] ######################### -->
+
+<!--   SATe standalone commands -->
+  <OpChain name="COUNTRYPACK.BR.SAT_MAINTENANCE_LOCK">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.CreateStandaloneRequestOp">
+      <Parameter name="StandaloneRequest" value="LOCK" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.WaitForStandaloneRequestProcessedOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.WaitForStandaloneResponseOp" />
+    <PromptOp key="COUNTRYPACK.BR.STANDALONE_OPERATION_COMPLETED" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.SAT_MAINTENANCE_UNLOCK">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.CreateStandaloneRequestOp">
+      <Parameter name="StandaloneRequest" value="UNLOCK" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.WaitForStandaloneRequestProcessedOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.WaitForStandaloneResponseOp" />
+    <PromptOp key="COUNTRYPACK.BR.STANDALONE_OPERATION_COMPLETED" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.SAT_MAINTENANCE_SHOW_LOG">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.CreateStandaloneRequestOp">
+      <Parameter name="StandaloneRequest" value="LOG" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.WaitForStandaloneRequestProcessedOp">
+      <Parameter name="Timeout" value="40000" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.WaitForStandaloneResponseOp">
+      <Parameter name="Timeout" value="40000" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.sat.op.ShowSatLogOp" />
+  </OpChain>
+  <OpChain name="COUNTRYPACK.BR.SAT_STATUS">
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.CreateStandaloneRequestOp">
+      <Parameter name="StandaloneRequest" value="STATUS" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.WaitForStandaloneRequestProcessedOp" />
+    <Op class="oracle.retail.xstore.countrypack.br.nfe.op.WaitForStandaloneResponseOp" />
+  </OpChain>
+  
+  <OpChain name="REFINE_ADDRESS.local">
+    <Op class="oracle.retail.xstore.countrypack.br.address.AdjustAddressQASResultOp" />
+  </OpChain>
+  
+</OpChainSet>

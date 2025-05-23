@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	default-init-method="init">
+
+	<!-- Spring beans that are singletons or framework beans can be defined 
+		in this file. Any realm-specific beans (validations, services, workers, etc) 
+		should be defined in their relevant Spring file that should be in the same 
+		directory as this file. -->
+		
+<bean id="persistenceDefaults" class="dtv.pos.persistence.PosObjectIdFactory" />
+<bean id="replicationServiceFactory" class="dtv.data2.replication.dtximpl.DtxReplicationServiceFactory" />
+<bean id="mrRetailTransMgrImpl" class="com.micros_retail.xservices.pricing.MrRetailTransMgrImpl">
+  <property name="calculators" ref="calculators" />
+</bean>
+  	
+  	<bean id="transactionScope" class="dtv.pos.framework.scope.XstoreTransactionScope"
+		scope="session" primary="true">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="defaultScope" class="com.micros_retail.xservices.XservicesDefaultScope"
+		scope="request">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="orderMgr" class="dtv.pos.order.OrderMgr"
+		scope="session" primary="true">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="loyaltyMgr" class="dtv.pos.customer.loyalty.LoyaltyMgr" 
+		scope="session" primary="true">
+		<aop:scoped-proxy />
+	</bean>
+	
+	<bean id="accountManager" class="dtv.pos.customer.account.AccountManager"
+		scope="session" primary="true">
+		<aop:scoped-proxy />
+	</bean>
+	
+  <bean id="stationState" class="dtv.pos.iframework.security.StationState" scope="session" primary="true">
+    <aop:scoped-proxy />
+  </bean>
+  
+  <bean id="sessionManager" class="dtv.pos.till.SessionManager" init-method="initialize" lazy-init="true" scope="session" >
+    <aop:scoped-proxy />
+  </bean>
+	
+</beans>

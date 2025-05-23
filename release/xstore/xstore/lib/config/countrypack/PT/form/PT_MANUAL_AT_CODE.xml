@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">PT_MANUAL_AT_CODE</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>   
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--10.0, FILL, 10.0 -->
+          <param_value dtype="DoubleArray">10.0, -1.0, 10.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--200.0, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, C, B</LayoutLocation>
+        <Type dtype="String">FormLabelWrapping</Type>
+        <TextKey dtype="Translatable">_countrypack.pt.atManualMessage</TextKey>
+        <ResourceLink dtype="String">atCode</ResourceLink>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">atCode</Resource>
+        <DataField ref="ManualAtCode" />
+        <Font fontStyle="BOLD" fontSize="+10" />
+        <Required dtype="Boolean">true</Required>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action name="CANCEL" dataKey="EXIT" text="_cancel" keyStroke="Escape" />
+      <Action name="ACCEPT" dataKey="ACCEPT" text="_process" keyStroke="F8" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

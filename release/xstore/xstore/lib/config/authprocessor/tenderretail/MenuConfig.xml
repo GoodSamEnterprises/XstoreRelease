@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+
+  <MenuItem name="RETURN::TENDER_OPTIONS" text="_menuReturnTender" displayType="ICON_LIST">
+    <MenuOption ref="RETURN::TENDER_LOCAL_CURRENCY" />
+    <MenuOption ref="RETURN::TENDER_TR_CREDIT_CARD" />
+    <MenuOption ref="RETURN::TENDER_TR_DEBIT_CARD" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT_CARD.ISSUE" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT_CARD.RELOAD" />
+    <MenuOption ref="RETURN::TENDER_GIFT_CARD.ISSUE" />
+    <MenuOption ref="RETURN::TENDER_GIFT_CARD.RELOAD" />
+    <MenuOption ref="RETURN::TENDER_HOME_OFFICE_CHECK" />
+    <MenuOption ref="RETURN::TENDER_HOUSE_ACCOUNT" />
+    <MenuOption ref="RETURN::TENDER_ROOM_CHARGE" />
+
+    <SubMenu actionRef="RETURN::MENU.MODIFY_TENDER">
+      <MenuOption ref="RETURN::CHANGE_TENDER_AMOUNT" />
+      <MenuOption ref="RETURN::VOID_TENDER" />
+    </SubMenu>
+
+    <MenuOption ref="RETURN::BACK_TO_SALE" />
+    <MenuOption ref="RETAIL::CHECK_SALE_COMPLETE" />
+  </MenuItem>
+
+  <MenuItem name="SALE::TENDER_OPTIONS" text="_menuSaleTender" displayType="ICON_LIST">
+    <MenuOption ref="SALE::TENDER_LOCAL_CURRENCY" />
+    <MenuOption ref="SALE::TENDER_TR_CREDIT_CARD" />
+    <MenuOption ref="SALE::TENDER_TR_DEBIT_CARD" />
+    <MenuOption ref="SALE::TENDER_CHECK" />
+    <MenuOption ref="SALE::TENDER_GIFT_CARD" />
+    <MenuOption ref="SALE::TENDER_GIFT_CERTIFICATE" />
+    <MenuOption ref="SALE::TENDER_MALL_CERTIFICATE" />
+    <MenuOption ref="SALE::TENDER_STORE_CREDIT" />
+    <MenuOption ref="SALE::TENDER_STORE_CREDIT_CARD" />
+    <MenuOption ref="SALE::TENDER_TRAVELERS_CHECK" />
+    <MenuOption ref="SALE::TENDER_FOREIGN_CURRENCY" />
+    <MenuOption ref="SALE::TENDER_HOUSE_ACCOUNT" />
+    <MenuOption ref="SALE::TENDER_COUPON" />
+    <MenuOption ref="SALE::TENDER_ROOM_CHARGE" />
+
+    <SubMenu actionRef="SALE::MENU.MODIFY_TENDER">
+      <MenuOption ref="SALE::CHANGE_TENDER_AMOUNT" />
+      <MenuOption ref="SALE::VOID_TENDER" />
+    </SubMenu>
+
+    <MenuOption ref="SALE::BACK_TO_SALE" />
+    <MenuOption ref="RETAIL::CHECK_SALE_COMPLETE" />
+  </MenuItem>
+
+  <MenuItem name="ADMIN::BACK_OFFICE_OPTIONS" text="_menuTopText" rootText="_menuTopTextRoot" displayType="LIST" category="Back Office" keywords="universal,back_office,inventory,back_office_only,report_customer,report_inventory,report_employee,report_till,report_system,report" >
+
+    <MenuOption ref="ADMIN::VIEW_DASHBOARD" />
+    <MenuOption ref="RETAIL::REPORT.FLASH_SALES" />
+    <SubMenu ref="INVENTORY::OPTIONS" />
+    <SubMenu ref="EMPLOYEE::MANAGER_OPTIONS" />
+    <SubMenu ref="TILL::OPTIONS" />
+    <SubMenu ref="ADMIN::SYSTEM_CYCLE_OPTIONS" />
+    <MenuOption ref="TENDER_EXCHANGE" />
+    <SubMenu ref="ADMIN::REPORTS" />
+
+    <SubMenu text="_menuTextJournal">
+      <MenuOption ref="ADMIN::ELECTRONIC_JOURNAL" />
+      <MenuOption ref="RETAIL::REPORT.JOURNAL_ROLL" />
+    </SubMenu>
+
+    <SubMenu ref="CUSTOMER::MANAGER_OPTIONS" />
+
+    <SubMenu ref="ASSOCIATE::TASKS" />
+
+    <SubMenu text="_menutext141">
+      <MenuOption ref="BROWSER::ORACLE" />
+    </SubMenu>
+
+    <SubMenu ref="BALANCE_INQUIRY::BACK_OFFICE_OPTIONS" />
+    <SubMenu ref="ADMIN::HARDWARE_MANAGEMENT" />
+    <MenuOption ref="ADMIN::REPRINT_RECEIPT" />
+    <MenuOption>
+      <Action ref="ADMIN::TRAINING_MODE_ENTER" />
+      <Action ref="ADMIN::TRAINING_MODE_EXIT" />
+    </MenuOption>
+    <SubMenu ref="TENDER_RETAIL_OPTIONS" />
+  </MenuItem>
+
+  <MenuItem name="TENDER_RETAIL_OPTIONS" text="_tenderRetailMenu" displayType="LIST">
+    <MenuOption ref="ADMIN::TR_INIT_PINPAD" />
+    <MenuOption ref="ADMIN::TR_PROCESS_SAF" />
+    <MenuOption ref="ADMIN::TR_CLOSE_BATCH" />
+  </MenuItem>
+
+</MenuSet>

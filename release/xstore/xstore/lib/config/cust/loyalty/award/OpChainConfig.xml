@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../pos/config/dtv/res/config/OpChainConfig.xsd">
+  <OpChain name="AWARD_DISCOUNT_REDEEM">
+    <Op class="dtv.pos.customer.award.SetupAwardDiscountOp" />
+    <ValidationOp class="dtv.pos.customer.award.ValidateAwardEligibilityOp" validationsBean="transactionDiscountRules" />
+    <PromptOp class="dtv.pos.customer.award.PromptAwardCardSwipeOp" validationsBean="loyaltyCardMatchRules" />
+    <PromptOp class="dtv.pos.customer.award.PromptRedeemAwardAmountOp" validationsBean="redeemAwardAmountRules">
+      <Parameter name="RedemptionMode" value="STORED_VALUE" />
+      <Parameter name="RedeemFailedPromptKey" value="AWARD_REDEEM_FAILED" />
+    </PromptOp>
+    <PromptOp class="dtv.pos.customer.award.PromptRedeemAwardCouponsOp" validationsBean="awardCouponsRedemptionRules" breakpoint="true">
+      <Parameter name="RedemptionMode" value="COUPON" />
+    </PromptOp>
+    <PromptOp class="dtv.pos.customer.award.PromptRedeemAdditionalAwardsOp" />
+    <Op class="dtv.pos.customer.award.RedeemAwardCouponsOp">
+      <Parameter name="RedeemFailedPromptKey" value="AWARD_REDEEM_FAILED" />
+    </Op>
+  </OpChain>
+  <OpChain name="APPLY_REDEEMED_AWARDS" signal="TransactionModified">
+    <Op class="dtv.pos.customer.award.SetupAwardDiscountOp" />
+    <ValidationOp validationsBean="transactionDiscountRules" />
+    <OpChainRoute chainKey="TRANSACTION_DISCOUNT_APPLY" />
+    <Op class="dtv.pos.customer.award.SetAwardTransactionIdOnDiscountOp" />
+  </OpChain>
+  <OpChain name="ORDER_AWARD_DISCOUNT_SETUP">
+    <OpChainRoute chainKey="AWARD_DISCOUNT_REDEEM"/>
+    <Op class="dtv.pos.order.UpdateSetupFeesOp" />
+    <Op class="dtv.pos.order.UpdateShippingFeeOp" />
+  </OpChain>
+  <OpChain name="VOID_DISCOUNT_MAIN.post">
+    <Op class="dtv.pos.customer.award.VoidAwardsFromDiscountOp" />
+  </OpChain>
+  <OpChain name="CANCEL_TRANSACTION.pre">
+    <Op class="dtv.pos.customer.award.VoidAwardsFromTransactionOp" />
+  </OpChain>
+</OpChainSet>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PromptSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PromptConfig.xsd">
+
+  <Prompt name="LOGIN_USER_ID" type="Text" title="_login" message="_touchToLogin" modal="false">
+    <DataField ref="Disabled" />
+    <IconGroup icon="_imagePromptLoginUserId" touch="LOGIN::AUTHENTICATE_AND_FINISH" />
+    <Action ref="TOUCH::OPEN_REGISTER" />
+    <Action ref="TOUCH::CLOCK_IN_OUT" />
+    <Action ref="ACCEPT_ENTRY" />
+  </Prompt>
+
+  <Prompt name="LOGIN_USER_ID_ESC" type="Text" title="_login" message="_promptmsg9" modal="false">
+    <DataField ref="ID" />
+    <IconGroup icon="_imagePromptLoginUserId" />
+    <FingerprintEnabled dtype="Boolean">true</FingerprintEnabled>
+  </Prompt>
+  
+</PromptSet>

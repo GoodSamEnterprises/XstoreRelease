@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AuthConfig.xsd">
+
+  <AuthProcess name="TAXFREE_BASE" Abstract="true">
+    <AuthProcessClass dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.auth.TaxFreeAuthProcess</AuthProcessClass>
+    <parameter name="requestConverter">
+      <param_value dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.auth.TaxFreeRequestConverter</param_value>
+    </parameter>
+    <parameter name="responseConverter">
+      <param_value dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.auth.TaxFreeResponseConverter</param_value>
+    </parameter>
+    <!-- Define communicator in provider specific configuration -->
+    <parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various reasons -->
+      <param_value dtype="Map">
+        <!-- Server offline -->
+        <MapEntry key="OFFLINE">
+          <value dtype="ParameterizedFormattable" TranslationKey="_countrypack.taxfree.auth.offlineError" >
+            <Parameter dtype="EvaluatedFormattable" method="getInstructions" />
+          </value>
+        </MapEntry>
+        <!-- Fatal error in Xstore -->
+        <MapEntry key="EXCEPTION">
+          <value dtype="ParameterizedFormattable" TranslationKey="_countrypack.taxfree.auth.internalError" />
+        </MapEntry>
+        <MapEntry key="RESPONSE_CODE_SOCKET_COMM_UNAVAILABLE">
+          <value dtype="ParameterizedFormattable" TranslationKey="_countrypack.taxfree.auth.socketUnavail" />
+        </MapEntry>
+        <MapEntry key="RESPONSE_CODE_CANNOT_REPRINT">
+          <value dtype="ParameterizedFormattable" TranslationKey="_countrypack.taxfree.auth.cannotReprint" />
+        </MapEntry>
+        <MapEntry key="RESPONSE_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_countrypack.taxfree.auth.responseCodeOther">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getRequestDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getInstructions" />
+          </value>
+        </MapEntry>        
+        <!-- Invalid Traveller Identifier -->
+        <MapEntry key="RESPONSE_CODE_1401">
+          <value dtype="ParameterizedFormattable" TranslationKey="_countrypack.taxfree.auth.gb.invalidTravellerId" />
+        </MapEntry>
+      </param_value>
+    </parameter>
+    <parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry key="OFFLINE">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="SOCKET_COMM_UNAVAILABLE">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="CANNOT_REPRINT">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </parameter>
+  </AuthProcess>
+
+</AuthConfig>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  profile="xstore">
+
+  <context:annotation-config />
+
+  <bean id="pricingTransaction" class="dtv.pos.pricing.PosPricingTransaction" scope="prototype"
+    init-method="init">
+  </bean>
+
+  <bean id="dealEngine" class="dtv.pricing2.engine.UomSplittingEngine" primary="true">
+    <constructor-arg ref="groupSplittingEngine" />
+    <property name="pricingAdapter" ref="pricingAdapter" />
+    <property name="threshold" value="100" />
+  </bean>
+
+  <bean id="groupSplittingEngine" class="dtv.pricing2.engine.GroupSplittingEngine">
+    <constructor-arg ref="filteringEngine" />
+    <property name="adapter" ref="pricingAdapter" />
+    <property name="groupIds">
+      <list value-type="java.lang.String">
+        <value>PRIORITY</value>
+        <value>DEFAULT</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="filteringEngine" class="dtv.pricing2.engine.FilteringEngine">
+    <constructor-arg ref="collisionEngine" />
+    <property name="pricingAdapter" ref="pricingAdapter" />
+  </bean>
+
+  <bean id="collisionEngine" class="dtv.pricing2.engine.CollisionDetectionEngine">
+    <constructor-arg ref="resortingEngine" />
+  </bean>
+
+  <bean id="resortingEngine" class="dtv.pricing2.engine.ResortingEngine">
+    <constructor-arg ref="loggingEngine" />
+    <property name="useDealResorting" value="false" />
+  </bean>
+
+  <bean id="loggingEngine" class="dtv.pricing2.LoggingEngine">
+    <constructor-arg ref="bruteForceEngine" />
+  </bean>
+
+  <bean id="bruteForceEngine" class="dtv.pricing2.engine.BruteForceEngine">
+    <property name="pricingAdapter" ref="pricingAdapter" />
+    <property name="useUpdatedPrice" value="false" />
+  </bean>
+
+  <bean id="pricingTransactionFactory" class="dtv.pos.pricing.deal.PricingTransactionFactory" />
+
+  <bean id="pricingAdapter" class="dtv.xst.pricing.XSTPricingAdapter" />
+
+  <bean id="pricingItemAdapter" class="dtv.pos.pricing.PosPricingItemAdapter">
+    <property name="itemFields" ref="pricingItemFields" />
+    <property name="pricingAdapter" ref="pricingAdapter" />
+  </bean>
+
+  <util:map id="pricingItemFields" key-type="java.lang.String" value-type="dtv.pricing2.IItemField">
+    <entry key="ALLOW_DEAL" value-ref="allowDealItemField" />
+    <entry key="DIMENSION1" value-ref="dimension1ItemField" />
+    <entry key="DIMENSION2" value-ref="dimension2ItemField" />
+    <entry key="DIMENSION3" value-ref="dimension3ItemField" />
+    <entry key="DISCOUNTED" value-ref="discountedItemField" />
+    <entry key="ITEM_PROPERTY" value-ref="itemPropertyItemField" />
+    <entry key="ITEM_STOCK_STATUS" value-ref="itemStockStatusItemField" />
+    <entry key="LIMIT_DEAL_ELIGIBILITY" value-ref="limitDealEligibilityItemField" />
+    <entry key="MANUFACTURER" value-ref="manufacturerItemField" />
+    <entry key="MERCHLEVEL1" value-ref="merchLevel1ItemField" />
+    <entry key="MERCHLEVEL2" value-ref="merchLevel2ItemField" />
+    <entry key="MERCHLEVEL3" value-ref="merchLevel3ItemField" />
+    <entry key="MERCHLEVEL4" value-ref="merchLevel4ItemField" />
+    <entry key="PRICE" value-ref="priceItemField" />
+    <entry key="PRICE_OVERRIDE" value-ref="priceOverrideItemField" />
+    <entry key="PRICE_PROPERTY_CODE" value-ref="pricePropertyCodeItemField" />
+    <entry key="QUANTITY" value-ref="quantityItemField" />
+    <entry key="SALE_ITEM_TYPE_ONLY" value-ref="saleItemTypeOnlyItemField" />
+    <entry key="SEASON" value-ref="seasonItemField" />
+    <entry key="SEQ_NUMBER" value-ref="seqNumberItemField" />
+    <entry key="SKU" value-ref="skuItemField" />
+    <entry key="STYLE" value-ref="styleItemField" />
+    <entry key="USE" value-ref="useItemField" />
+    <entry key="VENDOR" value-ref="vendorItemField" />
+    <entry key="REQUIRE_UOM" value-ref="requireUomItemField" />
+  </util:map>
+
+  <bean id="allowDealItemField" class="dtv.pos.pricing.deal.itemField.AllowDeal" />
+  <bean id="dimension1ItemField" class="dtv.pos.pricing.deal.itemField.Dimension1" />
+  <bean id="dimension2ItemField" class="dtv.pos.pricing.deal.itemField.Dimension2" />
+  <bean id="dimension3ItemField" class="dtv.pos.pricing.deal.itemField.Dimension3" />
+  <bean id="discountedItemField" class="dtv.pos.pricing.deal.itemField.Discounted" />
+  <bean id="itemPropertyItemField" class="dtv.pos.pricing.deal.itemField.ItemProperty" />
+  <bean id="itemStockStatusItemField" class="dtv.pos.pricing.deal.itemField.ItemStockStatus" />
+  <bean id="limitDealEligibilityItemField" class="dtv.pos.pricing.deal.itemField.LimitDealEligibility" />
+  <bean id="manufacturerItemField" class="dtv.pos.pricing.deal.itemField.Manufacturer" />
+  <bean id="merchLevel1ItemField" class="dtv.pos.pricing.deal.itemField.MerchLevel1" />
+  <bean id="merchLevel2ItemField" class="dtv.pos.pricing.deal.itemField.MerchLevel2" />
+  <bean id="merchLevel3ItemField" class="dtv.pos.pricing.deal.itemField.MerchLevel3" />
+  <bean id="merchLevel4ItemField" class="dtv.pos.pricing.deal.itemField.MerchLevel4" />
+  <bean id="priceItemField" class="dtv.pos.pricing.deal.itemField.Price" />
+  <bean id="priceOverrideItemField" class="dtv.pos.pricing.deal.itemField.PriceOverride" />
+  <bean id="pricePropertyCodeItemField" class="dtv.pos.pricing.deal.itemField.PricePropertyCode" />
+  <bean id="quantityItemField" class="dtv.pos.pricing.deal.itemField.Quantity" />
+  <bean id="saleItemTypeOnlyItemField" class="dtv.pos.pricing.deal.itemField.SaleItemTypeOnly" />
+  <bean id="seasonItemField" class="dtv.pos.pricing.deal.itemField.Season" />
+  <bean id="seqNumberItemField" class="dtv.pos.pricing.deal.itemField.SeqNumber" />
+  <bean id="skuItemField" class="dtv.pos.pricing.deal.itemField.Sku" />
+  <bean id="styleItemField" class="dtv.pos.pricing.deal.itemField.Style" />
+  <bean id="useItemField" class="dtv.pos.pricing.deal.itemField.Use" />
+  <bean id="vendorItemField" class="dtv.pos.pricing.deal.itemField.Vendor" />
+  <bean id="requireUomItemField" class="dtv.pos.pricing.deal.itemField.RequireUom">
+    <property name="splittableUOMs">
+      <list value-type="java.lang.String">
+        <value>EA</value>
+      </list>
+    </property>
+  </bean>
+
+  <!-- match rules -->
+  <bean id="pricingMatchRuleFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pricing2.MatchRuleFactory" />
+    <property name="serviceMappings">
+      <props>
+        <prop key="EQUAL">equalityMatchRule</prop>
+        <prop key="NOT_EQUAL">inequalityMatchRule</prop>
+        <prop key="GREATER">greaterMatchRule</prop>
+        <prop key="LESS">lessMatchRule</prop>
+        <prop key="BETWEEN">inclusiveBoundMatchRule</prop>
+      </props>
+    </property>
+  </bean>
+
+
+  <bean id="equalityMatchRule" class="dtv.pricing2.match.EqualityMatchRule" scope="prototype" />
+  <bean id="inequalityMatchRule" class="dtv.pricing2.match.InequalityMatchRule" scope="prototype" />
+  <bean id="greaterMatchRule" class="dtv.pricing2.match.GreaterMatchRule" scope="prototype" />
+  <bean id="lessMatchRule" class="dtv.pricing2.match.LessMatchRule" scope="prototype" />
+  <bean id="inclusiveBoundMatchRule" class="dtv.pricing2.match.InclusiveBoundMatchRule" scope="prototype" />
+  
+  <!-- actions -->
+  <bean id="pricingActionFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pricing2.DealActionFactory" />
+    <property name="serviceMappings">
+      <props>
+        <prop key="CURRENCY_OFF">currencyOffAction</prop>
+        <prop key="PERCENT_OFF">percentOffAction</prop>
+        <prop key="NEW_PRICE">newPriceAction</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="currencyOffAction" class="dtv.pricing2.action.CurrencyOff" scope="prototype" />
+  <bean id="percentOffAction" class="dtv.pricing2.action.PercentOff" scope="prototype" />
+  <bean id="newPriceAction" class="dtv.pricing2.action.NewPrice" scope="prototype" />
+  
+  <!-- deal space -->
+  <bean id="dealSpaceOnDemand" class="dtv.pos.pricing.PosOnDemandDealSpace" scope="transaction" />
+  <bean id="dealSpaceBegin" class="dtv.pricing2.DealSpaceTransactionBegin" scope="transaction" />
+  <bean id="dealSpaceInProgress" class="dtv.pricing2.DealSpaceTransactionInProgress" scope="transaction" />
+
+  <bean id="globalDealSpace" class="dtv.pricing2.DealSpaceGlobal" init-method="init">
+    <property name="refreshStrategy" ref="pricingRefreshStrategy" />
+  </bean>
+
+  <bean id="pricingRefreshStrategy" class="dtv.pricing2.ChainedDealRefreshStrategy">
+    <constructor-arg>
+      <list value-type="dtv.pricing2.IDealRefreshStrategy">
+        <ref bean="custGroupRefreshStrategy" />
+        <ref bean="documentRefreshStrategy" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="abstractRefreshStrategy" abstract="true">
+    <property name="pricingAdapter" ref="pricingAdapter" />
+    <property name="actionFactory" ref="pricingActionFactory" />
+    <property name="matchRuleFactory" ref="pricingMatchRuleFactory" />
+    <property name="itemFields" ref="pricingItemFields" />
+  </bean>
+
+  <bean id="custGroupRefreshStrategy" class="dtv.pos.pricing.CustGroupRefreshStrategy" parent="abstractRefreshStrategy"
+    depends-on="dataFactoryAssistant">
+    <property name="daysAhead" value="1" />
+  </bean>
+
+  <util:map id="preloadedDealDefinitions"
+    key-type="java.lang.String"
+    value-type="dtv.pricing2.PricingDeal" />
+
+  <bean id="documentRefreshStrategy" class="dtv.pos.document.DocumentRefreshStrategy" parent="abstractRefreshStrategy"
+    depends-on="dataFactoryAssistant" />
+
+</beans>

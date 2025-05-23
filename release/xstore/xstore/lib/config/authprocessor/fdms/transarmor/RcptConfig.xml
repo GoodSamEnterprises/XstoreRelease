@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+    
+  <sections>
+    <section name="storecopy_nonchange_tender">
+      <sectionref>currency_tender</sectionref>
+      <sectionref>storecopy_creditcard_tender</sectionref>
+      <sectionref>travelers_check_tender</sectionref>
+      <sectionref>check_tender</sectionref>
+      <sectionref>account_credit</sectionref>
+      <sectionref>voucher_tender</sectionref>
+      <sectionref>account_tender</sectionref>
+      <sectionref>homeofficecheck_tender</sectionref>
+      <sectionref>coupon_tender</sectionref>
+      <sectionref>nonvoided_foreign_currency_tender</sectionref>
+      <sectionref>misc_tender</sectionref>
+      <sectionref>storecopy_roomcharge_tender</sectionref>
+      <sectionref>nonchange_tender_signature</sectionref>
+      <sectionref>merchant_signature</sectionref>
+    </section>
+    <section name="CustomerCopy">
+      <sectionref>header</sectionref>
+      <sectionref>CUST_COPY_HEADER_DB</sectionref>
+      <sectionref>items</sectionref>
+      <sectionref>totals</sectionref>
+      <sectionref>tax_code_summary</sectionref>
+      <sectionref>tenders</sectionref>
+      <sectionref>change</sectionref>
+      <sectionref>YouSavedMessage</sectionref>
+      <sectionref>TaxExemptInfo</sectionref>
+      <sectionref>SALE_DISCLAIMER_DB</sectionref>
+      <sectionref>sale_disclaimer</sectionref>
+      <sectionref>CUST_COPY_FOOTER_DB</sectionref>
+      <sectionref>DONATION_FOOTER_MESSAGE</sectionref>
+      <sectionref>footer_cust_copy</sectionref>
+      <sectionref>system_mode</sectionref>
+      <sectionref>CustomerCopyLabel</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+    <section name="merchant_signature">
+      <condition class="dtv.pos.docbuilding.conditions.TenderRefundCondition" />
+      <row n="6" />
+      <sectionref>signature_line</sectionref>
+      <row>
+        <field text="_taMerchantSignature" />
+      </row>
+    </section>
+    <section name="sale_disclaimer">
+      <row>
+          <field text="_taSaleDisclaimer" />
+      </row>    
+      <row />    
+    </section>
+    <section name="nonchange_tender_signature">
+      <condition class="dtv.pos.docbuilding.conditions.CustomerSignatureRequiredCondition" />
+      <sectionref>captured_tender_signature</sectionref>
+      <sectionref>cust_signature_for_nonchange_tender</sectionref>
+      <sectionref>credit_card_terms_for_signature</sectionref>
+    </section>
+    <section name="credit_card_terms_for_signature">
+      <sectionref>credit_card_sale_terms_for_signature</sectionref>
+      <sectionref>credit_card_return_terms_for_signature</sectionref>
+    </section>
+    <section name="credit_card_sale_terms_for_signature">
+      <condition class="dtv.pos.docbuilding.conditions.TenderRefundCondition" inverted="true"/>
+      <condition class="dtv.pos.docbuilding.conditions.IncludeTenderTypeCondition" type="CREDIT_CARD" />
+      <sectionref>TENDER_CREDIT_TERMS_DB</sectionref>
+    </section>
+    <section name="credit_card_return_terms_for_signature">
+      <condition class="dtv.pos.docbuilding.conditions.TenderRefundCondition" />
+      <condition class="dtv.pos.docbuilding.conditions.IncludeTenderTypeCondition" type="CREDIT_CARD" />
+      <region align="L"><field text="_taMerchanSaleReturnTerms" /></region>      	
+    </section>
+  </sections>
+</ReceiptDefinitions>

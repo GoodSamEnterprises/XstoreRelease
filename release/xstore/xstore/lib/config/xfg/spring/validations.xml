@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <!-- REPLACE XSTORE RULE LIST IMPLEMENTATION WITH XFG PENDANT -->
+  <bean abstract="true" id="validationRuleList" class="com.micros_retail.xfgclient.transition.validation.ValidationRuleListTN" scope="prototype" />
+
+  <!-- override validation defined by XfR -->
+  <bean id="tenderValidationRule" class="com.micros_retail.xfgclient.validation.postvoid.TendersVoidableVDN" scope="prototype" />
+
+  <bean id="IsLoggedInStateRule" class="com.micros_retail.xfgclient.validation.state.IsStateVDN" lazy-init="true" scope="prototype">
+    <property name="state" ref="STATE_LoggedIn" />
+  </bean>
+
+  <bean id="IsLoggedOutStateRule" class="com.micros_retail.xfgclient.validation.state.IsStateVDN" lazy-init="true" scope="prototype">
+    <property name="state" ref="STATE_LoggedOut" />
+  </bean>
+
+  <bean id="cashTransferAmountVDN" class="com.micros_retail.xfgclient.validation.till.ValidateCashTransferAmountVDN" scope="prototype" />
+  <bean id="cashPickupAmountVDN" class="com.micros_retail.xfgclient.validation.till.ValidateCashPickupAmountVDN" scope="prototype" />
+  <bean id="voidMoreThan1ItemInTransactionVDN" class="com.micros_retail.xfgclient.validation.voiding.VoidMoreThan1ItemInTransactionVDN" scope="prototype" />
+  <bean id="voidLastLineItemAllowedVDN" class="com.micros_retail.xfgclient.validation.voiding.VoidLastLineItemAllowedVDN" scope="prototype" />
+  <bean id="discountLastLineItemAllowedVDN" class="com.micros_retail.xfgclient.validation.discount.DiscountLastLineItemAllowedVDN" scope="prototype" />
+  <bean id="tenderNotAlreadyVoidedVDN" class="com.micros_retail.xfgclient.validation.voiding.TenderNotAlreadyVoidedVDN" scope="prototype" />
+  <bean id="tenderVoidableVDN" class="com.micros_retail.xfgclient.validation.voiding.TenderVoidableVDN" scope="prototype" />
+  <bean id="repeatLastLineItemAllowedVDN" class="com.micros_retail.xfgclient.validation.sale.RepeatLastLineItemAllowedVDN" scope="prototype" />
+  <bean id="repeatLastInvAdjustmentItemAllowedVDN" class="com.micros_retail.xfgclient.validation.inventory.RepeatLastInventoryAdjustmentItemAllowedVDN" scope="prototype" />
+  <bean id="barcodePropertyAllowedVDN" class="com.micros_retail.xfgclient.validation.sale.BarcodePropertyAllowedVDN" scope="prototype" />
+  <bean id="quantityPreselectionAllowedVDN" class="com.micros_retail.xfgclient.validation.sale.QuantityPreselectionAllowedVDN" scope="prototype" />
+  <bean id="quantityPreselectionInvAdjAllowedVDN" class="com.micros_retail.xfgclient.validation.inventory.QuantityPreselectionInvAdjAllowedVDN" scope="prototype" />
+  <bean id="pricePreselectionAllowedVDN" class="com.micros_retail.xfgclient.validation.sale.PricePreselectionAllowedVDN" scope="prototype" />
+  <bean id="itemQuantityVDN" class="com.micros_retail.xfgclient.validation.sale.ItemQuantityVDN" scope="prototype" />
+  <bean id="itemWeightVDN" class="com.micros_retail.xfgclient.validation.sale.ItemWeightVDN" scope="prototype" />
+  <bean id="itemPriceVDN" class="com.micros_retail.xfgclient.validation.sale.ItemPriceVDN" scope="prototype" />
+  <bean id="changeItemAllowedVDN" class="com.micros_retail.xfgclient.validation.sale.ChangeItemAllowedVDN" scope="prototype" />
+  <bean id="returnItemAllowedVDN" class="com.micros_retail.xfgclient.validation.returns.ReturnItemAllowedVDN" scope="prototype" />
+  <bean id="verifiedReturnItemQuantityAllowedVDN" class="com.micros_retail.xfgclient.validation.returns.VerifiedReturnItemQuantityAllowedVDN" scope="prototype" />
+  <bean id="serialNumberInCurrentTransactionVDN" class="com.micros_retail.xfgclient.validation.sale.SerialNumberInCurrentTransactionVDN" scope="prototype" />
+  <bean id="userLoggedInVDN" class="com.micros_retail.xfgclient.validation.user.UserLoggedInVDN" scope="prototype" />
+  <bean id="isPrimaryStateVDN" class="com.micros_retail.xfgclient.validation.state.IsPrimaryStateVDN" scope="prototype" />
+
+  <bean id="isInStateListVDN" class="com.micros_retail.xfgclient.validation.state.IsInStateListVDN" lazy-init="true" scope="prototype">
+    <property name="states">
+      <list>
+        <ref bean="STATE_LoggedIn" />
+        <ref bean="STATE_LoggedOut" />
+        <ref bean="STATE_RegisterClosed" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="isNotReentrantVDN" class="com.micros_retail.xfgclient.validation.transition.IsNotReentrantVDN" scope="prototype" />
+  <bean id="returnSplitTenderVDN" class="com.micros_retail.xfgclient.validation.tender.ReturnSplitTenderVDN" scope="prototype" />
+  <bean id="addTenderIfOpenAmountisZeroVDN" class="com.micros_retail.xfgclient.validation.tender.AddTenderIfOpenAmountisZeroVDN" scope="prototype" />
+
+  <!-- override rule defined by XfR -->
+  <bean id="openWorkstationRule" class="com.micros_retail.xfgclient.validation.workstation.OpenWorkstationVDN" scope="prototype" />
+  <!-- override rule defined by XfR -->
+  <bean id="closeWorkstationRule" class="com.micros_retail.xfgclient.validation.workstation.CloseWorkstationVDN" scope="prototype" />
+
+  <bean id="isStoreOpenVDN" class="com.micros_retail.xfgclient.validation.workstation.IsStoreOpenVDN" scope="prototype" />
+  <bean id="isRegisterOpenVDN" class="com.micros_retail.xfgclient.validation.workstation.IsRegisterOpenVDN" scope="prototype" />
+  <bean id="isRegisterClosedVDN" class="com.micros_retail.xfgclient.validation.workstation.IsRegisterClosedVDN" scope="prototype" />
+  <bean id="trainingModeEnabledAccessVDN" class="com.micros_retail.xfgclient.validation.training.TrainingModeEnabledAccessVDN" scope="prototype" />
+
+  <!-- override rule defined by XfR -->
+  <bean id="houseAccountTenderAmountRule" class="com.micros_retail.xfgclient.validation.tender.ValidateHouseAccountTenderAmountRuleVDN" lazy-init="true" scope="prototype">
+    <property name="privilege" ref="PRV_HouseAccountManagerOverride" />
+  </bean>
+
+  <bean id="removeCustomerVDN" class="com.micros_retail.xfgclient.validation.customer.RemoveCustomerFromTransactionVDN" scope="prototype" />
+
+  <bean id="allowMixedReturnInSaleTransactionRule" class="com.micros_retail.xfgclient.validation.sale.AllowMixedInTransWithSaleItemTypeVDN" lazy-init="true" scope="prototype">
+    <property name="type" value="RETURN" />
+  </bean>
+
+  <bean id="allowMixedSaleInReturnTransactionRule" class="com.micros_retail.xfgclient.validation.sale.AllowMixedInTransWithSaleItemTypeVDN" lazy-init="true" scope="prototype">
+    <property name="type" value="SALE" />
+  </bean>
+
+  <bean id="positiveTillAmountRule" parent="positiveDecimalRule" scope="prototype">
+    <property name="valueKey">
+      <util:constant static-field="dtv.pos.spring.ValueKeys.ENTERED_TILL_AMOUNT" />
+    </property>
+  </bean>
+
+  <bean id="itemOnHandRule" class="com.micros_retail.xfgclient.validation.sale.ValidateItemOnhandVDN" scope="prototype">
+    <property name="privilege" value="QUANTITY_UNAVAILABLE" />
+  </bean>
+
+  <bean id="emptyRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemVoidLastRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="voidMoreThan1ItemInTransactionVDN" />
+        <ref bean="voidLastLineItemAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemDiscountLastRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.validation.discount.DiscountLastLineItemAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemVoidLineRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="voidMoreThan1ItemInTransactionVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="tenderVoidLineRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="tenderVoidableVDN" />
+        <ref bean="tenderNotAlreadyVoidedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemRepeatLastLineItemRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="repeatLastLineItemAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="invAdjustmentItemRepeatLastInvItemRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="repeatLastInvAdjustmentItemAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleBarcodePropertyRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="barcodePropertyAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemQuantityPreselectionRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="quantityPreselectionAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="invAdjItemQuantityPreselectionRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="quantityPreselectionInvAdjAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemPricePreselectionRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="pricePreselectionAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- override rule list defined by XfR -->
+  <bean id="discountRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="itemInTransRule" />
+        <ref bean="secureDiscountRule" />
+        <ref bean="anyValidLineDiscountRule" />
+        <ref bean="maximumDiscountAppliedRule" />
+        <ref bean="minimumTransactionAmountRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemQuantityRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="itemQuantityVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemWeightRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="itemWeightVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemPriceRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="itemPriceVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="changeItemAllowedRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="changeItemAllowedVDN" />
+        <ref bean="verifiedReturnItemQuantityChangableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="returnItemRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="returnItemAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="verifiedReturnItemQuantityRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="verifiedReturnItemQuantityAllowedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="serialNumberSaleRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="serialNumberLengthRule" />
+        <ref bean="serialNumberInCurrentTransactionVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="userLoggedInRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="userLoggedInVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="codeFunctionWithStateChangeRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="userLoggedInVDN" />
+        <ref bean="isPrimaryStateVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="loggedInStateRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="IsLoggedInStateRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="loggedOutStateRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="IsLoggedOutStateRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="primaryStateRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="isPrimaryStateVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="inStateListRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="isInStateListVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="notReentrantRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="isNotReentrantVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="returnSplitTenderRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="returnSplitTenderVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="addTenderIfOpenAmountisZeroRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="addTenderIfOpenAmountisZeroVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="removeCustomerFromTransactionRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="removeCustomerVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="loginUserRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="isStoreOpenVDN" />
+        <ref bean="isRegisterOpenVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="trainingModeRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="isRegisterClosedVDN" />
+        <ref bean="trainingModeEnabledAccessVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="trainingModeExitRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="isRegisterClosedVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="cashTransferTenderRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCashTenderListRule" />
+        <ref bean="positiveTillAmountRule" />
+        <ref bean="cashTransferAmountVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="cashPickupTenderRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="nonNullCashTenderListRule" />
+        <ref bean="positiveTillAmountRule" />
+        <ref bean="tillAboveMinimumCashAmountRule" />
+        <ref bean="cashPickupAmountVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="paidInPaidOutRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="fundXferAmountRule" />
+        <ref bean="minimumCashDenominationRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleVoucherRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="voucherInputRule" />
+        <ref bean="voucherOnTransactionRule" />
+        <ref bean="voucherAlreadyIssuedRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="passwordChangeRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="isNotReentrantVDN" />
+        <ref bean="userLoggedInVDN" />
+        <ref bean="isPrimaryStateVDN" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- override rule list defined by XfR -->
+  <bean id="newPasswordRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <!-- <ref bean="ValidatePasswordReentryRule" /> --> <!-- in XFG this needs to be checked separately -->
+        <ref bean="strongPasswordRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="passwordConfirmRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="ValidatePasswordReentryRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="allowMixedReturnInSaleTransactionRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="allowMixedReturnInSaleTransactionRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="allowMixedSaleInReturnTransactionRules" parent="validationRuleList" scope="prototype">
+    <property name="rules">
+      <list>
+        <ref bean="allowMixedSaleInReturnTransactionRule" />
+      </list>
+    </property>
+  </bean>
+
+
+</beans>

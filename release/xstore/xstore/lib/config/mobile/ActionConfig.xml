@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+  
+  <!-- NOTE to XSTORE DEVELOPERS, regarding these XstoreM actions with <IconGroup icon="_whatever"...,
+      the icon properties keys here (for ex. "_imageCart") do not need to have a corresponding
+      icon defined in Xstore's .properties files, so don't worry if these appear to be undefined.  These
+      keys DO need to have corresponding icons defined in the xstoremgwt project (... and they do.  Or, at
+      least they had better!).  -->
+      
+  <Action name="XSTOREM::SALE" category="XstoreM" keywords="xstorem" text="_menuXstoremSale" chainKey="XSTOREM_LOGIN">
+    <IconGroup icon="_imageMenuCart" />`
+  </Action>
+  
+  <Action name="XSTOREM::ITEM_LOOKUP" category="XstoreM" keywords="xstorem" text="_menuXstoremItemLookup" chainKey="BACK_OFFICE_ITEM_LOOKUP">
+    <Parameter name="AddItemAllowed" value="false" />
+    <Parameter name="RainChecksAllowed" value="true"/>
+    <IconGroup icon="_imageMenuMagnifyingGlass" />
+  </Action>
+
+  <Action name="XSTOREM::INVENTORY" category="XstoreM" keywords="xstorem" text="_menuXstoremInventory" chainKey="BACK_OFFICE_INVENTORY_LOGIN">
+    <IconGroup icon="_imageMenuInventoryBox" />
+  </Action>
+
+  <Action name="XSTOREM::TIME_CLOCK" category="XstoreM" keywords="xstorem" text="_menuXstoremTimeClock" chainKey="CLOCK_IN_OUT">
+    <IconGroup icon="_imageMenuClock" />
+  </Action>
+
+  <Action name="XSTOREM::ADMIN" category="XstoreM" keywords="xstorem" text="_menuXstoremAdmin" chainKey="BACK_OFFICE_LOGIN">
+    <IconGroup icon="_imageMenuTools" />
+  </Action>
+
+  <Action name="XSTOREM::REMOVE_PRICEMOD" ref="RETAIL::VOID_LINE" text="_removeDiscount" keywords="xstorem,isForDiscount_XstoreM,actionForSelectedListItem"> 
+    <IconGroup icon="_iconMenuRemoveDiscount" />
+  </Action>
+  <Action name="XSTOREM::REMOVE_COMMENT" ref="RETAIL::VOID_LINE" text="_removeComment" keywords="xstorem,isForNotesModifier_XstoreM,actionForSelectedListItem" />
+  
+  <!-- Explicitly sets up an ACCEPT action to allow for selecting a row from the list. -->
+  <Action name="SELECT_FROM_LIST" keywords="actionForSelectedListItem" ref="ACCEPT" text="_select" />
+
+  <Action name="INVENTORY_COUNT_SHEET::CHANGE_QUANTITY" category="Inventory Count" keywords="actionForSelectedListItem" text="_invCountSheetChangeQuantity" chainKey="INVENTORY_COUNT_SHEET_ITEM_CHANGE_QTY">
+    <IconGroup icon="_iconMenuChange" />
+    <VisibilityRule class="dtv.pos.inventory.count.CountSheetHasItemsVisibilityRule" />
+  </Action>
+  
+  <!-- Since the "add item discount" will not appear under this menu on mobile and only the group discount option will, we override it here with the "more than one item" rule instead of the "at least one item" rule. -->
+  <Action name="CUSTOMER_ACCOUNT::MENU.ADD_DISCOUNT" category="Customer Account" keywords="exclude" ref="RETAIL::MENU.ADD_DISCOUNT" >
+    <VisibilityRule class="dtv.pos.register.cca.op.visibilityrules.MoreThanOneCCAItemVisibilityRule" />
+    <VisibilityRule class="dtv.pos.register.cca.op.visibilityrules.CCAStatusVisibilityRule">
+      <Parameter name="status" value="NEW" />
+    </VisibilityRule>
+  </Action>
+  <Action name="MOBILE::TILL.OPTIONS" category="Admin" keywords="back_office" text="_registerTillOptionsMenuText">
+     <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+      <Parameter name="state" value="OPEN" />
+    </VisibilityRule>
+  </Action>
+</ActionSet>

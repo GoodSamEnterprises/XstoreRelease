@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+  default-init-method="init">
+  
+  <beans profile="retail" >
+    <bean id="dtv.pos.register.attacheditems.NotifyAttachedItemOp" parent="opClassReplacement">
+      <constructor-arg value="dtv.cheetah.operations.CheetahNotifyAttachedItemOp" />
+    </bean>
+    
+    <bean id="cheetahFormBuilderFactory" class="dtv.util.spring.DefaultProvidingServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.cheetah.operations.req.IFormBuilderFactory" />
+      <property name="defaultBeans">
+        <props>
+          <prop key="getActivityBuilder">defaultCheetahFormActivityBuilder</prop>
+          <prop key="getInteractionBuilder">defaultCheetahFormInteractionBuilder</prop>
+          <prop key="getInfoPageBuilder">defaultCheetahFormInfoPageBuilder</prop>
+        </props>
+      </property>
+      <property name="serviceMappings">
+        <props>
+          <prop key="TRANSACTION_LIST_PRIMARY">retailTransactionActivityBuilder</prop>
+          <prop key="ORDER_TRANSACTION_LIST">orderTransactionActivityBuilder</prop>
+          <prop key="LAYAWAY_LIST">layawayTransactionActivityBuilder</prop>
+          <prop key="ITEM_RESULT">itemDetailsInteractionBuilder</prop>
+          <prop key="CAPTURE_SIGNATURE">signatureCaptureInteractionBuilder</prop>
+        </props>
+      </property>
+    </bean>
+  </beans>
+  
+  <beans>
+    <!-- Digital Cart -->
+    <!-- ========== -->
+    <bean id="digitalCartServices" class="oracle.retail.xstore.itm.impl.DigitalCartServicesImpl" scope="maybeTrainingMode" primary="true" />
+    
+    <!-- Associated Items -->
+    <!-- ========== -->
+    <bean id="associatedItemsServices" class="oracle.retail.xstore.itm.impl.AssociatedItemsServicesImpl" scope="maybeTrainingMode" primary="true" />
+    
+    <!-- Extend Item Information -->
+    <!-- ========== -->
+    <bean id="extendItemInfoServices" class="oracle.retail.xstore.itm.impl.ExtendItemInfoServicesImpl" scope="maybeTrainingMode" primary="true" />
+  </beans>
+</beans>

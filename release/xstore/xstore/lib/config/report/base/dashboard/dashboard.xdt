@@ -1,0 +1,152 @@
+<dataTemplate name="Dashboard" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <label name="NA_SYMBOL" value="_rptNotApplicableSymbol"/>
+    <label name="TITLE_SALES_PERF" value="_dashboardSalesPerformanceTitle"/>
+    <label name="TITLE_STORE_GOALS" value="_dashboardStoreGoalsPerformanceTitle"/>
+    <label name="TITLE_TOP_5_ITEMS" value="_dashboardTopItemsTitle"/>
+    <label name="TITLE_TOP_5_MERCH" value="_dashboardSalesTop5MerchLevel1Title">
+      <parameters>
+        <parameter value="_merchLevel1Plural"/>
+      </parameters>
+    </label>
+    <label name="TITLE_TOP_PERF" value="_dashboardTopPerformersTitle"/>
+    <label name="PERIOD" value="_rptReportingPeriod"/>
+    <label name="ID" value="_rptItem"/>
+    <label name="NAME" value="_rptName"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="START" value="_rptStart"/>
+    <label name="END" value="_rptEnd"/>
+    <label name="AVG_UNITS" value="_rptAverageUnits"/>
+    <label name="AVG_SALE" value="_rptAverageSale"/>
+    <label name="SALES" value="_rptSales"/>
+    <label name="GOAL" value="_rptGoal"/>
+    <label name="RET" value="_rptReturns"/>
+    <label name="NET" value="_rptNetSales"/>
+    <label name="GROSS" value="_rptGrossSales"/>
+    <label name="PCT" value="_rptPercent"/>
+    <label name="QTY" value="_rptQuantity"/>
+  </labels>
+  <parameters>
+    <parameter name="upArrow" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="rightArrow" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="downArrow" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate" isForPrompting="true" include_in_output="true"/>
+    <parameter name="merchLevel1Code" class="java.lang.String" isForPrompting="false" include_in_output="false"/>
+    <parameter name="localCurrencySymbol" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="bookAsSaleLayaway" class="java.lang.Boolean" isForPrompting="false"/>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_SALES_PERFORMANCE" key="DASHBOARD.SALES_PERFORMANCE">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>row_description</ResultField>
+        <ResultField>gross_sales</ResultField>
+        <ResultField>return_amt</ResultField>
+        <ResultField>net_sales</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_STORE_GOALS_PERFORMANCE" key="DASHBOARD.STORE_GOALS_PERFORMANCE">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>businessDateTimeStamp</Parameter>
+        <Parameter>businessDateTimeStamp</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>row_number</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>effective_date</ResultField>
+        <ResultField>end_date</ResultField>
+        <ResultField>sales</ResultField>
+        <ResultField>goal</ResultField>
+        <ResultField>to_date_pct</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TOP_5_ITEMS" key="DASHBOARD.TOP_5_ITEMS">
+      <Parameters>
+        <Parameter>saleLayaway</Parameter>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>item_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>qty</ResultField>
+        <ResultField>amt</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_SALES_MERCHLVL1" key="DASHBOARD.TOP_5_MERCHLVL1">
+      <Parameters>
+        <Parameter>merchLevel1Code</Parameter>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>merch_level_1</ResultField>
+        <ResultField>merch_level_1_desc</ResultField>
+        <ResultField>line_amt</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TOP_5_PERFORMERS" key="DASHBOARD.TOP_5_PERFORMERS">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+		<Parameter>saleLayaway</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>emp_name</ResultField>
+        <ResultField>units_per_trans</ResultField>
+        <ResultField>avg_sales</ResultField>
+        <ResultField>total_sales</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_SALES_PERF" source="Q_SALES_PERFORMANCE">
+      <element name="DESC" value="row_description"/>
+      <element name="GROSS_RAW" value="gross_sales"/>
+      <element name="GROSS" value="gross_sales" formatter="Money"/>
+      <element name="RET_RAW" value="return_amt"/>
+      <element name="RET" value="return_amt" formatter="Money"/>
+      <element name="NET_RAW" value="net_sales" />
+      <element name="NET" value="net_sales" formatter="Money"/>
+    </group>
+    <group name="G_GOALS" source="Q_STORE_GOALS_PERFORMANCE">
+      <element name="DESC" value="description"/>
+      <element name="START" value="effective_date" formatter="DateMedium"/>
+      <element name="END" value="end_date" formatter="DateMedium"/>
+      <element name="SALES" value="sales" formatter="Money"/>
+      <element name="SALES_RAW" value="sales"/>
+      <element name="GOAL" value="goal" formatter="Money"/>
+      <element name="GOAL_RAW" value="goal"/>
+      <element name="PCT" value="to_date_pct" formatter="Integer"/>
+      <element name="PCT_RAW" value="to_date_pct" />
+    </group>
+    <group name="G_TOP_5_ITEMS" source="Q_TOP_5_ITEMS">
+      <element name="ID" value="item_id"/>
+      <element name="DESC" value="description"/>
+      <element name="QTY" value="qty"/>
+      <element name="NET" value="amt" formatter="Money"/>
+    </group>
+    <group name="G_TOP_5_MERCH" source="Q_SALES_MERCHLVL1">
+      <element name="ID" value="merch_level_1"/>
+      <element name="DESC" value="merch_level_1_desc"/>
+      <element name="AMT_RAW" value="line_amt" />
+      <element name="AMT" value="line_amt" formatter="Money"/>
+    </group>
+    <group name="G_TOP_5_PERF" source="Q_TOP_5_PERFORMERS">
+      <element name="NAME" value="emp_name"/>
+      <element name="UNITS" value="units_per_trans" formatter="Accounting"/>
+      <element name="AVG" value="avg_sales" formatter="Money"/>
+      <element name="NET" value="total_sales" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

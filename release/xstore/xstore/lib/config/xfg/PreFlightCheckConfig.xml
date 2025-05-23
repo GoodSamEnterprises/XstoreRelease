@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  COMPLIES WITH BASE 15.0.0 -->
+<PreFlightChecks dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PreFlightCheckConfig.xsd">
+<!-- This Check would appear in demo configurations, but that configuraiton is needed for test purposes and unit tests. VAT/SALES TAX -->
+  <PreFlightCheck name="TAX_GROUP_RULE" enabled="false" type="CORE" level="ERROR">
+    <CheckClass dtype="Class">com.micros_retail.xfgclient.preflight.check.TaxGroupRuleCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_xfgclient.error.TaxGroupRuleCheck.message</param_value>
+    </Parameter>
+  </PreFlightCheck>
+</PreFlightChecks>

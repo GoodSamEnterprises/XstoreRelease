@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+            
+  <OpChain name="TENDER_CREDIT_CARD" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderCategory" value="CREDIT_CARD" />
+      <Parameter name="TenderId" value="VISA" />
+    </Op>
+    <Op class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <PromptOp class="dtv.cheetah.operations.CheetahPromptExternalPaymentOp" >
+      <Parameter name="AUTH_TYPE" value="CREDIT" />
+    </PromptOp>
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  
+</OpChainSet>

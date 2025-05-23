@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+  <MenuItem name="EMPTY" text="_menuEmpty" category="General" keywords="exclude" />
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       ADMIN
+       These menus contain items pertaining to general administrative tasks in both the Register
+       and the Back Office
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="ADMIN::BACK_OFFICE_OPTIONS" text="_menuTopText" rootText="_menuTopTextRoot" displayType="LIST" category="Back Office" keywords="universal,back_office,inventory,back_office_only,report_customer,report_inventory,report_employee,report_till,report_system,report" >
+
+    <MenuOption ref="ADMIN::VIEW_DASHBOARD" />
+    <MenuOption ref="RETAIL::REPORT.FLASH_SALES" />
+    <SubMenu ref="INVENTORY::OPTIONS" />
+    <SubMenu ref="EMPLOYEE::MANAGER_OPTIONS" />
+    <SubMenu ref="TILL::OPTIONS" />
+    <SubMenu ref="ADMIN::SYSTEM_CYCLE_OPTIONS" />
+    <MenuOption ref="TENDER_EXCHANGE" />
+    <SubMenu ref="ADMIN::REPORTS" />
+
+    <SubMenu text="_menuTextJournal">
+      <MenuOption ref="ADMIN::ELECTRONIC_JOURNAL" />
+      <MenuOption ref="RETAIL::REPORT.JOURNAL_ROLL" />
+    </SubMenu>
+
+    <SubMenu ref="CUSTOMER::MANAGER_OPTIONS" />
+
+    <SubMenu ref="ASSOCIATE::TASKS" />
+
+    <SubMenu text="_menutext141">
+      <MenuOption ref="BROWSER::ORACLE" />
+    </SubMenu>
+
+    <SubMenu ref="BALANCE_INQUIRY::BACK_OFFICE_OPTIONS" />
+    <SubMenu ref="ADMIN::HARDWARE_MANAGEMENT" />
+    <MenuOption ref="ADMIN::REPRINT_RECEIPT" />
+    <MenuOption>
+      <Action ref="ADMIN::TRAINING_MODE_ENTER" />
+      <Action ref="ADMIN::TRAINING_MODE_EXIT" />
+    </MenuOption>
+  </MenuItem>
+
+  <MenuItem name="ADMIN::HARDWARE_MANAGEMENT" text="_menuHardwareManagement" displayType="LIST" category="Admin" keywords="back_office">
+    <MenuOption ref="ADMIN::REINIT_HARDWARE" />
+    <MenuOption ref="ADMIN::HARDWARE_DEVICE_EDIT" />
+    <MenuOption ref="ADMIN::CHEETAH_CLIENT_DEVICE_ACCESS" />
+    <MenuOption ref="ADMIN::MANAGE_IP_CASH_DRAWER" />
+    <MenuOption ref="ADMIN::EFTLINK_ADMIN" />
+    <MenuOption ref="ADMIN::TR_ADVANCED_DDK" />
+  </MenuItem>
+
+  <MenuItem name="ADMIN::HELP" text="_menuHelp" category="" keywords="exclude" />
+
+  <MenuItem name="ADMIN::LOCKED_REGISTER_OPTIONS" text="_menuLockedRegisterOptions" category="Login" keywords="universal" >
+    <MenuOption ref="EMPLOYEE::CLOCK_IN_OUT" />
+    <MenuOption ref="ADMIN::SEARCH_FOR_ITEM" />
+  </MenuItem>
+
+  <MenuItem name="ADMIN::REGISTER_OPTIONS" text="_menuRegisterOptions" category="Login" keywords="universal,login,back_office">
+    <SubMenu ref="TILL::TILL_OPTIONS" />
+    <SubMenu ref="TILL::TILL_MAINTENANCE" text="_tillMaintenanceButtonMenuTextShort" />
+    <SubMenu ref="TILL::STORE_BANK_MAINTENANCE" text="_storeBankMaintenanceMenuTextShort" />
+    <MenuOption ref="ADMIN::LOCK_REGISTER" />
+  </MenuItem>
+
+  <MenuItem name="ADMIN::REPORTS" text="_menuTextReportsMain" displayType="LIST" category="Reports" keywords="report_customer,report_inventory,report_employee,report_till,report_system,report">
+    <MenuOption ref="RETAIL::REPORT.FLASH_SALES" />
+
+    <SubMenu ref="RETAIL::REPORTS" />
+    <SubMenu ref="INVENTORY::REPORTS.EXCEPTIONS" />
+    <MenuOption ref="RETAIL::REPORT.JOURNAL_ROLL" />
+    <MenuOption ref="CUSTOMER::REPORT.CUSTOMER_LIST" />
+    <MenuOption ref="ADMIN::REPORT.STORE_LOCATIONS" />
+
+    <SubMenu text="_menuTextEmployeeReports">
+      <MenuOption ref="EMPLOYEE::REPORT.EMPLOYEE_TASKS" />
+      <SubMenu text="_menutextEmpSchedRep">
+        <MenuOption ref="EMPLOYEE::REPORT.EMPLOYEE_PERFORMANCE" />
+        <MenuOption ref="EMPLOYEE::REPORT.SCHEDULE_DETAIL" />
+        <MenuOption ref="EMPLOYEE::REPORT.TIME_OFF" />
+      </SubMenu>
+    </SubMenu>
+
+    <MenuOption ref="ADMIN::REPORT.PRICE_CHANGE" />
+
+    <SubMenu text="_menutextLayawayReports">
+      <MenuOption ref="LAYAWAY::REPORT.AGING" />
+      <MenuOption ref="LAYAWAY::REPORT.ACTIVITY" />
+    </SubMenu>
+
+    <!-- CCA Report -->
+    <MenuOption ref="ADMIN::REPORT.CONFIGURABLE_CUST_ACCT_ACTIVITY_SUMMARY" />
+
+    <MenuOption ref="ADMIN::REPORT.VIEW_SAVED" />
+    <MenuOption ref="SPECIAL_ORDER::REPORT" />
+
+    <SubMenu text="_tillReportsMenuText">
+      <MenuOption ref="TILL::REPORT.PAIDIN_PAIDOUT" />
+      <MenuOption ref="TILL::REPORT.CASH_DRAWER_RECONCILIATION" />
+      <MenuOption ref="TILL::REPORT.CASH_DRAWER" />
+      <MenuOption ref="TILL::REPORT.ASSOCIATE_RECONCILIATION" />
+      <MenuOption ref="TILL::REPORT.CASH_DRAWER_AUDIT" />
+    </SubMenu>
+
+    <SubMenu text="_rptAirsideReports">
+      <MenuOption ref="RETAIL::REPORT.AIRSIDE_SALES_TAX" />
+    </SubMenu>
+
+    <MenuOption ref="COUNTRYPACK::FR::REPORT.TECHNICAL_EVENT_LOG" />
+    
+    <MenuOption ref="COUNTRYPACK::ES::REPORT.TAX_EXPORT_ERRORS" />
+  </MenuItem>
+
+  <MenuItem name="ADMIN::SYSTEM_CYCLE_OPTIONS" text="_systemCycleMenuOption" displayType="LIST" category="Admin" keywords="back_office_only,report_till">
+    <MenuOption>
+      <Action ref="ADMIN::OPEN_REGISTER" />
+      <Action ref="ADMIN::CLOSE_REGISTER" />
+    </MenuOption>
+
+    <MenuOption ref="ADMIN::OPEN_CASHDRAWER" />
+    <MenuOption ref="ADMIN::CLOSE_CASHDRAWER" />
+
+    <MenuOption>
+      <Action ref="ADMIN::OPEN_STORE" />
+      <Action ref="ADMIN::CLOSE_STORE" />
+    </MenuOption>
+    <MenuOption ref="ADMIN::END_OF_DAY_PROCESS" />
+    <MenuOption ref="ADMIN::CLOSE_BATCH" />
+    <MenuOption ref="ADMIN::CHANGE_BUSINESS_DATE" />
+    <MenuOption ref="ADMIN::CLOSE_REGISTER.FORCE" />
+    <MenuOption ref="TILL::REPORT.PRINT_TILL_SUMMARY" />
+    <MenuOption ref="ADMIN::CHECK_FOR_UPDATES" />
+    <MenuOption ref="ADMIN::REFRESH_PROMOTIONS" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       BALANCE_INQUIRY
+       These menus contain items allowing Balance Inquiries against stored-value tenders
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="BALANCE_INQUIRY::BACK_OFFICE_OPTIONS" text="_BI_menu" displayType="LIST" category="Admin" keywords="universal,back_office,back_office_only">
+    <MenuOption ref="BALANCE_INQUIRY::GIFT_CARD" />
+    <MenuOption ref="BALANCE_INQUIRY::GIFT_CERTIFICATE" />
+    <MenuOption ref="BALANCE_INQUIRY::STORE_CREDIT" />
+    <MenuOption ref="BALANCE_INQUIRY::LOYALTY" />
+    <MenuOption ref="BALANCE_INQUIRY::GIFT_RECEIPT" />
+  </MenuItem>
+
+  <MenuItem name="BALANCE_INQUIRY::REGISTER_OPTIONS" text="_BI_menu" category="Admin" keywords="universal">
+    <MenuOption ref="BALANCE_INQUIRY::GIFT_CARD" />
+    <MenuOption ref="BALANCE_INQUIRY::GIFT_CERTIFICATE" />
+    <MenuOption ref="BALANCE_INQUIRY::STORE_CREDIT" />
+    <MenuOption ref="BALANCE_INQUIRY::LOYALTY" />
+    <MenuOption ref="BALANCE_INQUIRY::GIFT_RECEIPT" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       CUSTOMER
+       These menus contain items pertaining to Customer and CRM functionality
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="CUSTOMER::MANAGER_OPTIONS" text="_menutextCRMMenu" displayType="LIST" category="Back Office" keywords="universal,customer,report_customer">
+    <MenuOption ref="CUSTOMER::MAINTAIN" />
+    <MenuOption ref="CUSTOMER::REPORT.CUSTOMER_LIST" />
+
+    <SubMenu text="_menuTextOrderOptions">
+      <MenuOption ref="ORDER::VIEW_WORKLIST" />
+      <MenuOption ref="ORDER::SEARCH" />
+      <MenuOption ref="ORDER::REPORT.STATUS" />
+      <MenuOption ref="ORDER::UNFULFILLABLE" />
+    </SubMenu>
+
+    <MenuOption ref="SPECIAL_ORDER::MAINTAIN" />
+    <MenuOption ref="LAYAWAY::MAINTAIN" />
+    <SubMenu ref="WORK_ORDER::OPTIONS" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       EMPLOYEE
+       These menus contain items pertaining to Employee functionality, including Payroll,
+       Scheduling, and Timecard functions
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="EMPLOYEE::MANAGER_OPTIONS" text="_menutextHRSubMenu" displayType="LIST" category="Back Office" keywords="universal,employee,report_employee">
+    <SubMenu text="_menutextEmpMaint">
+      <MenuOption ref="EMPLOYEE::MAINTAIN" />
+      <MenuOption ref="EMPLOYEE::BORROW" />
+      <MenuOption ref="EMPLOYEE::REPORT.EMPLOYEE_PRODUCTIVITY" />
+      <MenuOption ref="EMPLOYEE::ASSOCIATE_ADVANCE" />
+    </SubMenu>
+    <SubMenu text="_menuTextManagersMenu">
+      <MenuOption ref="EMPLOYEE::MAINTAIN_PAYROLL" />
+      <!-- <MenuOption ref="EMPLOYEE::MAINTAIN_TIMECARD" /> -->
+      <MenuOption ref="EMPLOYEE::REPORT.PAYROLL" />
+      <MenuOption ref="EMPLOYEE::REPORT.PAYROLL_DETAIL" />
+      <MenuOption ref="EMPLOYEE::REPORT.TIMECARD" />
+      <MenuOption ref="EMPLOYEE::REPORT.OPEN_TIMECARD" />
+      <MenuOption ref="EMPLOYEE::REPOST_PAYROLL" />
+    </SubMenu>
+    <SubMenu text="_menutextEmpSched">
+      <MenuOption ref="EMPLOYEE::MAINTAIN_SCHEDULE" />
+      <MenuOption ref="EMPLOYEE::MAINTAIN_SHIFTS" />
+      <MenuOption ref="EMPLOYEE::EDIT_TIME_OFF" />
+      <SubMenu text="_menutextEmpSchedRep">
+        <MenuOption ref="EMPLOYEE::REPORT.EMPLOYEE_PERFORMANCE" />
+        <MenuOption ref="EMPLOYEE::REPORT.SCHEDULE_DETAIL" />
+        <MenuOption ref="EMPLOYEE::REPORT.TIME_OFF" />
+      </SubMenu>
+    </SubMenu>
+    <!--<MenuOption ref="EMPLOYEE::TASK_SEARCH" />-->
+    <MenuOption ref="EMPLOYEE::MESSAGE_SEARCH" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       INVENTORY
+       These menus contain items pertaining to general Inventory functionality
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="INVENTORY::OPTIONS" text="_menuTextInventory" displayType="LIST" category="Back Office" keywords="universal,inventory,report_inventory">
+    <MenuOption ref="RECEIVING" />
+    <MenuOption ref="SHIPPING" />
+    <MenuOption ref="INVENTORY_REPLENISHMENT" />
+    <MenuOption ref="INVENTORY_ADJUSTMENT" />
+    <MenuOption ref="INVENTORY::ITEM_TRANSFER" />
+    <MenuOption ref="INVENTORY::SEARCH_FOR_ITEM" />
+
+    <SubMenu text="_inventoryCountOptionsMenuText" >
+      <MenuOption ref="INVENTORY_COUNT::MAINTAIN_STORE_LAYOUT" />
+      <MenuOption ref="INVENTORY_COUNT::SEARCH" />
+    </SubMenu>
+
+    <MenuOption ref="SHELF_LABEL::PRINT_LABELS" />
+
+    <SubMenu ref="INVENTORY::REPORTS.EXCEPTIONS" />
+    <SubMenu text="_inventoryLocationOptsMenuText">
+      <MenuOption ref="INVENTORY::LOCATION_SEARCH" />
+      <MenuOption ref="INVENTORY::LOCATION_SUMMARY_COUNT" />
+      <MenuOption ref="INVENTORY::MOVEMENT_PENDING_RECONCILIATION" />
+      <MenuOption ref="INVENTORY::REPORT.INVENTORY_MOVEMENT_PENDING" />
+    </SubMenu>
+    <MenuOption ref="EXCHANGE::EXCHANGE_SERIAL_NUMBER" />
+  </MenuItem>
+
+  <MenuItem name="INVENTORY::REPORTS.EXCEPTIONS" text="_menuTextInventoryException" displayType="LIST" category="Reports" keywords="report_inventory">
+    <MenuOption ref="SHIPPING::REPORT.SHIPPING_EXCEPTION" />
+    <MenuOption ref="RECEIVING::REPORT.RECEIVING_EXCEPTION" />
+    <MenuOption ref="INVENTORY::REPORT.RESTOCK" />
+    <MenuOption ref="INVENTORY::REPORT.ITEM_LIST" />
+    <MenuOption ref="INVENTORY::REPORT.INVENTORY_MOVEMENT_HISTORY" />
+    <MenuOption ref="INVENTORY::REPORT.INVENTORY_MOVEMENT" />
+    <MenuOption ref="INVENTORY::REPORT.INVENTORY_STOCK_COST" />
+    <MenuOption ref="INVENTORY::REPORT.SHIPPING_MANIFEST" />
+    <MenuOption ref="INVENTORY::REPORT.RECEIVING_REPORT" />
+    <MenuOption ref="INVENTORY_REPLENISHMENT::REPORT.PRODUCT_REQUEST" />
+    <MenuOption ref="INVENTORY_REPLENISHMENT::REPORT.OPEN_PRODUCT_REQUESTS" />
+  </MenuItem>
+
+  <MenuItem name="INVENTORY_ADJUSTMENT::OPTIONS" text="_invAdjust_menuOption" keywords="inventoryAdjustment" displayType="BUTTON">
+    <MenuOption ref="INVENTORY_ADJUSTMENT::SAVE" />
+    <MenuOption ref="INVENTORY_ADJUSTMENT::CHANGE_QUANTITY" />
+    <MenuOption ref="INVENTORY_ADJUSTMENT::VOID_LINE" />
+  </MenuItem>
+
+  <MenuItem name="INVENTORY_COUNT::MAIN" text="_invCountMenuText" keywords="inventoryCount" displayType="BUTTON">
+    <MenuOption ref="INVENTORY_COUNT::GENERATE_SHEETS" />
+    <MenuOption ref="INVENTORY_COUNT::INITIATE" />
+    <MenuOption ref="INVENTORY_COUNT::COMPLETE_COUNT" />
+    <MenuOption ref="INVENTORY_COUNT::PRINT_SHEET" />
+    <MenuOption ref="INVENTORY_COUNT::PRINT_MULTIPLE_SHEETS" />
+    <MenuOption ref="INVENTORY_COUNT::SUBMIT_SHEET" />
+    <MenuOption ref="INVENTORY_COUNT::SUBMIT_MULTIPLE_SHEETS" />
+    <MenuOption ref="INVENTORY_COUNT::VARIRANCE_REPORTS" />
+    <MenuOption ref="INVENTORY_COUNT::CANCEL_COUNT" />
+  </MenuItem>
+
+  <MenuItem name="INVENTORY_COUNT::SHEET" text="_invCountSheetMenuText" keywords="inventoryCountSheet" displayType="BUTTON">
+    <MenuOption ref="INVENTORY_COUNT_SHEET::SAVE" />
+    <MenuOption ref="INVENTORY_COUNT_SHEET::ADD_ITEM" />
+    <MenuOption ref="INVENTORY_COUNT_SHEET::PAGE_UP" />
+    <MenuOption ref="INVENTORY_COUNT_SHEET::PAGE_DOWN" />
+    <MenuOption ref="INVENTORY_COUNT_SHEET::FIRST_PAGE" />
+    <MenuOption ref="INVENTORY_COUNT_SHEET::LAST_PAGE" />
+  </MenuItem>
+
+  <MenuItem name="INVENTORY_CYCLE_COUNT" text="_invCycleCountMenuText" keywords="cycleCount" displayType="BUTTON">
+    <MenuOption ref="CYCLE_COUNT::SAVE" />
+    <MenuOption ref="CYCLE_COUNT::ADD_LEVEL" />
+    <MenuOption ref="CYCLE_COUNT::REMOVE_LEVEL" />
+  </MenuItem>
+
+  <MenuItem name="ITEM_TRANSFER::OPTIONS" text="_inventoryItemTransferMenuText" keywords="itemTransfer" displayType="BUTTON">
+    <MenuOption ref="ITEM_TRANSFER::SAVE" />
+    <MenuOption ref="ITEM_TRANSFER::CHANGE_QUANTITY" />
+    <MenuOption ref="ITEM_TRANSFER::VOID_LINE" />
+    <MenuOption ref="ITEM_TRANSFER::FIND_ITEM" />
+    <MenuOption ref="ITEM_TRANSFER::TRANSFER_ALL" />
+    <MenuOption ref="ITEM_TRANSFER::PRINT" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       LAYAWAY
+       These menus contain items pertaining to the creation and administration of Layaways
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="LAYAWAY" text="_menuLayaway" category="Retail" keywords="universal,layaway">
+    <MenuOption ref="LAYAWAY::COMPLETE" />
+    <MenuOption ref="LAYAWAY::ADD_PAYMENT" />
+
+    <SubMenu actionRef="LAYAWAY::MENU.ACCOUNT_DETAILS">
+      <MenuOption ref="LAYAWAY::VIEW_PAYMENT_SCHEDULE" />
+      <MenuOption ref="LAYAWAY::VIEW_PAYMENTS" />
+      <MenuOption ref="LAYAWAY::VIEW_ACTIVITY" />
+    </SubMenu>
+
+    <MenuOption ref="LAYAWAY::ISSUE_REFUND" />
+
+    <SubMenu actionRef="LAYAWAY::MENU.MODIFY_ACCOUNT" sticky="false">
+      <MenuOption ref="LAYAWAY::ADD_COUPON" />
+
+      <SubMenu actionRef="LAYAWAY::MENU.ADD_DISCOUNT" displayType="LIST">
+        <MenuOption ref="LAYAWAY::ADD_DISCOUNT" />
+        <MenuOption ref="LAYAWAY::ADD_GROUP_DISCOUNT" />
+      </SubMenu>
+
+      <SubMenu actionRef="LAYAWAY::MENU.MODIFY_LINE" sticky="false">
+        <MenuOption ref="LAYAWAY::CHANGE_LINE_QUANTITY" />
+        <MenuOption ref="LAYAWAY::CHANGE_LINE_PRICE" />
+
+        <SubMenu ref="LAYAWAY::MENU.MODIFY_LINE_TAX_OPTIONS"/>
+
+        <MenuOption ref="LAYAWAY::VOID_LINE" />
+        <MenuOption ref="LAYAWAY::CHANGE_DISCOUNT" />
+        <MenuOption ref="LAYAWAY::VOID_DISCOUNT" />
+        <MenuOption ref="LAYAWAY::CHANGE_COMMISSIONED_ASSOCIATES" />
+        <MenuOption ref="LAYAWAY::ADD_LINE_COMMENT" />
+      </SubMenu>
+
+      <MenuOption ref="LAYAWAY::ADD_COMMENT" />
+    </SubMenu>
+
+    <MenuOption ref="LAYAWAY::PICKUP_LINE" />
+    <MenuOption ref="LAYAWAY::ADD_NON_PHYSICAL" />
+    <MenuOption ref="LAYAWAY::SEARCH_FOR_ITEM" />
+    <MenuOption>
+      <Action ref="LAYAWAY::COMPLETE.TO_TENDERING" />
+      <Action ref="LAYAWAY::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+    <MenuOption ref="LAYAWAY::CANCEL" />
+    <MenuOption ref="LAYAWAY::VIEW_COMMENTS" />
+
+    <SubMenu actionRef="LAYAWAY::MENU.WARRANTY_OPTIONS">
+      <MenuOption ref="LAYAWAY::ADD_WARRANTY" />
+      <MenuOption ref="RETAIL::CHANGE_WARRANTY_CUSTOMER" />
+    </SubMenu>
+
+    <MenuOption ref="CUSTOMER::EDIT" />
+  </MenuItem>
+
+  <MenuItem name="LAYAWAY::MENU.MODIFY_LINE_TAX_OPTIONS" actionRef="RETAIL::MENU.MODIFY_LINE_TAX" keywords="exclude,layaway">
+    <MenuOption ref="LAYAWAY::TAX.CHANGE_LINE_LOCATION" />
+    <MenuOption ref="LAYAWAY::TAX.EXEMPT_LINE" />
+    <MenuOption ref="LAYAWAY::TAX.CHANGE_LINE_AMOUNT" />
+    <MenuOption ref="LAYAWAY::TAX.CHANGE_LINE_PERCENT" />
+  </MenuItem>
+
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       LOGIN
+       These menus contain items allowing user access to Xstore "applications" (i.e. the Register
+       and Back Office)
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="?LOGIN?" text="_menuLoginCommon" category="Login" keywords="universal,login,back_office,report_customer,report_inventory,report_employee,report_till,report_system,report">
+    <MenuOption ref="EMPLOYEE::CLOCK_IN_OUT" />
+
+    <SubMenu text="_menutextTimeCardSchedule">
+      <MenuOption ref="EMPLOYEE::VIEW_TIMECARD" />
+      <MenuOption ref="EMPLOYEE::VIEW_SCHEDULE" />
+      <MenuOption ref="EMPLOYEE::VIEW_SCHEDULED" />
+    </SubMenu>
+
+    <MenuOption ref="EMPLOYEE::CHANGE_PASSWORD" />
+
+    <SubMenu ref="ADMIN::REPRINT_OPTIONS"/>
+    <SubMenu ref="BALANCE_INQUIRY::REGISTER_OPTIONS" />
+    <MenuOption>
+      <Action ref="ADMIN::TRAINING_MODE_ENTER" />
+      <Action ref="ADMIN::TRAINING_MODE_EXIT" />
+    </MenuOption>
+    <MenuOption ref="ASSOCIATE_TASKS::MY_TASKS_LOGIN" />
+    <MenuOption ref="ADMIN::SEARCH_FOR_ITEM" />
+    <MenuOption ref="ADMIN::REGISTER_OPTIONS" />
+    <MenuOption ref="RETAIL::REPORT.FLASH_SALES" />
+  </MenuItem>
+
+  <MenuItem name="ADMIN::REPRINT_OPTIONS" text="_menutextRcptPrint">
+    <MenuOption ref="ADMIN::REPRINT_GIFT_RECEIPTS" />
+    <MenuOption ref="ADMIN::REPRINT_LAST_RECEIPT" />
+    <MenuOption ref="ADMIN::REPRINT_DOCUMENT" />
+    <MenuOption ref="ADMIN::PRINT_REBATE_RECEIPT" />
+  </MenuItem>
+
+  <MenuItem name="LOGIN::REGISTER" text="_menuLoginRegister" displayType="BUTTON" category="Login" keywords="exclude">
+    <MenuOptions ref="?LOGIN?" />
+    <MenuOption>
+      <Action ref="LOGIN::BACK_OFFICE" />
+      <Action ref="LOGIN::BACK_OFFICE.FROM_OTHER.START" />
+    </MenuOption>
+  </MenuItem>
+
+  <MenuItem name="LOGIN::BACK_OFFICE" text="_menuLoginBackOffice" displayType="BUTTON" category="Login" keywords="exclude">
+    <MenuOptions ref="?LOGIN?" />
+    <MenuOption>
+      <Action ref="LOGIN::REGISTER" />
+      <Action ref="LOGIN::REGISTER.FROM_OTHER.START" />
+    </MenuOption>
+  </MenuItem>
+
+  <MenuItem name="RECEIVING::CARTON" text="_receivingCarton" displayType="BUTTON" category="Receiving" keywords="receivingCarton">
+    <MenuOption ref="RECEIVING_CARTON::CHANGE_QUANTITY" />
+    <MenuOption ref="RECEIVING_CARTON::ENTIRE_CARTON" />
+    <MenuOption ref="RECEIVING_CARTON::COMMENT" />
+    <MenuOption ref="RECEIVING_CARTON::VOID_LINE" />
+    <MenuOption ref="RECEIVING_CARTON::EXCEPTIONS" />
+    <MenuOption ref="RECEIVING_CARTON::CHANGE_COST" />
+  </MenuItem>
+
+  <MenuItem name="RECEIVING::DOCUMENT" text="_receivingDocument" displayType="BUTTON" category="Receiving" keywords="receivingDocument">
+    <MenuOption ref="RECEIVING_DOC::SAVE" />
+    <MenuOption ref="RECEIVING_DOC::ENTIRE_DOCUMENT" />
+    <MenuOption ref="RECEIVING_DOC::COMMENT" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       RETAIL
+       These menus contain items pertaining to general/shared retail register functionality
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="RETAIL::ADD_DISCOUNT" actionRef="RETAIL::MENU.ADD_DISCOUNT" sticky="false" displayType="LIST" category="Retail" keywords="universal,register_extended,sale">
+    <MenuOption ref="RETAIL::ADD_LINE_DISCOUNT" />
+    <MenuOption ref="RETAIL::ADD_TRAN_DISCOUNT" />
+    <MenuOption ref="RETAIL::ADD_GROUP_DISCOUNT" />
+    <MenuOption ref="RETAIL::ADD_AWARD_DISCOUNT" />
+  </MenuItem>
+
+  <MenuItem name="RETAIL::CHANGE_LINE" actionRef="RETAIL::MENU.MODIFY_LINE" sticky="false" category="Retail" keywords="universal,register_extended">
+    <MenuOption ref="RETAIL::CHANGE_LINE_QUANTITY" />
+    <MenuOption ref="RETAIL::CHANGE_LINE_PRICE" />
+
+    <SubMenu ref="RETAIL::MENU.MODIFY_LINE_TAX_OPTIONS"/>
+
+    <MenuOption ref="RETAIL::VOID_LINE" />
+    <MenuOption ref="RETAIL::CHANGE_DISCOUNT" />
+    <MenuOption ref="RETAIL::CHANGE_COMMISSIONED_ASSOCIATES" />
+    <MenuOption ref="RETAIL::CHANGE_SERAIL_NUMBER" />
+  </MenuItem>
+
+  <MenuItem name="RETAIL::MENU.MODIFY_LINE_TAX_OPTIONS" actionRef="RETAIL::MENU.MODIFY_LINE_TAX">
+    <MenuOption ref="RETAIL::TAX.CHANGE_LINE_LOCATION" />
+    <MenuOption ref="RETAIL::TAX.EXEMPT_LINE" />
+    <MenuOption ref="RETAIL::TAX.CHANGE_LINE_AMOUNT" />
+    <MenuOption ref="RETAIL::TAX.CHANGE_LINE_PERCENT" />
+  </MenuItem>
+
+  <MenuItem name="RETAIL::EXTENDED_TRANS" text="_accountOptionsMenuText" sticky="false" category="Retail" keywords="universal,sale,register_extended,register_all">
+    <MenuOption ref="ORDER" />
+
+    <SubMenu actionRef="SEND_SALE::MENU.OPTIONS">
+      <MenuOption ref="SEND_SALE" />
+      <MenuOption ref="SEND_SALE::EDIT" />
+    </SubMenu>
+
+    <MenuOption ref="LAYAWAY" />
+
+    <MenuOption>
+      <Action ref="SPECIAL_ORDER" />
+      <Action ref="SPECIAL_ORDER::MINIMAL" />
+    </MenuOption>
+
+    <MenuOption ref="WORK_ORDER" />
+
+    <SubMenu text="_warrantyMenuAction">
+      <MenuOption ref="SALE::ADD_WARRANTY" />
+      <MenuOption ref="RETAIL::CHANGE_WARRANTY_CUSTOMER" />
+    </SubMenu>
+
+    <MenuOption ref="PRESALE" />
+    <MenuOption ref="ONHOLD" />
+  </MenuItem>
+
+  <MenuItem name="RETAIL::REGISTER_OPTIONS" text="_registerOptionsMenuText" category="Retail" keywords="universal,sale,register_extended,register_all">
+    <SubMenu ref="BALANCE_INQUIRY::REGISTER_OPTIONS" />
+
+    <MenuOption ref="ADMIN::REPRINT_GIFT_RECEIPTS" />
+    <MenuOption ref="HOUSE_ACCOUNT::MAKE_PAYMENT" />
+    <MenuOption ref="HOUSE_ACCOUNT::MAKE_REVERSAL" />
+
+    <SubMenu ref="RETAIL::MENU.MODIFY_TRANS_TAX_OPTIONS"/>
+
+    <MenuOption ref="SALE::ADD_COUPON" />
+    <MenuOption ref="SALE::REDEEM_RAINCHECK" />
+    <MenuOption ref="ADMIN::LOCK_REGISTER" />
+  </MenuItem>
+
+  <MenuItem name="RETAIL::MENU.MODIFY_TRANS_TAX_OPTIONS" actionRef="RETAIL::MENU.MODIFY_TRANS_TAX">
+    <MenuOption ref="RETAIL::TAX.CHANGE_TRAN_LOCATION" />
+    <MenuOption ref="RETAIL::TAX.EXEMPT_TRANS" />
+    <MenuOption ref="RETAIL::TAX.CHANGE_TRAN_AMOUNT" />
+    <MenuOption ref="RETAIL::TAX.CHANGE_TRAN_PERCENT" />
+  </MenuItem>
+
+  <MenuItem name="RETAIL::REPORTS" text="_menuTextSalesReport" displayType="LIST" category="Reports" keywords="report">
+    <MenuOption ref="RETAIL::REPORT.DAILY_SALES_CASH" />
+    <MenuOption ref="RETAIL::REPORT.ITEM_DRILL_DOWN" />
+    <MenuOption ref="RETAIL::REPORT.SALES_BY_HOUR" />
+    <MenuOption ref="RETAIL::REPORT.SALE_BY_HOUR_ANALYSIS" />
+    <MenuOption ref="RETAIL::REPORT.SALE_BY_MERCHLVL1" />
+    <MenuOption ref="RETAIL::REPORT.DAILY_SALES" />
+    <MenuOption ref="INVENTORY::REPORT.RESTOCK" />
+    <MenuOption ref="RETAIL::REPORT.RETURN_MERCHANDISE" />
+    <MenuOption ref="RETAIL::REPORT.BEST_SELLERS" />
+    <MenuOption ref="RETAIL::REPORT.TAX_EXEMPTION" />
+    <MenuOption ref="RETAIL::REPORT.PRICE_OVERRIDE" />
+    <MenuOption ref="RETAIL::REPORT.CREDIT_CARD" />
+    <MenuOption ref="RETAIL::REPORT.GIFT_CERTIFICATE" />
+    <MenuOption ref="ADMIN::REPORT.NO_SALE" />
+    <MenuOption ref="ADMIN::REPORT.POST_VOID" />
+    <MenuOption ref="ADMIN::REPORT.CANCELLED_TRANSACTION" />
+    <MenuOption ref="RETAIL::REPORT.LINE_VOID" />
+    <MenuOption ref="RETAIL::REPORT.SUSPENDED_TRANSACTION" />
+    <MenuOption ref="RETAIL::REPORT.SALES_GOALS" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       RETURN
+       These menus contain items pertaining to the Return of previously purchased merchandise
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="RETURN" text="_menuReturn" displayType="BUTTON" category="Retail" keywords="universal,register_extended,register_all,return">
+    <MenuOption ref="SALE" />
+    <MenuOption ref="RETURN" />
+    <SubMenu ref="RETAIL::CHANGE_LINE" />
+    <SubMenu ref="RETAIL::ADD_DISCOUNT" />
+
+    <SubMenu actionRef="RETURN::MENU.ADD_NON_PHYSICAL" sticky="false" displayType="LIST">
+      <MenuOption ref="RETURN::ADD_NON_PHYSICAL" />
+      <MenuOption ref="RETURN::ADD_GIFT_CARD" />
+      <MenuOption ref="RETURN::ADD_GIFT_CERTIFICATE" />
+    </SubMenu>
+
+    <MenuOption ref="RETURN::SEARCH_FOR_ITEM" />
+    <MenuOption>
+      <Action ref="RETAIL::COMPLETE.TO_TENDERING" />
+      <Action ref="RETAIL::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+  </MenuItem>
+
+  <MenuItem name="RETURN::TENDER_OPTIONS" text="_menuReturnTender" displayType="ICON_LIST" category="Tender" keywords="return_tender">
+    <MenuOption ref="RETURN::TENDER_LOCAL_CURRENCY" />
+    <MenuOption ref="RETURN::TENDER_CREDIT_CARD" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT_CARD.ISSUE" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT_CARD.RELOAD" />
+    <MenuOption ref="RETURN::TENDER_GIFT_CARD.ISSUE" />
+    <MenuOption ref="RETURN::TENDER_GIFT_CARD.RELOAD" />
+    <MenuOption ref="RETURN::TENDER_HOME_OFFICE_CHECK" />
+    <MenuOption ref="RETURN::TENDER_HOUSE_ACCOUNT" />
+    <MenuOption ref="RETURN::TENDER_ROOM_CHARGE" />
+
+    <SubMenu actionRef="RETURN::MENU.MODIFY_TENDER">
+      <MenuOption ref="RETURN::CHANGE_TENDER_AMOUNT" />
+      <MenuOption ref="RETURN::VOID_TENDER" />
+    </SubMenu>
+
+    <MenuOption ref="RETURN::BACK_TO_SALE" />
+    <MenuOption ref="RETAIL::CHECK_SALE_COMPLETE" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       SALE
+       These menus contain items pertaining to the Sale of merchandise
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="SALE" text="_menuSale" category="Retail" keywords="universal,sale,register_extended,register_all">
+    <MenuOption ref="RETURN" />
+
+    <SubMenu actionRef="RETAIL::MENU.MODIFY_LINE" sticky="false">
+      <MenuOptions ref="RETAIL::CHANGE_LINE" />
+      <MenuOption ref="RETAIL::ADD_LINE_COMMENT" />
+    </SubMenu>
+
+    <SubMenu ref="RETAIL::ADD_DISCOUNT" />
+
+    <SubMenu actionRef="SALE::MENU.ADD_NON_PHYSICAL" sticky="false" displayType="LIST">
+      <MenuOption ref="SALE::ADD_NON_PHYSICAL" />
+      <MenuOption ref="SALE::ADD_GIFT_CARD" />
+      <MenuOption ref="SALE::ADD_GIFT_CERTIFICATE" />
+    </SubMenu>
+
+    <MenuOption ref="SALE::SELECT_GIFT_RECEIPTS" />
+
+    <SubMenu ref="RETAIL::EXTENDED_TRANS" />
+
+    <SubMenu ref="RETAIL::REGISTER_OPTIONS" />
+
+    <SubMenu ref="RETAIL::CUSTOMER_OPTIONS" sticky="false" />
+
+    <SubMenu text="_itemFind" keyStroke="F9" sticky="false">
+      <MenuOption ref="SALE::SEARCH_FOR_ITEM" />
+      <MenuOption ref="SALE::ITEM_MATRIX" />
+      <MenuOption ref="RETAIL::INVENTORY_LOCATOR" keyStroke="F10" />
+    </SubMenu>
+
+    <MenuOption>
+      <Action ref="RETAIL::COMPLETE.TO_TENDERING" />
+      <Action ref="RETAIL::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+    <MenuOption>
+      <Action ref="RETAIL::SUSPEND_TRANSACTION" />
+      <Action ref="RETAIL::RESUME_TRANSACTION" />
+    </MenuOption>
+  </MenuItem>
+
+  <MenuItem name="RETAIL::CUSTOMER_OPTIONS" text="_customerOptionsMenu" category="Retail" keywords="universal,sale,register_extended,register_all">
+    <MenuOption>
+      <Action ref="CUSTOMER::ATTACH" />
+      <Action ref="CUSTOMER::DETACH" />
+    </MenuOption>
+    <MenuOption ref="CUSTOMER::EDIT" />
+  </MenuItem>
+
+  <MenuItem name="SALE::TENDER_OPTIONS" text="_menuSaleTender" displayType="ICON_LIST" category="Tender" keywords="sale_tender">
+    <MenuOption ref="SALE::TENDER_LOCAL_CURRENCY" />
+    <MenuOption ref="SALE::TENDER_CREDIT_CARD" />
+    <MenuOption ref="SALE::TENDER_MANUAL_CREDIT" />
+    <MenuOption ref="SALE::TENDER_MANUAL_DEBIT" />
+    <MenuOption ref="SALE::TENDER_CHECK" />
+    <MenuOption ref="SALE::TENDER_GIFT_CARD" />
+    <MenuOption ref="SALE::TENDER_GIFT_CERTIFICATE" />
+    <MenuOption ref="SALE::TENDER_MALL_CERTIFICATE" />
+    <MenuOption ref="SALE::TENDER_STORE_CREDIT" />
+    <MenuOption ref="SALE::TENDER_STORE_CREDIT_CARD" />
+    <MenuOption ref="SALE::TENDER_TRAVELERS_CHECK" />
+    <MenuOption ref="SALE::TENDER_FOREIGN_CURRENCY" />
+    <MenuOption ref="SALE::TENDER_MISCELLANEOUS" />
+    <MenuOption ref="SALE::TENDER_HOUSE_ACCOUNT" />
+    <MenuOption ref="SALE::TENDER_COUPON" />
+    <MenuOption ref="SALE::TENDER_ROOM_CHARGE" />
+
+    <SubMenu actionRef="SALE::MENU.MODIFY_TENDER" keywords="isLineItemsSubMenuXstoreM">
+      <MenuOption ref="SALE::CHANGE_TENDER_AMOUNT" />
+      <MenuOption ref="SALE::VOID_TENDER" />
+    </SubMenu>
+
+    <MenuOption ref="SALE::BACK_TO_SALE" />
+    <MenuOption ref="RETAIL::CHECK_SALE_COMPLETE" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       SEND_SALE
+       These menus contain items pertaining to the creation and administration of Send Sales
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="SEND_SALE" text="_menuSendSale" category="Retail" keywords="universal,register_extended,register_all,send_sale">
+    <MenuOption ref="SEND_SALE::COMPLETE" />
+    <MenuOption ref="SEND_SALE::EDIT_DESTINATION" />
+    <SubMenu ref="RETAIL::CHANGE_LINE" />
+    <SubMenu ref="RETAIL::ADD_DISCOUNT" />
+
+    <SubMenu actionRef="RETAIL::MENU.ADD_NON_PHYSICAL" sticky="false" displayType="LIST">
+      <MenuOption ref="SEND_SALE::ADD_GIFT_CARD" />
+      <MenuOption ref="SEND_SALE::ADD_GIFT_CERTIFICATE" />
+    </SubMenu>
+
+    <MenuOption ref="SEND_SALE::SEARCH_FOR_ITEM" />
+    <MenuOption>
+      <Action ref="SEND_SALE::COMPLETE.TO_TENDERING" />
+      <Action ref="SEND_SALE::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+    <MenuOption ref="RETAIL::ADD_LINE_COMMENT" />
+    <MenuOption ref="SEND_SALE::ADD_COMMENT" />
+    <MenuOption ref="SEND_SALE::VIEW_COMMENTS" />
+    <MenuOption ref="CUSTOMER::EDIT" />
+  </MenuItem>
+
+  <MenuItem name="SHIPPING::OPTIONS" text="_listShippingLabel" displayType="BUTTON" keywords="shipping">
+    <MenuOption ref="SHIPPING::SAVE" />
+    <MenuOption ref="SHIPPING::PACKING_SLIP" />
+    <MenuOption ref="SHIPPING::PRINT_LABELS" />
+    <MenuOption ref="SHIPPING::EXCEPTIONS" />
+    <MenuOption ref="SHIPPING::CHANGE_QUANTITY" />
+    <MenuOption ref="SHIPPING::VOID_ITEM" />
+    <MenuOption ref="SHIPPING::SEARCH_FOR_ITEM" />
+    <MenuOption ref="SHIPPING::EDIT_DOCUMENT" />
+    <MenuOption ref="SHIPPING::ADD_COMMENT" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       SPECIAL_ORDER
+       These menus contain items pertaining to the creation and administration of Special Orders
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="SPECIAL_ORDER" text="_menuSpecialOrder" category="Retail" keywords="universal,register_all,special_order">
+    <MenuOption ref="SPECIAL_ORDER::COMPLETE" />
+    <MenuOption ref="SPECIAL_ORDER::SEARCH_FOR_ITEM" />
+    <MenuOption ref="SPECIAL_ORDER::CANCEL" />
+    <MenuOption ref="SPECIAL_ORDER::ADD_NON_PHYSICAL" />
+
+    <SubMenu actionRef="SPECIAL_ORDER::MENU.MODIFY_ACCOUNT" sticky="false">
+      <MenuOption ref="SPECIAL_ORDER::ADD_COUPON" />
+
+        <MenuOption ref="SPECIAL_ORDER::ADD_GROUP_DISCOUNT" />
+
+      <SubMenu actionRef="SPECIAL_ORDER::MENU.MODIFY_LINE">
+        <MenuOption ref="SPECIAL_ORDER::CHANGE_LINE_QUANTITY" />
+        <MenuOption ref="SPECIAL_ORDER::CHANGE_LINE_PRICE" />
+        <MenuOption ref="SPECIAL_ORDER::ADD_DISCOUNT" />
+
+        <SubMenu ref="SPECIAL_ORDER::MENU.MODIFY_LINE_TAX_OPTIONS"/>
+
+        <MenuOption ref="SPECIAL_ORDER::VOID_LINE" />
+        <MenuOption ref="SPECIAL_ORDER::CHANGE_DISCOUNT" />
+        <MenuOption ref="SPECIAL_ORDER::VOID_DISCOUNT" />
+        <MenuOption ref="SPECIAL_ORDER::CHANGE_COMMISSIONED_ASSOCIATES" />
+        <MenuOption ref="SPECIAL_ORDER::CHANGE_EXPECTED_DATE" />
+        <MenuOption ref="SPECIAL_ORDER::ADD_LINE_COMMENT" />
+      </SubMenu>
+
+      <MenuOption ref="SPECIAL_ORDER::ADD_COMMENT" />
+    </SubMenu>
+
+    <MenuOption ref="SPECIAL_ORDER::PICKUP_LINE" />
+    <MenuOption>
+      <Action ref="SPECIAL_ORDER::COMPLETE.TO_TENDERING" />
+      <Action ref="SPECIAL_ORDER::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+    <MenuOption ref="SPECIAL_ORDER::VIEW_HISTORY" />
+    <MenuOption ref="SPECIAL_ORDER::VIEW_COMMENTS" />
+
+    <SubMenu actionRef="SPECIAL_ORDER::MENU.WARRANTY_OPTIONS">
+      <MenuOption ref="SPECIAL_ORDER::ADD_WARRANTY" />
+      <MenuOption ref="RETAIL::CHANGE_WARRANTY_CUSTOMER" />
+    </SubMenu>
+    <MenuOption ref="CUSTOMER::EDIT" />
+  </MenuItem>
+
+  <MenuItem name="SPECIAL_ORDER::MENU.MODIFY_LINE_TAX_OPTIONS" actionRef="RETAIL::MENU.MODIFY_LINE_TAX" keywords="exclude,layaway">
+    <MenuOption ref="SPECIAL_ORDER::TAX.CHANGE_LINE_LOCATION" />
+    <MenuOption ref="SPECIAL_ORDER::TAX.EXEMPT_LINE" />
+    <MenuOption ref="SPECIAL_ORDER::TAX.CHANGE_LINE_AMOUNT" />
+    <MenuOption ref="SPECIAL_ORDER::TAX.CHANGE_LINE_PERCENT" />
+  </MenuItem>
+
+  <MenuItem name="SPECIAL_ORDER::MINIMUM" text="_menuSpecialOrderMinimum" category="Retail" keywords="exclude">
+    <MenuOption>
+      <Action ref="RETAIL::COMPLETE.TO_TENDERING" />
+      <Action ref="RETAIL::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+    <MenuOption ref="SPECIAL_ORDER::CANCEL_MINIMUM" />
+    <MenuOption ref="RETAIL::CHANGE_LINE_PRICE" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       TENDER_EXCHANGE
+       These menus contain items allowing one tender to be exchanged for others
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="TENDER_EXCHANGE::IN" text="_menutextIncomingTenderExchange" displayType="ICON_LIST" category="Tender" keywords="tender_exchange,tender_exchange_in" >
+    <MenuOption ref="TENDER_EXCHANGE::IN.TENDER_LOCAL_CURRENCY" />
+    <MenuOption ref="TENDER_EXCHANGE::IN.TENDER_CHECK" />
+    <MenuOption ref="TENDER_EXCHANGE::IN.TENDER_GIFT_CARD" />
+    <MenuOption ref="TENDER_EXCHANGE::IN.TENDER_GIFT_CERTIFICATE" />
+    <MenuOption ref="TENDER_EXCHANGE::IN.TENDER_MALL_CERTIFICATE" />
+    <MenuOption ref="TENDER_EXCHANGE::IN.TENDER_STORE_CREDIT" />
+    <MenuOption ref="TENDER_EXCHANGE::IN.TENDER_STORE_CREDIT_CARD" />
+    <MenuOption ref="TENDER_EXCHANGE::IN.TENDER_TRAVELERS_CHECK" />
+    <MenuOption ref="TENDER_EXCHANGE::IN.TENDER_FOREIGN_CURRENCY" />
+    <MenuOption ref="TENDER_EXCHANGE::IN.TO_OUT" />
+    <MenuOption ref="TENDER_EXCHANGE::COMPLETE" />
+    <MenuOption ref="TENDER_EXCHANGE::VOID_TENDER" />
+    <MenuOption ref="TENDER_EXCHANGE::CHANGE_TENDER_AMOUNT" />
+  </MenuItem>
+
+  <MenuItem name="TENDER_EXCHANGE::OUT" text="_menutextOutgoingTenderExchange" displayType="ICON_LIST" category="Tender" keywords="tender_exchange,tender_exchange_out">
+    <MenuOption ref="TENDER_EXCHANGE::OUT.ISSUE_LOCAL_CURRENCY" />
+    <MenuOption ref="TENDER_EXCHANGE::OUT.ISSUE_STORE_CREDIT" />
+    <MenuOption ref="TENDER_EXCHANGE::OUT.ISSUE_STORE_CREDIT_CARD" />
+    <MenuOption ref="TENDER_EXCHANGE::OUT.RELOAD_STORE_CREDIT_CARD" />
+    <MenuOption ref="TENDER_EXCHANGE::OUT.ISSUE_GIFT_CARD" />
+    <MenuOption ref="TENDER_EXCHANGE::OUT.RELOAD_GIFT_CARD" />
+    <MenuOption ref="TENDER_EXCHANGE::OUT.ISSUE_HOME_OFFICE_CHECK" />
+    <MenuOption ref="TENDER_EXCHANGE::OUT.TO_IN" />
+    <MenuOption ref="TENDER_EXCHANGE::COMPLETE" />
+    <MenuOption ref="TENDER_EXCHANGE::VOID_TENDER" />
+    <MenuOption ref="TENDER_EXCHANGE::CHANGE_TENDER_AMOUNT" />
+  </MenuItem>
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       TILL
+       These menus contain items pertaining to Till administration and accounting
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="TILL::OPTIONS" actionRef="TILL::MENU.OPTIONS" displayType="LIST" category="Admin" keywords="back_office">
+    <SubMenu ref="TILL::TILL_OPTIONS" />
+    <SubMenu ref="TILL::TILL_MAINTENANCE" />
+    <SubMenu ref="TILL::STORE_BANK_MAINTENANCE" />
+  </MenuItem>
+
+  <MenuItem name="TILL::TILL_OPTIONS" text="_tillOptionsSubMenuText" category="Admin" keywords="back_office">
+    <MenuOption ref="ADMIN::POST_VOID" />
+    <MenuOption ref="TILL::NO_SALE" />
+    <MenuOption ref="TILL::PAID_IN" />
+    <MenuOption ref="TILL::PAID_OUT" />
+    <MenuOption ref="ADMIN::FOREIGN_CURRENCY_MAINTENANCE" />
+    <MenuOption ref="TENDER_EXCHANGE" />
+    <MenuOption ref="TILL::CHANGE_TILL_FLOAT" />
+  </MenuItem>
+
+  <MenuItem name="TILL::TILL_MAINTENANCE" text="_tillMaintenanceButtonMenuText" category="Admin" keywords="back_office">
+    <MenuOption ref="TILL::CASH_PICKUP" />
+    <MenuOption ref="TILL::CASH_TRANSFER" />
+    <MenuOption ref="TILL::TILL_AUDIT" />
+    <MenuOption ref="TILL::MID_DAY_DEPOSIT" />
+    <MenuOption ref="TILL::TRANSFER_TILLS" />
+    <MenuOption ref="TILL::TILL_COUNT" />
+    <MenuOption ref="TILL::ATTACH_OTHER_TILL" />
+    <MenuOption ref="TILL::REMOVE_TILL_FROM_WORKSTATION" />
+    <MenuOption ref="TILL::REMOVE_OTHER_TILL" />
+    <MenuOption ref="TILL::END_COUNT_OTHER_TILL" />
+    <MenuOption ref="TILL::ATTACH_CASHDRAWER_TILL" />
+    <MenuOption ref="TILL::REMOVE_CASHDRAWER_TILL" />
+    <MenuOption ref="TILL::RECONCILE_COUNT" />
+    <MenuOption ref="TILL::RECONCILE_REGISTER" />
+    <MenuOption ref="TILL::RECONCILE_CASHDRAWER" />
+  </MenuItem>
+
+  <MenuItem name="TILL::STORE_BANK_MAINTENANCE" text="_storeBankMaintenanceButtonMenuText" category="Admin" keywords="back_office">
+    <MenuOption ref="TILL::STORE_BANK_AUDIT" />
+    <MenuOption ref="TILL::OPEN_STORE_BANK" />
+    <MenuOption ref="TILL::RECONCILE_STORE_BANK" />
+    <MenuOption ref="TILL::STORE_BANK_CASH_DEPOSIT" />
+    <MenuOption ref="TILL::BANK_DEPOSIT" />
+  </MenuItem>
+
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       WORK_ORDER
+       These menus contain items pertaining to the creation and administration of Work Orders
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="WORK_ORDER" text="_menuWorkOrder" category="Retail" keywords="universal,register_all,work_order">
+    <MenuOption ref="WORK_ORDER::COMPLETE" />
+
+    <SubMenu text="_workorderMenuItem2">
+      <MenuOption ref="WORK_ORDER::ADD_TASK" />
+      <MenuOption ref="WORK_ORDER::DELETE_TASK" />
+
+      <SubMenu actionRef="WORK_ORDER::MENU.ADD_DISCOUNT" displayType="LIST" sticky="false">
+        <MenuOption ref="WORK_ORDER::ADD_DISCOUNT" />
+      </SubMenu>
+
+      <MenuOption ref="WORK_ORDER::CONVERT_ESTIMATE_TASK" />
+      <MenuOption ref="WORK_ORDER::ADD_INSTRUCTION" />
+    </SubMenu>
+
+    <SubMenu text="_workorderMenuItem3">
+      <MenuOption ref="WORK_ORDER::ADD_ITEM" />
+      <MenuOption ref="WORK_ORDER::DELETE_LINE" />
+      <MenuOption ref="WORK_ORDER::EDIT_LINE_VALUE" />
+      <MenuOption ref="WORK_ORDER::EDIT_LINE_DESCRIPTION" />
+    </SubMenu>
+
+    <SubMenu actionRef="WORK_ORDER::MENU.EDIT_PARTS">
+      <MenuOption ref="WORK_ORDER::ADD_PARTS" />
+      <MenuOption ref="WORK_ORDER::DELETE_PARTS" />
+    </SubMenu>
+
+    <SubMenu actionRef="WORK_ORDER::MENU.MODIFY_LINE">
+      <MenuOption ref="WORK_ORDER::CHANGE_LINE_QUANTITY" />
+      <MenuOption ref="WORK_ORDER::CHANGE_LINE_PRICE" />
+
+      <SubMenu ref="WORK_ORDER::MENU.MODIFY_LINE_TAX_OPTIONS"/>
+
+    </SubMenu>
+
+    <SubMenu text="_workorderMenuItem6">
+      <MenuOption ref="WORK_ORDER::CANCEL" />
+      <MenuOption ref="WORK_ORDER::CHANGE_PRICE_CATEGORY" />
+      <MenuOption ref="WORK_ORDER::EDIT_APPROVED_AMOUNT" />
+      <MenuOption ref="WORK_ORDER::EDIT_PRIORITY" />
+      <MenuOption ref="WORK_ORDER::EDIT_CONTACT_METHOD" />
+      <MenuOption ref="WORK_ORDER::EDIT_LAST_NOTICE_DATE" />
+      <MenuOption ref="WORK_ORDER::EDIT_SERVICE_LOCATION" />
+      <MenuOption ref="WORK_ORDER::EDIT_EXPECTED_FINISH_DATE" />
+      <MenuOption ref="WORK_ORDER::EDIT_STATUS" />
+      <MenuOption ref="WORK_ORDER::PICKUP_LINE" />
+    </SubMenu>
+
+    <SubMenu text="_workorderMenuItem7">
+      <MenuOption ref="WORK_ORDER::VIEW_HISTORY" />
+      <MenuOption ref="WORK_ORDER::VIEW_COMMENTS" />
+      <MenuOption ref="WORK_ORDER::ADD_COMMENT" />
+    </SubMenu>
+
+    <MenuOption>
+      <Action ref="WORK_ORDER::COMPLETE.TO_TENDERING" />
+      <Action ref="WORK_ORDER::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+    <MenuOption ref="CUSTOMER::EDIT" />
+  </MenuItem>
+
+  <MenuItem name="WORK_ORDER::MENU.MODIFY_LINE_TAX_OPTIONS" actionRef="RETAIL::MENU.MODIFY_LINE_TAX" keywords="exclude,layaway">
+    <MenuOption ref="WORK_ORDER::TAX.CHANGE_LINE_LOCATION" />
+    <MenuOption ref="WORK_ORDER::TAX.EXEMPT_LINE" />
+    <MenuOption ref="WORK_ORDER::TAX.CHANGE_LINE_AMOUNT" />
+    <MenuOption ref="WORK_ORDER::TAX.CHANGE_LINE_PERCENT" />
+  </MenuItem>
+
+  <MenuItem name="WORK_ORDER::OPTIONS" text="_menutextBackOfficeWorkOrderOptions" displayType="LIST" category="Back Office" keywords="back_office_only">
+    <MenuOption ref="WORK_ORDER::MAINTAIN" />
+    <MenuOption ref="WORK_ORDER::SHIP_BATCH" />
+    <MenuOption ref="WORK_ORDER::RECEIVE_BATCH" />
+    <MenuOption ref="WORK_ORDER::INVOICING" />
+    <MenuOption ref="WORK_ORDER::INVOICE_LOOKUP" />
+  </MenuItem>
+
+  <MenuItem name="CUSTOMER_ACCOUNT" text="_menuCustomerAccount" category="Retail" keywords="universal,register_all,customer_account">
+    <MenuOption>
+      <Action ref="CUSTOMER_ACCOUNT_DEFAULT::COMPLETE" /><!-- This action should ALWAYS be left first on this menu option -->
+      <Action ref="PRESALE::COMPLETE" />
+      <Action ref="ONHOLD::COMPLETE" />
+    </MenuOption>
+    <MenuOption>
+      <Action ref="CUSTOMER_ACCOUNT_DEFAULT::CANCEL" /><!-- This action should ALWAYS be left first on this menu option -->
+      <Action ref="PRESALE::CANCEL" />
+      <Action ref="ONHOLD::CANCEL" />
+    </MenuOption>
+
+    <MenuOption ref="CUSTOMER_ACCOUNT::ADD_GROUP_DISCOUNT" />
+
+      <SubMenu actionRef="CUSTOMER_ACCOUNT::MENU.MODIFY_LINE" sticky="false">
+        <MenuOption ref="CUSTOMER_ACCOUNT::CHANGE_LINE_QUANTITY" />
+        <MenuOption ref="CUSTOMER_ACCOUNT::CHANGE_LINE_PRICE" />
+        <MenuOption ref="CUSTOMER_ACCOUNT::ADD_DISCOUNT" />
+        <MenuOption ref="CUSTOMER_ACCOUNT::VOID_LINE" />
+        <MenuOption ref="CUSTOMER_ACCOUNT::VOID_DISCOUNT" />
+      </SubMenu>
+
+    <MenuOption ref="CUSTOMER_ACCOUNT::PICKUP_LINE" />
+    <MenuOption ref="CUSTOMER_ACCOUNT::ADD_COUPON" />
+    <MenuOption>
+      <Action ref="CUSTOMER_ACCOUNT::COMPLETE.TO_TENDERING" />
+      <Action ref="CUSTOMER_ACCOUNT::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+    <MenuOption ref="CUSTOMER::EDIT" />
+
+  </MenuItem>
+
+   <MenuItem name="ASSOCIATE::TASKS" text="_menuTextAssociateTasks" displayType="LIST" category="Back Office" keywords="back_office_only">
+      <MenuOption ref="ASSOCIATE_TASKS::MY_TASKS" />
+  </MenuItem>
+
+  <MenuItem name="VERIFIED::RETURN" text="_menuVerifiedReturn" displayType="BUTTON" category="Retail" keywords="universal,register_extended,register_all,return">
+    <MenuOption ref="VIEW_ORIGINAL_TRANSACTION"/>
+    <MenuOption ref="NEW_RETURN"/>
+    <MenuOption ref="SALE_ITEM_START" />
+    <MenuOption ref="VERIFIED_RETURN_PRE_TENDERING" />
+  </MenuItem>
+
+</MenuSet>

@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">EJOURNAL_DETAIL</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <Touch ref="CANCEL_BACK" paintTouch="true" />
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCustomerMaintHeaderPanel</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsCustomerMaintHeaderPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter>
+        <param_name dtype="String">setOpaque</param_name>
+        <param_value dtype="Boolean">true</param_value>
+      </ComponentParameter>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+0,0,1,0</param_value>
+      </ComponentParameter>
+      <ColorGroup bgColorRef="_colorTransactionInformationPanel"/>
+      <FormViewCell>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">tranTranType</Resource>
+        <Font fontSize="+4"/>
+      </FormViewCell>
+      <FormViewCell>
+        <Type dtype="String">FormLabel</Type>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <ComponentParameter name="setIcon">
+          <param_value dtype="IconRef">_imageTransactionHeaderDividerIcon</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalDetailTranSequence</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">tranTransactionSequence</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalDetailBusDate</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">tranBusinessDate</Resource>
+          <FormatterType dtype="String">DateMedium</FormatterType>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewCell>
+        <Type dtype="String">FormLabel</Type>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <ComponentParameter name="setIcon">
+          <param_value dtype="IconRef">_imageLineDividerIcon</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalDetailWorkstationId</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">tranWorkstationId</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalDetailCashierId</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">tranCashierId</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+      </FormViewPanel>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">ITEMS</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <TextKey dtype="Translatable">_formEjournalDetailItemsTab</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setGaps">
+            <param_value dtype="IntegerArray">0, 30, 0, 30</param_value>
+          </Parameter>
+        </LayoutParameters>
+          <FormViewPanel>
+            <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+            <LayoutParameters dtype="ParameterList">
+              <Parameter name="setColumn">
+                <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+              </Parameter>
+              <Parameter name="setRow">
+                <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+              </Parameter>
+              <Parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </Parameter>
+            </LayoutParameters>
+            <FormViewCell>
+              <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabel</Type>
+              <TextKey dtype="Translatable">_formEjournalDetailCustomerName</TextKey>
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabelDiminished</Type>
+              <Resource dtype="String">tranCustomerName</Resource>
+              <Font fontStyle="BOLD" />
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabel</Type>
+              <TextKey dtype="Translatable">_formEjournalDetailCustomerId</TextKey>
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabelDiminished</Type>
+              <Resource dtype="String">tranCustomerId</Resource>
+              <Font fontStyle="BOLD" />
+            </FormViewCell>
+          </FormViewPanel>
+          <FormViewPanel>
+            <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+            <LayoutParameters dtype="ParameterList">
+              <Parameter name="setColumn">
+                <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+              </Parameter>
+              <Parameter name="setRow">
+                <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+              </Parameter>
+              <Parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </Parameter>
+            </LayoutParameters>
+            <FormViewCell>
+              <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabel</Type>
+              <TextKey dtype="Translatable">_formEjournalDetailBeginDatetimestamp</TextKey>
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabelDiminished</Type>
+              <Resource dtype="String">tranBeginDatetimestamp</Resource>
+              <FormatterType dtype="String">DateTimeMedium</FormatterType>
+              <Font fontStyle="BOLD" />
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabel</Type>
+              <TextKey dtype="Translatable">_formEjournalDetailEndDatetimestamp</TextKey>
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabelDiminished</Type>
+              <Resource dtype="String">tranEndDatetimestamp</Resource>
+              <FormatterType dtype="String">DateTimeMedium</FormatterType>
+              <Font fontStyle="BOLD" />
+            </FormViewCell>
+          </FormViewPanel>
+          <FormViewPanel>
+            <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+            <LayoutParameters dtype="ParameterList">
+              <Parameter name="setColumn">
+                <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+              </Parameter>
+              <Parameter name="setRow">
+                <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+              </Parameter>
+              <Parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </Parameter>
+            </LayoutParameters>
+            <FormViewCell>
+              <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabel</Type>
+              <TextKey dtype="Translatable">_formEjournalDetailAssociates</TextKey>
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabelDiminished</Type>
+              <Resource dtype="String">tranAssociates</Resource>
+              <Font fontStyle="BOLD" />
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabel</Type>
+              <TextKey dtype="Translatable">_formEjournalDetailTotal</TextKey>
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabelDiminished</Type>
+              <Resource dtype="String">tranTotal</Resource>
+              <FormatterType dtype="String">Money</FormatterType>
+              <Font fontStyle="BOLD" />
+            </FormViewCell>
+          </FormViewPanel>
+          <FormViewPanel>
+            <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+            <LayoutParameters dtype="ParameterList">
+              <Parameter name="setColumn">
+                <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+              </Parameter>
+              <Parameter name="setRow">
+                <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+              </Parameter>
+              <Parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </Parameter>
+            </LayoutParameters>
+            <FormViewCell>
+              <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabel</Type>
+              <TextKey dtype="Translatable">_formEjournalDetailFiscalNumber</TextKey>
+              <VisibilityGroup dtype="String">journalFiscalNumberVisibility</VisibilityGroup>
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabelDiminished</Type>
+              <Resource dtype="String">fiscalNumber</Resource>
+              <VisibilityGroup dtype="String">journalFiscalNumberVisibility</VisibilityGroup>
+              <Font fontStyle="BOLD" />
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabel</Type>
+              <Resource dtype="String">invoiceType</Resource>
+              <VisibilityGroup dtype="String">anyInvoiceVisibility</VisibilityGroup>
+            </FormViewCell>
+            <FormViewCell>
+              <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+              <Type dtype="String">FormLabelDiminished</Type>
+              <Resource dtype="String">invoiceNumber</Resource>
+              <Font fontStyle="BOLD" />
+              <VisibilityGroup dtype="String">anyInvoiceVisibility</VisibilityGroup>
+            </FormViewCell>
+          </FormViewPanel>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormEjournalDetail</Type>
+        <TextKey dtype="Literal">invalid type [FormEjournalDetail]</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">NOTES</FormTabKey>
+      <TabOrder dtype="Integer">20</TabOrder>
+      <ActionSubGroupKey dtype="String">NOTES</ActionSubGroupKey>
+      <Resource dtype="String">transactionNotesListModel</Resource>
+      <TextKey dtype="Translatable">_formEjournalDetailNotesTab</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormList</Type>
+        <Resource dtype="String">transactionNotesListModel</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">TRANSACTION_NOTES</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">TRANSACTION_NOTES</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action formOptionsKey="COUNTRYPACK::INVOICE::FUNCTIONS" text="_countrypack.invoice.MenuEJournalInvoiceFunctions">
+        <VisibilityRule class="oracle.retail.xstore.countrypack.common.invoice.visibilityrules.AnyInvoiceVisibilityRule" />
+        <VisibilityRule class="oracle.retail.xstore.countrypack.common.invoice.visibilityrules.EjournalTranAccessCheckVisibilityRule">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+          <Parameter name="tranType" value="DEFERRED_INVOICE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="ISSUE_REBATE_RECEIPT" text="_menuEjournalRebateReceipt" keyStroke="F3" privilege="EJOURNAL_REBATE_RECEIPT">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="REPRINT_RECEIPT" text="_menuEjournalReprint" keyStroke="F4" privilege="EJOURNAL_REPRINT_RECEIPT">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="ISSUE_GIFT_RECEIPT_PRINT_SELECTION" text="_menuEjournalGiftReceipt" keyStroke="F5" privilege="EJOURNAL_GIFT_RECEIPT">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="POST_VOID_EJOURNAL" text="_menuEjournalPostVoid" keyStroke="F6" privilege="EJOURNAL_POST_VOID">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.ejournal.postvoid.visibility.BusinessDateVisibilityRule" />
+        <VisibilityRule class="dtv.pos.ejournal.postvoid.visibility.TenderVisibilityRule">
+          <Parameter name="exclude" value="HOME_OFFICE_CHECK" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+          <Parameter name="state" value="OPEN" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.TillAttachedAccessCheck" />
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="DEFAULT" subKey="NOTES">
+      <Action ref="CANCEL_BACK" />
+      <Action formOptionsKey="COUNTRYPACK::INVOICE::FUNCTIONS" text="_countrypack.invoice.MenuEJournalInvoiceFunctions">
+        <VisibilityRule class="oracle.retail.xstore.countrypack.common.invoice.visibilityrules.AnyInvoiceVisibilityRule" />
+        <VisibilityRule class="oracle.retail.xstore.countrypack.common.invoice.visibilityrules.EjournalTranAccessCheckVisibilityRule">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+          <Parameter name="tranType" value="DEFERRED_INVOICE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="ISSUE_REBATE_RECEIPT" text="_menuEjournalRebateReceipt" keyStroke="F3" privilege="EJOURNAL_REBATE_RECEIPT">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="REPRINT_RECEIPT" text="_menuEjournalReprint" keyStroke="F4" privilege="EJOURNAL_REPRINT_RECEIPT">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="ISSUE_GIFT_RECEIPT_PRINT_SELECTION" text="_menuEjournalGiftReceipt" keyStroke="F5" privilege="EJOURNAL_GIFT_RECEIPT">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="POST_VOID_EJOURNAL" text="_menuEjournalPostVoid" keyStroke="F6" privilege="EJOURNAL_POST_VOID">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.ejournal.postvoid.visibility.BusinessDateVisibilityRule" />
+        <VisibilityRule class="dtv.pos.ejournal.postvoid.visibility.TenderVisibilityRule">
+          <Parameter name="exclude" value="HOME_OFFICE_CHECK" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+          <Parameter name="state" value="OPEN" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.TillAttachedAccessCheck" />
+      </Action>
+      <Action chainKey="ADD_EJOURNAL_COMMENT" text="_formEjournalDetailAddComment" keyStroke="F9" privilege="EJOURNAL_ADD_COMMENT" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="COUNTRYPACK::INVOICE::FUNCTIONS">
+      <Action ref="COUNTRYPACK::INVOICE::ISSUE_INVOICE" />
+      <Action ref="COUNTRYPACK::INVOICE::REPRINT_INVOICE" />
+      <Action ref="COUNTRYPACK::INVOICE::VOID_INVOICE" />
+      <Action ref="COUNTRYPACK::INVOICE::RETRY_INVOICE" >
+        <VisibilityRule class="dtv.pos.framework.action.access.AlwaysHideVisibilityRule" />
+      </Action>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

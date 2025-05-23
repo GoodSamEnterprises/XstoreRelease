@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <Query name="XSERVICES.INVENTORY_DOC_LOOKUP">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.InvDocSearchResult</ResultClass>
+    <ResultField>
+      <Name dtype="String">StatusCode</Name>
+      <Order dtype="PositiveInteger">1</Order>
+    </ResultField>
+    <ResultField>
+      <Name dtype="String">DocumentId</Name>
+      <Order dtype="PositiveInteger">2</Order>
+    </ResultField>
+    <ResultField>
+      <Name dtype="String">DocType</Name>
+      <Order dtype="PositiveInteger">3</Order>
+    </ResultField>
+    <ResultField>
+      <Name dtype="String">DocSubType</Name>
+      <Order dtype="PositiveInteger">4</Order>
+    </ResultField>
+    <ResultField>
+      <Name dtype="String">RecordCreationType</Name>
+      <Order dtype="PositiveInteger">5</Order>
+    </ResultField>
+    <ResultField>
+      <Name dtype="String">LastActivityDate</Name>
+      <Order dtype="PositiveInteger">6</Order>
+    </ResultField>
+    <ResultField>
+      <Name dtype="String">RetailLocationId</Name>
+      <Order dtype="PositiveInteger">7</Order>
+    </ResultField>
+    <ResultField>
+      <Name dtype="String">Description</Name>
+      <Order dtype="PositiveInteger">8</Order>
+    </ResultField>
+    <ResultField>
+      <Name dtype="String">Count</Name>
+      <Order dtype="PositiveInteger">9</Order>
+    </ResultField>
+    <Property>
+      <Key dtype="String">DataTypes</Key>
+      <Value dtype="String">String, String, String, String, String, Date, Long, String, Long</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">SQL</Key>
+      <Value dtype="String"><![CDATA[
+        SELECT t.status_code, t.invctl_document_id, t.document_typcode, document_subtypcode, t.record_creation_type, 
+        last_activity_date,  t.rtl_loc_id, description, count (distinct  s.invctl_document_line_nbr)
+        FROM inv_invctl_document t, inv_invctl_document_lineitm s
+        WHERE t.organization_id = ? AND (t.status_code <> 'VOID') AND (t.invctl_document_id = s.invctl_document_id)
+        ]]></Value>
+    </Property>
+    <Property>
+      <Key dtype="String">Parameters</Key>
+      <Value dtype="String">argOrganizationId</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">SQL.argRetailLocationId</Key>
+      <Value dtype="String">t.rtl_loc_id = ?</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">Parameters.argRetailLocationId</Key>
+      <Value dtype="String">argRetailLocationId</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">SQL.argDocumentId</Key>
+      <Value dtype="String">t.invctl_document_id = ?</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">Parameters.argDocumentId</Key>
+      <Value dtype="String">argDocumentId</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">SQL.argDocumentTypeCode</Key>
+      <Value dtype="String">t.document_typcode = ?</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">Parameters.argDocumentTypeCode</Key>
+      <Value dtype="String">argDocumentTypeCode</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">SQL.argDocumentSubtypeCode</Key>
+      <Value dtype="String">t.document_subtypcode = ?</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">Parameters.argDocumentSubtypeCode</Key>
+      <Value dtype="String">argDocumentSubtypeCode</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">SQL.argDocumentStatusCode</Key>
+      <Value dtype="String">t.status_code = ?</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">Parameters.argDocumentStatusCode</Key>
+      <Value dtype="String">argDocumentStatusCode</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">SQL.argRestrictStatus</Key>
+      <Value dtype="String">t.status_code != ?</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">Parameters.argRestrictStatus</Key>
+      <Value dtype="String">argRestrictStatus</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">SQL.argRestrictStatus2</Key>
+      <Value dtype="String">t.status_code != ?</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">Parameters.argRestrictStatus2</Key>
+      <Value dtype="String">argRestrictStatus2</Value>
+    </Property>
+    <Property>
+      <Key dtype="String">PMType</Key>
+      <Value dtype="String">INVENTORY</Value>
+    </Property>
+    <Suffix dtype="String"><![CDATA[group by t.status_code, t.organization_id, t.rtl_loc_id, t.document_typcode, t.invctl_document_id, t.document_subtypcode, t.record_creation_type, t.last_activity_date, t.description]]></Suffix>
+  </Query>
+</QuerySet>

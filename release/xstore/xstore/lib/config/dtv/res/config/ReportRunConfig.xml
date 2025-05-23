@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ReportRunConfig.xsd">
+  <ReportGroup name="CLOSE" enabled="false">
+    <ReportRun dtype="String">TODAYS_SALES</ReportRun>
+    <ReportRun dtype="String">NIGHTLY_CONTROL</ReportRun>    
+  </ReportGroup>
+  <ReportGroup name="OPEN" enabled="false">
+    <ReportRun dtype="String">YESTERDAYS_SALES</ReportRun>
+    <ReportRun dtype="String">MARK_DOWN_REPORT</ReportRun>
+  </ReportGroup>
+  <ReportGroup name="REGISTER_CLOSE" enabled="false">    
+    <ReportRun dtype="String">TODAYS_SALES_THIS_STATION</ReportRun>
+  </ReportGroup>
+  <ReportRun name="YESTERDAYS_SALES">
+    <!-- this is the name that will be used when saved, also title of an email -->
+    <title dtype="String">Sales reports from yesterday</title>
+    <report dtype="Url"><![CDATA[report://DAILY_SALES_CASH_REPORT?dtvStartDate=YESTERDAY]]></report>
+    <RunRule dtype="Class">dtv.pos.reporting.run.EndOfWeekRunRule</RunRule>
+    <Action dataKey="REPORT_SAVE_QUIET" />
+    <Action dataKey="REPORT_PRINT_QUIET" />
+  </ReportRun>
+  <ReportRun name="TODAYS_SALES" enabled="false">
+    <!-- this is the name that will be used when saved, also title of an email -->
+    <title dtype="String">Sales reports from today</title>
+    <report dtype="Url"><![CDATA[report://DAILY_SALES_CASH_REPORT?dtvStartDate=TODAY]]></report>
+    <RunRule dtype="Class">dtv.pos.reporting.run.EndOfWeekRunRule</RunRule>
+    <Action dataKey="REPORT_SAVE_QUIET" />
+  </ReportRun>
+  <ReportRun name="TODAYS_SALES_THIS_STATION" enabled="false">
+    <!-- this is the name that will be used when saved, also title of an email -->
+    <title dtype="String">Sales reports from today</title>
+    <report dtype="Url"><![CDATA[report://DAILY_SALES_CASH_REPORT?dtvStartDate=TODAY]]></report>
+    <RunRule dtype="Class">dtv.pos.reporting.run.EndOfWeekRunRule</RunRule>
+    <Action dataKey="REPORT_SAVE_QUIET" />
+    <Action dataKey="REPORT_PRINT_QUIET" />
+  </ReportRun>
+  <ReportRun name="NIGHTLY_CONTROL">
+    <title dtype="String">Store Nightly Control Totals</title> 
+    <report dtype="Url"><![CDATA[report://NIGHTLY_CONTROL_REPORT?dtvStartDate=TODAY]]></report>
+    <Action dataKey="REPORT_SAVE_QUIET" />
+    <Action dataKey="REPORT_PRINT_QUIET" />
+  </ReportRun>  
+  <ReportRun name="MARK_DOWN_REPORT">
+    <title dtype="String">Mark Down Report</title>
+    <report dtype="Url"><![CDATA[report://MARK_DOWN_REPORT?dateRange=TODAY]]></report>
+    <Action dataKey="REPORT_SAVE_QUIET" />
+    <Action dataKey="REPORT_PRINT_QUIET" />
+  </ReportRun>
+</Root>

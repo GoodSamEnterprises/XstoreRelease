@@ -1,0 +1,18 @@
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <!-- ***************************************************************** -->
+  <!-- ROOTS                                                             -->
+  <!-- ***************************************************************** -->
+  <Query name="trn_trans_properties_email">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM trn_trans_p
+          WHERE organization_id = ?
+            AND business_date < ?
+            AND property_code IN ('RECEIPT_DELIVERY_METHOD', 'RECEIPT_EMAIL_ADDRESS', 'CUSTOMER_EMAIL_UPDATED')]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+</QuerySet>

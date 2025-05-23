@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <RegisterConfig dtype="Default">
+  </RegisterConfig>
+  <SystemConfig dtype="Default">
+    <TrainingMode dtype="Default">
+      <TrainingModeEnabled dtype="Boolean">false</TrainingModeEnabled>
+    </TrainingMode>
+    <Tax dtype="Default">
+      <EnableVatTaxSummaryPrint dtype="Boolean">true</EnableVatTaxSummaryPrint>
+      <DisableChangeTaxAmount dtype="Boolean">true</DisableChangeTaxAmount>
+      <SelectTaxPercentFromList dtype="Boolean">true</SelectTaxPercentFromList>
+      <IgnoreTaxGroups dtype="String"></IgnoreTaxGroups>
+    </Tax>
+    <OnScreenKeyboard dtype="Default">
+      <Layout dtype="String">qwertz</Layout>
+    </OnScreenKeyboard>
+    <MeasurementUnits dtype="Default">
+      <!-- VALUES:  CELSIUS, FAHRENHEIT, KELVIN -->
+      <Temperature dtype="String">CELSIUS</Temperature>
+      <!-- VALUES:  IMPERIAL, METRIC -->
+      <Length dtype="String">METRIC</Length>
+    </MeasurementUnits>
+    <LocalCurrencyId dtype="String">EUR</LocalCurrencyId>
+    <InvoiceConfig dtype="Default">
+      <EnableInvoicing dtype="Boolean">true</EnableInvoicing>
+    </InvoiceConfig>
+    <FiscalConfig dtype="Default">
+      <CashLimits dtype="Default">
+        <OverridableLimit dtype="BigDecimal">14999.99</OverridableLimit>
+      </CashLimits>
+      <Country dtype="Default">
+        <De dtype="Default">
+          <GoBD dtype="Default">
+            <ResultFolder dtype="String">/xstore/GoBD/</ResultFolder>
+            <StepDays dtype="Integer">30</StepDays>
+            <CsvEncoding dtype="String">windows-1252</CsvEncoding>
+            <DataSupplierName dtype="String">_countrypack.de.gobd.datasupplier.name</DataSupplierName>
+            <DataSupplierLocation dtype="String" >_countrypack.de.gobd.datasupplier.location</DataSupplierLocation>
+            <DataSupplierComment dtype="String">_countrypack.de.gobd.datasupplier.comment</DataSupplierComment>
+          </GoBD>
+        </De>
+      </Country>
+    </FiscalConfig>
+    <TaxFreeConfig dtype="Default">
+      <FintraxConfig dtype="Default">
+        <ShopCountryCode dtype="String">276</ShopCountryCode>
+        <MinAmountThreshold dtype="BigDecimal">25.00</MinAmountThreshold>
+        <OptionalFields dtype="String">firstName,lastName,street,city,postalCode,countryCode,identityDocumentNumber,birthDate,identityDocumentCountryCode,emailAddress,finalDestination,arrivalDate,departureDate</OptionalFields>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">month</TimeUnit>
+          <UnitLimit dtype="String">3</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </FintraxConfig>
+      <GlobalBlueConfig dtype="Default">
+        <OptionalFields dtype="String">identityDocumentNumber,lastName,firstName,street,postalCode,city,countryCode,emailAddress,identityDocumentCountryCode</OptionalFields>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">month</TimeUnit>
+          <UnitLimit dtype="String">3</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </GlobalBlueConfig>
+    </TaxFreeConfig>
+  </SystemConfig>
+
+  <Grocery dtype="Default">
+    <Discount dtype="Default">
+      <ContextSensitiveDiscountsEnabled dtype="Boolean">true</ContextSensitiveDiscountsEnabled>
+    </Discount>
+  </Grocery>
+</Store>

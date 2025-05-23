@@ -1,0 +1,142 @@
+<dataTemplate name="RepairInvoice" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+     <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="COMMA" value="_rptComma"/>
+    <label name="N/A" value="_rptNotAvailable"/>
+    <label name="INVOICE_NUMBER" value="_rptRepairInvRepairInvoice"/>
+    <label name="VENDOR_ID" value="_rptRepairInvVendorNumber"/>
+    <label name="ADDRESS" value="_rptAddress"/>
+    <label name="DATE" value="_rptBusinessDateColon"/>
+    <label name="TIME" value="_rptTimecolon"/>
+    <label name="TAX_ID" value="_rptRepairInvVendorFid"/>
+    <label name="WORK_ORDER" value="_rptRepairInvWorkOrder"/>
+    <label name="ACCT_NMBR" value="_rptAccountNumber"/>
+    <label name="CODE" value="_rptRepairInvCode"/>
+    <label name="CHARGED_AMOUNT" value="_rptRepairInvCost"/>
+    <label name="RETAIL_PRICE" value="_rptRepairInvRetail"/>
+    <label name="ACCOUNT_LET" value="_rptRepairInvAccLet"/>
+    <label name="DESCRIPTION" value="_rptDescription"/>
+    <label name="QTY" value="_rptQuantity"/>
+    <label name="TOTAL_COST" value="_rptRepairInvTotalCost"/>
+    <label name="TOTAL" value="_rptTotal"/>
+    <label name="GROSS_MARGIN" value="_rptRepairInvGrossMargin"/>
+    <label name="TITLE" value="_rptRepairInvTitle"/>
+    <label name="PAGE" value="_rptPageColon"/>
+    </labels>
+    
+    <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="systemTime" class="java.sql.Timestamp" include_in_output="true" formatter="TimeMedium"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>       
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_INVOICE_HEADER" key="REPAIR_INVOICE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>invoiceNumber</Parameter>
+        <Parameter>serviceLocId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>invoice_number</ResultField>
+        <ResultField>invoice_date</ResultField>
+        <ResultField>service_loc_id</ResultField>
+        <ResultField>vendor_name</ResultField>
+        <ResultField>address1</ResultField>
+        <ResultField>address2</ResultField>
+        <ResultField>address3</ResultField>
+        <ResultField>address4</ResultField>
+        <ResultField>city</ResultField>
+        <ResultField>state</ResultField>
+        <ResultField>postalCode</ResultField>
+        <ResultField>country</ResultField>
+        <ResultField>national_tax_id</ResultField>
+        </ResultFields>
+    </queryReference>
+    <queryReference name="Q_INVOICE_DETAIL" key="REPAIR_INVOICE_DETAIL">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>invoiceNumber</Parameter>
+        <Parameter>serviceLocId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>cust_acct_id</ResultField>
+        <ResultField>gl_account</ResultField>
+        <ResultField>amt</ResultField>
+        <ResultField>extended_amt</ResultField>
+        <ResultField>description</ResultField>
+        </ResultFields>
+    </queryReference>
+    <queryReference name="Q_INVOICE_SUMMARY" key="REPAIR_INVOICE_SUMMARY">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>invoiceNumber</Parameter>
+        <Parameter>serviceLocId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>gl_account</ResultField>
+        <ResultField>acc_let</ResultField>
+        <ResultField>des</ResultField>
+        <ResultField>total_amt</ResultField>
+        <ResultField>has_margin</ResultField>
+        <ResultField>amt</ResultField>
+        <ResultField>extended_amt</ResultField>
+        <ResultField>qty</ResultField>       
+        <ResultField>add_amt</ResultField>
+        <ResultField>gross_margin</ResultField>
+      </ResultFields>
+    </queryReference>  
+  </dataSource>
+  <dataStructure>
+    <group name="G_HEADER" source="Q_INVOICE_HEADER">
+      <element name="I_NMBR" value="invoice_number"/>
+      <element name="I_DATE" value="invoice_date" formatter="DateMedium" />
+      <element name="SRVC" value="service_loc_id"/>
+      <element name="VNDR" value="vendor_name" />
+      <element name="ADDR1" value="address1"/>
+      <element name="ADDR2" value="address2"/>
+      <element name="ADDR3" value="address3"/>
+      <element name="ADDR4" value="address4"/>
+      <element name="CITY" value="city"/>
+      <element name="STATE" value="state"/>
+      <element name="POST" value="postalCode"/>
+      <element name="CNTRY" value="country"/>
+      <element name="TAX" value="national_tax_id"/>
+    </group>  
+    <group name="G_DETAIL" source="Q_INVOICE_DETAIL">
+      <element name="CACCT" value="cust_acct_id"/>
+      <element name="GACCT" value="gl_account" />
+      <element name="AMT" value="amt" formatter="Money"/>
+      <element name="EAMT" value="extended_amt" formatter="Money"/>
+      <element name="DESC" value="description"/>
+    </group> 
+    <group name="G_SUMMARY" source="Q_INVOICE_SUMMARY">
+      <element name="GACCT" value="gl_account" />
+      <element name="ACC_LET" value="acc_let" />
+      <element name="DESCR" value="des" />
+      <element name="TAMT" value="total_amt" formatter="Money"/>
+      <element name="HAS_MGN" value="has_margin" />
+      <element name="AMT" value="amt" formatter="Money"/>
+      <element name="EAMT" value="extended_amt" formatter="Money"/>
+      <element name="QTY" value="qty"/>
+      <element name="ADD_AMT" value="add_amt" formatter="Money"/>
+      <element name="GRS_MGN" value="gross_margin" formatter="Percent" />
+    </group>   
+  </dataStructure>
+</dataTemplate>
+    

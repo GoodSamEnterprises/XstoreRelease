@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/OpChainConfig.xsd">
+
+  <OpChain name="TENDER_TR_CREDIT_CARD" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderId" value="VISA" />
+      <Parameter name="TenderCategory" value="CREDIT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderretail.TRAuthorizeTenderOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="REFUND_TR_CREDIT_CARD" signal="TransactionModified" contextKey="REFUND_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Refund" />
+      <Parameter name="TenderId" value="VISA" />
+      <Parameter name="TenderCategory" value="CREDIT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderretail.TRAuthorizeTenderOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+
+  <OpChain name="TENDER_TR_DEBIT_CARD" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderId" value="DEBIT_CARD" />
+      <Parameter name="TenderCategory" value="CREDIT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderretail.TRAuthorizeTenderOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="REFUND_TR_DEBIT_CARD" signal="TransactionModified" contextKey="REFUND_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Refund" />
+      <Parameter name="TenderId" value="DEBIT_CARD" />
+      <Parameter name="TenderCategory" value="CREDIT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderretail.TRAuthorizeTenderOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="TR_INITIALIZE_PINPAD">
+    <Op class="dtv.tenderretail.InitializePINPadOp">
+      <Parameter name="AuthMethodCode" value="TENDER_RETAIL_BATCH" />
+      <Parameter name="DataActionGroupKey" value="NON_AUTH_COMMAND"/>
+    </Op>
+  </OpChain>
+  <OpChain name="TR_CLEAR_SAF_BACKLOG">
+    <Op class="dtv.tenderretail.ClearStoreAndForwardBacklogOp">
+      <Parameter name="AuthMethodCode" value="TENDER_RETAIL_BATCH" />
+      <Parameter name="DataActionGroupKey" value="NON_AUTH_COMMAND"/>
+    </Op>
+  </OpChain>
+  <OpChain name="TR_SETTLE">
+    <Op class="dtv.tenderauth.impl.op.CreateBatchCloseTransactionOp" />   
+    <Op class="dtv.tenderretail.CloseBatchOp">
+      <Parameter name="AuthMethodCode" value="TENDER_RETAIL_BATCH" />
+      <Parameter name="DataActionGroupKey" value="NON_AUTH_COMMAND" />
+    </Op>
+  </OpChain>
+  <OpChain name="MANUAL_AUTH_MULTI_OFFLINE">
+    <Op class="dtv.pos.hardware.op.BuildRcptsOp" />
+    <Op class="dtv.pos.hardware.op.PrintRcptsOp" />
+    <OpChainRoute chainKey="PRINT_FISCAL_RECEIPTS.local" />
+  </OpChain> 
+  <OpChain name="EXT_WORKSTATION_CLOSE_CHECK.tr">
+    <OpChainRoute chainKey="TR_WORKSTATION_CLOSE_CHECK" />
+  </OpChain>
+  <OpChain name="EXT_WORKSTATION_OPEN_CHECK.tr">
+    <OpChainRoute chainKey="TR_WORKSTATION_OPEN_CHECK" />
+  </OpChain>
+  <OpChain name="TR_WORKSTATION_CLOSE_CHECK">
+    <Op class="dtv.tenderretail.TrConditionalStackChainOp">
+      <Parameter name="AuthMethodCode" value="TENDER_RETAIL_CREDIT" />
+      <Parameter name="OpChain" value="TR_CLEAR_SAF_BACKLOG" />
+    </Op>
+    <Op class="dtv.tenderretail.TrConditionalStackChainOp">
+      <Parameter name="AuthMethodCode" value="TENDER_RETAIL_CREDIT" />
+      <Parameter name="OpChain" value="TR_SETTLE" />
+    </Op>
+  </OpChain>
+  <OpChain name="TR_WORKSTATION_OPEN_CHECK">
+    <Op class="dtv.tenderretail.TrWorkstationOpenCheckSAFOp">
+      <Parameter name="AuthMethodCode" value="TENDER_RETAIL_CREDIT" />
+      <Parameter name="PromptKey" value="TR_PROCESS_PENDING_SAF"/>
+      <Parameter name="OpChain" value="TR_CLEAR_SAF_BACKLOG" />
+    </Op>
+    <Op class="dtv.tenderretail.TrWorkstationOpenCheckSettleOp">
+      <Parameter name="AuthMethodCode" value="TENDER_RETAIL_CREDIT" />
+      <Parameter name="PromptKey" value="TR_PROCESS_PENDING_SETTLE"/>
+      <Parameter name="OpChain" value="TR_SETTLE" />
+    </Op>
+  </OpChain>
+
+</OpChainSet>

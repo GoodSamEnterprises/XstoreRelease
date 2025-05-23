@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       SIM
+       Inventory-related functionality and creation of shipping/receiving documents are turned off for SIM
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="WORK_ORDER::OPTIONS" text="_menutextBackOfficeWorkOrderOptions" displayType="LIST" category="Back Office" keywords="back_office_only">
+    <MenuOption ref="WORK_ORDER::MAINTAIN" />
+    <MenuOption ref="WORK_ORDER::INVOICING" />
+    <MenuOption ref="WORK_ORDER::INVOICE_LOOKUP" />
+  </MenuItem>
+
+  <MenuItem name="INVENTORY::OPTIONS" text="_menuTextInventory" displayType="LIST" category="Back Office" keywords="universal,inventory,report_inventory">
+    <MenuOption ref="INVENTORY::SEARCH_FOR_ITEM" />
+    <MenuOption ref="SHELF_LABEL::PRINT_LABELS" />
+    <MenuOption ref="EXCHANGE::EXCHANGE_SERIAL_NUMBER" />
+  </MenuItem>
+  
+  <MenuItem name="ADMIN::REPORTS" text="_menuTextReportsMain" displayType="LIST" category="Reports" keywords="report_customer,report_inventory,report_employee,report_till,report_system,report">
+    <MenuOption ref="RETAIL::REPORT.FLASH_SALES" />
+
+    <SubMenu ref="RETAIL::REPORTS" />
+    <MenuOption ref="RETAIL::REPORT.JOURNAL_ROLL" />
+    <MenuOption ref="CUSTOMER::REPORT.CUSTOMER_LIST" />
+    <MenuOption ref="ADMIN::REPORT.STORE_LOCATIONS" />
+    
+    <SubMenu text="_menuTextEmployeeReports">
+      <MenuOption ref="EMPLOYEE::REPORT.EMPLOYEE_TASKS" />
+      <SubMenu text="_menutextEmpSchedRep">
+        <MenuOption ref="EMPLOYEE::REPORT.EMPLOYEE_PERFORMANCE" />
+        <MenuOption ref="EMPLOYEE::REPORT.SCHEDULE_DETAIL" />
+        <MenuOption ref="EMPLOYEE::REPORT.TIME_OFF" />
+      </SubMenu>
+    </SubMenu>
+    
+    <MenuOption ref="ADMIN::REPORT.PRICE_CHANGE" />
+
+    <SubMenu text="_menutextLayawayReports">
+      <MenuOption ref="LAYAWAY::REPORT.AGING" />
+      <MenuOption ref="LAYAWAY::REPORT.ACTIVITY" />
+    </SubMenu>
+    
+    <!-- CCA Report -->   
+    <MenuOption ref="ADMIN::REPORT.CONFIGURABLE_CUST_ACCT_ACTIVITY_SUMMARY" />
+    
+    <MenuOption ref="ADMIN::REPORT.VIEW_SAVED" />
+    <MenuOption ref="SPECIAL_ORDER::REPORT" />
+    
+    <SubMenu text="_tillReportsMenuText">
+      <MenuOption ref="TILL::REPORT.PAIDIN_PAIDOUT" />
+      <MenuOption ref="TILL::REPORT.CASH_DRAWER_RECONCILIATION" />
+      <MenuOption ref="TILL::REPORT.CASH_DRAWER" />
+      <MenuOption ref="TILL::REPORT.ASSOCIATE_RECONCILIATION" />
+      <MenuOption ref="TILL::REPORT.CASH_DRAWER_AUDIT" />
+    </SubMenu>
+    
+    <SubMenu text="_rptAirsideReports">
+      <MenuOption ref="RETAIL::REPORT.AIRSIDE_SALES_TAX" />
+    </SubMenu>
+  </MenuItem>
+</MenuSet>

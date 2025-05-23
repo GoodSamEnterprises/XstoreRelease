@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+  default-init-method="init">
+
+  <beans profile="xstore">
+    <bean id="replicationServiceFactory" class="dtv.data2.replication.dtximpl.DtxReplicationServiceFactory" />
+    <bean id="replicationProcessor" class="dtv.data2.replication.dtximpl.ReplicationProcessor" />
+  </beans>
+
+  <beans>
+    <bean id="persistenceDefaults" class="dtv.pos.persistence.PosObjectIdFactory" />
+
+    <bean id="pmTypeHelper" class="dtv.data2.access.pm.PmTypeHelper">
+      <constructor-arg>
+        <ref bean ="pmTypeMappingConfigHelper" />
+      </constructor-arg>
+    </bean>
+    
+    <bean id="pmTypeMappingConfigHelper" class="dtv.data2.access.impl.config.PmTypeMappingConfigHelper" />
+
+    <bean id="queryFactory" class="dtv.data2.access.query.QueryFactory" />
+    
+    <bean id="queryHandlerFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.data2.access.query.IQueryHandlerFactory" />
+      <property name="serviceMappings">
+        <props>
+          <prop key="dtv.data2.access.query.SqlQueryHandler">sqlQueryHandler</prop>
+          <prop key="dtv.data2.access.query.DtxQueryHandler">dtxQueryHandler</prop>
+        </props>
+      </property>
+    </bean>
+    
+    <bean id="sqlQueryHandler" class="dtv.data2.access.query.SqlQueryHandler" scope="prototype" />
+    <bean id="dtxQueryHandler" class="dtv.data2.access.query.DtxQueryHandler" scope="prototype" />
+    
+    <bean id="queryDecorator" class="dtv.data2.access.query.DelegatingSqlDecorator">
+      <property name="delegates">
+        <list value-type="dtv.data2.access.query.ISqlQueryDecorator">
+          <bean class="dtv.data2.access.query.ConfigElementSqlDecorator" />
+          <bean class="dtv.data2.access.query.OrgHierarchySqlDecorator" />
+          <bean class="dtv.data2.access.query.MssqlConcatDecorator" />
+          <bean class="dtv.data2.access.query.MssqlSemicolonDecorator" />
+          <bean class="dtv.data2.access.query.CaseHintProcessingSqlDecorator">
+            <constructor-arg>
+              <map>  
+                <entry key="UPPER"  value="UPPER(%s)" />
+                <entry key="LOWER" value="LOWER(%s)" />
+                <entry key="CASE_INSENSITIVE" value="NLSSORT(%s, 'NLS_SORT=BINARY_CI')" />
+              </map>  
+            </constructor-arg>
+          </bean>
+        </list>
+      </property>
+    </bean>
+    
+    <bean id="queryResultFilterFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.data2.access.query.IResultFilterFactory" />
+    </bean>
+    
+    <bean id="levelCodeLevelValueResultFilter" class="dtv.data2.access.query.LevelCodeLevelValueFilter" scope="prototype" />
+    
+    <bean id="dataFactory" class="dtv.data2.access.DataFactory" />
+    <bean id="dataFactoryAssistant" class="dtv.data2.access.DataFactoryAssistant" depends-on="dataFactory" />
+
+    <bean id="persistenceManagerFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.data2.access.IPersistenceManagerFactory" />
+    </bean>
+
+    <bean id="persistenceManager" class="dtv.data2.access.pm.DefaultPersistenceMgr" scope="prototype" />
+
+    <bean id="persistenceStrategyFactory" class="dtv.data2.access.impl.PersistenceStrategyFactory">
+      <constructor-arg>
+        <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+          <property name="serviceLocatorInterface" value="dtv.data2.access.IPersistenceStrategyLocator" />
+        </bean>
+      </constructor-arg>
+    </bean>
+
+    <bean id="servletPersistenceStrategy" class="dtv.data2.access.impl.remote.servlet.ServletPersistenceStrategy" scope="prototype" />
+    <bean id="jdbcPersistenceStrategy" class="dtv.data2.access.impl.jdbc.JDBCPersistenceStrategy" scope="prototype" />
+    <bean id="concurrentWritePersistenceStrategy" class="dtv.data2.access.impl.ConcurrentWritePersistenceStrategy" scope="prototype" />
+    <bean id="loadBalancePersistenceStrategy" class="dtv.data2.access.impl.LoadBalancePersistenceStrategy" scope="prototype" />
+
+    <!-- add a default implementation for crm persistence strategy which is used in case relate is not in config path -->
+    <bean id="relatePersistenceStrategy" parent="jdbcPersistenceStrategy" scope="prototype" />
+
+    <bean id="persistenceMgrTypeFactory" class="dtv.data2.access.pm.PersistenceMgrTypeFactory">
+      <constructor-arg>
+        <bean class="dtv.data2.access.config.pmtype.PersistenceMgrTypeConfigHelper" />
+      </constructor-arg>
+    </bean>
+    
+    <bean id="persistenceRuleFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.data2.access.IPersistenceRuleFactory" />
+    </bean>    
+    <bean id="manageDataInTwoPlacesRule" class="dtv.data2.access.impl.ManageDataInTwoPlacesRule" scope="prototype" />    
+    <bean id="dataRedundancyRule" class="dtv.data2.access.impl.DataRedundancyRule" scope="prototype" />
+    <bean id="pruneCleanTreesRule" class="dtv.data2.access.impl.PruneCleanTreesRule" scope="prototype" />
+    <bean id="daoConversionRule" class="dtv.data2.access.impl.DaoConversionRule" scope="prototype" />
+    
+    <bean id="replicationEventLogWriter" class="dtv.data2.replication.dtximpl.ReplicationEventLogWriter" scope="prototype" />
+  </beans>
+</beans>

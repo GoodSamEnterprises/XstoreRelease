@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri May 12 10:04:49 EDT 2006 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">FOREIGN_CURRENCY_RATE_MAINTENANCE</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, 10.0, PREFERRED, FILL, 20.0-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, 10.0, -2.0, -1.0, 20.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_foreignCurrencyRateMaintCurrencyId</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">baseCurrency</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">baseDescription</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_foreignCurrencyRateMaintTargetCurrencyId</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">targetCurrency</Resource>
+        <Font fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">targetDescription</Resource>
+        <Font fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_foreignCurrencyRateMaintCurrentExchangeRate</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">currentExchangeRate</Resource>
+        <FormatterType dtype="String">Decimal</FormatterType>
+        <Font fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_foreignCurrencyRateMaintExchangeRate</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">exchangeRate</Resource>
+        <DataField name="Decimal" editFormat="Decimal">
+          <Parameter name="maximumIntegerDigits">
+            <param_value dtype="Integer"><![CDATA[7]]></param_value>
+          </Parameter>
+          <Parameter name="maximumFractionalDigits">
+            <param_value dtype="Integer"><![CDATA[6]]></param_value>
+          </Parameter>
+        </DataField>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 6, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_comments</TextKey>
+        <Font fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 7, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLongTextField</Type>
+        <Resource dtype="String">comment</Resource>
+        <Font fontSize="+4" />
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL" />
+      <Action ref="ACCEPT_ENTER" text="_FCurrencyMaintAccept" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

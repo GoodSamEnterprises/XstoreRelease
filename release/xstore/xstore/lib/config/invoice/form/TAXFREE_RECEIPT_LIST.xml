@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Sun Dec 14 17:03:58 EST 2003 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">TAXFREE_RECEIPT_LIST</FormKey>
+    <FormLocation dtype="String">TRANSACTION_LIST_AREA</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">HEADER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ColorGroup dtype="ColorGroup">
+        <BgColor dtype="Color">#6056D1</BgColor>
+      </ColorGroup>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--MINIMUM, FILL, 0.0-->
+          <param_value dtype="DoubleArray">-3.0, -1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ColorGroup dtype="ColorGroup">
+        <BgColor dtype="Color">#6056D1</BgColor>
+      </ColorGroup>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">viewList</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">TAXFREE_RECEIPTS_LIST_CONTAINER</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">TAXFREE_RECEIPTS_LIST_CONTAINER</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">FOOTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+        <param_value dtype="DoubleArray">0.3, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter name="setBackground" >
+        <param_value dtype="ColorRef" >_colorListHeaderBackground</param_value>
+      </ComponentParameter>
+      <ComponentParameter name="setOpaque" >
+        <param_value dtype="Boolean" >true</param_value>
+      </ComponentParameter>
+      <ComponentParameter name="setBorder" >
+        <param_value dtype="Border" >255,255,255</param_value>
+      </ComponentParameter>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_oracle.retail.xstore.countrypack.common.taxfree.taxFreeReceiptsCount</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+          <FontSize dtype="String">+1</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">taxFreeReceiptCount</Resource>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+          <FontSize dtype="String">+1</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+      <LayoutLocation dtype="String">2, 1, 2, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <ComponentParameter name="setIcon" >
+          <param_value dtype="IconRef">_imageTaxFreeFooterDivider</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_oracle.retail.xstore.countrypack.common.taxfree.taxFreeReceiptsAmount</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+          <FontSize dtype="String">+1</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">5, 1, 2, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">taxFreeReceiptAmount</Resource>
+        <FormatterType dtype="String">Money</FormatterType>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+          <FontSize dtype="String">+1</FontSize>
+        </Font>
+      </FormViewCell>
+     </FormViewPanel>
+  </FormView>
+</FormViewSet>

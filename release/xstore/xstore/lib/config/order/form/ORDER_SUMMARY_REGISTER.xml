@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/form/FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">ORDER_SUMMARY_REGISTER</FormKey>
+    <FormLocation dtype="String">MESSAGE_AREA</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED,  PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED,  PREFERRED, PREFERRED, PREFERRED, PREFERRED-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, 55.0, -2.0, -2.0, -2.0, -2.0,
+            -2.0, -2.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">false</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell resourceLink="orderId">
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderId</TextKey>
+        <Font fontStyle="BOLD" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">orderId</Resource>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell resourceLink="orderStatus">
+        <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderStatus</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">orderStatus</Resource>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell resourceLink="orderTypeDesc">
+        <LayoutLocation dtype="String">0, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderType</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">orderTypeDesc</Resource>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell resourceLink="orderDate">
+        <LayoutLocation dtype="String">0, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderDate</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">orderDate</Resource>
+        <FormatterType dtype="String">DateMedium</FormatterType>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell resourceLink="customerId">
+        <LayoutLocation dtype="String">0, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderCustomerId</TextKey>
+        <Font fontStyle="BOLD" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">customerId</Resource>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell resourceLink="soldToName">
+        <LayoutLocation dtype="String">0, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderCustomer</TextKey>
+        <Font fontStyle="BOLD" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">soldToName</Resource>
+        <FormatterType dtype="String">BasicName</FormatterType>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 6, 3, 1, F, T</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">customerAddress</Resource>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <FormatterType dtype="String">LabelAddress</FormatterType>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell resourceLink="telephone">
+        <LayoutLocation dtype="String">0, 8, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderCustomerPhone</TextKey>
+        <Font fontStyle="BOLD" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 8, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">telephone</Resource>
+        <FormatterType dtype="String">Phone</FormatterType>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 8, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">telephone2</Resource>
+        <FormatterType dtype="String">Phone</FormatterType>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell resourceLink="total">
+        <LayoutLocation dtype="String">0, 9, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderDetailTotal</TextKey>
+        <Font fontStyle="BOLD" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 9, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">total</Resource>
+        <FormatterType dtype="String">Money</FormatterType>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell resourceLink="balanceDue">
+        <LayoutLocation dtype="String">0, 11, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderBalanceDue</TextKey>
+        <Font fontStyle="BOLD" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 11, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">balanceDue</Resource>
+        <FormatterType dtype="String">Money</FormatterType>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+       <FormViewCell resourceLink="taxAmount">
+        <LayoutLocation dtype="String">0, 12, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderTax</TextKey>
+        <Font fontStyle="BOLD" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 12, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">taxAmount</Resource>
+        <FormatterType dtype="String">Money</FormatterType>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+       <FormViewCell resourceLink="shippingFee">
+        <LayoutLocation dtype="String">0, 13, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_orderFees</TextKey>
+        <Font fontStyle="BOLD" />
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 13, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">shippingFee</Resource>
+        <FormatterType dtype="String">Money</FormatterType>
+        <HideFromXstoreM dtype="Boolean">true</HideFromXstoreM>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+    </FormViewPanel>
+  </FormView>
+</FormViewSet>

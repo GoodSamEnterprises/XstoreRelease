@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xenvironment-ui" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+  <!-- IPC services -->
+  <bean id="ipcClientAuthenticator" class="dtv.util.password.env.ClientAuthenticator"/>
+  <bean id="ipcRootService" class="dtv.ipc.server.RootService"/>
+  <bean id="ipcInitService" class="dtv.env.ipc.services.InitService"/>
+  <bean id="ipcAlertService" class="dtv.env.ipc.services.AlertsService"/>
+  <bean id="ipcAlertsDeleteService" class="dtv.env.ipc.services.AlertsDeleteService"/>
+  <bean id="ipcAlertsDetailService" class="dtv.env.ipc.services.AlertsDetailService"/>
+  <bean id="ipcPosStatusService" class="dtv.env.ipc.services.PosStatusService"/>
+  <bean id="ipcAppShutdownService" class="dtv.env.ipc.services.AppShutdownService"/>
+  <bean id="ipcProcessStepService" class="dtv.env.ipc.services.ProcessStepService"/>
+  <bean id="ipcRegisterStatusService" class="dtv.env.ipc.services.RegistersStatusService"/>
+  <bean id="ipcFooterIndicatorService" class="dtv.env.ipc.services.FooterIndicatorService"/>
+  <bean id="ipcDisasterRecoveryModeService" class="dtv.env.ipc.services.DisasterRecoveryModeService"/>
+  <bean id="ipcSystemHandlerService" class="dtv.env.ipc.services.SystemHandlerIPCService"/>
+  <bean id="ipcPleaseWaitService" class="dtv.env.ipc.services.PleaseWaitIPCService"/>
+  <bean id="ipcStopWaitService" class="dtv.env.ipc.services.StopWaitIPCService"/>
+
+  <bean id="ipcServiceLocatorFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.ipc.server.IIpcServiceLocator"/>
+    <property name="serviceMappings">
+      <props>
+        <prop key="/">ipcRootService</prop>
+        <prop key="/gui/xenvinit">ipcInitService</prop>
+        <prop key="/gui/xenvalerts">ipcAlertService</prop>
+        <prop key="/gui/xenvalertsdelete">ipcAlertsDeleteService</prop>
+        <prop key="/gui/xenvalertsdetail">ipcAlertsDetailService</prop>
+        <prop key="/gui/xenvposstatus">ipcPosStatusService</prop>
+        <prop key="/gui/xenvappshutdown">ipcAppShutdownService</prop>
+        <prop key="/gui/xenvprocesssteps">ipcProcessStepService</prop>
+        <prop key="/gui/xenvregistersstatus">ipcRegisterStatusService</prop>
+        <prop key="/gui/xenvfooterstatus">ipcFooterIndicatorService</prop>
+        <prop key="/gui/xenvdisasterrecoverymode">ipcDisasterRecoveryModeService</prop>
+        <prop key="/gui/xenvbringtofrontstatus">ipcSystemHandlerService</prop>
+        <prop key="/gui/xenvpleasewaitservice">ipcPleaseWaitService</prop>
+        <prop key="/gui/xenvstopwaitservice">ipcStopWaitService</prop>
+      </props>
+    </property>
+  </bean>
+  <bean id="theAllmightyThor" class="dtv.util.temp.InjectionHammerInitializer" />
+  <bean id="persistenceDefaults" class="dtv.data2.SimplePersistenceDefaults">
+    <property name="retailLocationId" value="#{systemProperties[T(dtv.util.common.CommonConstants).RETAIL_LOCATION_ID]}" />
+    <property name="workstationId" value="#{systemProperties[T(dtv.util.common.CommonConstants).WORKSTATION_ID]}" />
+    <property name="organizationId" value="#{systemProperties[T(dtv.util.common.CommonConstants).ORGANIZATION_ID]}" />
+    <!--
+    <property name="currencyId" value="#{systemProperties[dtv.location.CurrencyId]}" />
+     -->
+  </bean>
+
+  <bean id="incidentReporterNoop" class="dtv.env.db.view.IncidentReporterNoop"/>
+</beans>

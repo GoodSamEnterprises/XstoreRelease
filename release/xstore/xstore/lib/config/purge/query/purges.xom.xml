@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <!-- ***************************************************************** -->
+  <!-- ROOTS -->
+  <!-- ***************************************************************** -->
+  <Query name="xom_order">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM xom_order
+          WHERE organization_id = ? 
+            AND order_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+      <Expression parameters="argStatus1, argStatus2" trigger="argStatus1"><![CDATA[(/*UPPER*/ status_code = ? OR /*UPPER*/ status_code = ?)]]></Expression>
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- xom_order <<< * -->
+  <!-- ************************************************ -->
+  <Query name="xom_order.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ? 
+            AND NOT EXISTS
+                  (Select p.* From xom_order p 
+                    Where p.organization_id = c.organization_id
+                      And p.order_id = c.order_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+</QuerySet>

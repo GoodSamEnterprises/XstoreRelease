@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+  <FormatterMap>
+    <Formatter name="DayAndMonth" class="dtv.pos.i18n.format.DateFormatter" format="dd MMMM" />
+  </FormatterMap>
+  
+  <sections>
+   
+    <section name="LOCAL.HEADER_TOP">
+      <sectionref>COUNTRYPACK.ES.FISCAL_DOC_TYPE</sectionref>
+      <sectionref>COUNTRYPACK.ES.FISCAL_DOC_NUMBER</sectionref>
+    </section>
+
+    <section name="LOCAL.GIFT_RECEIPT_HEADER_TOP">
+      <sectionref>COUNTRYPACK.ES.GIFT_RECEIPT_HEADER</sectionref>
+      <sectionref>COUNTRYPACK.ES.FISCAL_DOC_NUMBER</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.ES.GIFT_RECEIPT_HEADER">
+      <row />
+      <row align="C" charsize="X2HW">
+        <field text="_countrypack.es.giftReceipt" />
+      </row>
+      <horizontal_rule />
+    </section>
+
+    <section name="COUNTRYPACK.ES.FISCAL_DOC_TYPE">
+      <row />
+      <row align="C" charsize="X2H">
+        <field style="BOLD" >
+          <aggregate class="oracle.retail.xstore.countrypack.es.docbuilding.FiscalDocumentTypeDocBuilderField" />
+        </field>
+      </row>
+      <horizontal_rule />
+    </section>
+
+    <section name="COUNTRYPACK.ES.FISCAL_DOC_NUMBER">
+      <row align="C">
+        <condition method="getStringProperty" method_param="ES_DOCUMENT_NUMBER" comparison="NOT_BLANK" />
+        <field text="_countrypack.es.documentNumber" />
+        <sp />
+        <field method="getStringProperty" method_param="ES_DOCUMENT_NUMBER" />
+      </row>
+      <row align="C">
+        <condition method="getStringProperty" method_param="ES_MANUAL_DOCUMENT_NUMBER" comparison="NOT_BLANK" />
+        <field text="_countrypack.es.documentNumber" />
+        <sp />
+        <field method="getStringProperty" method_param="ES_MANUAL_DOCUMENT_NUMBER" />
+      </row>
+      <row />
+    </section>
+
+    <section name="CUSTOMER_INFO">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransaction" />
+      <sectionref>COUNTRYPACK.ES.CUSTOMER_DETAILS</sectionref>
+      <sectionref>LOYALTY_INFO</sectionref>
+      <sectionref>LOCAL.CUSTOMER_INFO</sectionref>
+    </section>
+    
+    <section name="COUNTRYPACK.ES.CUSTOMER_DETAILS">
+      <sectionref>CUSTOMER_DETAILS</sectionref>
+      <sectionref>COUNTRYPACK.ES.CUSTOMER_DETAILS.FACTURA_COMPLETA</sectionref>
+    </section>
+    
+    <section name="COUNTRYPACK.ES.CUSTOMER_DETAILS.FACTURA_COMPLETA">
+      <condition method="getStringProperty" method_param="ES_DOCUMENT_TYPE" comparison="NOT_EQUAL" value="FACTURA_SIMPLIFICADA" />
+      <condition method="getStringProperty" method_param="ES_DOCUMENT_TYPE" comparison="NOT_EQUAL" value="FACTURA_MANUAL" />
+      <region>
+        <field method="getCustomerParty.getPrimaryLocaleInformation" formatter="BasicAddress" />
+      </region>
+      <row>
+        <condition method="getCustomerParty.getPersonalTaxId" comparison="NOT_BLANK" />
+        <field text="_countrypack.es.customerNIF" />
+        <field method="getCustomerParty.getPersonalTaxId" />      
+      </row>
+    </section>
+    
+    <section name="return_verification">
+      <condition class="dtv.pos.docbuilding.conditions.ReturnTypeCondition">
+        <Parameter name="VALUE" value="VERIFIED" />
+        <Parameter name="VALUE2" value="UNVERIFIED" />
+      </condition>
+      <row />
+      <row>
+        <field text="_return" loc="4" />
+      </row>
+      <region left_margin="4" >
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.es.docbuilding.OriginalDocumentTypeDocBuilderField" />
+        </field>
+      </region>
+      <row>
+        <condition method="getOriginalRetailLocationId" comparison="NOT_EQUAL" value="0" />
+        <field text="_store" loc="4" />
+        <sp />
+        <field method="getOriginalRetailLocationId" />
+      </row>
+      <row>
+        <field text="_date" loc="4" />
+        <sp />
+        <field method="getOriginalBusinessDate" formatter="DateShort" />
+      </row>
+      <row>
+        <condition method="getOriginalTransactionSequence" comparison="NOT_EQUAL" value="0" />
+        <field text="_ticket" loc="4" />
+        <sp />
+        <field method="getOriginalTransactionSequence" />
+      </row>
+      <row>
+        <condition method="getOriginalWorkstationId" comparison="NOT_EQUAL" value="0" />
+        <field text="_register" loc="4" />
+        <sp />
+        <field method="getOriginalWorkstationId" />
+      </row>
+      <row />
+    </section>
+    
+    <section name="CUST_COPY_FOOTER_DB" dbRef="CUSTOMER_COPY_FOOTER::DEFAULT::getBusinessDate">
+      <row />
+      <sectionref>COUNTRYPACK.ES.VAT_STATEMENT</sectionref>
+      <row />
+      <sectionref>COUNTRYPACK.ES.FISCAL_STATEMENT</sectionref>  
+    </section>
+
+    <section name="COUNTRYPACK.ES.VAT_STATEMENT" dbRef="ES_VAT_STATEMENT::DEFAULT::getBusinessDate" />
+    <section name="COUNTRYPACK.ES.FISCAL_STATEMENT" dbRef="ES_FISCAL_STATEMENT::DEFAULT::getBusinessDate" />
+    
+    <section name="tax_code_summary_detail">
+      <row />
+      <row>
+        <field text="_countrypack.common.taxPercent" loc="-30" />
+        <field text="_countrypack.common.taxableAmount" loc="-13" />
+        <field text="_countrypack.common.taxAmount" loc="-3" />
+      </row>
+      <iterator method="getLineItemsByTypeCode" method_param="TAX">
+        <impl dtype="Class">dtv.pos.docbuilding.TaxLineByGroupIterator</impl>
+        <row>
+          <condition method="getNetAmount" comparison="NOT_EQUAL">
+            <Parameter name="VALUE">
+              <param_value dtype="BigDecimal">0</param_value>
+            </Parameter>
+          </condition>
+          <field method="getPercent" formatter="Percent" align="R" loc="-30" />
+          <sp />
+          <field method="getNetAmount" formatter="Money" align="R" loc="-13" />
+          <sp />
+          <field method="getAmount" formatter="Money" align="R" loc="-3" />
+        </row>
+      </iterator>
+    </section>
+  </sections>
+  
+</ReceiptDefinitions>

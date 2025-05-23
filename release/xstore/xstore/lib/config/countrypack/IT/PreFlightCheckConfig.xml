@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreFlightChecks dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PreFlightCheckConfig.xsd">
+
+  <PreFlightCheck name="COUNTRYPACK.FISCAL_DB_CREDIT_NOTE_NUMBER" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.preflight.YearlySequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.IT.PREFLIGHT.SEQ_FISCAL_DB_CREDIT_NOTE_NUMBER" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.FISCAL_DB_CREDIT_NOTE_NUMBER"/>    
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.it.fiscalcreditNote.SequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="COUNTRYPACK.FISCAL_FILE_CREDIT_NOTE_NUMBER" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.preflight.YearlySequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.IT.PREFLIGHT.SEQ_FISCAL_FILE_CREDIT_NOTE_NUMBER" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.FISCAL_FILE_CREDIT_NOTE_NUMBER"/>    
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.it.fiscalcreditNote.SequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+</PreFlightChecks>

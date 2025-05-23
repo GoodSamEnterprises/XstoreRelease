@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="HWRT_Startup" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="1000000000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.IDevice" />
+  </bean>
+
+  <bean id="HWRT_AcousticErrorNotifer" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="22000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.IDeviceRoleAcousticNotifier" />
+  </bean>
+
+  <bean id="HWRT_AcousticSuccessNotifer" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="21000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.IDeviceRoleAcousticNotifier" />
+  </bean>
+
+  <bean id="HWRT_MultiComponentDisplay" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="20000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.mcd.IDeviceRoleMultiComponentDisplay" />
+  </bean>
+
+  <bean id="HWRT_MultiComponentDevice" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="19000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.mcd.IDeviceRoleMultiComponentDisplay" />
+  </bean>
+
+  <bean id="HWRT_Keyboard" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="ESSENTIAL" />
+    <property name="startupPriority" value="15000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.keyboard.IKeyboardDevice" />
+  </bean>
+
+  <bean id="HWRT_VirtualKeyboard" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="14900" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.virtualkeyboard.IDeviceRoleVirtualKeyboard" />
+  </bean>
+
+  <bean id="HWRT_Other" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="14000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.IDevice" />
+  </bean>
+
+  <bean id="HWRT_CashDrawer" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="9000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.cashdrawer.ICashDrawerDevice" />
+  </bean>
+
+  <bean id="HWRT_Scanner" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="5000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.scanner.IScannerDevice" />
+  </bean>
+
+  <bean id="HWRT_Scale" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="4000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.scale.IPricingScaleDevice" />
+  </bean>
+
+  <bean id="HWRT_MSR" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="3000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.IDevice" />
+  </bean>
+
+  <bean id="HWRT_Camera" class="com.micros_retail.xfgclient.hardware.DeviceRoleType">
+    <property name="availabilityCode" value="OPTIONAL" />
+    <property name="startupPriority" value="2000" />
+    <property name="implementation" value="com.micros_retail.xfgclient.hardware.camera.IDeviceRoleCamera" />
+  </bean>
+
+</beans>

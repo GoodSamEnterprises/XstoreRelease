@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  default-init-method="init">
+
+  <context:annotation-config />
+  
+  <beans profile="retail">
+
+    <!-- Op class replacement beans. These will replace every occurence of the operation indicated by the bean
+        id with the operation indicated by the constructor argument. -->
+    <bean id="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueVoidFormAuthorizeOp" parent="opClassReplacement">
+      <constructor-arg value="oracle.retail.xstore.countrypack.it.taxfree.globalblue.op.ItGlobalBlueVoidFormAuthorizeOp" />
+    </bean>
+  
+  </beans>
+
+  <beans profile="xstore">
+
+    <bean id="countyVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="false" />
+    </bean>
+    <bean id="neighborhoodVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="false" />
+    </bean>
+    <bean id="journalFiscalNumberVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+        <constructor-arg value="true" />
+    </bean>
+
+    <!-- Field validators for edit models -->
+    <bean id="amtLimitRegistrationModelFieldValidatorFactory" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory">
+      <property name="parameters">
+        <map>
+          <entry key="taxCode" value-ref="taxCodeFieldValidator" />
+          <entry key="fiscalCode" value-ref="fiscalCodeFieldValidator" />
+        </map>
+      </property>
+    </bean>
+        
+    <!-- Electronic Invoice -->  
+    <bean id="countryPack.InvoiceConfiguration" class="oracle.retail.xstore.countrypack.common.invoice.InvoiceConfiguration">
+      <property name="EnableElectronicInvoice" value="true" />
+    </bean>
+  
+    <bean id="eInvoiceInformationVisibility" class="oracle.retail.xstore.countrypack.common.visibilityrules.EInvoiceFormComponentsVisibilityRule"/>
+
+    <bean id="eInvoiceManager" class="oracle.retail.xstore.countrypack.it.einvoice.ItEInvoiceManager" scope="transaction"/>
+  
+    <bean id="eInvoiceHelper" class="oracle.retail.xstore.countrypack.it.einvoice.ItEInvoiceHelper" scope="transaction">
+      <property name="exemptionPropertyCode" value="IT_FP_EXEMPTCODE" />    
+    </bean>
+
+    <bean id="COUNTRYPACK.INVOICE" class="dtv.pos.framework.reporting.ReportDefinition">
+      <property name="title" value="_countrypack.invoice.layoutRegularTitle" />
+      <property name="parameterPromptMessage" value="_rptEnterParamMessage" />
+      <property name="dataTemplate"   value="classpath:countrypack/IT/report/invoice/Invoice.xdt"/>
+      <property name="layoutTemplate" value="classpath:countrypack/IT/report/invoice/Invoice.rtf"/>
+    </bean>
+    
+    <bean id="countryPack.validatePostVoidInvoiceFromEj" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="countryPack.taxfree.voidValidationRule" />
+          <ref bean="countryPack.invoice.voidTransactionWithInvoiceValidationRule" />
+        </list>
+      </property>
+    </bean>
+
+    <bean id="countryPack.validateVoidInvoiceFromEj" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="transactionStatusValidationRule" />
+          <ref bean="retailSaleOrDeferedInvoiceTypeValidationRule" />
+          <ref bean="countryPack.invoiceIssuedValidationRule" />
+          <ref bean="countryPack.taxfree.voidValidationRule" />
+          <ref bean="countryPack.invoice.voidInvoiceValidationRule" />              
+        </list>
+      </property>
+    </bean>
+        
+    <bean id="roundedCashAmountRule" class="dtv.pos.tender.validation.ValidateTransRoundedAmountDisallowTenderSplitRule" scope="prototype">
+     <property name="enabled" value="true" />
+    </bean>
+   
+    <bean id="currencyTenderAmountRules" parent="tenderAmountRules">
+      <property name="rules">
+        <list merge="true">
+          <ref bean="cashTenderAmountRule" />
+          <ref bean="roundedCashAmountRule" />
+        </list>
+      </property>
+    </bean>
+    
+    <bean id="changeTenderAmountRules" parent="tenderAmountRules">
+      <property name="rules">
+        <list merge="true">
+          <ref bean="roundedCashAmountRule" />
+        </list>
+      </property>
+    </bean>
+    
+  </beans>
+
+</beans>

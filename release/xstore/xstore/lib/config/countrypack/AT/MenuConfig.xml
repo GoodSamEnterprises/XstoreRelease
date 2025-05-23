@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+
+  <MenuItem name="ADMIN::BACK_OFFICE_OPTIONS" text="_menuTopText" rootText="_menuTopTextRoot" displayType="LIST" category="Back Office" keywords="universal,back_office,inventory,back_office_only,report_customer,report_inventory,report_employee,report_till,report_system,report" >
+    <MenuOption ref="ADMIN::VIEW_DASHBOARD" />
+    <MenuOption ref="RETAIL::REPORT.FLASH_SALES" />
+    <SubMenu ref="INVENTORY::OPTIONS" />
+    <SubMenu ref="EMPLOYEE::MANAGER_OPTIONS" />
+    <SubMenu ref="TILL::OPTIONS" />
+    <SubMenu ref="ADMIN::SYSTEM_CYCLE_OPTIONS" />
+    <MenuOption ref="TENDER_EXCHANGE" />
+    <SubMenu ref="ADMIN::REPORTS" />
+
+    <SubMenu text="_menuTextJournal">
+      <MenuOption ref="ADMIN::ELECTRONIC_JOURNAL" />
+      <MenuOption ref="RETAIL::REPORT.JOURNAL_ROLL" />
+    </SubMenu>
+
+    <SubMenu ref="CUSTOMER::MANAGER_OPTIONS" />
+    
+    <SubMenu ref="ASSOCIATE::TASKS" />
+
+    <SubMenu text="_menutext141">
+      <MenuOption ref="BROWSER::ORACLE" />
+    </SubMenu>
+
+    <SubMenu ref="BALANCE_INQUIRY::BACK_OFFICE_OPTIONS" />
+    <SubMenu ref="ADMIN::HARDWARE_MANAGEMENT" />    
+    <MenuOption ref="ADMIN::REPRINT_RECEIPT" />
+    
+    <!--  Invoice options submenu -->
+    <SubMenu ref="COUNTRYPACK::INVOICE_OPTIONS" />
+    <!-- Daily report generate last -->
+    <MenuOption ref="COUNTRYPACK::DAILY_REPORT::GENERATE_LAST" />
+    
+    <MenuOption>
+      <Action ref="ADMIN::TRAINING_MODE_ENTER" />
+      <Action ref="ADMIN::TRAINING_MODE_EXIT" />
+    </MenuOption>
+  </MenuItem>
+  
+</MenuSet>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SOAP-ENV:Header SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding" 
+         xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <xhead xmlns:xhead="dv:xhead">
+      <xhead:msg_id>${messageId}</xhead:msg_id>
+      <xhead:msg_type>CRM_MESSAGE</xhead:msg_type>
+      <xhead:source>REGISTER</xhead:source>
+      <xhead:destination>SERVER</xhead:destination>
+      <xhead:body_format>SOAPRPC</xhead:body_format>
+      <xhead:return_format>SOAPRPC</xhead:return_format>
+      <xhead:priority>3</xhead:priority>
+      <xhead:charset>850</xhead:charset>
+      <xhead:expect_response>${responseExpected}</xhead:expect_response>
+    </xhead>
+  </SOAP-ENV:Header>
+  <SOAP-ENV:Body>
+    <dtv:ProcessXML xmlns:dtv="http://xml.datavantagecorp.com/namespace/crm/DTVProcessXML.xsd" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+      <dtv:ARTSAction>${action}</dtv:ARTSAction>
+      <dtv:ARTSData>
+        ${requestBody}
+      </dtv:ARTSData>
+    </dtv:ProcessXML>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

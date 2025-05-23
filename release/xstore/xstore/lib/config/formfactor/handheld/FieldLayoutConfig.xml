@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldLayoutSet xmlns="http://micros.com/xstore/config/form/fieldlayout" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FieldLayoutConfig.xsd">
+
+  <FieldLayout name="customerMaintHeader" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="customerName" verticalAlignment="Center" fontRef="whiteColorFont" />
+    </Row>
+    <Row>
+      <Column start="0" width="40" fieldRef="customerIdLabelFull" fontRef="fullScreenFormHeaderLabel" />
+      <Column start="40" width="60" fieldRef="customerIdLabelValue" fontRef="whiteColorFont" />
+    </Row>
+    <Row>
+      <Column start="0" width="40" fieldRef="customerSinceLabel" fontRef="fullScreenFormHeaderLabel" />
+      <Column start="40" width="60" fieldRef="customerAnniversaryDateLabel" fontRef="whiteColorFont" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="createNewReceivingDocLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="documentIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="documentId" />
+    </Row>
+    <Row>
+      <Column fieldRef="invDocSearchDocumentTypeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invDocSearchDocumentType" refreshOnChange="true" required="true" fieldSubmitPriority="3"/>
+    </Row>
+    <Row>
+      <Column fieldRef="receivedFromLabel" horizontalAlignment="Right" />
+      <Column fieldRef="receivedFrom" required="true" refreshOnChange="true" fieldSubmitPriority="2" />
+    </Row>
+    <Row>
+      <Column fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column fieldRef="address1" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="receivingPostalCode" required="true" refreshOnChange="true" fieldSubmitPriority="1"/>
+    </Row>
+    <Row>
+      <Column fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column fieldRef="receivingFromCity" required="true" />
+    </Row> 
+    <Row>
+      <Column fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="receivingFromState" required="true" refreshOnChange="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="shipToPostalCountryLabel" horizontalAlignment="Right" />
+      <Column fieldRef="receivingFromCountry" required="true" refreshOnChange="true" />
+    </Row> 
+    <Row>
+      <Column fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility"
+              horizontalAlignment="Right" />
+      <Column fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" />
+    </Row>
+    <Row>
+      <Column fieldRef="countyLabel" visibilityGroup="countyVisibility"
+              horizontalAlignment="Right" />
+      <Column fieldRef="county" visibilityGroup="countyVisibility" />
+    </Row>    
+  </FieldLayout>
+  
+  <FieldLayout name="createNewShippingDocLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="documentIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="documentId" />
+    </Row>
+    <Row>
+      <Column fieldRef="invDocSearchDocumentTypeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invDocSearchDocumentType" refreshOnChange="true" fieldSubmitPriority="3"/>
+    </Row>
+    <Row>
+      <Column fieldRef="shippngShipperLabel" horizontalAlignment="Right" />
+      <Column fieldRef="shipper" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="shipToLabel" horizontalAlignment="Right" />
+      <Column fieldRef="shipTo" refreshOnChange="true" required="true" fieldSubmitPriority="2"/>
+    </Row>
+    <Row>
+      <Column fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column fieldRef="shipToAddress1" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="shipToPostalCode" required="true" refreshOnChange="true" fieldSubmitPriority="1"/>
+    </Row>
+    <Row>
+      <Column fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column fieldRef="shipToCity" required="true" />
+    </Row> 
+    <Row>
+      <Column fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="shipToState" required="true" refreshOnChange="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="shipToPostalCountryLabel" horizontalAlignment="Right" />
+      <Column fieldRef="shipToPostalCountry" required="true" refreshOnChange="true" />
+    </Row> 
+    <Row>
+      <Column fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility"
+              horizontalAlignment="Right" />
+      <Column fieldRef="shipToNeighborhood" visibilityGroup="neighborhoodVisibility" />
+    </Row>
+    <Row>
+      <Column fieldRef="countyLabel" visibilityGroup="countyVisibility" horizontalAlignment="Right" />
+      <Column fieldRef="shipToCounty" visibilityGroup="countyVisibility" />
+    </Row>    
+  </FieldLayout>
+  
+  <FieldLayout name="customerSearchLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="telephoneSearch" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="lastName" />
+    </Row>
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="firstName" />
+    </Row>
+    <Row>
+      <Column fieldRef="postalCodeLabel" horizontalAlignment="Right"/>
+
+      <!-- Note that we're explicitly setting refreshOnChange="false" here (even though false is 
+      the default) to call attention to the fact that postalCode most often sets this to "true".
+      On the base Handheld customer search form, we don't show City and State; if you ever do add 
+      those to Mobile Handheld, you may wish to set refreshOnChange to "true" here so that City
+      and State are automatically populated after entering a postal code.
+       -->
+      <Column fieldRef="postalCode" refreshOnChange="false" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custMaintAvatarLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="avatar" />      
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custMaintNameInfoLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="firstName" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lastName" required="true" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custMaintAddressInfo" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column fieldRef="address1" />
+    </Row>
+    <Row>
+      <Column fieldRef="address2Label" horizontalAlignment="Right" />        
+      <Column fieldRef="address2" />
+    </Row>
+    <Row>
+      <Column fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column fieldRef="city" /> 
+    </Row>
+    <Row>
+      <Column fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="stateCustMaint" />
+    </Row>
+    <Row>
+      <Column fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="postalCode" refreshOnChange="true" />
+    </Row>
+    <Row>
+      <Column />
+      <Column fieldRef="country" />    
+    </Row>
+    <Row>
+      <Column fieldRef="countyLabel" visibilityGroup="countyVisibility" horizontalAlignment="Right" />
+      <Column fieldRef="county" visibilityGroup="countyVisibility" />
+    </Row>
+    <Row>
+      <Column fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility" horizontalAlignment="Right" />
+      <Column fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" />
+    </Row>
+    <Row>
+      <Column fieldRef="emailAddressLabel" horizontalAlignment="Right" />
+      <Column fieldRef="emailAddress" />
+    </Row>
+    <Row>      
+      <Column start="35" width="50" fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column start="35" width="50" fieldRef="telephone1" required="true" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="orderDeliveryInfoLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column fieldRef="telephoneExt" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="emailAddressLabel" horizontalAlignment="Right" />
+      <Column fieldRef="emailAddress" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="firstName" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lastName" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="address1Label" horizontalAlignment="Right"/>
+      <Column fieldRef="address1" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="address2Label" horizontalAlignment="Right"/>
+      <Column fieldRef="address2" />
+    </Row>
+    <Row>
+      <Column fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="postalCode" required="true" refreshOnChange="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="state" required="true" refreshOnChange="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column fieldRef="city" required="true" refreshOnChange="true" /> 
+    </Row>
+    <Row>
+      <Column /> 
+      <Column fieldRef="country" horizontalAlignment="Center" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="authorizationInProgressLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="authResponseMessage" horizontalAlignment="Center" fontRef="formLargeFont" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerConsentLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerInfoTermsAndConditions" />
+    </Row>
+    <Row>
+      <Column start="0" width="10" fieldRef="customerInfoConsent1" required="true" horizontalAlignment="Center" />
+      <Column start="10" width="90" fieldRef="customerInfoConsent1Text" />
+    </Row>
+    <Row>
+      <Column start="0" width="10" fieldRef="customerInfoConsent2" horizontalAlignment="Center" />
+      <Column start="10" width="90" fieldRef="customerInfoConsent2Text" />
+    </Row>
+    <Row>
+      <Column start="0" width="10" fieldRef="customerInfoConsent3" horizontalAlignment="Center" />
+      <Column start="10" width="90" fieldRef="customerInfoConsent3Text" />
+    </Row>
+  </FieldLayout>
+
+</FieldLayoutSet>

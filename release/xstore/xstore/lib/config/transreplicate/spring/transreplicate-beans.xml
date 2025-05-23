@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  default-init-method="init">
+
+  <!-- Only beans that are specific to the TransactionReplicator application or that need to override implementations 
+       of more general beans should exist in this file. -->
+
+  <bean id="stationState" class="dtv.pos.iframework.security.StationState" >
+    <property name="retailLocationId" value="#{systemProperties[T(dtv.util.common.CommonConstants).RETAIL_LOCATION_ID]}" />
+    <property name="workstationId" value="#{systemProperties[T(dtv.util.common.CommonConstants).WORKSTATION_ID]}" />
+    <property name="systemUser" value="#{T(dtv.pos.framework.security.DefaultSystemUser).INSTANCE}" />
+  </bean>
+  <bean id="theAllmightyThor" class="dtv.util.temp.InjectionHammerInitializer" />
+  <bean id="replicationServiceFactory" class="dtv.data2.replication.dtximpl.DtxReplicationServiceFactory" />
+  <bean id="replicationProcessor" class="dtv.data2.replication.dtximpl.ReplicationProcessor" />
+  <bean id="trainingModeHelper" class="dtv.pos.assistance.NotTrainingModeHelper" />
+  <bean id="gatedMainKeyEventDispatcher" class="dtv.hardware.keyboard.GatedMainKeyEventDispatcher" primary="true">
+    <constructor-arg>
+      <bean class="dtv.hardware.keyboard.GatedEventQueue" />
+    </constructor-arg>
+  </bean>
+  <bean id="uiResponsivenessMgr" class="dtv.pos.ui.UIResponsivenessMgr" />
+  
+  <bean id="transReplicationWorker" class="dtv.pos.tools.transreplicate.ReplicationWorker" />
+  
+  <bean id="transReplicatorFrame" class="dtv.pos.tools.transreplicate.TransactionReplicatorFrame">
+    <constructor-arg>
+      <ref bean="transReplicationWorker" />
+    </constructor-arg>
+  </bean>
+  
+  <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+    <property name="staticMethod" value="dtv.pos.tools.transreplicate.TransactionReplicator.setTransReplicatorFrame" />
+    <property name="arguments">
+      <ref bean="transReplicatorFrame" />
+    </property>
+  </bean>
+</beans>

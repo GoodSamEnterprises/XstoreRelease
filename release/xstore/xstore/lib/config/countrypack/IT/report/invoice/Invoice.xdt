@@ -1,0 +1,240 @@
+<dataTemplate name="Invoice" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="STORE" value="_countrypack.invoice.store"/>
+    <label name="DOC_NO" value="_countrypack.invoice.documentNumber"/>
+    <label name="TRANS_NUMBER" value="_countrypack.invoice.transactionNumber"/>
+    <label name="CUSTOMER" value="_countrypack.invoice.customer"/>
+    <label name="FISC_CODE" value="_countrypack.invoice.fiscalCode"/>
+    <label name="FISC_NUM" value="_countrypack.invoice.fiscalNumber"/>
+    <label name="TAX_CODE" value="_countrypack.invoice.taxCode"/>
+    <label name="ITM_DESC" value="_countrypack.invoice.itemDescription"/>
+    <label name="DOC_DATE" value="_countrypack.invoice.documentDate "/>
+    <label name="TRN_DATE" value="_countrypack.invoice.transactionDate"/>  
+    <label name="DASH" value="_rptDashDelimiter"/>
+    <label name="COLON" value="_countrypack.invoice.colon"/>
+    <label name="RBRACES" value="_countrypack.invoice.rightbraces"/>
+    <label name="LBRACES" value="_countrypack.invoice.leftbraces"/>
+    <label name="PERCENT" value="_rptPercent"/>
+    <label name="HEADER_TRAINING_MODE" value="_countrypack.invoice.trainingmode"/>
+    <label name="CHANGE" value="_countrypack.invoice.change"/>
+    <label name="EXMPT" value="_countrypack.invoice.exemptionMark"/>
+    <label name="ITEM_ID" value="_countrypack.invoice.itemId"/>
+    <label name="UNIT_PRICE" value="_countrypack.invoice.unitPrice"/>
+    <label name="QTY" value="_countrypack.invoice.quantity"/>
+    <label name="DISC_AMNT" value="_countrypack.invoice.discountAmount"/>
+    <label name="TAX_RATE_HEADER" value="_countrypack.invoice.taxRate "/>
+    <label name="TAX_AMNT_HDR" value="_countrypack.invoice.taxAmount "/>
+    <label name="AMNT" value="_countrypack.invoice.amount"/>
+    <label name="FISC_NBR" value="_countrypack.invoice.fiscalNumber"/>
+    <label name="TAX_DESC" value="_countrypack.invoice.summary_0"/>
+    <label name="TAX_RATE_FOOTER" value="_countrypack.invoice.summary_1"/>
+    <label name="TAX_AMNT_FOOTER" value="_countrypack.invoice.summary_2"/>
+    <label name="TAX_AMNT" value="_countrypack.invoice.summary_3"/>
+    <label name="TOTAL" value="_countrypack.invoice.summary_4"/>
+    <label name="RNDG_AMNT" value="_countrypack.invoice.roundingAmount"/>
+    <label name="INVC_TOTL" value="_countrypack.invoice.invoiceTotal"/>
+    <label name="ORIG_INVOICE_ID_LABEL" value="_countrypack.invoice.originalInvoiceId"/>
+    <label name="ORIG_INVOICE_DATE_LABEL" value="_countrypack.invoice.originalInvoiceOf" />
+    <label name="NON_FISCAL_ITEM" value="_countrypack.invoice.nonFiscalItem"/>
+    <label name="EINVOICE_ID_CODE_LABEL" value="_countrypack.invoice.identificationCode"/>
+    <label name="EINVOICE_PEC_LABEL" value="_countrypack.invoice.certifiedEmail" />
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="invoicelogo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="DocumentSubtypeDescription" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <!-- User Parameters -->
+  </parameters>
+  
+  <dataSource>
+    <dataReference name="I_INVOICE">
+      <ResultFields>
+      <ResultField>RetailLocation</ResultField>
+      <ResultField>RetailLocation.getStoreNbr</ResultField>
+      <ResultField>RetailLocation.getStoreName</ResultField>
+      <ResultField>FiscalReceiptNumber</ResultField>
+      <ResultField>FiscalPrinterNumber</ResultField>
+      <ResultField>InvoiceNumber</ResultField>
+      <ResultField>InvoiceNumberWithPrefix</ResultField>
+      <ResultField>InvoiceDate</ResultField>
+      <ResultField>InvoiceParty</ResultField>
+      <ResultField>InvoiceParty.getCustomerId</ResultField>
+      <ResultField>InvoiceParty.getOrganizationName</ResultField>
+      <ResultField>InvoiceParty.getPrimaryLocaleInformation</ResultField>
+      <ResultField>InvoiceParty.getPersonalTaxId</ResultField>
+      <ResultField>InvoiceParty.getNationalTaxId</ResultField>
+      <ResultField>InvoiceParty.getStringProperty(IT_ELEC_INV_ID_CODE)</ResultField>
+      <ResultField>InvoiceParty.getStringProperty(IT_ELEC_INV_PEC)</ResultField>
+      <ResultField>Transaction.getTotal</ResultField> 
+      <ResultField>Transaction.getWorkstationId</ResultField> 
+      <ResultField>Transaction.getTransactionSequence</ResultField>
+      <ResultField>Transaction.getBusinessDate</ResultField> 
+      <ResultField>Transaction.getDiscountAmount</ResultField>
+      <ResultField>Transaction.getRoundedAmount</ResultField>
+      <ResultField>Change.getDescription</ResultField>
+      <ResultField>Change.getAmount</ResultField>
+      <ResultField>Change.getForeignAmount</ResultField>
+      <ResultField>RoundedAmount</ResultField>
+      <ResultField>InvoiceFinalAmount</ResultField>
+      <ResultField>ChangeForeignAmountAbs</ResultField>
+      <ResultField>TrainingMode</ResultField>
+      <ResultField>Title</ResultField>
+      <ResultField>TaxExemptionReasonCode</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_1)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_2)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_3)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_4)</ResultField> 
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_5)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_6)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_7)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_8)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_9)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_10)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_FOOTER_1)</ResultField>
+      <ResultField>RetailLocation.getStringProperty(INVOICE_LOC_PROP_FOOTER_2)</ResultField>
+      </ResultFields>
+    </dataReference>
+    <dataReference name="O_INVOICE_SALEITEMS" key="SaleItems">
+     <ResultFields>
+      <ResultField>ItemId</ResultField>
+      <ResultField>Description</ResultField>
+      <ResultField>BaseUnitPrice</ResultField>
+      <ResultField>Quantity</ResultField>
+      <ResultField>UnitPrice</ResultField>
+      <ResultField>TaxRate</ResultField>
+      <ResultField>TaxAmount</ResultField>
+      <ResultField>ExtendedAmount</ResultField>
+      <ResultField>DiscountAmount</ResultField>
+      <ResultField>OriginalInvoiceDate</ResultField>
+      <ResultField>OriginalInvoiceId</ResultField>
+      <ResultField>KitDescriptor</ResultField>
+      <ResultField>IsTaxExempted</ResultField>
+      <ResultField>IsFiscal</ResultField>
+     </ResultFields>
+    </dataReference>
+    <dataReference name="O_INVOICE_TENDERS" key="Tenders">
+        <ResultFields>
+         <ResultField>Description</ResultField>
+         <ResultField>Amount</ResultField>
+         <ResultField>ForeignAmount</ResultField>
+         <ResultField>ForeignAmountAbs</ResultField>
+       </ResultFields>
+    </dataReference>
+    <dataReference name="O_INVOICE_TAXSUMMARYITEMS" key="TaxSummaryItems">
+      <ResultFields>
+         <ResultField>Value1</ResultField>
+         <ResultField>Value2</ResultField>
+         <ResultField>Value3</ResultField>
+         <ResultField>Value4</ResultField>
+         <ResultField>Value5</ResultField>
+         <ResultField>Value6</ResultField>
+         <ResultField>Index</ResultField>
+         <ResultField>Total</ResultField>
+       </ResultFields>
+    </dataReference>
+    
+  </dataSource>
+  <dataStructure>
+    <group name="G_HEADER" source="I_INVOICE">
+      <element name="STORE_NBR" value="RetailLocation.getStoreNbr"/> 
+      <element name="STORE_NAME" value="RetailLocation.getStoreName"/> 
+      <element name="STORE_ADDRESS" value="RetailLocation" formatter="BasicAddress"/>  
+      <element name="FSCL_RCPT_NBR" value="FiscalReceiptNumber"/>
+      <element name="FSCL_PRNT_NBR" value="FiscalPrinterNumber"/>
+      <element name="DOC_NBR" value="InvoiceNumberWithPrefix"/>
+      <element name="TITLE" value="Title"/>
+      <element name="DOC_DATE" value="InvoiceDate" formatter="DateMedium"/>
+      <element name="CUST_ID" value="InvoiceParty.getCustomerId"/>
+      <element name="CUST_NAME" value="InvoiceParty" formatter="BasicName"/>
+      <element name="CUST_ORG_NAME" value="InvoiceParty.getOrganizationName"/>
+      <element name="CUST_ADDRESS" value="InvoiceParty.getPrimaryLocaleInformation" formatter="BasicAddress"/>
+      <element name="FISCAL_CODE" value="InvoiceParty.getPersonalTaxId"/>
+      <element name="TAX_CODE" value="InvoiceParty.getNationalTaxId"/>
+      <element name="IT_ID_CODE" value="InvoiceParty.getStringProperty(IT_ELEC_INV_ID_CODE)"/>
+      <element name="IT_PEC" value="InvoiceParty.getStringProperty(IT_ELEC_INV_PEC)"/>
+      <element name="TRANS_TOTAL" value="Transaction.getTotal"/>
+      <element name="TRANS_EXMP_CODE" value="TaxExemptionReasonCode"/>
+      <element name="TRANS_WORK_ID" value="Transaction.getWorkstationId"/>
+      <element name="DISC_AMNT" value="Transaction.getDiscountAmount"/>
+      <element name="TRANS_DATE" value="Transaction.getBusinessDate" formatter="DateMedium"/>
+      <element name="TRANSA_TRANS_SEQ" value="Transaction.getTransactionSequence"/>
+      <element name="TRANSA_RNDNG_AMNT" value="RoundedAmount"/>
+      <element name="INVOICE_FINAL_AMNT" value="InvoiceFinalAmount" formatter="Accounting"/>
+      <element name="CHANGE_AMNT" value="Change.getAmount" formatter="Accounting"/>
+      <element name="CHANGE_AMNT_RAW" value="Change.getAmount"/>
+      <element name="CHANGE_FRGN_AMNT" value="ChangeForeignAmountAbs" formatter="Accounting"/>
+      <element name="CHANGE_FRGN_AMNT_RAW" value="ChangeForeignAmountAbs"/>
+      <element name="CHANGE_DESC" value="Change.getDescription"/>
+      <element name="TRANING_MODE" value="TrainingMode"/>
+      <element name="CREDIT_NOTE" value="CreditNoteValue"/>
+      <element name="INVOICE_HDR_1" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_1)"/>
+      <element name="INVOICE_HDR_2" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_2)"/>
+      <element name="INVOICE_HDR_3" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_3)"/>
+      <element name="INVOICE_HDR_4" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_4)"/>
+      <element name="INVOICE_HDR_5" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_5)"/>
+      <element name="INVOICE_HDR_6" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_6)"/>
+      <element name="INVOICE_HDR_7" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_7)"/>
+      <element name="INVOICE_HDR_8" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_8)"/>
+      <element name="INVOICE_HDR_9" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_9)"/>
+      <element name="INVOICE_HDR_10" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_HEADER_10)"/>
+      <element name="INVOICE_FTR_1" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_FOOTER_1)"/>
+      <element name="INVOICE_FTR_2" value="RetailLocation.getStringProperty(INVOICE_LOC_PROP_FOOTER_2)"/>
+    </group>
+    <group name="G_DETAIL_SALEITEMS" source="O_INVOICE_SALEITEMS">
+     <element name="SALE_ITM" value="ItemId"/>
+     <element name="DESC" value="Description"/>
+     <element name="BASE_UNIT" value="BaseUnitPrice" formatter="Accounting"/>
+     <element name="UNIT_PRC" value="BaseUnitPrice" formatter="Accounting"/>
+     <element name="QTY" value="Quantity" formatter="Decimal"/>
+     <element name="TAX_RTE" value="TaxRate" formatter="Accounting"/>
+     <element name="TAX_AMNT" value="TaxAmount" formatter="Accounting"/>
+     <element name="TAX_EXTND_AMNT" value="ExtendedAmount" formatter="Accounting"/>
+     <element name="DISCNT" value="DiscountAmount" formatter="Accounting"/>
+     <element name="ORIG_INVOICE_ID" value="OriginalInvoiceId" />
+     <element name="ORIG_INVOICE_DATE" value="OriginalInvoiceDate" formatter="DateMedium"/>
+     <element name="KITDESCRIPTOR" value="KitDescriptor"/>
+     <element name="ISTAXEXEMPT" value="IsTaxExempted"/>
+     <element name="ISFISCAL" value="IsFiscal"/>
+    </group>
+     <group name="G_DETAIL_TENDERS" source="O_INVOICE_TENDERS">
+      <element name="TNDR_DESC" value="Description"/>
+      <element name="TNDR_AMNT" value="Amount" formatter="Accounting"/>                     
+      <element name="TNDR_FRGN_AMNT" value="ForeignAmountAbs" formatter="Accounting"/> 
+      <element name="TNDR_FRGN_AMNT_RAW" value="ForeignAmountAbs"/>  
+    </group>
+     <group name="G_DETAIL_TAXSMMRY" source="O_INVOICE_TAXSUMMARYITEMS">
+      <element name="TAX_1" value="Value1" formatter="Accounting"/>
+      <element name="TAX_1_TEXT" value="Value1" />
+      <element name="TAX_2" value="Value2" formatter="Accounting"/>  
+      <element name="TAX_2_TEXT" value="Value2" />                    
+      <element name="TAX_3" value="Value3" formatter="Accounting"/>   
+      <element name="TAX_3_TEXT" value="Value3"/>
+      <element name="TAX_4" value="Value4" formatter="Accounting"/>  
+      <element name="TAX_4_TEXT" value="Value4"/> 
+      <element name="TAX_5" value="Value5" formatter="Accounting"/>   
+      <element name="TAX_5_TEXT" value="Value5"/>
+      <element name="TAX_6" value="Value6" formatter="Accounting"/> 
+      <element name="TAX_6_TEXT" value="Value6"/>     
+      <element name="INDEX" value="Index"/>   
+      <element name="TOTAL" value="Total" formatter="Accounting"/>  
+      <element name="TOTAL_TEXT" value="Total"/> 
+    </group>
+  </dataStructure>
+</dataTemplate>

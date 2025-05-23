@@ -1,0 +1,22 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified"
+           elementFormDefault="qualified">
+    <xs:element name="Alerts">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="alert" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element type="xs:string" name="alert_key"/>
+                            <xs:element type="xs:string" name="main_msg_key"/>
+                            <xs:element type="xs:string" name="sub_msg_key"/>
+                            <xs:element type="xs:byte" name="priority"/>
+                            <xs:element type="xs:string" name="action"/>
+                            <xs:element type="xs:string" name="prompt_key"/>
+                            <xs:element type="xs:string" name="bring_ui_to_foreground" minOccurs="0"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

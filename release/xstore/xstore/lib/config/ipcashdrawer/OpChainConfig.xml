@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/OpChainConfig.xsd">
+
+  <OpChain name="CASHDRAWER_OPEN" contextKey="CASHDRAWER_OPEN" signal="TransactionComplete">
+    <ValidationOp validationsBean="openCashdrawerRules" />
+    <Op class="dtv.pos.systemcycle.cashdrawer.PromptCashdrawersToOpenListOp" />
+    <PromptOp class="dtv.pos.systemcycle.cashdrawer.PromptToOpenCashdrawerOp" key="OPEN_CASHDRAWER" />
+    <OpChainRoute chainKey="CASHDRAWER_OPEN_EXT.local" />
+    <OpChainRoute chainKey="CASHDRAWER_OPEN.1" />
+    <OpChainRoute>
+      <Choice chainKey="CASHDRAWER_STARTING_COUNT_CHAIN_SET" condition="dtv.pos.till.rollingclose.RollingCloseCountAtRegisterOpenRunCondition" />
+      <Choice chainKey="REGISTER_MODE_CASHDRAWER_NO_COUNT" condition="dtv.pos.till.rollingclose.RollingCloseNoCountAtRegisterOpenRunCondition" />
+    </OpChainRoute>
+    <Op class="dtv.pos.systemcycle.cashdrawer.CreateCashdrawerOpenOp" longRunning="true" />
+    <WorkerOp workersBean="restoreWorkstationSessionWorkers" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+  </OpChain>
+  <OpChain name="CASHDRAWER_STARTING_COUNT_CHAIN_SET" contextKey="BEGIN_COUNT">
+    <OpChainRoute chainKey="CASHDRAWER_OPEN_ISSUE_TILL" />
+    <OpChainRoute chainKey="CASHDRAWER_OPEN_STARTING_COUNT" />
+  </OpChain>
+  <OpChain name="CASHDRAWER_OPEN_ISSUE_TILL" signal="TransactionComplete">
+    <PromptOp class="dtv.pos.till.PromptAvailableTillsOp" />
+    <Op class="dtv.pos.till.GetCashDrawerIssueTillInfoOp" longRunning="true" />
+    <Op class="dtv.pos.till.IssueTillOp" />
+    <WorkerOp workersBean="setSessionForCashDrawerWorkers" />
+    <Op class="dtv.pos.common.PersistCurrentTransactionOp" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+  </OpChain>
+  <OpChain name="CASHDRAWER_OPEN_STARTING_COUNT" signal="TransactionComplete">
+    <Op class="dtv.pos.till.count.PromptCashdrawerStartTillCountOp" />
+    <WorkerOp workersBean="createTillStartCountObjectsWorkers" contextKey="ISSUE_TILL" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+  </OpChain>
+  <OpChain name="CASHDRAWER_OPEN_EXT.local">
+    <OpChainRoute chainKey="CASHDRAWER_OPEN_EXT.pre" />
+    <OpChainRoute chainKey="CASHDRAWER_OPEN_EXT.local.1" />
+    <OpChainRoute chainKey="CASHDRAWER_OPEN_EXT.local.2" />
+    <!-- Fiscal logic goes here -->
+    <OpChainRoute chainKey="CASHDRAWER_OPEN_EXT.local.3" />
+    <OpChainRoute chainKey="CASHDRAWER_OPEN_EXT.post" />
+  </OpChain>
+  <OpChain name="CASHDRAWER_OPEN_EXT.local.1" />
+  <OpChain name="CASHDRAWER_OPEN_EXT.local.2" />
+  <OpChain name="CASHDRAWER_OPEN_EXT.local.3" />
+  <OpChain name="CASHDRAWER_OPEN_EXT.pre" />
+  <OpChain name="CASHDRAWER_OPEN_EXT.post" />
+  <OpChain name="CASHDRAWER_OPEN.1" />
+  <OpChain name="REGISTER_MODE_CASHDRAWER_NO_COUNT" signal="TransactionComplete">
+    <!-- This is the path for Insert predefined float, carry over balance, and float balance. -->
+    <OpChainRoute chainKey="CASHDRAWER_OPEN_ISSUE_TILL" />
+    <PromptOp class="dtv.pos.till.rollingclose.PromptRollingCloseCashdrawerInsertPreDefinedFloatOp" breakpoint="true" />
+    <Op class="dtv.pos.till.rollingclose.AutoCreateRollingCloseCashdrawerBeginCountOp" />
+    <WorkerOp workersBean="createTillStartCountObjectsWorkers" contextKey="ISSUE_TILL" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+  </OpChain>
+  <OpChain name="ROLLING_CLOSE_CASHDRAWER_CHANGE_FLOAT_SETUP" contextKey="CHANGE_TILL_FLOAT">
+    <PromptOp class="dtv.pos.till.PromptChangeFloatReasonCodeOp" />
+    <PromptOp class="dtv.pos.till.PromptCountableCashTendersOp" validationsBean="cashTenderListSelectionRules">
+      <Parameter name="Instruction" value="_promptChangeFloatCurrencyListMessage" />
+      <Parameter name="Title" value="_promptChangeFloatCurrencyListTitle" />
+    </PromptOp>
+    <Op class="dtv.pos.till.rollingclose.SetSelectedCashdrawerTenderRepositoriesOp" />
+    <Op class="dtv.pos.till.CreateTillControlTransactionOp" />
+    <Op class="dtv.pos.till.CreateChangeFloatDetailsOp" />
+    <OpChainRoute chainKey="ROLLING_CLOSE_CASHDRAWER_CHANGE_FLOAT"  />
+  </OpChain>
+  <OpChain name="ROLLING_CLOSE_CASHDRAWER_CHANGE_FLOAT" contextKey="CHANGE_TILL_FLOAT" rollbackChainKey="PROMPT_CANCEL_TRANSACTION">
+    <PromptOp class="dtv.pos.till.PromptChangeFloatAmountOp" validationsBean="changeTillFloatRules" />
+    <PromptOp class="dtv.pos.till.rollingclose.PromptRollingCloseSaveChangeFloatOp" />
+    <WorkerOp workersBean="completeTransactionWorkers" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+  </OpChain>
+  
+  <OpChain name="CASHDRAWER_CLOSE" contextKey="CASHDRAWER_CLOSE" signal="TransactionComplete" rollbackChainKey="ROLLBACK_CASHDRAWER_TRANS">
+    <Op class="dtv.pos.register.itemmessages.DefaultIdleMsgOp" />
+    <Op class="dtv.pos.systemcycle.cashdrawer.PromptCashdrawersToCloseListOp" />
+    <PromptOp class="dtv.pos.systemcycle.close.PromptToCloseOp" key="ASK_CLOSE_CASHDRAWER" />
+    <OpChainRoute chainKey="CASHDRAWER_CLOSE.local" />
+    <OpChainRoute>
+      <Choice chainKey="CASHDRAWER_CLOSING_NO_COUNT" condition="dtv.pos.till.rollingclose.RollingCloseRunCondition" />
+      <Choice chainKey="CASHDRAWER_CLOSING_COUNT_CHAIN" condition="dtv.pos.till.rollingclose.NonRollingCloseRunCondition" />
+    </OpChainRoute>
+    <Op class="dtv.pos.systemcycle.cashdrawer.CreateCashdrawerCloseOp" longRunning="true" />
+    <WorkerOp workersBean="restoreWorkstationSessionWorkers" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+    <OpChainRoute chainKey="REOPEN_CASHDRAWER" chainType="START" />
+  </OpChain>
+  <OpChain name="REOPEN_CASHDRAWER">
+    <PromptOp class="dtv.pos.systemcycle.cashdrawer.PromptToReopenCashdrawerOp">
+      <Parameter name="ChainKey" value="CASHDRAWER_OPEN"/>
+    </PromptOp>
+  </OpChain>
+  <OpChain name="ROLLBACK_CASHDRAWER_TRANS">
+    <OpChainRoute chainKey="CANCEL_TRANSACTION" chainType="START" condition="dtv.pos.register.condition.NoTransRunCondition" />
+    <OpChainRoute chainKey="CANCEL_NO_TRANSACTION" chainType="START" />
+    <WorkerOp workersBean="restoreWorkstationSessionWorkers" />
+  </OpChain>
+  <OpChain name="CASHDRAWER_CLOSING_COUNT_CHAIN" contextKey="CLOSE_COUNT">
+    <Op class="dtv.pos.till.CheckCurrentSessionStatusOp">
+      <Parameter name="AcceptedStatus" value="BEGINCOUNT" />
+    </Op>
+    <OpChainRoute chainKey="CASHDRAWER_CLOSING_COUNT_LOGIC" />
+    <OpChainRoute chainKey="CASHDRAWER_CLOSING_COUNT_CHAIN.post" />
+  </OpChain>
+  <OpChain name="CASHDRAWER_CLOSING_COUNT_LOGIC" signal="TransactionComplete">
+    <OpChainRoute chainKey="CASHDRAWER_CLOSING_COUNT_LOGIC_START.local" />
+    <Op class="dtv.pos.till.count.PromptTillCountOp" breakpoint="true" />
+    <Op class="dtv.pos.till.count.PromptClosingDepositAmountsOp">
+      <Parameter name="ChainKey" value="PROMPT_CLOSING_DEPOSIT" />
+    </Op>
+    <OpChainRoute chainKey="CASHDRAWER_CLOSING_COUNT_LOGIC_ENDCOUNT.pre" />
+    <Op class="dtv.pos.till.count.CreateTillEndCountObjectsOp" />
+    <OpChainRoute chainKey="CASHDRAWER_CLOSING_COUNT_LOGIC_ENDCOUNT.post" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+  </OpChain>
+  <OpChain name="CASHDRAWER_CLOSING_COUNT_LOGIC_START.local">
+    <OpChainRoute chainKey="CASHDRAWER_CLOSING_COUNT_START.pre" />
+    <!-- Fiscal logic goes here -->
+    <OpChainRoute chainKey="CASHDRAWER_CLOSING_COUNT_START.post" />
+  </OpChain>
+  <OpChain name="CASHDRAWER_CLOSE.local" />
+  <OpChain name="CASHDRAWER_CLOSING_COUNT_START.pre" />
+  <OpChain name="CASHDRAWER_CLOSING_COUNT_START.post" />
+  <OpChain name="CASHDRAWER_CLOSING_COUNT_LOGIC_ENDCOUNT.pre" />
+  <OpChain name="CASHDRAWER_CLOSING_COUNT_LOGIC_ENDCOUNT.post" />
+  <OpChain name="CASHDRAWER_CLOSING_COUNT_CHAIN.post" />
+
+  <OpChain name="CASHDRAWER_CLOSING_NO_COUNT">
+    <OpChainRoute>
+      <Choice chainKey="ROLLING_CLOSE_CASHDRAWER_CLOSE_EMPTY_DRAWER" condition="dtv.pos.till.rollingclose.RollingCloseEmptyDrawerRunCondition" />
+      <Choice chainKey="REGISTER_MODE_CASHDRAWER_CARRY_OVER_BALANCE" condition="dtv.pos.till.rollingclose.RollingCloseRegisterCloseCarryOverBalanceRunCondition" />
+   </OpChainRoute>   
+  </OpChain>
+  
+  <!-- This is the flow for prompt for float and insert predefined float configuration -->
+  <OpChain name="ROLLING_CLOSE_CASHDRAWER_CLOSE_EMPTY_DRAWER" signal="TransactionComplete">
+    <Op class="dtv.pos.till.CheckCurrentSessionStatusOp">
+      <Parameter name="AcceptedStatus" value="BEGINCOUNT" />
+    </Op>
+    <PromptOp class="dtv.pos.till.rollingclose.PromptRollingCloseEmptyTheDrawerOp">
+      <Parameter name="PromptKey" value="ROLLING_CLOSE_CASHDRAWER_REMOVE_DRAWER" />
+    </PromptOp>
+    <Op class="dtv.pos.till.rollingclose.DetachTillFromCashdrawerOp" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+  </OpChain>
+    
+  <!-- This is the chain for the carry over balance and float pickup configuration -->
+  <OpChain name="REGISTER_MODE_CASHDRAWER_CARRY_OVER_BALANCE" signal="TransactionComplete">
+    <Op class="dtv.pos.till.CheckCurrentSessionStatusOp">
+      <Parameter name="AcceptedStatus" value="BEGINCOUNT" />
+    </Op>
+    <PromptOp class="dtv.pos.till.rollingclose.PromptRollingCloseRemoveNonCashTendersOp" />
+    <Op class="dtv.pos.till.rollingclose.PromptRollingClosingPickupAmountsOp">
+      <Parameter name="ChainKey" value="PROMPT_PICKUP_FLOAT" />
+    </Op>
+    <Op class="dtv.pos.till.rollingclose.UpdateLastClosingBalanceOp" />
+    <Op class="dtv.pos.till.rollingclose.DetachTillFromCashdrawerOp" /> 
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+  </OpChain>
+  
+  <OpChain name="CASHDRAWER_START_TILL_COUNT_CANCEL">
+    <OpChainRoute chainKey="ROLLBACK_ISSUE_TILL" />
+    <OpChainRoute chainKey="TILL_COUNT_CANCEL" />
+    <WorkerOp workersBean="restoreWorkstationSessionWorkers" />
+  </OpChain>
+
+  <OpChain name="ROLLING_CLOSING_RECONCILE_CASHDRAWER" signal="TransactionComplete" contextKey="CLOSE_COUNT" rollbackChainKey="ROLLBACK_CASHDRAWER_TRANS">
+    <PromptOp class="dtv.pos.till.rollingclose.PromptReconcileCashdrawerTillOp" />
+    <PromptOp class="dtv.pos.till.rollingclose.PromptReconcileCashdrawerConfirmOp" />
+    <Op class="dtv.pos.till.rollingclose.PromptRollingCloseTillCountOp" />
+    <Op class="dtv.pos.till.rollingclose.CreateRollingCloseTillEndCountObjectsOp" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+    <WorkerOp workersBean="restoreWorkstationSessionWorkers" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+  </OpChain>
+  
+  <OpChain name="MANAGE_IP_CASH_DRAWER" rollbackLevel="30">
+    <Op class="dtv.pos.hardware.op.ManageIPCashDrawerOp"  breakpoint="true" />
+  </OpChain>
+  
+  <OpChain name="CONFIGURE_IP_CASH_DRAWER" >
+    <Op class="dtv.pos.hardware.op.ConfigureIPCashDrawerOp"/>
+    <WorkerOp workersBean="saveCashDrawerWorkers" longRunning="true"/>
+  </OpChain>
+  
+  <OpChain name="ATTACH_CASHDRAWER_TILL" signal="TransactionComplete">
+    <PromptOp class="dtv.pos.till.PromptCashdrawersToAttachListOp" />
+    <PromptOp class="dtv.pos.hardware.op.IpCashDrawerTillScanOp" validationsBean="scanIpCashDrawerTillRules" />
+    <PromptOp class="dtv.pos.till.PromptCashDrawerTillQuestionOp">
+      <Parameter name="PromptKey" value="CASHDRAWER_ATTACH_QUESTION" />
+    </PromptOp>
+    <Op class="dtv.pos.till.AttachCashDrawerTillOp" />
+    <WorkerOp workersBean="updateCashDrawerIdWorkers" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+    <Op class="dtv.pos.hardware.op.AlwaysOpenCashDrawerOp" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+    <PromptOp class="dtv.pos.hardware.op.WaitForCashDrawerCloseOp" validationsBean="cashDrawerCloseRules" />
+    <PromptOp class="dtv.pos.till.PromptCashDrawerTillConfirmOp">
+      <Parameter name="PromptKey" value="CASHDRAWER_ATTACH_COMPLETE" />
+    </PromptOp>
+    <WorkerOp workersBean="clearCashDrawerTillWorkers" />
+  </OpChain>
+  <OpChain name="REMOVE_CASHDRAWER_TILL" signal="TransactionComplete">
+    <PromptOp class="dtv.pos.till.PromptCashdrawersToRemoveListOp" />
+    <PromptOp class="dtv.pos.hardware.op.IpCashDrawerTillScanOp" validationsBean="scanIpCashDrawerTillRules" />
+    <PromptOp class="dtv.pos.till.PromptCashDrawerTillQuestionOp">
+      <Parameter name="PromptKey" value="CASHDRAWER_REMOVE_QUESTION" />
+    </PromptOp>
+    <Op class="dtv.pos.till.RemoveCashDrawerTillOp" />
+    <WorkerOp workersBean="updateCashDrawerIdWorkers" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+    <Op class="dtv.pos.hardware.op.AlwaysOpenCashDrawerOp" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+    <PromptOp class="dtv.pos.hardware.op.WaitForCashDrawerCloseOp" validationsBean="cashDrawerCloseRules" />
+    <PromptOp class="dtv.pos.till.PromptCashDrawerTillConfirmOp">
+      <Parameter name="PromptKey" value="CASHDRAWER_REMOVE_COMPLETE" />
+    </PromptOp>
+    <WorkerOp workersBean="clearCashDrawerTillWorkers" />
+  </OpChain>
+  
+</OpChainSet>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <!-- ***************************************************************** -->
+  <!-- ROOTS -->
+  <!-- ***************************************************************** -->
+  <Query name="cat_cust_acct">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM cat_cust_acct
+          WHERE organization_id = ?
+            AND last_activity_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+      <Expression trigger="argStatus"><![CDATA[/*UPPER*/ cust_acct_statcode = ?]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="cat_cust_acct_card">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM cat_cust_acct_card
+          WHERE organization_id = ?
+            AND expr_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="cat_cust_loyalty_acct">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM cat_cust_loyalty_acct
+          WHERE organization_id = ?
+            AND expiration_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="cat_cust_acct_plan">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM cat_cust_acct_plan
+          WHERE organization_id = ?
+            AND expiration_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="cat_escrow_acct">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM cat_escrow_acct
+          WHERE organization_id = ?
+            AND last_activity_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+      <Expression trigger="argStatus"><![CDATA[/*UPPER*/ cust_acct_statcode = ?]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="crm_party">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM crm_party c
+          WHERE organization_id = ?
+            AND void_flag = 1
+            AND NOT EXISTS
+                  (Select p.* From cat_cust_acct p 
+                    Where p.organization_id = c.organization_id
+                      And p.party_id = c.party_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- cat_cust_acct <<< * -->
+  <!-- ************************************************ -->
+  <Query name="cat_cust_acct.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From cat_cust_acct p 
+                    Where p.organization_id = c.organization_id
+                      And p.cust_acct_code = c.cust_acct_code
+                      And p.cust_acct_id = c.cust_acct_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- cat_cust_acct <<< cwo_work_order_acct <<< * -->
+  <!-- ************************************************ -->
+  <Query name="cwo_work_order_acct.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From cwo_work_order_acct p 
+                    Where p.organization_id = c.organization_id
+                      And /*UPPER*/ p.service_loc_id = /*UPPER*/ c.service_loc_id
+                      And /*UPPER*/ p.invoice_number = /*UPPER*/ c.invoice_number)
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- cat_cust_acct_card <<< * -->
+  <!-- ************************************************ -->
+  <Query name="cat_cust_acct_card.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From cat_cust_acct_card p 
+                    Where p.organization_id = c.organization_id
+                      And p.cust_acct_card_nbr = c.cust_card_nbr)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- cat_escrow_acct <<< * -->
+  <!-- ************************************************ -->
+  <Query name="cat_escrow_acct.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From cat_escrow_acct p 
+                    Where p.organization_id = c.organization_id
+                      And p.cust_acct_id = c.cust_acct_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- crm_party <<< * -->
+  <!-- ************************************************ -->
+  <Query name="crm_party.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From crm_party p 
+                    Where p.organization_id = c.organization_id
+                      And p.party_id = c.party_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <Query name="crm_party_cross_reference">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM crm_party_cross_reference c
+          WHERE organization_id = ?
+            AND (NOT EXISTS
+                  (Select p.* From crm_party p 
+                    Where p.organization_id = c.organization_id
+                      And p.party_id = c.parent_party_id)
+             OR NOT EXISTS
+                  (Select p.* From crm_party p 
+                    Where p.organization_id = c.organization_id
+                      And p.party_id = c.child_party_id))]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+</QuerySet>

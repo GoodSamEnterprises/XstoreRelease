@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="STTN_STD_EFTLINK_PostEventOnEnter" class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+    <property name="event" >
+      <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor" >
+        <property name="descriptors">
+          <list>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor" >
+              <property name="key" ref="KEY_Enter" />
+            </bean>
+            <bean class="com.micros_retail.xfgclient.statemachine.event.InputBufferValidDescriptor" />
+          </list>
+        </property>
+      </bean>
+    </property>
+    <property name="transitionChain">
+      <bean id="TCN_EFTLINK_PostEventOnEnter" class="com.micros_retail.xfgclient.transition.TransitionChain" >
+        <property name="transitions">
+          <list>
+            <bean class="com.micros_retail.xfgclient.transition.input.PostInputBufferAsInputEventTN" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+</beans>

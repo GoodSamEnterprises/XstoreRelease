@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+
+	Alert	Xenvironment UI displays alerts to the user, these are messages to 
+			inform the user of system level events such as Store Close failing, 
+			not always an error condition but most effective when an error occurs.
+			
+		Alert_key => a unique name for an alert, negotiated with the engine when the engine is the source of the alert
+		main_msg_key => translation key for the main message area text to display to the user
+		sub_msg_key => translation key for the sub message area text to display to the user e.g. below main message
+		priority => obsolete
+		action => n/a
+		prompt_key => Indicates the promptconfig.xml prompt key to announce on the focusbar.
+			Standard prompts for Alerts (but not limited to)
+				- SYSTEM_ERROR
+				- WARNING
+				- errEngine
+				- Application flow specific prompts e.g. errGetTlogs, errUpd, errArchive, REPOLL
+		bring_ui_to_foreground => indicates that the Xenvironment should assert itself in the foreground when this alert is encountered.
+
+		Optional configuration parameters valid for any alert definition
+			Valid Values 
+				0 false
+				1 true
+	
+	        <Delete_Key_Visible>1</Delete_Key_Visible>	        	
+	        <Delete_Key_Password_Required>0</Delete_Key_Password_Required>
+ -->
+
+<Alerts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="AlertsConfig.xsd">
+    <alert>
+        <alert_key>ALERT_UNDEFINED</alert_key>
+        <main_msg_key>_ALERT_UNDEFINED</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>close.err</alert_key>
+        <main_msg_key>_alertCLOSEMainMsg</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>true</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>errArchive</alert_key>
+        <main_msg_key><![CDATA[_alerterrArchivefailedMainMsg]]></main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>2</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>errGetTlogs</alert_key>
+        <main_msg_key>_alertGETTLOGS_ERRMainMsg</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>errGetTlogs</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>startup.err</alert_key>
+        <main_msg_key>_alertSTARTUPMainMsg</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>errStartup</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>engine.err</alert_key>
+        <main_msg_key>_alerterrEngineMainMsg</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>errEngine</prompt_key>
+        <bring_ui_to_foreground>true</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>applyjarupdates.err</alert_key>
+        <main_msg_key>_alertUpdateJar</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>errEngine</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>wait-for-pollok.wrn</alert_key>
+        <main_msg_key>_wrnWaitForPollOk</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>3</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>wait-for-pollok.err</alert_key>
+        <main_msg_key>_errWaitForPollOk</main_msg_key>
+        <sub_msg_key>_callHelpdesknumber</sub_msg_key>
+        <priority>3</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>wait-for-update-download-complete.err</alert_key>
+        <main_msg_key>_errWaitForUpdateDownloadComplete</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+
+    <!-- fb#210917/209481 2.5.0 - not all error flags display messages in the UI -->
+    <alert>
+        <alert_key>nopoll1.err</alert_key>
+        <main_msg_key>_NOPOLL1_ERR</main_msg_key>
+        <sub_msg_key>_callHelpdesknumber</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>nopoll1.wrn</alert_key>
+        <main_msg_key>_NOPOLL1_WRN</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>2</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>nopoll2.err</alert_key>
+        <main_msg_key>_NOPOLL2_ERR</main_msg_key>
+        <sub_msg_key>_callHelpdesknumber</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>nopoll2.wrn</alert_key>
+        <main_msg_key>_NOPOLL2_WRN</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>2</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <!-- fb#210917/209481 -->
+
+    <!-- # PTS #288425 -->
+    <alert>
+        <alert_key>get-remote-sql-server-backup.err</alert_key>
+        <main_msg_key>_errGetRemoteDBBackup</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <!-- # PTS #288425 -->
+    <!-- # PTS #298791 -->
+    <alert>
+        <alert_key>middlex-item-load.wrn</alert_key>
+        <main_msg_key>_alertnoMiddlexMainMsg</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>2</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <!-- # PTS #298791 -->
+    <!-- # PTS #299971 -->
+    <alert>
+        <alert_key>dr.err</alert_key>
+        <main_msg_key>_alertDisasterRecoveryErrMainMsg</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>true</bring_ui_to_foreground>
+    </alert>
+
+    <!-- FB 232464 added for engine errors -->
+    <alert>
+        <alert_key>zipdbbackup.err</alert_key>
+        <main_msg_key>_errZipDBBackup</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>unzipdbbackup.err</alert_key>
+        <main_msg_key>_errUnZipDBBackup</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <!-- FB 232464 added for engine errors -->
+
+    <!-- FB  Xenvironment SSL Certificate Will Expire Soon -->
+    <alert>
+        <alert_key>sslcert.wrn</alert_key>
+        <main_msg_key>_sslcertwrn</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>2</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>true</bring_ui_to_foreground>
+    </alert>
+    <!-- FB  Xenvironment SSL Certificate Will Expire Soon -->
+
+    <!-- XENV-45 -->
+    <alert>
+        <alert_key>applyxadminupdates.err</alert_key>
+        <main_msg_key>_errapplyxadminupdates</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>true</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>upload-pospolls.err</alert_key>
+        <main_msg_key>_errUploadPosPolls</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>restore-xstore-db.err</alert_key>
+        <main_msg_key>_restore-xstore-db-err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+
+
+    <alert>
+        <alert_key>import-engine-cert-to-ui-truststore.err</alert_key>
+        <main_msg_key>_import-engine-cert-to-ui-truststore.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>true</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>move-hh-files.err</alert_key>
+        <main_msg_key>_errMoveHhFiles</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>move-hh-relate-files.err</alert_key>
+        <main_msg_key>_errMoveHhRelateFiles</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+    </alert>
+    <alert>
+        <alert_key>restore-training-db.err</alert_key>
+        <main_msg_key>_restore-training-db.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+    </alert>
+    <alert>
+        <alert_key>import-engine-cert-to-xstore-truststore.err</alert_key>
+        <main_msg_key>_import-engine-cert-to-xstore-truststore.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>true</bring_ui_to_foreground>
+    </alert>
+
+    <alert>
+        <alert_key>download-close-deployments.err</alert_key>
+        <main_msg_key>_download-close.deployments.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>upload-trickle-files.err</alert_key>
+        <main_msg_key>_upload-trickle-files.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>check-and-download-updates.err</alert_key>
+        <main_msg_key>_check-and-download-updates.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>update-feeds.err</alert_key>
+        <main_msg_key>_update-feeds.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>wait-for-polling-packages.err</alert_key>
+        <main_msg_key>_wait-for-polling-packages.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>notify-process-updates.err</alert_key>
+        <main_msg_key>_notify-process-updates.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>move-unprocessed-updates-xstore.err</alert_key>
+        <main_msg_key>_move-unprocessed-updates-xstore.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>move-unprocessed-updates-xstore-immediate.err</alert_key>
+        <main_msg_key>_move-unprocessed-updates-xstore-immediate.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <alert>
+        <alert_key>check-system-datetime.err</alert_key>
+        <main_msg_key>_check-system-datetime.err</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>SYSTEM_ERROR</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+
+    <!-- Internal UI Alerts!!! -->
+    <alert>
+        <alert_key>ERROR_REGISTERING_HOTKEYS</alert_key>
+        <main_msg_key>_ERROR_REGISTERING_HOTKEYS</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+    <!-- Internal UI Alerts!!! -->
+
+    <alert>
+        <alert_key>errUpdateJarImmediate</alert_key>
+        <main_msg_key>_errUpdateJarImmediate</main_msg_key>
+        <sub_msg_key>_blank</sub_msg_key>
+        <priority>1</priority>
+        <action></action>
+        <prompt_key>WARNING</prompt_key>
+        <bring_ui_to_foreground>false</bring_ui_to_foreground>
+    </alert>
+
+</Alerts>

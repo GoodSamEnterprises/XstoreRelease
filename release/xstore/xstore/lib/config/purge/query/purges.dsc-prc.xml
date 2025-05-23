@@ -1,0 +1,85 @@
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <!-- ***************************************************************** -->
+  <!-- ROOTS                                                             -->
+  <!-- ***************************************************************** -->
+  <Query name="dsc_discount">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM dsc_discount
+          WHERE organization_id = ?
+            AND expr_datetime < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+  
+  <Query name="prc_deal">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM prc_deal
+          WHERE organization_id = ?
+            AND end_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+  
+  <!-- ************************************************ -->
+  <!-- dsc_discount <<< *                               -->
+  <!-- ************************************************ -->
+  <Query name="dsc_discount_compatibility">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM dsc_discount_compatibility c
+          WHERE organization_id = ?
+            AND (NOT EXISTS
+                  (Select p.* From dsc_discount p 
+                    Where p.organization_id = c.organization_id
+                      And p.discount_code = c.primary_discount_code)
+             OR NOT EXISTS
+                  (Select p.* From dsc_discount p 
+                    Where p.organization_id = c.organization_id
+                      And p.discount_code = c.compatible_discount_code))]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  
+  <Query name="dsc_discount.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From dsc_discount p 
+                    Where p.organization_id = c.organization_id
+                      And p.discount_code = c.discount_code)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  
+  <!-- ************************************************ -->
+  <!-- prc_deal <<< *                                   -->
+  <!-- ************************************************ -->
+  <Query name="prc_deal.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From prc_deal p 
+                    Where p.organization_id = c.organization_id
+                      And p.deal_id = c.deal_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+</QuerySet>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PromptSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PromptConfig.xsd">
+
+  <Prompt name="PURCHASE_DIGITAL_CART_ITEM" type="List" title="_purchaseItemListTitle" message="_purchaseItemList">
+    <ListViewType dtype="String">DIGITAL_CART_ITEM_SELECTION</ListViewType>
+    <DataSelection selectionMode="MULTIPLE" />
+    <Action ref="CANCEL_BACK" />
+    <Action dataKey="SELECT" text="_rcptMenuAll" keyStroke="F8" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="ORDER_DIGITAL_CART_ITEM" type="List" title="_orderItemListTitle" message="_orderItemList">
+    <ListViewType dtype="String">DIGITAL_CART_ITEM_SELECTION</ListViewType>
+    <DataSelection selectionMode="MULTIPLE" />
+    <Action ref="CANCEL_BACK" />
+    <Action dataKey="SELECT" text="_rcptMenuAll" keyStroke="F8" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="DELETE_DIGITAL_CART_ITEM" type="List" title="_deleteItemListTitle" message="_deleteItemList">
+    <ListViewType dtype="String">DIGITAL_CART_ITEM_SELECTION</ListViewType>
+    <DataSelection selectionMode="MULTIPLE" />
+    <Action ref="CANCEL_BACK" />
+    <Action dataKey="SELECT" text="_rcptMenuAll" keyStroke="F8" />
+    <Action ref="ACCEPT_ENTER" text="_removeItemButton" />
+  </Prompt>
+  <Prompt name="REMOVE_DIGITAL_CART_CONFIRM" type="NotifyYesNo" title="_digitalCartRemoveTitle" message="_removeDigitalCartItem" />
+  <Prompt name="DIGITAL_CART_OFFLINE" type="Notify" title="_digitalCartOfflineTitle" message="_digitalCartOfflineMessage" />
+  <Prompt name="REMOVING_DIGITAL_CART_MESSAGE" type="Notify" title="_digitalCartRemoveNotifyTitle" message="_removingFromDigitalCartItem">
+    <Action ref="NO"/>
+    <Action ref="ACCEPT_YES" />
+  </Prompt>
+</PromptSet>

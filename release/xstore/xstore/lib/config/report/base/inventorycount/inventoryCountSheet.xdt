@@ -1,0 +1,82 @@
+<dataTemplate name="InventoryCountSheet" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="COUNT_SHEET_NBR" value="_invCountSheetNumberColon"/>
+    <label name="COUNT_CYCEL" value="_invCountCycleColon"/>
+    <label name="SHEET_STATUS" value="_invCountSheetStatusColon"/>
+    <label name="INV_BUCKET" value="_invCountBucketColon"/>
+    <label name="COUNT_SECTION" value="_invCountSectionColon"/>
+    <label name="REORDED_BY" value="_invCountSheetReportRecordedBy"/>
+    <label name="COUNTED_BY" value="_invCountSheetReportCountedBy"/>   
+    <label name="COUNT_NBR" value="_invCountNumberColon"/>   
+    <label name="COUNT_TYPE" value="_counttype"/>   
+    <label name="ITEM_ID" value="_itemId"/>
+    <label name="ITEM_DESC" value="_rptDescription"/>
+    <label name="ITEM_QTY" value="_rptQuantity"/>
+    </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+   
+    <!-- User Parameters -->
+    <parameter name="store" class="dtv.xst.dao.loc.IRetailLocation" isForPrompting="false"/>
+    <parameter name="countSheet" class="dtv.xst.dao.inv.IInventoryCountSheet" isForPrompting="false"/>
+    <parameter name="countType" class="java.lang.String" isForPrompting="false"/>
+  </parameters>
+  <dataSource>
+    <dataReference name="D_COUNT_SHEET">
+      <ResultFields>    
+        <ResultField>PaddedCountSheetNumber</ResultField>   
+        <ResultField>CountSheet.getCountSheetNumber</ResultField>    
+        <ResultField>CountSheet.getCountCycle</ResultField>  
+        <ResultField>CountSheet.getSheetStatus</ResultField>   
+        <ResultField>CountSheet.getInventoryBucketName</ResultField>  
+        <ResultField>CountSheet.getSectionId</ResultField>    
+        <ResultField>CountSheet.getSectionNumber</ResultField>     
+        <ResultField>CountSheet.getInventoryCountId</ResultField>    
+        <ResultField>CountType</ResultField>  
+      </ResultFields>
+    </dataReference>
+    <dataReference name="D_COUNT_SHEET_ITEMS" key="CountSheetItems">
+      <ResultFields>     
+        <ResultField>PageNumber</ResultField>    
+        <ResultField>Quantity</ResultField>  
+        <ResultField>ItemId</ResultField>   
+        <ResultField>Description</ResultField>  
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_COUNT_SHEET" source="D_COUNT_SHEET">
+      <element name="COUNT_SHEET_BARCODE" value="PaddedCountSheetNumber" barcode="Code93"/>
+      <element name="COUNT_SHEET_NBR" value="CountSheet.getCountSheetNumber" />
+      <element name="COUNT_CYCLE" value="CountSheet.getCountCycle" />
+      <element name="SHEET_STATUS" value="CountSheet.getSheetStatus" translation-prefix="_dtv.pos.inventory.count.CountSheetStatus."/>
+      <element name="INV_BUCKET_NM" value="CountSheet.getInventoryBucketName" />
+      <element name="SECTION_ID" value="CountSheet.getSectionId"/>
+      <element name="SECTION_NBR" value="CountSheet.getSectionNumber"/>
+      <element name="INV_COUNT_ID" value="CountSheet.getInventoryCountId"/>
+      <element name="COUNT_TYPE" value="CountType"/>
+    </group>    
+    <group name="G_COUNT_SHEET_ITEMS" source="D_COUNT_SHEET_ITEMS">
+      <element name="PAGE_NBR" value="PageNumber" formatter="DateMedium"/>
+      <element name="QTY" value="Quantity" />
+      <element name="ID" value="ItemId"/>
+      <element name="DESC" value="Description" />
+    </group>    
+  </dataStructure>
+</dataTemplate>

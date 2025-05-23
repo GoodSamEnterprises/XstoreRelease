@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner. ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet>
+  <FormView formKey="CUSTOMER_SUMMARY" formLocation="POPUP_VIEW_PANEL" formLayout="LEFT_TO_RIGHT">
+    <FormViewPanel panelType="DETAIL" formTabKey="DEFAULT">
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, FILL, 10.0, PREFERRED, MINIMUM -->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, FILL -->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="IntegerArray">0, 0, 0, 0</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="IntegerArray">0, 0, 0, 0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell layoutLocation="0, 0, 1, 1, R, F" type="FormLabel" textKey="_lastNameLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 0, 1, 1, F, F" type="FormTextField" resource="lastName">
+        <TabOrder dtype="Integer">1</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 1, 1, 1, R, F" type="FormLabel" textKey="_firstNameLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 1, 1, 1, F, F" type="FormTextField" resource="firstName">
+        <TabOrder dtype="Integer">2</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 2, 1, 1, R, F" type="FormLabel" textKey="_companyLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 2, 1, 1, F, F" type="FormTextField" resource="organizationName">
+        <TabOrder dtype="Integer">3</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewPanel layoutLocation="0, 3, 2, 1, F, F">
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredCustomerMaintananceSpacing</component_value>
+        </ComponentParameter>
+      </FormViewPanel>
+      <FormViewCell layoutLocation="0, 4, 2, 1, L, F" type="FormLabelDiminished" resource="country" />
+      <FormViewCell layoutLocation="0, 5, 2, 1, F, F" type="FormIcon" textKey="_imageBlueSeparator2">
+        <ComponentParameter name="setIsHorizontallyStretched">
+          <param_value dtype="Boolean">true</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 6, 1, 1, R, F" type="FormLabel" textKey="_cityLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 6, 1, 1, F, F" type="FormTextField" resource="city">
+        <TabOrder dtype="Integer">4</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 7, 1, 1, R, F" type="FormLabel" textKey="_stateLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 7, 1, 1, F, F" type="FormTextField" resource="state">
+        <TabOrder dtype="Integer">5</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 8, 1, 1, R, F" type="FormLabel" textKey="_countyLabel" visibilityGroup="countyVisibility" resourceLink="county">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 8, 1, 1, F, F" type="FormTextField" resource="county" visibilityGroup="countyVisibility">
+        <TabOrder dtype="Integer">6</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 9, 1, 1, R, F" type="FormLabel" textKey="_neighborhoodLabel" visibilityGroup="neighborhoodVisibility" resourceLink="neighborhood">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 9, 1, 1, F, F" type="FormTextField" resource="neighborhood" visibilityGroup="neighborhoodVisibility">
+        <TabOrder dtype="Integer">7</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 10, 1, 1, R, F" type="FormLabel" textKey="_addressLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 10, 1, 1, F, F" type="FormTextField" resource="address1">
+        <TabOrder dtype="Integer">8</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 11, 1, 1, F, F" type="FormTextField" resource="address2">
+        <TabOrder dtype="Integer">10</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 12, 1, 1, R, F" type="FormLabelDiminished" textKey="_aptLabel" visibilityGroup="apartmentVisibility" resourceLink="apartment">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 12, 1, 1, F, F" type="FormTextField" resource="apartment" visibilityGroup="apartmentVisibility">
+        <TabOrder dtype="Integer">9</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 13, 1, 1, R, F" type="FormLabel" textKey="_postalCodeLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 13, 1, 1, F, F" type="FormTextField" resource="postalCode">
+        <TabOrder dtype="Integer">11</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewPanel layoutLocation="0, 14, 2, 1, F, F">
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredCustomerMaintananceSpacing</component_value>
+        </ComponentParameter>
+      </FormViewPanel>
+      <FormViewCell layoutLocation="0, 15, 1, 1, R, F" type="FormLabel" textKey="_countrypack.customerform.fiscalcode">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 15, 1, 1, F, F" type="FormTextField" resource="fiscalCode">
+        <TabOrder dtype="Integer">12</TabOrder>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+<!--       <FormViewCell layoutLocation="0, 16, 1, 1, R, F" type="FormLabel" textKey="_countrypack.customerform.taxcode"> -->
+<!--         <Font fontStyle="BOLD" fontSize="+2" /> -->
+<!--       </FormViewCell> -->
+<!--       <FormViewCell layoutLocation="1, 16, 1, 1, F, F" type="FormTextField" resource="taxCode"> -->
+<!--         <TabOrder dtype="Integer">13</TabOrder> -->
+<!--         <ReadOnly dtype="Boolean">true</ReadOnly> -->
+<!--         <Font fontSize="+2" /> -->
+<!--         <ComponentParameter name="setPreferredSize"> -->
+<!--           <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value> -->
+<!--         </ComponentParameter> -->
+<!--       </FormViewCell> -->
+    </FormViewPanel>
+    <!--********************************** -->
+    <!--** DEFAULT action keys ** -->
+    <!--********************************** -->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_EXIT" text="_back" />
+      <Action ref="ACCEPT" />
+      <Action dataKey="EDIT" text="_editCustomer" keyStroke="F3" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+      </Action>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

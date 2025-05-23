@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="INTPCMD_SetText" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="SET_TEXT" />
+  </bean>
+
+  <bean id="INTPCMD_Clear" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="CLEAR" />
+  </bean>
+
+  <bean id="INTPCMD_Action" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="ACTION" />
+  </bean>
+
+  <bean id="INTPCMD_ViewScreen" parent="INTPCMD_Action" abstract="true">
+    <property name="dev" ref="DEV_Screen" />
+  </bean>
+
+  <bean id="INTPCMD_Enable" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="ENABLE" />
+  </bean>
+
+  <bean id="INTPCMD_Disable" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="DISABLE" />
+  </bean>
+
+  <bean id="INTPCMD_EnableSelection" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="ENABLE_SELECTION" />
+  </bean>
+
+  <bean id="INTPCMD_DisableSelection" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="DISABLE_SELECTION" />
+  </bean>
+
+  <bean id="INTPCMD_EnableSelectable" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="ENABLE_SELECTABLE" />
+  </bean>
+
+  <bean id="INTPCMD_DisableSelectable" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="DISABLE_SELECTABLE" />
+  </bean>
+
+  <bean id="INTPCMD_SetPage" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="SET_PAGE" />
+    <property name="dev" ref="DEV_GridManager" />
+  </bean>
+
+  <bean id="INTPCMD_LoadPages" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="LOAD_PAGES" />
+    <property name="dev" ref="DEV_GridManager" />
+  </bean>
+
+  <bean id="INTPCMD_TriggerAction" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="TRIGGER_ACTION" />
+  </bean>
+
+  <bean id="INTPCMD_SetFilename" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="SET_FILENAME" />
+  </bean>
+
+  <bean id="INTPCMD_SetDateTime" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="SET_DATETIME" />
+  </bean>
+
+  <bean id="INTPCMD_SetKeyCodeType" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="SET_KEY_CODE_TYPE" />
+  </bean>
+
+  <bean id="INTPCMD_DisableElement" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="DISABLE_ELEMENT" />
+  </bean>
+
+  <bean id="INTPCMD_EnableElement" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="ENABLE_ELEMENT" />
+  </bean>
+
+  <bean id="INTPCMD_SelectItem" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="SELECT_ITEM" />
+  </bean>
+
+  <bean id="INTPCMD_SelectLastItem" class="com.micros_retail.xfgclient.interpret.IntpCmd" abstract="true">
+    <property name="cmd" value="SELECT_LAST_ITEM" />
+  </bean>
+
+</beans>

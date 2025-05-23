@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/log/LogConfig.xsd">
+  <LogTypes>
+    <LogType document="PROFORMA_RETAIL_SALE" sectionref="TRANSACTION_PROFORMA" argContent="SALE_BODY" />
+  </LogTypes>
+  
+  <sections>
+    <section name="TRANSACTION_PROFORMA">
+      <xml><![CDATA[
+        <Transaction xmlns:dtv="http://www.datavantagecorp.com/xstore/" 
+                       CancelFlag="#{getTransactionStatusCode}[isCancel]"
+                       TrainingModeFlag="#{getOrganizationId}[trainingMode]"
+                       OfflineFlag="#{getKeyedOffline}[boolean]"
+                       dtv:AppVersion="#{dtv.pos.Version.getReleaseVersion}"
+                       Action="CalcProformaPoints">
+  
+          <?sectionref name="tran_header_detail"?>
+          <?sectionref name="@argContent"?>
+        </Transaction>
+      ]]></xml>
+    </section>
+    
+    <section name="customer_id_sections">
+      <xml><![CDATA[
+        <?call method="getCustomerParty"?>
+        <AlternateKey TypeCode="XSTORE_ID">
+          <AlternateID>#{getPartyId}</AlternateID>
+        </AlternateKey>
+        <?sectionref name="xstore_customer_id"?>
+        
+        <?iterator method="getAlternatePartyIds"?>
+        <?sectionref name="alternate_customer_id"?>
+        <?_iterator?>
+        
+        <?_call?>
+      ]]></xml>
+    </section>
+    
+    <section name="xstore_customer_id">
+      <condition method="getCustomerId" comparison="NOT_NULL" />
+      <xml><![CDATA[
+        <AlternateKey TypeCode="XSTORE_CUST_ID">
+          <AlternateID>#{getCustomerId}</AlternateID>
+        </AlternateKey>
+      ]]></xml>
+    </section>
+    
+    <section name="alternate_customer_id">
+      <condition method="getAlternateIdOwner" comparison="NOT_EQUAL" value="RELATE" />
+      <xml><![CDATA[
+        <AlternateKey TypeCode="#{getAlternateIdOwner}">
+          <AlternateID>#{getAlternateId}</AlternateID>
+        </AlternateKey>
+      ]]></xml>
+    </section>
+    
+    <section name="loyalty_account">
+      <condition method="getLoyaltyCard" comparison="NOT_NULL" />
+      <xml><![CDATA[
+        <CustomerAccount>
+          <LoyaltyAccount TypeCode="LOYALTY">
+            <LoyaltyAccountID>#{getLoyaltyCard}</LoyaltyAccountID>
+          </LoyaltyAccount>
+        </CustomerAccount>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>

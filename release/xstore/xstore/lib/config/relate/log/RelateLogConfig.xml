@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/log/LogConfig.xsd">
+  
+  <RoutingRules>
+    <RoutingRule name="RELATE.SERIALIZED-COUPON-REDEEM" document="RELATE.REQUEST" file="RELATE.SERIALIZED-COUPONS-REDEEM">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" 
+                 value="dtv.xst.crm.relate.impl.promotion.redeem.req.RedeemSerializedCouponsLogEntry" />
+    </RoutingRule>
+    <RoutingRule name="RELATE.REGISTRY-PURCHASE-UPDATE" document="RELATE.REQUEST" file="RELATE.REGISTRY-PURCHASE-UPDATE">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.crm.relate.impl.registry.persist.req.RegistrySellItemLogEntry" />
+    </RoutingRule>
+    <RoutingRule name="RELATE.REGISTRY-LOYALTY-UPDATE" document="RELATE.REQUEST" file="RELATE.REGISTRY-LOYALTY-UPDATE">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.crm.relate.impl.loyalty.LoyaltyCardUpdateLogEntry" />
+    </RoutingRule>
+  </RoutingRules>
+  
+  <LogFiles>
+    <LogFile id="RELATE.SERIALIZED-COUPONS-REDEEM">
+      <Destination class="dtv.logbuilder.writers.LogEntryFileWriter">
+        <Parameter name="file_path" value="${user.dir}/log/relate/relate.serializedCoupons.xml" />
+        <Parameter name="file_per_object" value="false" />
+        <Parameter name="training_file_path" value="${user.dir}/log/training/relate/serializedCoupons.xml" />
+      </Destination>
+      <Header dtype="String"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<PromotionMaintenance>]]>
+      </Header>
+      <Footer dtype="String"><![CDATA[</PromotionMaintenance>]]></Footer>
+    </LogFile>
+    
+    <LogFile id="RELATE.REGISTRY-PURCHASE-UPDATE">
+      <Destination class="dtv.logbuilder.writers.LogEntryFileWriter">
+        <Parameter name="file_path" value="${user.dir}/log/relate/registryUpdate" />
+        <Parameter name="file_per_object" value="true" />
+        <Parameter name="training_file_path" value="${user.dir}/log/training/relate/registryUpdate" />
+      </Destination>
+    </LogFile>
+    
+    <LogFile id="RELATE.REGISTRY-LOYALTY-UPDATE">
+     <Destination class="dtv.logbuilder.writers.LogEntryFileWriter">
+        <Parameter name="file_path" value="${user.dir}/log/relate/loyaltyUpdate" />
+        <Parameter name="file_per_object" value="true" />
+        <Parameter name="training_file_path" value="${user.dir}/log/training/relate/loyaltyUpdate" />
+      </Destination>
+    </LogFile>
+  </LogFiles>
+
+  <LogTypes>
+    <LogType document="RELATE.REQUEST" sectionref="RELATE.REQUEST" />
+  </LogTypes>
+  
+  <sections>
+    <section name="RELATE.REQUEST">
+      <row><field><aggregate class="dtv.xst.crm.relate.impl.jaxb.ModelWriter" /></field></row>
+    </section>
+  </sections>
+</LogDefinitions>

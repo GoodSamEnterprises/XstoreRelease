@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Sat Oct 11 10:02:11 EDT 2003 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">BROWSER</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <CustomView dtype="Class">dtv.pos.browser.FormBrowserPanel</CustomView>
+    </FormViewPanel>
+    <ActionGroup key="DEFAULT">
+      <Action keyStroke="F1" visible="false" />
+      <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+      <Action dataKey="BACK" text="_browserBack" keyStroke="F3">
+        <VisibilityRule class="dtv.pos.browser.BrowserBackVisibilityRule" />
+      </Action>
+      <Action dataKey="FORWARD" text="_browserFwd" keyStroke="F4">
+        <VisibilityRule class="dtv.pos.browser.BrowserForwardVisibilityRule" />
+      </Action>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

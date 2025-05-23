@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView FormKey="EJOURNAL_DETAIL" FormLocation="MULTI_PURPOSE_VIEW" FormLayout="TOP_TO_BOTTOM_TRANSPARENT">
+    
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action chainKey="ISSUE_REBATE_RECEIPT" text="_menuEjournalRebateReceipt" keyStroke="F3" privilege="EJOURNAL_REBATE_RECEIPT">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="REPRINT_RECEIPT" text="_menuEjournalReprint" keyStroke="F4" privilege="EJOURNAL_REPRINT_RECEIPT">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="ISSUE_GIFT_RECEIPT_PRINT_SELECTION" text="_menuEjournalGiftReceipt" keyStroke="F5" privilege="EJOURNAL_GIFT_RECEIPT">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="POST_VOID_EJOURNAL" text="_menuEjournalPostVoid" keyStroke="F6" privilege="EJOURNAL_POST_VOID">
+<!--         disable post void for Brazil -->
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AlwaysNotOverridableVisibilityRule" />
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.ejournal.postvoid.visibility.BusinessDateVisibilityRule" />
+        <VisibilityRule class="dtv.pos.ejournal.postvoid.visibility.TenderVisibilityRule">
+          <Parameter name="exclude" value="HOME_OFFICE_CHECK" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+          <Parameter name="state" value="OPEN" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.TillAttachedAccessCheck" />
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="DEFAULT" subKey="NOTES">
+      <Action ref="CANCEL_BACK" />
+      <Action chainKey="ISSUE_REBATE_RECEIPT" text="_menuEjournalRebateReceipt" keyStroke="F3" privilege="EJOURNAL_REBATE_RECEIPT">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="REPRINT_RECEIPT" text="_menuEjournalReprint" keyStroke="F4" privilege="EJOURNAL_REPRINT_RECEIPT">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="ISSUE_GIFT_RECEIPT_PRINT_SELECTION" text="_menuEjournalGiftReceipt" keyStroke="F5" privilege="EJOURNAL_GIFT_RECEIPT">
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="POST_VOID_EJOURNAL" text="_menuEjournalPostVoid" keyStroke="F6" privilege="EJOURNAL_POST_VOID">
+<!--         disable post void for Brazil -->
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AlwaysNotOverridableVisibilityRule" />
+        <VisibilityRule class="dtv.pos.ejournal.giftrcpt.EjournalTranAccessCheck">
+          <Parameter name="tranType" value="RETAIL_SALE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CurrentEjournalTranIsStatusCode">
+          <Parameter name="status" value="COMPLETE" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.ejournal.postvoid.visibility.BusinessDateVisibilityRule" />
+        <VisibilityRule class="dtv.pos.ejournal.postvoid.visibility.TenderVisibilityRule">
+          <Parameter name="exclude" value="HOME_OFFICE_CHECK" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+          <Parameter name="state" value="OPEN" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.TillAttachedAccessCheck" />
+      </Action>
+      <Action chainKey="ADD_EJOURNAL_COMMENT" text="_formEjournalDetailAddComment" keyStroke="F9" privilege="EJOURNAL_ADD_COMMENT" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

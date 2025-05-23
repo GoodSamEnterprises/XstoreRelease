@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="PRV_ExecuteCode" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_CODE_FUNCTION" />
+  </bean>
+
+  <bean id="PRV_PriceEnquiry" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_PRICE_ENQUIRY" />
+  </bean>
+
+  <bean id="PRV_ChangeQuantity" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_CHANGE_QUANTITY" />
+  </bean>
+
+  <bean id="PRV_ChangePrice" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_CHANGE_PRICE" />
+  </bean>
+
+  <bean id="PRV_AgeVerification" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_AGE_VERIFICATION" />
+  </bean>
+
+  <bean id="PRV_HouseAccountManagerOverride" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_HOUSE_ACCNT_MANAGER_OVERRIDE" />
+  </bean>
+
+  <bean id="PRV_VoidItemLine" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_VOID_ITEM" />
+  </bean>
+
+  <bean id="PRV_VoidItemLast" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_VOID_LAST" />
+  </bean>
+
+  <bean id="PRV_Discount" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_DISCOUNT" />
+  </bean>
+
+  <bean id="PRV_VoidDiscount" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_VOID_DISCOUNT" />
+  </bean>
+
+  <bean id="PRV_VoidTenderLine" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_VOID_TENDER_LINE" />
+  </bean>
+
+  <bean id="PRV_VoidTenderLast" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_VOID_TENDER_LAST" />
+  </bean>
+
+  <bean id="PRV_VoidTransaction" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_VOID_TRANS" />
+  </bean>
+
+  <bean id="PRV_Keyholder" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_KEYHOLDER" />
+  </bean>
+
+  <bean id="PRV_Manager" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_MANAGER" />
+  </bean>
+
+  <bean id="PRV_ITSupport" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_IT_SUPPORT" />
+  </bean>
+
+  <bean id="PRV_PostVoid" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_POSTVOID" />
+  </bean>
+
+  <bean id="PRV_CashTransfer" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege" >
+    <property name="dbId" value="XFG_CASH_TRANSFER" />
+  </bean>
+
+  <bean id="PRV_Return" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_RETURN" />
+  </bean>
+
+  <bean id="PRV_PaidIn" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_PAID_IN" />
+  </bean>
+
+  <bean id="PRV_PaidOut" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_PAID_OUT" />
+  </bean>
+
+  <bean id="PRV_CashPickup" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_CASH_PICKUP" />
+  </bean>
+
+  <bean id="PRV_CloseRegister" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_CLOSE_REGISTER" />
+  </bean>
+
+  <bean id="PRV_TillCount" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_TILL_COUNT" />
+  </bean>
+
+  <bean id="PRV_TillAudit" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_TILL_AUDIT" />
+  </bean>
+
+  <bean id="PRV_NoSale" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_NO_SALE" />
+  </bean>
+
+  <bean id="PRV_PasswordChange" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_EMPLOYEE_PASSWORD_CHANGE" />
+  </bean>
+
+  <bean id="PRV_ItemNotOnFile" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_ITEM_NOT_ON_FILE" />
+  </bean>
+
+  <bean id="PRV_InventoryAdjustment" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_INVENTORY_ADJUSTMENT" />
+  </bean>
+
+  <bean id="PRV_ClockInOut" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_ADMINISTRATIVE_WORK_CODE" />
+  </bean>
+
+  <bean id="PRV_ClockInOutTimeClockDuration" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_TIME_CLOCK_DURATION" />
+  </bean>
+
+  <bean id="PRV_SellNonPhysical" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_SELL_NON_PHYSICAL" />
+  </bean>
+
+  <bean id="PRV_SellGiftCard" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_SELL_GIFT_CARD" />
+  </bean>
+
+  <bean id="PRV_SellGiftCertficate" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_SELL_GIFT_CERTIFICATE" />
+  </bean>
+
+  <bean id="PRV_ReturnWithNonReturnItem" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_RETURN_WITH_NON_RETURN_ITEM" />
+  </bean>
+
+  <bean id="PRV_ReturnGiftCard" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_RETURN_GIFT_CARD" />
+  </bean>
+
+  <bean id="PRV_ReturnGiftCertficate" class="com.micros_retail.xfgclient.statemachine.privilege.Privilege">
+    <property name="dbId" value="XFG_RETURN_GIFT_CERTIFICATE" />
+  </bean>
+
+</beans>

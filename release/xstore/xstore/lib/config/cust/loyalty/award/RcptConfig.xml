@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../../../pos/config/dtv/res/config/RcptConfig.xsd">
+  
+  <sections>
+    <section name="LOYALTY_BALANCE_INQUIRY">
+      <sectionref>logo</sectionref>
+      <row align="C" charsize="X2HW"><field text="_BI_rcptHeader" /></row>
+      <horizontal_rule />
+      <sectionref>INVALID_LOYALTY_CARD</sectionref>
+      <row />
+      <row>
+        <field text="_BI_date" loc="3" /><sp/>
+        <field formatter="DateShort"><aggregate class="dtv.pos.logbuilder.CurrentTimeDocBuilderField" /></field>
+      </row>
+      <row>
+        <field text="_loyaltyCardNumber" loc="3" /><sp/>
+        <field method="getCardNumber" formatter="CREDITCARD" />
+      </row>
+      <row>
+        <condition class="dtv.pos.customer.loyalty.CardShowExpirationDateCondition" />
+        <condition method="getExpirationDate" comparison="NOT_NULL" />
+        <field text="_loyaltyExpiration" loc="3" /><sp/>
+        <field method="getExpirationDate" formatter="DateMedium" />
+      </row>
+      <row />
+      <row>
+        <condition method="getPrimaryLoyaltyAccount" comparison="NOT_NULL" />
+        <field text="_programNameLabel" loc="3" /><sp/>
+        <field method="getPrimaryLoyaltyAccount.getLoyaltyProgramName" />
+      </row>
+      <row>
+        <condition method="getPrimaryLoyaltyAccount" comparison="NOT_NULL" />
+        <field text="_programLevelLabel" loc="3" /><sp/>
+        <field method="getPrimaryLoyaltyAccount.getLoyaltyProgramLevelName" />
+      </row>
+      <row>
+        <condition method="getPrimaryLoyaltyAccount" comparison="NOT_NULL" />
+        <field text="_loyaltyBalanceLabel" loc="3" /><sp/>
+        <field method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="QUANTITY" />
+      </row>
+      <row>
+        <condition method="getPrimaryAwardAccount" comparison="NOT_NULL" />
+        <field text="_awardBalanceLabel" loc="3" /><sp/>
+        <field method="getPrimaryAwardAccount.getAccountBalance" formatter="MONEY" />
+      </row>
+      <sectionref>INVALID_LOYALTY_CARD</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <section name="LOYALTY_HISTORY_INQUIRY">
+      <sectionref>logo</sectionref>
+      <row n="2" />
+      <sectionref>LOYALTY_HISTORY_CUSTOMER</sectionref>
+      <sectionref>LoyaltyInformationBanner</sectionref>
+      <sectionref>CUSTOMER_AVAILABLE_AWARDS</sectionref>
+      <sectionref>CUSTOMER_LOYALTY_ACCOUNTS</sectionref>
+      <sectionref>loyaltyHistoryFooter</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <section name="CUSTOMER_AVAILABLE_AWARDS">
+      <condition method="getCustLoyaltyAccountListModel.getFullAwardListing" comparison="NOT_NULL" />
+      <row style="STRONGUNDERLINE">
+        <field text="_loyaltyHistoryRcptAwardCouponId" />
+        <field text="_loyaltyHistoryRcptAwardAmount" loc="-1" />
+      </row>
+      <iterator method="getCustLoyaltyAccountListModel.getFullAwardListing">
+        <sectionref>AwardDetails</sectionref>
+      </iterator>
+    </section>
+
+    <section name="AwardDetails">
+      <row>
+        <field method="getCouponId" />
+        <field method="getAmount" formatter="Money$" loc="-1" />
+      </row>
+      <row>
+        <condition method="getExpirationDate" comparison="NOT_NULL" />
+        <field text="_loyaltyHistoryRcptAwardExpires" loc="3" /><sp/>
+        <field method="getExpirationDate" formatter="DateShort" />
+      </row>
+      <row />
+    </section>
+  </sections>
+</ReceiptDefinitions>

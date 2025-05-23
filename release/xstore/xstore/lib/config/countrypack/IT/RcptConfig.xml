@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+  <FormatterMap>
+    <Formatter name="DayAndMonth" class="dtv.pos.i18n.format.DateFormatter" format="dd MMMM" />
+  </FormatterMap>
+  <sections>
+    <section name="FISCAL.TENDER_DESCRIPTION">
+      <row>      
+        <field method="getTender.getOptions.getFiscalTenderId" />
+        <field method="getTender.getDescription" />
+      </row>
+    </section>
+  </sections>
+</ReceiptDefinitions>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri Jun 04 10:39:54 EDT 2004 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">WORK_ORDER_SEARCH_BACK_OFFICE</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <IconGroup icon="_imagePromptCustomerSearch" />
+      <TextKey dtype="Translatable">_workOrderSearchMsg</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, 10.0, FILL, 40.0-->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--40.0, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="IntegerArray">30, 0, 30, 0</param_value>
+        </Parameter>
+        <Parameter name="addRowOffset">
+          <param_value dtype="Integer">13</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">false</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_workOrderId</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">custAccountId</Resource>
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_workOrderLName</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">lastName</Resource>
+        <DataField ref="Name" />
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 3, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_workOrderFName</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">firstName</Resource>
+        <DataField ref="Name" />
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_workOrderCustId</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">customerId</Resource>
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 5, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_workOrderPhone</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">telephone</Resource>
+        <DataField ref="Numeric" />
+        <Font fontSize="+5" />
+      </FormViewCell>
+    </FormViewPanel>
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" text="_workOrderSearchContinue" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

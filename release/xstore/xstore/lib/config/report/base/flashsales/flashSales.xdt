@@ -1,0 +1,246 @@
+<dataTemplate name="FlashSales" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="TITLE_SUMMARY" value="_rptFlashSalesSummaryReportTitle"/>
+    <label name="TITLE_BY_HOUR" value="_rptFlashSalesHourReportTitle"/>
+    <label name="TITLE_BY_MERCHLVL1" value="_rptFlashSalesMerchLevelReportTitle">
+      <parameters>
+        <parameter value="_merchLevel1"/>
+      </parameters>
+    </label>
+    <label name="TITLE_BY_EMP" value="_rptFlashSalesEmpReportTitle"/>
+    <label name="CRITERIA_REPORT_DATE" value="_rptRetailPeriodColon"/>
+    <label name="SUMMARY" value="_rptSummary"/>
+    <label name="TOTAL" value="_rptTotal"/>
+    <label name="COUNT" value="_rptCount"/>
+    <label name="AMOUNT" value="_rptAmount"/>
+    <label name="SALES" value="_rptFlashSales"/>
+    <label name="COMMISSIONED_SALES" value="_rptSalesCommissioned"/>
+    <label name="NON_COMMISSIONED_SALES" value="_rptSalesNonCommissioned"/>
+    <label name="TENDERS" value="_rptFlashSalesTenders"/>
+    <label name="ID" value="_rptFlashSalesId"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="EMP_GROUP" value="_rptFlashSalesEmployees"/>
+    <label name="EMP_ID" value="_rptFlashSalesEmployeeId"/>
+    <label name="EMP_NAME" value="_rptFlashSalesEmployeeName"/>
+    <label name="MERCHLVL1" value="_merchLevel1"/>
+    <label name="HOURS_PERIOD" value="_rptFlsSlsHoursPeriodColHeading"/>
+    <label name="STORE_HOURS" value="_rptHourFlashStoreHours"/>
+    <label name="TRANS_COUNT" value="_rptFlsSlsTypeBTrnCountColHeading"/>
+    <label name="ITEM_COUNT" value="_rptItemCount"/>
+    <label name="NET_SALES" value="_rptNetSales"/>
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="merchLevel1Code" class="java.lang.String" isForPrompting="false" include_in_output="false"/>
+
+    <!-- User Parameters -->
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriod;Date]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>
+    <parameter name="displayOption" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptFlashSalesDisplayOptions;Combo;dtv.pos.reporting.fill.SoftEnumFactory;SUMMARY=_rptFlashSalesSummaryOption|MERCHLVL1=_rptFlashSalesByMerchLevel1Option|EMPLOYEE=_rptFlashSalesByEmployeeOption|HOUR=_rptFlashSalesByHourOption]]></parameterDescription>
+      <defaultValueExpression><![CDATA["SUMMARY"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showChart" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowChart;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_SALES" key="FLASH_SALES_SALES_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group</ResultField>
+        <ResultField>element</ResultField>
+        <ResultField>count</ResultField>
+        <ResultField>amount</ResultField>
+        <ResultField>order</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TENDERS" key="FLASH_SALES_TENDERS_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group</ResultField>
+        <ResultField>tenderDescription</ResultField>
+        <ResultField>count</ResultField>
+        <ResultField>amount</ResultField>
+        <ResultField>order</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_EMPLOYEES_COMMISSIONED" key="FLASH_SALES_BY_EMPLOYEE_COMMISSIONED_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>employee_id</ResultField>
+        <ResultField>last_name</ResultField>
+        <ResultField>emp_name</ResultField>
+        <ResultField>quantity</ResultField>
+        <ResultField>amount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_EMPLOYEES_NON_COMMISSIONED" key="FLASH_SALES_BY_EMPLOYEE_NON_COMMISSIONED_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>quantity</ResultField>
+        <ResultField>amount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_EMPLOYEES_TOTAL" key="FLASH_SALES_BY_EMPLOYEE_TOTAL_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>quantity</ResultField>
+        <ResultField>amount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_MERCHLVL1" key="FLASH_SALES_BY_MERCHLVL1_REPORT">
+      <Parameters>
+        <Parameter>merchLevel1Code</Parameter>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group</ResultField>
+        <ResultField>merch_level_1</ResultField>
+        <ResultField>line_count</ResultField>
+        <ResultField>line_amt</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>alt_description</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_HOURS" key="FLASH_SALES_BY_HOUR_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group</ResultField>
+        <ResultField>hour</ResultField>
+        <ResultField>hour_start_key</ResultField>
+        <ResultField>hour_end_key</ResultField>
+        <ResultField>trans_count</ResultField>
+        <ResultField>item_count</ResultField>
+        <ResultField>net_sales</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_SALE" source="Q_SALES">
+      <element name="SALE_GROUP" value="group"/>
+      <element name="SALE_ELEMENT_CODE" value="element"/>
+      <element name="SALE_ELEMENT" value="element" translation-prefix="_"/>
+      <element name="SALE_COUNT_RAW" value="count"/>
+      <element name="SALE_COUNT" value="count" formatter="Decimal"/>
+      <element name="SALE_AMOUNT_RAW" value="amount" />
+      <element name="SALE_AMOUNT" value="amount" formatter="Money"/>
+    </group>
+    <group name="G_TENDER" source="Q_TENDERS">
+      <element name="TENDER_GROUP" value="group"/>
+      <element name="TENDER" value="tenderDescription"/>
+      <element name="TENDER_COUNT_RAW" value="count"/>
+      <element name="TENDER_COUNT" value="count" formatter="Decimal"/>
+      <element name="TENDER_AMOUNT_RAW" value="amount"/>
+      <element name="TENDER_AMOUNT" value="amount" formatter="Money"/>
+    </group>
+    <group name="G_EMP_COMM" source="Q_EMPLOYEES_COMMISSIONED">
+      <element name="EMP_ID" value="employee_id" group-by="true"/>
+      <element name="EMP_LNAME" value="last_name" group-by="true"/>
+      <element name="EMP_NAME" value="emp_name" group-by="true" formatter="LastFirstNameFromString"/>
+      <element name="EMP_COUNT_RAW" value="quantity" function="SUM"/>
+      <element name="EMP_COUNT" value="quantity" formatter="Decimal" function="SUM"/>
+      <element name="EMP_AMOUNT_RAW" value="amount" function="SUM"/>
+      <element name="EMP_AMOUNT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_EMP_COMM_TOTAL" source="Q_EMPLOYEES_COMMISSIONED">
+      <element name="EMP_COUNT" value="quantity" formatter="Decimal" function="SUM"/>
+      <element name="EMP_AMOUNT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_EMP_NONCOMM" source="Q_EMPLOYEES_NON_COMMISSIONED">
+      <element name="EMP_NONCOMM_COUNT" value="quantity" formatter="Decimal" function="SUM"/>
+      <element name="EMP_NONCOMM_AMOUNT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_EMP_TOTAL" source="Q_EMPLOYEES_TOTAL">
+      <element name="EMP_TOTAL_COUNT" value="quantity" formatter="Decimal" function="SUM"/>
+      <element name="EMP_TOTAL_AMOUNT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_MERCHLVL1" source="Q_MERCHLVL1">
+      <element name="MERCHLVL1_GROUP" value="group"/>
+      <element name="MERCHLVL1_ID" value="merch_level_1"/>
+      <element name="MERCHLVL1_DESC" value="description"/>
+      <element name="MERCHLVL1_ALT_DESC" value="alt_description"/>
+      <element name="MERCHLVL1_COUNT_RAW" value="line_count"/>
+      <element name="MERCHLVL1_COUNT" value="line_count" formatter="Decimal"/>
+      <element name="MERCHLVL1_AMOUNT_RAW" value="line_amt"/>
+      <element name="MERCHLVL1_AMOUNT" value="line_amt" formatter="Money"/>
+    </group>
+    <group name="G_MERCHLVL1_TOTAL" source="Q_MERCHLVL1">
+      <element name="MERCHLVL1_COUNT" value="line_count" formatter="Decimal" function="SUM"/>
+      <element name="MERCHLVL1_AMOUNT" value="line_amt" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_HOUR" source="Q_HOURS">
+      <element name="HOUR_GROUP" value="group"/>
+      <element name="HOUR_START" value="hour_start_key"/>
+      <element name="HOUR_END" value="hour_end_key"/>
+      <element name="HOUR_RAW" value="hour"/>
+      <element name="HOUR_TRANS_COUNT_RAW" value="trans_count"/>
+      <element name="HOUR_TRANS_COUNT" value="trans_count" formatter="Decimal"/>
+      <element name="HOUR_ITEM_COUNT_RAW" value="item_count"/>
+      <element name="HOUR_ITEM_COUNT" value="item_count" formatter="Decimal"/>
+      <element name="HOUR_AMOUNT_RAW" value="net_sales"/>
+      <element name="HOUR_AMOUNT" value="net_sales" formatter="Money"/>
+    </group>
+    <group name="G_HOUR_TOTAL" source="Q_HOURS">
+      <element name="HOUR_TRANS_COUNT" value="trans_count" formatter="Decimal" function="SUM"/>
+      <element name="HOUR_ITEM_COUNT" value="item_count" formatter="Decimal" function="SUM"/>
+      <element name="HOUR_SALE_AMOUNT" value="net_sales" formatter="Money" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

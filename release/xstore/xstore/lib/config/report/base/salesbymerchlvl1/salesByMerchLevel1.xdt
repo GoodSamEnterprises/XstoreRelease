@@ -1,0 +1,187 @@
+<dataTemplate name="SalesByMerchLevel1" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="NA_SYMBOL" value="_rptNotApplicableSymbol"/>
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="CRITERIA_EMPLOYEE" value="_rptSalesByMerchLvl1EmployeeColon"/>
+    <label name="EMPLOYEE" value="_rptEmployee"/>
+    <label name="SUMMARY" value="_rptSummary"/>
+    <label name="DETAIL" value="_rptDetail"/>
+    <label name="MERCHLVL1" value="_merchLevel1"/>
+    <label name="GROSS_SALES" value="_rptSalesByMerchLvl1GrossSales"/>
+    <label name="RETURNS" value="_rptSalesByMerchLvl1Returns"/>
+    <label name="DISCOUNTS" value="_rptSalesByMerchLvl1Discounts"/>
+    <label name="NET_SALES" value="_rptSalesByMerchLvl1NetSales"/>
+    <label name="COUNT" value="_rptCount"/>
+    <label name="AMOUNT" value="_rptAmount"/>
+    <label name="PERCENT" value="_rptPercent"/>
+    <label name="TOTAL" value="_rptTotal"/>
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="merchLevel1Code" class="java.lang.String" isForPrompting="false" include_in_output="false"/>
+    <parameter name="excludeReturns" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="employeeId" class="java.lang.String"  isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSalesByMerchLvl1Employee;Text;Simple;maxCharacters=30]]></parameterDescription>
+    </parameter>
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange">
+        <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+        <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="byEmployee" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSalesByMerchLvl1GroupByEmployee;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["NO"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+
+  <dataSource>
+    <queryReference name="Q_SLS_EMP_MERCHLVL1" key="SALES_BY_EMPLOYEE_AND_MERCHLVL1_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>merchLevel1Code</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>employeeId</Parameter>
+        <Parameter>byEmployee</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>employee_id</ResultField>
+        <ResultField>emp_name</ResultField>
+        <ResultField>hierarchy_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>GrossCount</ResultField>
+        <ResultField>GrossAmount</ResultField>
+        <ResultField>ReturnCount</ResultField>
+        <ResultField>ReturnAmount</ResultField>
+        <ResultField>DiscountCount</ResultField>
+        <ResultField>DiscountAmount</ResultField>
+        <ResultField>NetCount</ResultField>
+        <ResultField>NetAmount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_SLS_MERCHLVL1" key="SALES_BY_MERCHLVL1_REPORT">
+      <Parameters>
+        <Parameter>merchLevel1Code</Parameter>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>hierarchy_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>GrossCount</ResultField>
+        <ResultField>GrossAmount</ResultField>
+        <ResultField>ReturnCount</ResultField>
+        <ResultField>ReturnAmount</ResultField>
+        <ResultField>DiscountCount</ResultField>
+        <ResultField>DiscountAmount</ResultField>
+        <ResultField>NetCount</ResultField>
+        <ResultField>NetAmount</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+
+  <dataStructure>
+    <group name="G_SLS" source="Q_SLS_MERCHLVL1">
+      <element name="ID" value="hierarchy_id"/>
+      <element name="DESC" value="description"/>
+      <element name="GROSS_CNT_RAW" value="GrossCount"/>
+      <element name="GROSS_CNT" value="GrossCount" formatter="Accounting"/>
+      <element name="GROSS_AMT" value="GrossAmount" formatter="Money"/>
+      <element name="RET_CNT_RAW" value="ReturnCount"/>
+      <element name="RET_CNT" value="ReturnCount" formatter="Accounting"/>
+      <element name="RET_AMT" value="ReturnAmount" formatter="Money"/>
+      <element name="DISC_CNT" value="DiscountCount" formatter="Accounting"/>
+      <element name="DISC_AMT" value="DiscountAmount" formatter="Money"/>
+      <element name="NET_CNT" value="NetCount" formatter="Accounting"/>
+      <element name="NET_AMT" value="NetAmount" formatter="Money"/>
+      <element name="NET_AMT_RAW" value="NetAmount"/>
+    </group>
+    <group name="G_SLS_EMP" source="Q_SLS_EMP_MERCHLVL1">
+      <element name="EMP_ID" value="employee_id"/>
+      <element name="EMP_NAME" value="emp_name" formatter="LastFirstNameFromString"/>
+      <element name="ID" value="hierarchy_id"/>
+      <element name="DESC" value="description"/>
+      <element name="GROSS_CNT_RAW" value="GrossCount"/>
+      <element name="GROSS_CNT" value="GrossCount" formatter="Accounting"/>
+      <element name="GROSS_AMT" value="GrossAmount" formatter="Money"/>
+      <element name="RET_CNT_RAW" value="ReturnCount"/>
+      <element name="RET_CNT" value="ReturnCount" formatter="Accounting"/>
+      <element name="RET_AMT" value="ReturnAmount" formatter="Money"/>
+      <element name="DISC_CNT" value="DiscountCount" formatter="Accounting"/>
+      <element name="DISC_AMT" value="DiscountAmount" formatter="Money"/>
+      <element name="NET_CNT" value="NetCount" formatter="Accounting"/>
+      <element name="NET_AMT" value="NetAmount" formatter="Money"/>
+      <element name="NET_AMT_RAW" value="NetAmount"/>
+    </group>
+    <group name="G_EMP_SUBTOT" source="Q_SLS_EMP_MERCHLVL1">
+      <element name="EMP_ID" group-by="true" value="employee_id"/>
+      <element name="EMP_NAME" value="emp_name" formatter="LastFirstNameFromString"/>
+      <element name="GROSS_CNT_RAW" value="GrossCount" function="SUM" />
+      <element name="GROSS_CNT" value="GrossCount" formatter="Accounting" function="SUM" />
+      <element name="GROSS_AMT" value="GrossAmount" formatter="Money" function="SUM" />
+      <element name="RET_CNT_RAW" value="ReturnCount" function="SUM" />
+      <element name="RET_CNT" value="ReturnCount" formatter="Accounting" function="SUM" />
+      <element name="RET_AMT" value="ReturnAmount" formatter="Money" function="SUM" />
+      <element name="DISC_CNT" value="DiscountCount" formatter="Accounting" function="SUM" />
+      <element name="DISC_AMT" value="DiscountAmount" formatter="Money" function="SUM" />
+      <element name="NET_CNT" value="NetCount" formatter="Accounting" function="SUM" />
+      <element name="NET_AMT" value="NetAmount" formatter="Money" function="SUM" />
+      <element name="NET_AMT_RAW" value="NetAmount"  function="SUM" />
+    </group>
+    <group name="G_EMP_TOT" source="Q_SLS_EMP_MERCHLVL1">
+      <element name="GROSS_CNT_RAW" value="GrossCount" function="SUM" />
+      <element name="GROSS_CNT" value="GrossCount" formatter="Accounting" function="SUM" />
+      <element name="GROSS_AMT" value="GrossAmount" formatter="Money" function="SUM" />
+      <element name="RET_CNT_RAW" value="ReturnCount" function="SUM" />
+      <element name="RET_CNT" value="ReturnCount" formatter="Accounting" function="SUM" />
+      <element name="RET_AMT" value="ReturnAmount" formatter="Money" function="SUM" />
+      <element name="DISC_CNT" value="DiscountCount" formatter="Accounting" function="SUM" />
+      <element name="DISC_AMT" value="DiscountAmount" formatter="Money" function="SUM" />
+      <element name="NET_CNT" value="NetCount" formatter="Accounting" function="SUM" />
+      <element name="NET_AMT" value="NetAmount" formatter="Money" function="SUM" />
+      <element name="NET_AMT_RAW" value="NetAmount"  function="SUM" />
+    </group>    
+    <group name="G_TOT" source="Q_SLS_MERCHLVL1">
+      <element name="GROSS_CNT_RAW" value="GrossCount" function="SUM"/>
+      <element name="GROSS_CNT" value="GrossCount" formatter="Accounting" function="SUM"/>
+      <element name="GROSS_AMT" value="GrossAmount" formatter="Money" function="SUM"/>
+      <element name="RET_CNT_RAW" value="ReturnCount" function="SUM"/>
+      <element name="RET_CNT" value="ReturnCount" formatter="Accounting" function="SUM" />
+      <element name="RET_AMT" value="ReturnAmount" formatter="Money" function="SUM"/>
+      <element name="DISC_CNT" value="DiscountCount" formatter="Accounting" function="SUM"/>
+      <element name="DISC_AMT" value="DiscountAmount" formatter="Money" function="SUM"/>
+      <element name="NET_CNT" value="NetCount" formatter="Accounting" function="SUM" />
+      <element name="NET_AMT" value="NetAmount" formatter="Money" function="SUM"/>
+      <element name="NET_AMT_RAW" value="NetAmount" function="SUM"/>
+      <element name="MIN_NET_AMT_RAW" value="NetAmount" function="MIN"/>
+    </group>
+  </dataStructure>
+
+</dataTemplate>

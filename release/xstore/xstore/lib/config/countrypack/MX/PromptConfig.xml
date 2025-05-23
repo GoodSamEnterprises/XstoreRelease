@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PromptSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PromptConfig.xsd">
+  <Prompt name="COUNTRYPACK.MX.CFDI_ERROR" type="Notify" title="_error" message="_countrypack.mx.cfdi.error">
+    <Action ref="CANCEL" />
+    <Action name="IGNORE" category="" keywords="exclude" dataKey="IGNORE" text="_ignore" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.CFDI_ERROR_RETRY" type="Notify" title="_error" message="_countrypack.mx.cfdi.error">
+    <Action ref="CANCEL" />
+    <Action name="RETRY" category="" keywords="exclude" dataKey="RETRY" text="_retry" keyStroke="F3" />
+    <Action name="IGNORE" category="" keywords="exclude" dataKey="IGNORE" text="_ignore" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.BACK_OFFICE.CFDI_ERROR" type="Notify" title="_error" message="_countrypack.mx.cfdi.error">
+    <Action ref="CANCEL" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.BACK_OFFICE.CFDI_ERROR_RETRY" type="Notify" title="_error" essage="_countrypack.mx.cfdi.error">
+    <Action ref="CANCEL" />
+    <Action name="RETRY" category="" keywords="exclude" dataKey="RETRY" text="_retry" keyStroke="F3" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_ERROR" type="Notify" title="_error" message="_countrypack.mx.cfdi.error.continueMessage">
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_ERROR_RETRY" type="Notify" title="_error" message="_countrypack.mx.cfdi.error.continueMessage">
+    <Action name="RETRY" category="" keywords="exclude" dataKey="RETRY" text="_retry" keyStroke="F3" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_ERROR_RETRY_ALL" type="Notify" title="_error" message="_countrypack.mx.cfdi.error">
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_ERROR_LIST" type="List" title="_countrypack.mx.cfdiError.list" message="_countrypack.mx.globalInvoicePending">
+    <ListViewType dtype="String">COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_LIST</ListViewType>
+    <Action dataKey="SELECT_ALL" text="_countrypack.mx.globalInvoice.retryAll" keyStroke="F4" keywords="actionForSelectedListItem" />
+    <Action dataKey="CONTINUE" text="_continue" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_ERROR_RETRY_ALL_FINISH" type="Notify" title="_countrypack.mx.cfdiError.list" message="_countrypack.mx.globalInvoice.retryAll.done">
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+
+  <Prompt name="COUNTRYPACK.MX.CFDI_PROMPT_CONFIRMATION" type="Text" title="_countrypack.mx.cfdi.error.confirmationPromt.title" message="_countrypack.mx.cfdi.error.confirmationPromt">
+    <DataField ref="CFDIConfirmationNumber" />
+    <IconGroup icon="_imagePromptSerial" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.CFDI_ERROR_CONFIRMATION" type="Notify" title="_error" message="_countrypack.mx.cfdi.error.confirmationMessage">
+    <Action ref="CANCEL" />
+    <Action ref="ACCEPT" text="_countrypack.mx.cfdi.error.confirmationNumber" keyStroke="F3" />
+    <Action name="IGNORE" category="" keywords="exclude" dataKey="IGNORE" text="_ignore" keyStroke="Enter" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.MX.BACK_OFFICE.CFDI_ERROR_CONFIRMATION" type="Notify" title="_error" message="_countrypack.mx.cfdi.error.confirmationMessage">
+    <Action ref="CANCEL" />
+    <Action ref="ACCEPT" text="_countrypack.mx.cfdi.error.confirmationNumber" keyStroke="F3" />
+  </Prompt>
+  
+  <Prompt name="COUNTRYPACK.MX.CFDI_ERROR_CONFIRMATION.GLOBAL_INVOICE" type="Notify" title="_error" message="_countrypack.mx.cfdi.error.confirmationMessage">
+    <Action ref="ACCEPT" text="_countrypack.mx.cfdi.error.confirmationNumber" keyStroke="F3" />
+    <Action name="SKIP_GLOBALINVOICE_CONFIRMATION" category="" keywords="exclude" dataKey="SKIP_GLOBALINVOICE_CONFIRMATION" text="_ok" keyStroke="Enter" />
+  </Prompt>
+
+  <Prompt name="USE_CFDI" type="List" title="_countrypack.mx.cfdi.useCFDITitle" message="_countrypack.mx.cfdi.useCFDIMessage">
+    <ListViewType dtype="String">USE_CFDI_VALUES</ListViewType>
+    <DataSelection selectionMode="SINGLE" />
+    <Action ref="ACCEPT" />
+  </Prompt>
+
+</PromptSet>

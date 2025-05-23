@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PromptSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PromptConfig.xsd">
+
+  <!-- For XstoreMobile, LOGIN_USER_ID and LOGIN_USER_PWD both need to be modal="true";
+       (the base prompts for these are modal="false" for various reasons); otherwise,
+       the XstoreMobile main-menu options would show up as a "context menu" in mobile,
+       which we definitely don't want.  Also note: for XstoreMobile, the LOGIN_USER_ID
+       DOES give you a "Back" (CANCEL) action; in normal Xstore, there's nowhere to go
+       Back to, so it hides the CANCEL action with a visibility rule; we eliminated
+       that visibility rule here. -->
+  <Prompt name="LOGIN_USER_ID" type="Text" title="_login" message="_promptmsg9">
+    <DataField ref="ID" />
+    <IconGroup icon="_imagePromptLoginUserId" />
+    <Action ref="TOUCH::OPEN_REGISTER" />
+    <Action ref="TOUCH::CLOCK_IN_OUT" />
+    <Action ref="CANCEL_BACK" />
+    <Action ref="ACCEPT_ENTRY" />
+  </Prompt>
+  <Prompt name="LOGIN_USER_PWD" type="Text" title="_login" message="_promptmsg10" >
+    <DataField ref="Password" />
+    <IconGroup icon="_imagePromptLoginPwd" />
+  </Prompt>
+  
+  <Prompt name="BACK_OFFICE_LOGIN_USER_ID" type="Text" title="_backOfficeLogin" message="_promptmsg9">
+    <DataField ref="ID" />
+    <IconGroup icon="_imagePromptLoginUserId" />
+    <Action ref="TOUCH::OPEN_REGISTER" />
+    <Action ref="TOUCH::CLOCK_IN_OUT" />
+    <Action ref="CANCEL_BACK" />
+    <Action ref="ACCEPT_ENTRY" />
+  </Prompt>
+  <Prompt name="BACK_OFFICE_LOGIN_USER_PWD" type="Text" title="_backOfficeLogin" message="_promptmsg10">
+    <DataField ref="Password" />
+    <IconGroup icon="_imagePromptLoginPwd" />
+  </Prompt>
+  
+  <!-- XstoreMobile needs to display a different ListViewType for inventory exceptions since the mobile list prompts 
+       do not include headers, and the data in this list is ambiguous. -->
+  <Prompt name="INV_CTL_DOC_EXCEPTION_LIST" type="List" title="_inventoryCartonExceptionPromptTitle" message="_inventoryCartonExceptionPromptMessage">
+    <ListViewType dtype="String">INV_CTL_DOC_EXCEPTION_LIST</ListViewType>
+    <DataSelection selectionMode="UNSELECTABLE" />
+    <Action ref="CANCEL_BACK" />
+  </Prompt>
+  
+
+  <Prompt name="XSTOREM::XSTOREM_MENU" type="Menu"> 
+    <Action ref="TOUCH::OPEN_REGISTER" />
+    <Action ref="TOUCH::CLOCK_IN_OUT" />
+  </Prompt>
+  
+  <Prompt name="ADMIN::BACK_OFFICE_OPTIONS" type="Menu" />
+  
+</PromptSet>

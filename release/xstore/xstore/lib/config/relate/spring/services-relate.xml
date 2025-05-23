@@ -1,0 +1,2146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context" 
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+  <bean id="loyaltyServices" class="dtv.xst.crm.relate.impl.LoyaltyServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="promotionServices" class="dtv.xst.crm.relate.impl.PromotionServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="customerServices" class="dtv.xst.crm.relate.impl.CustomerServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="taskServices" class="dtv.xst.crm.relate.impl.task.TaskServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="registryServices" class="dtv.xst.crm.relate.impl.RegistryServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="attributesServices" class="dtv.xst.crm.relate.impl.AttributesServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="loyaltyRequestRetry" parent="requestRetryService" class="dtv.xst.crm.relate.impl.LoyaltyRequestRetryService" />
+  <bean id="registryRequestRetry" parent="requestRetryService" class="dtv.xst.crm.relate.impl.RegistryRequestRetryService" />
+
+  <bean id="relateCustomerPersistenceStrategy" class="dtv.xst.crm.relate.impl.cust.PersistenceStrategy" scope="prototype">
+    <constructor-arg>
+      <bean class="dtv.xst.crm.relate.impl.cust.persist.CustomerPersister">
+        <property name="dataSourceName" value="ConcurrentStoreRelate|Relate" />
+      </bean>
+    </constructor-arg>
+  </bean>
+
+  <bean id="relateLoyaltyPersistenceStrategy" class="dtv.xst.crm.relate.impl.loyalty.PersistenceStrategy" scope="prototype" />
+  <bean id="relateHistoryPersistenceStrategy" class="dtv.xst.crm.relate.impl.retailhistory.PersistenceStrategy" scope="prototype" />
+
+  <bean id="relatePersistenceStrategy" class="dtv.data2.access.impl.SelectingPersistenceStrategy" scope="prototype">
+    <constructor-arg>
+      <list value-type="dtv.data2.access.impl.IPersistenceStrategySelector">
+        <bean class="dtv.xst.crm.relate.impl.cust.CustomerPersistenceStrategySelector">
+          <constructor-arg ref="relateCustomerPersistenceStrategy" />
+        </bean>
+        <bean class="dtv.xst.crm.relate.impl.loyalty.LoyaltyPersistenceStrategySelector">
+          <constructor-arg ref="relateLoyaltyPersistenceStrategy" />
+        </bean>
+        <bean class="dtv.xst.crm.relate.impl.retailhistory.RetailHistoryPersistenceStrategySelector">
+          <constructor-arg ref="relateHistoryPersistenceStrategy" />
+        </bean>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="relateResponseAdapter" class="dtv.xst.crm.relate.impl.RelateExceptionResponseAdapter" />
+  
+  <bean id="relateGenericExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+  </bean>
+
+  <bean id="relateJaxWsHandlerResolver" parent="wsLoggingHandlerResolver">
+    <property name="handlers">
+      <list value-type="java.xml.ws.handler.Handler" merge="true">
+        <bean class="dtv.xst.crm.relate.impl.RelateAuthHandler">
+          <property name="authTokenName" value="#{systemProperties['dtv.relate.AuthTokenName']}" />
+          <property name="authToken" value="#{systemProperties['dtv.relate.Auth']}" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="relateCustomerJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="serviceInterface" value="com.dtv.csx.webservices.customer.v2_3.CustomerServicesApi" />
+    <property name="namespaceUri" value="http://v2_3.customer.webservices.csx.dtv.com/" />
+    <property name="serviceName" value="CustomerServicesApiService" />
+    <property name="portName" value="CustomerServicesApiPort" />
+    <property name="handlerResolver" ref="relateJaxWsHandlerResolver" />
+  </bean>
+
+  <bean id="relateCardJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RELATE_CARD_WS" />
+    <property name="serviceInterface" value="com.dtv.csx.webservices.card.v2_1.CardServicesApi" />
+    <property name="namespaceUri" value="http://v2_1.card.webservices.csx.dtv.com/" />
+    <property name="serviceName" value="CardServicesApiService" />
+    <property name="portName" value="CardServicesApiPort" />
+    <property name="handlerResolver" ref="relateJaxWsHandlerResolver" />
+  </bean>
+  
+  <bean id="relateLoyaltyJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RELATE_LOYALTY_WS" />
+    <property name="serviceInterface" value="com.dtv.csx.webservices.loyalty.v1_0.LoyaltyAccountServicesApi" />
+    <property name="namespaceUri" value="http://v1_0.loyalty.webservices.csx.dtv.com/" />
+    <property name="serviceName" value="LoyaltyAccountServicesApiService" />
+    <property name="portName" value="LoyaltyAccountServicesApiPort" />
+    <property name="handlerResolver" ref="relateJaxWsHandlerResolver" />
+  </bean>
+
+  <bean id="relateAwardJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RELATE_AWARD_WS" />
+    <property name="serviceInterface" value="com.dtv.csx.webservices.award.v1_0.AwardAccountServicesApi" />
+    <property name="namespaceUri" value="http://v1_0.award.webservices.csx.dtv.com/" />
+    <property name="serviceName" value="AwardAccountServicesApiService" />
+    <property name="portName" value="AwardAccountServicesApiPort" />
+    <property name="handlerResolver" ref="relateJaxWsHandlerResolver" />
+  </bean>
+
+  <bean id="relatePromotionJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RELATE_PROMOTION_WS" />
+    <property name="serviceInterface" value="com.dtv.csx.webservices.promotion.v1_0.SerializedCouponService" />
+    <property name="namespaceUri" value="http://v1_0.promotion.webservices.csx.dtv.com/" />
+    <property name="serviceName" value="SerializedCouponServiceService" />
+    <property name="portName" value="SerializedCouponServicePort" />
+    <property name="handlerResolver" ref="relateJaxWsHandlerResolver" />
+  </bean>
+  
+  <bean id="relateGiftRegistryJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RELATE_REGISTRY_WS" />
+    <property name="serviceInterface" value="com.dtv.csx.webservices.registry.v1_2.RegistryServicesApi" />
+    <property name="namespaceUri" value="http://v1_2.registry.webservices.csx.dtv.com/" />
+    <property name="serviceName" value="RegistryServicesApiService" />
+    <property name="portName" value="RegistryServicesApiPort" />
+    <property name="handlerResolver" ref="relateJaxWsHandlerResolver" />
+  </bean>
+
+  <bean id="relateAttributeJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RELATE_ATTRIBUTE_WS" />
+    <property name="serviceInterface" value="com.dtv.csx.webservices.attributes.v1_1.AttributesServiceApi" />
+    <property name="namespaceUri" value="http://v1_1.attributes.webservices.csx.dtv.com/" />
+    <property name="serviceName" value="AttributesServiceApiService" />
+    <property name="portName" value="AttributesServiceApiPort" />
+    <property name="handlerResolver" ref="relateJaxWsHandlerResolver" />
+  </bean>
+
+  <bean id="relateTaskJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RELATE_TASK_WS" />
+    <property name="serviceInterface" value="com.dtv.csx.webservices.task.v1_1.TaskServicesApi" />
+    <property name="namespaceUri" value="http://v1_1.task.webservices.csx.dtv.com/" />
+    <property name="serviceName" value="TaskServicesApiService" />
+    <property name="portName" value="TaskServicesApiPort" />
+    <property name="handlerResolver" ref="relateJaxWsHandlerResolver" />
+  </bean>
+
+  <bean id="relateSvcTransactionJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RELATE_GIFT_CARD_SVC_TRANSACTION_WS" />
+    <property name="serviceInterface" value="com.dtv.csx.webservices.svc.v3_0.SvcTransactionServicesApi" />
+    <property name="namespaceUri" value="http://v3_0.svc.webservices.csx.dtv.com/" />
+    <property name="serviceName" value="SvcTransactionServicesApiService" />
+    <property name="portName" value="SvcTransactionServicesApiPort" />
+    <property name="handlerResolver" ref="relateJaxWsHandlerResolver" />
+  </bean>
+
+  <!-- Customer -->
+  <!-- ======== -->
+  <bean id="CUSTOMER_RETRIEVE" class="dtv.xst.crm.relate.impl.cust.lookup.CustomerRetrieveHandler">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="servicePort" ref="relateCustomerJaxWsServicePort" />
+    <property name="exceptionHandler" ref="customerRetrieveExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.cust.lookup.req.CustomerRetrieveRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.req.XstorePartyToRelateLookupAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.CustomerRetrieveResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateLookupToXstorePartyAdapter">
+          <property name="whitelistedCustomerProperties" ref="customerEngagementWhitelistedCustomerProperties" />
+        </bean>
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateAlternateKeysToXstorePropertiesAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateAddressesToXstoreLocaleInfoAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateTelephonesToXstoreTelephonesAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateInstrumentsToXstoreLoyaltyCardsAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateToXstoreTargetedDealsAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateSegmentsToXstoreSegmentsAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateNotesToXstoreNotesAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateLifetimeActivityToXstorePartyPropAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateContactPrefsToXstoreContactPrefsAdapter" />
+      </list>
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.XstorePartyDecorator" />
+        <bean class="dtv.data2x.impl.DataSourceDecorator">
+          <property name="parameters">
+            <map>
+              <entry key="DataSource" value="Customer Engagement" />
+            </map>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="customerRetrieveExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_USER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="GeneralError" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="CUSTOMER_LOOKUP" class="dtv.xst.crm.relate.impl.cust.lookup.CustomerSearchHandler">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="servicePort" ref="relateCustomerJaxWsServicePort" />
+    <property name="exceptionHandler" ref="customerLookupExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.cust.lookup.req.CustomerQueryRequestPreparer">
+        <property name="parameters">
+          <map>
+            <entry key="argFirstName" value="setFirstName" />
+            <entry key="argLastName" value="setLastName" />
+            <entry key="argTelephone" value="getPrimaryTelephoneInformation.setTelephoneNumber" />
+            <entry key="argCity" value="getPrimaryLocaleInformation.setCity" />
+            <entry key="argState" value="getPrimaryLocaleInformation.setState" />
+            <entry key="argCountry" value="getPrimaryLocaleInformation.setCountry" />
+            <entry key="argPostalCode" value="getPrimaryLocaleInformation.setPostalCode" />
+            <entry key="argCounty" value="getPrimaryLocaleInformation.setCounty" />
+            <entry key="argEmailAddress" value="setEmailAddress" />
+            <entry key="argLoyaltyNumber" value="getPrimaryLoyaltyCard.setCardNumber" />
+            <entry key="argCustomerId" value="setCustomerId" />
+          </map>
+        </property>
+      </bean>
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.req.XstorePartyToRelateLookupAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.req.XstoreLocaleInfoToRelateAddressesAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.req.XstoreTelephoneToRelateTelephoneAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.CustomerQueryResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateLookupToXstoreQueryResultsAdapter">
+          <property name="preparer">
+            <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.CustomerQueryResponseSubPreparer" />
+          </property>
+          <property name="adapters">
+            <list value-type="dtv.servicex.IAdapter">
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateLookupToXstorePartyAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateAlternateKeysToXstorePropertiesAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateAddressesToXstoreLocaleInfoAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateTelephonesToXstoreTelephonesAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateInstrumentsToXstoreLoyaltyCardsAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateContactPrefsToXstoreContactPrefsAdapter" />
+            </list>
+          </property>
+          <property name="transformer">
+            <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.XstorePartyToQueryResultTransformer" />
+          </property>
+          <property name="decorators">
+            <list value-type="dtv.servicex.IDecorator">
+              <bean class="dtv.data2x.impl.DataSourceDecorator">
+                <property name="parameters">
+                  <map>
+                    <entry key="DataSource" value="Customer Engagement" />
+                  </map>
+                </property>
+              </bean>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.QueryResultsSorter" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="customerLookupExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="MAXIMUM_LOOKUP_RESULTS_ERROR" />
+              <property name="throws" value="dtv.data2x.impl.req.TooManyRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_USER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+   <bean id="PRIORITY_CUSTOMER_LOOKUP" class="dtv.xst.crm.relate.impl.cust.lookup.CustomerSearchHandler">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="servicePort" ref="relateCustomerJaxWsServicePort" />
+    <property name="exceptionHandler" ref="customerLookupExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.cust.lookup.req.CustomerQueryRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.req.XstoreSegmentInfoToRelateSegmentAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.CustomerQueryResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateLookupToXstoreQueryResultsAdapter">
+          <property name="preparer">
+            <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.CustomerQueryResponseSubPreparer" />
+          </property>
+          <property name="adapters">
+            <list value-type="dtv.servicex.IAdapter">
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateLookupToXstorePartyAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateAlternateKeysToXstorePropertiesAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateAddressesToXstoreLocaleInfoAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateTelephonesToXstoreTelephonesAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateInstrumentsToXstoreLoyaltyCardsAdapter" />
+              <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.RelateContactPrefsToXstoreContactPrefsAdapter" />
+            </list>
+          </property>
+          <property name="transformer">
+            <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.XstorePartyToQueryResultTransformer" />
+          </property>
+          <property name="decorators">
+            <list value-type="dtv.servicex.IDecorator">
+              <bean class="dtv.data2x.impl.DataSourceDecorator">
+                <property name="parameters">
+                  <map>
+                    <entry key="DataSource" value="Customer Engagement" />
+                  </map>
+                </property>
+              </bean>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="dtv.xst.crm.relate.impl.cust.lookup.resp.QueryResultsSorter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CUSTOMER_PERSIST" class="dtv.xst.crm.relate.impl.cust.persist.CustomerPersistHandler">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="servicePort" ref="relateCustomerJaxWsServicePort" />
+    <property name="exceptionHandler" ref="customerPersistExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.cust.persist.req.CustomerPersistRequestPreparer">
+        <property name="parameters">
+          <map>
+            <entry key="SourceId">
+              <value type="java.lang.String">POS</value>
+            </entry>
+          </map>
+        </property>
+      </bean>
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.cust.persist.req.XstorePartyToRelatePersistAdapter">
+          <property name="whitelistedCustomerProperties" ref="customerEngagementWhitelistedCustomerProperties" />
+        </bean>
+        <bean class="dtv.xst.crm.relate.impl.cust.persist.req.XstoreLocaleInfoToRelateAddressesAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.persist.req.XstoreTelephoneToRelateTelephoneAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.persist.req.XstoreEmailToRelateEmailAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.cust.persist.req.XstoreNotesToRelateNotesAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="processResponse" value="false" />
+  </bean>
+
+  <util:list id="customerEngagementWhitelistedCustomerProperties" value-type="dtx.xst.crm.impl.PropertyInfo">
+    <bean class="dtv.xst.crm.impl.PropertyInfo">
+      <constructor-arg >
+        <util:constant static-field="dtv.pos.customer.CustomerUtil.PROP_INFO_CONSENT1" />
+      </constructor-arg>
+      <constructor-arg>
+        <util:constant static-field="dtv.data2.access.IDataProperty.PropertyType.BOOLEAN" />
+      </constructor-arg>
+    </bean>
+    <bean class="dtv.xst.crm.impl.PropertyInfo">
+      <constructor-arg >
+        <util:constant static-field="dtv.pos.customer.CustomerUtil.PROP_INFO_CONSENT2" />
+      </constructor-arg>
+      <constructor-arg>
+        <util:constant static-field="dtv.data2.access.IDataProperty.PropertyType.BOOLEAN" />
+      </constructor-arg>
+    </bean>
+    <bean class="dtv.xst.crm.impl.PropertyInfo">
+      <constructor-arg >
+        <util:constant static-field="dtv.pos.customer.CustomerUtil.PROP_INFO_CONSENT3" />
+      </constructor-arg>
+      <constructor-arg>
+        <util:constant static-field="dtv.data2.access.IDataProperty.PropertyType.BOOLEAN" />
+      </constructor-arg>
+    </bean>
+    <bean class="dtv.xst.crm.impl.PropertyInfo">
+      <constructor-arg >
+        <util:constant static-field="dtv.pos.customer.CustomerUtil.PROP_INFO_CONSENT4" />
+      </constructor-arg>
+      <constructor-arg>
+        <util:constant static-field="dtv.data2.access.IDataProperty.PropertyType.BOOLEAN" />
+      </constructor-arg>
+    </bean>
+    <bean class="dtv.xst.crm.impl.PropertyInfo">
+      <constructor-arg >
+        <util:constant static-field="dtv.pos.customer.CustomerUtil.PROP_INFO_CONSENT5" />
+      </constructor-arg>
+      <constructor-arg>
+        <util:constant static-field="dtv.data2.access.IDataProperty.PropertyType.BOOLEAN" />
+      </constructor-arg>
+    </bean>
+    <bean class="dtv.xst.crm.impl.PropertyInfo">
+      <constructor-arg>
+        <util:constant static-field="dtv.pos.customer.CustomerUtil.PROP_CONSENT_UPDATED_DATE" />
+      </constructor-arg>
+      <constructor-arg>
+        <util:constant static-field="dtv.data2.access.IDataProperty.PropertyType.DATE" />
+      </constructor-arg>
+    </bean>
+    <bean class="dtv.xst.crm.impl.PropertyInfo">
+      <constructor-arg>
+        <util:constant static-field="dtv.pos.customer.loyalty.LoyaltyConstants.PROMPT_TO_JOIN_LOYALTY_PROPERTY" />
+      </constructor-arg>
+      <constructor-arg>
+        <util:constant static-field="dtv.data2.access.IDataProperty.PropertyType.BOOLEAN" />
+      </constructor-arg>
+    </bean>
+    <bean class="dtv.xst.crm.impl.PropertyInfo">
+      <constructor-arg>
+        <util:constant static-field="oracle.retail.xstore.countrypack.common.invoice.InvoiceConstants.PROP_IT_ELEC_INV_ID_CODE" />
+      </constructor-arg>
+      <constructor-arg>
+        <util:constant static-field="dtv.data2.access.IDataProperty.PropertyType.STRING" />
+      </constructor-arg>
+    </bean>
+    <bean class="dtv.xst.crm.impl.PropertyInfo">
+      <constructor-arg>
+        <util:constant static-field="oracle.retail.xstore.countrypack.common.invoice.InvoiceConstants.PROP_IT_ELEC_INV_PEC" />
+      </constructor-arg>
+      <constructor-arg>
+        <util:constant static-field="dtv.data2.access.IDataProperty.PropertyType.STRING" />
+      </constructor-arg>
+    </bean>        
+  </util:list>
+
+  <bean id="customerPersistExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="GENERAL_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="SEQUENCE_NUMBER_GENERATION_ERROR" />
+              <property name="throws" value="dtv.service.ServiceUnavailableException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="UNKNOWN_ATTRIBUTE_TYPE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidAttributeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="exception" value="org.hibernate.exception.ConstraintViolationException" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="CUSTOMER_RETAIL_HISTORY" class="dtv.xst.crm.relate.impl.retailhistory.CustomerRetailHistoryHandler">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="servicePort" ref="relateCustomerJaxWsServicePort" />
+    <property name="exceptionHandler" ref="customerRetailHistoryExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.retailhistory.req.CustomerRetailHistoryRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.retailhistory.req.XstorePartyIdToRelateCustomerAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.retailhistory.req.XstoreToRelateTransactionDatesAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.retailhistory.resp.CustomerRetailHistoryResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.retailhistory.resp.RelateToXstoreTransactionResultsAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="customerRetailHistoryExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="MAXIMUM_LOOKUP_RESULTS_ERROR" />
+              <property name="throws" value="dtv.data2x.impl.req.TooManyRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="EMPTY_HISTORY_RESPONSE_CODE" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- Wish List -->
+  <!-- ========== -->
+  <bean id="WISH_LIST_RETRIEVE" class="dtv.xst.crm.relate.impl.cust.wishlist.WishListRetrieveHandler">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="servicePort" ref="relateCustomerJaxWsServicePort" />
+    <property name="exceptionHandler" ref="wishListRetrieveExceptionHandler" />
+  </bean>
+  
+  <bean id="wishListRetrieveExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidCustomerException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_USER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_VISUALIZER_FILTER" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidVisualizerFilterException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="WISH_LIST_ADD" class="dtv.xst.crm.relate.impl.cust.wishlist.add.WishListAddHandler">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="servicePort" ref="relateCustomerJaxWsServicePort" />
+    <property name="exceptionHandler" ref="wishListModifyExceptionHandler" />
+  </bean>
+  
+  <bean id="WISH_LIST_DELETE" class="dtv.xst.crm.relate.impl.cust.wishlist.delete.WishListDeleteHandler">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="servicePort" ref="relateCustomerJaxWsServicePort" />
+    <property name="exceptionHandler" ref="wishListModifyExceptionHandler" />
+  </bean>
+
+  <bean id="wishListModifyExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidCustomerException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_USER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_WRITE_PRIVILEGE_ON_CUSTOMER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InsufficientPrivilegeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="WISHLIST_EMPTY" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidWishlistException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ITEM_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidWishlistException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- Loyalty -->
+  <!-- ======= -->
+  <bean id="PROFORMA" class="dtv.xst.crm.relate.impl.loyalty.proforma.ProformaServiceHandler">
+    <property name="serviceId" value="RELATE_LOYALTY_WS" />
+    <property name="servicePort" ref="relateLoyaltyJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+    <!-- request -->
+    <property name="requestTransformer">
+      <bean class="dtv.xst.crm.relate.impl.loyalty.proforma.req.XstoreToRelateTransactionTransformer">
+        <property name="parameters">
+          <map>
+            <entry key="Action" value="CalcProformaPoints" />
+            <entry key="SOAPTemplate" value="relate/template/request.xml" />
+          </map>
+        </property>
+      </bean>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.loyalty.proforma.resp.ProformaResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.proforma.resp.RelateProformaToXstoreProformaAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="LOYALTY_HISTORY" class="dtv.xst.crm.relate.impl.loyalty.history.AccountHistoryServiceHandler">
+    <property name="serviceId" value="RELATE_LOYALTY_WS" />
+    <property name="servicePort" ref="relateLoyaltyJaxWsServicePort" />
+    <property name="exceptionHandler" ref="loyaltyHistoryExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.loyalty.history.req.AccountHistoryRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.history.req.XstoreLoyaltyHistoryToRelateLoyaltyHistoryAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.loyalty.history.resp.AccountHistoryResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.history.resp.RelateLookupToXstoreLoyaltyCardAdapter" />
+        <bean
+          class="dtv.xst.crm.relate.impl.loyalty.history.resp.RelateLoyaltyAccountHistoryToXstoreLoyaltyAccountHistoryAdapter" />
+      </list>
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.history.resp.AccountHistoryResponseDecorator" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="loyaltyHistoryExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NUMBER_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="MISSING_PIN_ERROR" />
+              <property name="throws" value="dtv.xst.crm.exceptions.PinMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_PIN" />
+              <property name="throws" value="dtv.xst.crm.exceptions.PinInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_INACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardInactiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CURRENCY_ID_MISSING_IN_REQUEST" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CurrencyIdMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_ACTIVE_ACCOUNTS_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.NoActiveAccountsException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="MAXIMUM_LOOKUP_RESULTS_ERROR" />
+              <property name="throws" value="dtv.data2x.impl.req.TooManyRecordsFoundException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- Card -->
+  <!-- ==== -->
+  <bean id="CARD_ASSIGN" class="dtv.xst.crm.relate.impl.loyalty.assign.AssignCardServiceHandler">
+    <property name="serviceId" value="RELATE_CUSTOMER_WS" />
+    <property name="servicePort" ref="relateCustomerJaxWsServicePort" />
+    <property name="exceptionHandler" ref="cardAssignExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.loyalty.assign.req.AssignCardRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.assign.req.XstoreAssignToRelateAssignAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.loyalty.assign.resp.AssignCardResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.assign.resp.RelateAssignToXstoreAssignAdapter" />
+      </list>
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.assign.resp.AssignCardResponseDecorator">
+          <property name="parameters">
+            <map>
+              <entry key="DataSource" value="Customer Engagement" />
+            </map>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="cardAssignExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACCOUNT_ALREADY_ACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AccountAlreadyActiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACCOUNT_BLOCKED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AccountBlockedException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AssignToCustomerNotFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="LOYALTY_ACCOUNT_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.LoyaltyAccountExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="LOYALTY_PROGRAM_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.LoyaltyProgramExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="LOYALTY_PROGRAM_NOT_EFFECTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.LoyaltyProgramNotEffectiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACCOUNT_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardAccountExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="AWARD_PROGRAM_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardProgramExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="AWARD_PROGRAM_NOT_EFFECTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardProgramNotEffectiveException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="CARD_INQUIRY" class="dtv.xst.crm.relate.impl.loyalty.lookup.CardInquiryServiceHandler">
+    <property name="serviceId" value="RELATE_CARD_WS" />
+    <property name="servicePort" ref="relateCardJaxWsServicePort" />
+    <property name="exceptionHandler" ref="cardInquiryExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.loyalty.lookup.req.RetrieveCardRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.lookup.req.XstoreRetrieveToRelateLookupAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.loyalty.lookup.resp.RetrieveCardResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.lookup.resp.RelateLookupToXstoreLoyaltyCardAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.loyalty.lookup.resp.RelateLoyaltyAccountToXstoreLoyaltyAccountAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.loyalty.lookup.resp.RelateAwardAccountToXstoreAwardAccountAdapter" />
+      </list>
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="dtv.xst.crm.relate.impl.loyalty.lookup.resp.RetrieveCardResponseDecorator" />
+        <bean class="dtv.data2x.impl.DataSourceDecorator">
+          <property name="parameters">
+            <map>
+              <entry key="DataSource" value="Customer Engagement" />
+            </map>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="cardInquiryExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NOT_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NUMBER_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="MISSING_PIN_ERROR" />
+              <property name="throws" value="dtv.xst.crm.exceptions.PinMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_PIN" />
+              <property name="throws" value="dtv.xst.crm.exceptions.PinInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_INACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardInactiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CURRENCY_ID_MISSING_IN_REQUEST" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CurrencyIdMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_ACTIVE_ACCOUNTS_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.NoActiveAccountsException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="CARD_EXPIRATION_RENEW" class="dtv.xst.crm.relate.impl.loyalty.renew.CardRenewServiceHandler">
+    <property name="serviceId" value="RELATE_CARD_WS" />
+    <property name="servicePort" ref="relateCardJaxWsServicePort" />
+    <property name="exceptionHandler" ref="cardExpirationRenewExceptionHandler" />
+  </bean>
+
+  <bean id="cardExpirationRenewExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_INACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardInactiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NOT_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_EXPIRATION_TYPE_IS_FIXED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardExpiryTypeFixedException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_EXPIRATION_DATE_MUST_BE_GREATER_THAN_ACTIVATION_DATE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardExpDateErrorException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="CARD_UPDATE_ASSOCIATE" class="dtv.xst.crm.relate.impl.loyalty.update.UpdateCardAssociateServiceHandler">
+    <property name="serviceId" value="RELATE_CARD_WS" />
+    <property name="servicePort" ref="relateCardJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+  </bean>
+
+  <bean id="CARD_UPDATE_RETRY" class="dtv.xst.crm.relate.impl.loyalty.LoyaltyCardUpdateRetryHandler">
+    <property name="serviceId" value="RELATE_CARD_WS" />
+    <property name="servicePort" ref="relateCardJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+    <property name="parameters">
+      <map>
+        <entry key="Path" value="${user.dir}/log/relate/loyaltyUpdate" />
+      </map>
+    </property>
+  </bean>
+
+
+  <!-- Award -->
+  <!-- ===== -->
+  <bean id="AWARD_REDEEM" class="dtv.xst.crm.relate.impl.award.redeem.AwardRedeemServiceHandler">
+    <property name="serviceId" value="RELATE_AWARD_WS" />
+    <property name="servicePort" ref="relateAwardJaxWsServicePort" />
+    <property name="exceptionHandler" ref="awardRedeemExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.award.redeem.req.RedeemAwardsRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.award.redeem.req.XstoreRedeemToRelateRedeemAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.award.redeem.req.XstoreAwardsToRelateCouponsAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.award.redeem.resp.RedeemAwardsResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.award.redeem.resp.RelateRedeemToXstoreRedeemAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.award.redeem.resp.RelateCouponsToXstoreAwardsAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="awardRedeemExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NUMBER_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACCOUNT_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardAccountExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACCOUNT_INACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AccountInactiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_INACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardInactiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="COUPON_IDENTIFIER_INVALID_OR_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardCouponIdentifierInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="COUPON_REQUEST_AMOUNT_INVALID" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardRedeemAmountInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="COUPON_REQUEST_NEGATIVE_AMOUNT_INVALID" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardRedeemAmountInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="COUPON_REQUEST_EXCEEDS_BALANCE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardRedeemAmountInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CURRENCY_ID_MISSING_IN_REQUEST" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CurrencyIdMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CURRENCY_EXCHANGE_RATE_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.relate.impl.award.ExchangeRateMissingForCurrencyException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="AWARD_REDEEM_VOID" class="dtv.xst.crm.relate.impl.award.redeem.AwardRedeemServiceHandler">
+    <property name="serviceId" value="RELATE_AWARD_WS" />
+    <property name="servicePort" ref="relateAwardJaxWsServicePort" />
+    <property name="exceptionHandler" ref="awardRedeemVoidExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.award.redeem.req.RedeemAwardsRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.award.redeem.req.XstoreRedeemToRelateRedeemAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.award.redeem.resp.RedeemAwardsResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.award.redeem.resp.RelateRedeemToXstoreRedeemAdapter" />
+        <bean class="dtv.xst.crm.relate.impl.award.redeem.resp.RelateCouponsToXstoreAwardsAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="awardRedeemVoidExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NUMBER_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACCOUNT_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardAccountExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACCOUNT_INACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AccountInactiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_INACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardInactiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="VALID_ORIGINAL_TRAN_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardTransactionInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ORIG_AWARD_TRAN_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardTransactionInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ORIGINAL_TRANSACTION_VOIDED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardTransactionInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ORIGINAL_TRAN_ERROR" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardTransactionInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CAN_NOT_VOID_TRAN_TYPE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardTransactionInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ORIGINAL_TRANSACTION_NOT_LAST" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardTransactionInvalidException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="AWARD_HISTORY" class="dtv.xst.crm.relate.impl.award.history.AccountHistoryServiceHandler">
+    <property name="serviceId" value="RELATE_AWARD_WS" />
+    <property name="servicePort" ref="relateAwardJaxWsServicePort" />
+    <property name="exceptionHandler" ref="awardHistoryExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.award.history.req.AccountHistoryRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.award.history.req.XstoreAwardHistoryToRelateAwardHistoryAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.award.history.resp.AccountHistoryResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.award.history.resp.RelateLookupToXstoreLoyaltyCardAdapter" />
+        <bean
+          class="dtv.xst.crm.relate.impl.award.history.resp.RelateAwardAccountHistoryToXstoreAwardAccountHistoryAdapter" />
+      </list>
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="dtv.xst.crm.relate.impl.award.history.resp.AccountHistoryResponseDecorator" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="awardHistoryExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NUMBER_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="MISSING_PIN_ERROR" />
+              <property name="throws" value="dtv.xst.crm.exceptions.PinMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_PIN" />
+              <property name="throws" value="dtv.xst.crm.exceptions.PinInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_INACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardInactiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CURRENCY_ID_MISSING_IN_REQUEST" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CurrencyIdMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_ACTIVE_ACCOUNTS_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.NoActiveAccountsException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="MAXIMUM_LOOKUP_RESULTS_ERROR" />
+              <property name="throws" value="dtv.data2x.impl.req.TooManyRecordsFoundException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- Promotion -->
+  <!-- ========= -->
+  <bean id="SERIALIZED_COUPON_REDEEM" class="dtv.xst.crm.relate.impl.promotion.redeem.SerializedCouponsRedeemHandler">
+    <property name="serviceId" value="RELATE_PROMOTION_WS" />
+    <property name="servicePort" ref="relatePromotionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="serializedCouponRedeemExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.promotion.redeem.req.RedeemSerializedCouponsPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.promotion.redeem.req.XstoreToRelateRedeemSerializedCouponsAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.promotion.redeem.resp.SerializedCouponsResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.promotion.redeem.resp.RelateToXstoreSerializedCouponsAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="serializedCouponRedeemExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.CouponCustomerNotFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="GENERAL_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="SERIALIZED_COUPON_VOID" class="dtv.xst.crm.relate.impl.promotion.redeem.SerializedCouponsVoidHandler">
+    <property name="serviceId" value="RELATE_PROMOTION_WS" />
+    <property name="servicePort" ref="relatePromotionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="serializedCouponVoidExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.promotion.redeem.req.VoidSerializedCouponsPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.promotion.redeem.req.XstoreToRelateVoidSerializedCouponsAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.promotion.redeem.resp.SerializedCouponsResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.promotion.redeem.resp.RelateToXstoreSerializedCouponsAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="serializedCouponVoidExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="GENERAL_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="SERIALIZED_COUPON_LOG" class="dtv.xst.crm.relate.impl.promotion.redeem.SerializedCouponsLogHandler">
+    <property name="serviceId" value="RELATE_PROMOTION_WS" />
+    <property name="exceptionHandler">
+      <bean class="dtv.servicex.impl.resp.TrivialExceptionHandler" />
+    </property>
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.promotion.redeem.req.SerializedCouponsLogPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.promotion.redeem.req.XstoreToRelateSerializedCouponsLogAdapter" />
+      </list>
+    </property>
+    <property name="requestTransformer">
+      <bean class="dtv.xst.crm.relate.impl.promotion.redeem.req.SerializedCouponsLogTransformer" />
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.promotion.redeem.resp.SerializedCouponsResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.promotion.redeem.resp.RelateToXstoreSerializedCouponsAdapter" />
+      </list>
+    </property>
+  </bean>
+
+
+  <!-- Gift Registry -->
+  <!-- ============= -->
+  <bean id="REGISTRY_LOOKUP" class="dtv.xst.crm.relate.impl.registry.lookup.RegistrySearchHandler">
+    <property name="serviceId" value="RELATE_REGISTRY_WS" />
+    <property name="servicePort" ref="relateGiftRegistryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="registryLookupExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.lookup.req.RegistryQueryRequestPreparer">
+        <property name="parameters">
+          <map>
+            <entry key="Name.argRegistryId" value="giftRegistryId.registryId" />
+            <entry key="Operator.argRegistryId" value="Equals" />
+            <entry key="Name.argEventName" value="name" />
+            <entry key="Operator.argEventName" value="StartsWith" />
+            <entry key="Name.argLastName" value="owners.customer.lastName" />
+            <entry key="Operator.argLastName" value="StartsWith" />
+            <entry key="Name.argFirstName" value="owners.customer.firstName" />
+            <entry key="Operator.argFirstName" value="StartsWith" />
+            <entry key="Name.argCustomerId" value="owners.customer.custId" />
+            <entry key="Operator.argCustomerId" value="Equals" />
+            <entry key="Name.argEventType" value="eventTypecode" />
+            <entry key="Operator.argEventType" value="Equals" />
+          </map>
+        </property>
+      </bean>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.lookup.resp.RegistryQueryResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.registry.lookup.resp.RelateRegistrySummaryTypeAdapter" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="registryLookupExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="USER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="UNABLE_TO_PARSE_DATE_TO_XML_CALENDAR_ERROR" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidDateException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="REGISTRY_RETRIEVE" class="dtv.xst.crm.relate.impl.registry.lookup.RegistryRetrieveHandler">
+    <property name="serviceId" value="RELATE_REGISTRY_WS" />
+    <property name="servicePort" ref="relateGiftRegistryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="registryRetrieveExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.lookup.req.RegistryRetrieveRequestPreparer" />
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.lookup.resp.RegistryRetrieveResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.registry.lookup.resp.RelateRegistryRetrieveAdapter" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="REGISTRY_DETAIL" class="dtv.xst.crm.relate.impl.registry.lookup.RegistryDetailHandler">
+    <property name="serviceId" value="RELATE_REGISTRY_WS" />
+    <property name="servicePort" ref="relateGiftRegistryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="registryRetrieveExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.lookup.req.RegistryRetrieveRequestPreparer" />
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.lookup.resp.RegistryDetailResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.registry.lookup.resp.RelateRegistryDetailResponseAdapter" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="registryRetrieveExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REGISTRY_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REGISTRY_IS_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.RegistryExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_USER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="REGISTRY_PERSIST" class="dtv.xst.crm.relate.impl.registry.persist.RegistryPersistHandler">
+    <property name="serviceId" value="RELATE_REGISTRY_WS" />
+    <property name="servicePort" ref="relateGiftRegistryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="registryPersistExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.persist.req.RegistryPersistRequestPreparer" />
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.persist.resp.RegistryPersistResponsePreparer" />
+    </property>
+  </bean>
+  
+  <bean id="registryPersistExceptionHandler" parent="registryUpdateDetailExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ADDRESS_ACTION" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemActionException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_OWNER_ACTION" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemActionException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ATTR_ACTION" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemActionException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ADDRESS_SPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryAddressException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_OWNER_SPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryOwnerException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REGISTRY_OWNER_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryOwnerException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ATTRIBUTE_GROUP_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidAttributeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ATTRIBUTE_NAME_UNSPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidAttributeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REGISTRY_ATTRIBUTE_GROUPS_DO_NOT_MATCH" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidAttributeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REQUIRED_ATTRIBUTE_IS_UNSPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidAttributeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ATTRIBUTE_GROUP_IS_NOT_VALID" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidAttributeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_ITEM_ACTION_SPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemActionException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="MULTIPLE_VALUES_ON_UNIQUE_ATTRIBUTE_TYPE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidAttributeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ERROR_UPDATING_OWNER_CONTACT_INFO" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryOwnerException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_EVENT_TYPECODE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryTypeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="EVENT_DATE_BEFORE_EXPIRATION_DATE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidDateException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="UNKNOWN_ATTRIBUTE_TYPE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidAttributeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ADDRESS_TYPE_SPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryAddressException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="REGISTRY_UPDATE_DETAIL" class="dtv.xst.crm.relate.impl.registry.persist.RegistryUpdateDetailHandler">
+    <property name="serviceId" value="RELATE_REGISTRY_WS" />
+    <property name="servicePort" ref="relateGiftRegistryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="registryUpdateDetailExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.persist.req.RegistryUpdateDetailRequestPreparer" />
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.persist.resp.RegistryUpdateDetailResponsePreparer" />
+    </property>
+  </bean>
+
+  <bean id="registryUpdateDetailExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REGISTRY_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REGISTRY_IS_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.RegistryExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ITEM_ACTION" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemActionException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ITEM_ID_SPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryItemException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ITEM_SPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryItemException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ITEM_QUANTITY_VALUE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemQuantityException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ITEM_QUANTITY" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemQuantityException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REGISTRY_ITEM_QUANTITY_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemQuantityException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CONFIGURATION_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REGISTRY_FIELD_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidCustomerException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_USER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_WRITE_PRIVILEGE_ON_CUSTOMER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InsufficientPrivilegeException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="REGISTRY_SELL_ITEM" class="dtv.xst.crm.relate.impl.registry.persist.RegistrySellItemHandler">
+    <property name="serviceId" value="RELATE_REGISTRY_WS" />
+    <property name="servicePort" ref="relateGiftRegistryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="registrySellItemExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.persist.req.RegistrySellItemRequestPreparer" />
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.registry.persist.resp.RegistrySellItemResponsePreparer" />
+    </property>
+  </bean>
+
+  <bean id="REGISTRY_SELL_ITEM_RETRY" class="dtv.xst.crm.relate.impl.registry.persist.RegistrySellItemRetryHandler">
+    <property name="serviceId" value="RELATE_REGISTRY_WS" />
+    <property name="servicePort" ref="relateGiftRegistryJaxWsServicePort" />
+    <property name="exceptionHandler" ref="registrySellItemExceptionHandler" />
+    <property name="parameters">
+      <map>
+        <entry key="Path" value="${user.dir}/log/relate/registryUpdate" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="registrySellItemExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ITEM_SPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryItemException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_USER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryItemException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryItemException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACTION_CODE_IS_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemActionException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ITEM_AND_ITEM_REF_ID_UNSPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryItemException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ITEM_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryItemException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="QUANTITY_IS_NOT_VALID" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidItemQuantityException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REGISTRY_ID_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REGISTRY_ITEM_SPECIFIED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidRegistryItemException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_LOCATION_ID" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidLocationException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+
+  <!-- Attributes -->
+  <!-- ========== -->
+  <bean id="ATTRIBUTE_RETRIEVE" class="dtv.xst.crm.relate.impl.attributes.lookup.AttributeRetrieveHandler">
+    <property name="serviceId" value="RELATE_ATTRIBUTE_WS" />
+    <property name="servicePort" ref="relateAttributeJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.attributes.lookup.req.AttributeRetrieveRequestPreparer" />
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.attributes.lookup.resp.AttributeRetrieveResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.attributes.lookup.resp.RelateAttributeRetrieveResponseAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="ATTRIBUTE_VALUES" class="dtv.xst.crm.relate.impl.attributes.lookup.AttributeValuesHandler">
+    <property name="serviceId" value="RELATE_ATTRIBUTE_WS" />
+    <property name="servicePort" ref="relateAttributeJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.attributes.lookup.req.AttributeValuesRequestPreparer" />
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.attributes.lookup.resp.AttributeValuesResponsePreparer" />
+    </property>
+  </bean>
+
+
+  <!--   Tasks    -->
+  <!-- ========== -->
+  <bean id="TASK_LOOKUP" class="dtv.xst.crm.relate.impl.task.lookup.TaskQueryHandler">
+    <property name="serviceId" value="RELATE_TASK_WS" />
+    <property name="servicePort" ref="relateTaskJaxWsServicePort" />
+    <property name="exceptionHandler" ref="taskLookupExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.crm.relate.impl.task.lookup.TaskQueryRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.task.lookup.TaskQueryRequestAdapter">
+          <property name="parameters">
+            <map>
+              <entry key="Name.argTaskId" value="taskId" />
+              <entry key="Operator.argTaskId" value="Equals" />
+              <entry key="Name.argType" value="itemTypeValue" />
+              <entry key="Operator.argType" value="Equals" />
+              <entry key="Name.argPriority" value="itemPriorityValue" />
+              <entry key="Operator.argPriority" value="Equals" />
+              <entry key="Name.argStatus" value="itemStatusValue" />
+              <entry key="Operator.argStatus" value="Equals" />
+              <entry key="Name.argSubject" value="subject" />
+              <entry key="Operator.argSubject" value="Contains" />
+              <entry key="Name.argRetailLocationId" value="retailLocationId" />
+              <entry key="Operator.argRetailLocationId" value="Equals" />
+              <entry key="Name.argStartDateRange" value="startDateTime" />
+              <entry key="Operator.argStartDateRange" value="Between" />
+              <entry key="Name.argEndDateRange" value="endDateTime" />
+              <entry key="Operator.argEndDateRange" value="Between" />
+              <entry key="Name.argStartDate" value="startDateTime" />
+              <entry key="Operator.argStartDate" value="GreaterThanEqual" />
+              <entry key="Name.argEndDate" value="endDateTime" />
+              <entry key="Operator.argEndDate" value="LessThanEqual" />
+              <entry key="Name.argTabStartDate" value="startDateTime" />
+              <entry key="Operator.argTabStartDate" value="LessThanEqual" />
+              <entry key="Name.argTabEndDate" value="endDateTime" />
+              <entry key="Operator.argTabEndDate" value="GreaterThanEqual" />
+              <entry key="Name.argUserId" value="taskUserMap.taskRelateUser.userId" />
+              <entry key="Operator.argUserId" value="Equals" />
+              <entry key="Name.argCustomerId" value="taskCustomers.custId" />
+              <entry key="Operator.argCustomerId" value="Equals" />
+              <entry key="Name.argCustomerFirstName" value="taskCustomers.firstName" />
+              <entry key="Operator.argCustomerFirstName" value="StartsWith" />
+              <entry key="Name.argCustomerLastName" value="taskCustomers.lastName" />
+              <entry key="Operator.argCustomerLastName" value="StartsWith" />
+            </map>
+          </property>
+        </bean>
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.crm.relate.impl.task.lookup.TaskQueryResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.crm.relate.impl.task.lookup.RelateTaskTypeAdapter" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="TASK_TYPE_LOOKUP" class="dtv.xst.crm.relate.impl.task.typelookup.TaskTypeLookupHandler">
+    <property name="serviceId" value="RELATE_TASK_WS" />
+    <property name="servicePort" ref="relateTaskJaxWsServicePort" />
+    <property name="exceptionHandler" ref="taskLookupExceptionHandler" />
+  </bean>
+
+  <bean id="taskLookupExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="UNEXPECTED_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="TASK_PERSIST" class="dtv.xst.crm.relate.impl.task.persist.TaskPersistHandler">
+    <property name="serviceId" value="RELATE_TASK_WS" />
+    <property name="servicePort" ref="relateTaskJaxWsServicePort" />
+    <property name="exceptionHandler" ref="taskPersistExceptionHandler" />
+  </bean>
+
+  <bean id="taskPersistExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="UNEXPECTED_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_USER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="USER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="TASKID_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="SEQUENCE_NUMBER_GENERATION_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CUSTOMER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidCustomerException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="EVENT_TASK_CUSTOMER_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidCustomerException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="EVENT_TASK_PROMOTION_REQUIRED" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidPromotionException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="PROMOTION_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidPromotionException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_TASK_PRIORITY_VALUE" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskPriorityException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_STATUS_VALUE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidStatusException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_TASK_TYPE_VALUE" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskTypeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="TASK_WITHOUT_START_END_DATE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidDateRangeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_DATE_RANGE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidDateRangeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="MISSING_SUBJECT_LINE" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskSubjectLineException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_LOCATION_ID" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidLocationException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REQUIRED_PARAMETERS_MISSING" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="TASK_CHANGE_STATUS" class="dtv.xst.crm.relate.impl.task.persist.TaskChangeStatusHandler">
+    <property name="serviceId" value="RELATE_TASK_WS" />
+    <property name="servicePort" ref="relateTaskJaxWsServicePort" />
+    <property name="exceptionHandler" ref="taskChangeStatusExceptionHandler" />
+  </bean>
+
+  <bean id="taskChangeStatusExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="UNEXPECTED_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="USER_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="TASKID_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_STATUS_VALUE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidStatusException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ADMIN_TYPE_TASK_UNSUPPORTED" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskTypeException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="TASK_ADD_NOTE" class="dtv.xst.crm.relate.impl.task.note.TaskAddNoteHandler">
+    <property name="serviceId" value="RELATE_TASK_WS" />
+    <property name="servicePort" ref="relateTaskJaxWsServicePort" />
+    <property name="exceptionHandler" ref="taskAddNoteExceptionHandler" />
+  </bean>
+
+  <bean id="taskAddNoteExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="UNEXPECTED_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="TASKID_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_STATUS_VALUE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidStatusException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ADMIN_TYPE_TASK_UNSUPPORTED" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskTypeException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_USER" />
+              <property name="throws" value="dtv.xst.crm.exceptions.InvalidUserException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="REQUIRED_PARAMETERS_MISSING" />
+              <property name="throws" value="dtv.xst.crm.relate.exceptions.InvalidTaskException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <!-- SVC Transactions -->
+  <!-- ================ -->
+  <!-- Handler definition for processing gift card tender directly to relate - XSTORE-10810 -->
+  <bean id="RELATE_GIFT_CARD_BALANCE_INQUIRY" class="dtv.xst.crm.relate.impl.giftcard.balanceinquiry.RelateGiftCardBalanceInquiryHandler">
+    <property name="serviceId" value="RELATE_GIFT_CARD_SVC_TRANSACTION_WS" />
+    <property name="servicePort" ref="relateSvcTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+  </bean>
+
+  <bean id="RELATE_GIFT_CARD_ACTIVATE" class="dtv.xst.crm.relate.impl.giftcard.activate.RelateGiftCardActivateHandler">
+    <property name="serviceId" value="RELATE_GIFT_CARD_SVC_TRANSACTION_WS" />
+    <property name="servicePort" ref="relateSvcTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="giftCardActivateExceptionHandler" />
+  </bean>
+
+  <bean id="giftCardActivateExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACCOUNT_ALREADY_ACTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AccountAlreadyActiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARD_NOT_FOUND" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardNumberInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="lyl-account-already-active" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AccountAlreadyActiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="lyl-account-expired" />
+              <property name="throws" value="dtv.xst.crm.exceptions.LoyaltyAccountExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="lyl-program-expired" />
+              <property name="throws" value="dtv.xst.crm.exceptions.LoyaltyProgramExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="lyl-program-not-effective" />
+              <property name="throws" value="dtv.xst.crm.exceptions.LoyaltyProgramNotEffectiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ACCOUNT_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardAccountExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="AWARD_PROGRAM_EXPIRED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardProgramExpiredException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="AWARD_PROGRAM_NOT_EFFECTIVE" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AwardProgramNotEffectiveException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="GENERAL_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="RELATE_GIFT_CARD_REDEEM" class="dtv.xst.crm.relate.impl.giftcard.redeem.RelateGiftCardRedeemHandler">
+    <property name="serviceId" value="RELATE_GIFT_CARD_SVC_TRANSACTION_WS" />
+    <property name="servicePort" ref="relateSvcTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+  </bean>
+  
+  <bean id="RELATE_GIFT_CARD_CASHOUT" class="dtv.xst.crm.relate.impl.giftcard.cashout.RelateGiftCardCashoutHandler">
+    <property name="serviceId" value="RELATE_GIFT_CARD_SVC_TRANSACTION_WS" />
+    <property name="servicePort" ref="relateSvcTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+  </bean>
+  
+  <bean id="RELATE_GIFT_CARD_REVERSE" class="dtv.xst.crm.relate.impl.giftcard.reversetrans.RelateGiftCardReverseTransHandler">
+    <property name="serviceId" value="RELATE_GIFT_CARD_SVC_TRANSACTION_WS" />
+    <property name="servicePort" ref="relateSvcTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+  </bean>
+  
+  <bean id="RELATE_GIFT_CARD_VOID" class="dtv.xst.crm.relate.impl.giftcard.voidtrans.RelateGiftCardVoidHandler">
+    <property name="serviceId" value="RELATE_GIFT_CARD_SVC_TRANSACTION_WS" />
+    <property name="servicePort" ref="relateSvcTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+  </bean>
+  
+  <bean id="RELATE_GIFT_CARD_RELOAD" class="dtv.xst.crm.relate.impl.giftcard.reload.RelateGiftCardReloadHandler">
+    <property name="serviceId" value="RELATE_GIFT_CARD_SVC_TRANSACTION_WS" />
+    <property name="servicePort" ref="relateSvcTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenericExceptionHandler" />
+  </bean>
+  
+  <bean id="RELATE_GENERATE_CARD" class="dtv.xst.crm.relate.impl.giftcard.generate.RelateGiftCardGenerateHandler">
+    <property name="serviceId" value="RELATE_GIFT_CARD_SVC_TRANSACTION_WS" />
+    <property name="servicePort" ref="relateSvcTransactionJaxWsServicePort" />
+    <property name="exceptionHandler" ref="relateGenerateCardExceptionHandler" />
+  </bean>
+  
+  <bean id="relateGenerateCardExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="relateResponseAdapter" />
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="CARDS_NOT_GENERATED" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardSeriesNotFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*Card Series Prefix Field empty.*" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardPrefixMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*Card Series Sequence Field empty.*" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardSeriesSequenceMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*Card Series Not Found.*" />
+              <property name="throws" value="dtv.xst.crm.exceptions.CardSeriesNotFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*[Aa]ll[\w\s]+[Cc]ards[\w\s]+[Gg]enerated.*" />
+              <property name="throws" value="dtv.xst.crm.exceptions.AllCardsGeneratedException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*Unable to find customer.*" />
+              <property name="throws" value="dtv.xst.crm.exceptions.IssueToCustomerNotFoundException" />
+            </bean>
+      <!-- This error should no longer be returned by Relate, but just in case -->
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*Empty Customer data.*" />
+              <property name="throws" value="dtv.xst.crm.exceptions.IssueToCustomerNotFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="GENERAL_ERROR" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+</beans>

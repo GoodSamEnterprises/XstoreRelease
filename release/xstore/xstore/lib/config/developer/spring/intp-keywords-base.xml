@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="KW_RecursiveEntry" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_ViewScreen" >
+          <property name="params" value="STATE_LoggedIn"/> <!--  TODO: use something else -->
+        </bean>
+        <bean parent="INTPCMD_SetText" >
+          <property name="dev" ref="DEV_ODis" />
+          <property name="params" value="Rec. Level &#x2754;BEAN_stateMachine.getInvocationCount() [Code/Logout]" /> <!--  TODO: print "Rec. Level " + (stateMachine.getInvocationCount() - 1) + " [Code/Logout]:" -->
+        </bean>
+        <ref bean="KW_UpdateInput"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_TestScaleErrorChoice" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText" >
+          <property name="dev" ref="DEV_ScaleErrorChoice" />
+          <property name="params" value="_xfgclient.question.message" />
+        </bean>
+        <ref bean="KW_GS_Choice3Entry" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_TestShowPLUList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <ref bean="KW_UpdateInput" /> <!-- clear input dirty flag -->
+        <bean parent="INTPCMD_ViewScreen" >
+          <property name="params" value="PLU_LIST_OPEN" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_TestShowSystemInfo" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <ref bean="KW_UpdateInput" /> <!-- clear input dirty flag -->
+        <bean parent="INTPCMD_ViewScreen" >
+          <property name="params" value="SHOW_SYSTEMINFO" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_TestShowBrowser" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <ref bean="KW_UpdateInput" /> <!-- clear input dirty flag -->
+        <bean parent="INTPCMD_ViewScreen" >
+          <property name="params" value="OPEN_BROWSER_WINDOW" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+</beans>

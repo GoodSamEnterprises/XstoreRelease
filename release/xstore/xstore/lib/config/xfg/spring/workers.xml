@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery" 
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <!-- REPLACE XSTORES SIMPLE WORKER LIST WITH A VERSION THAT CAN BE INCLUDED IN A TRANSITION CHAIN BY REFERENCE -->
+  <bean id="workerList" class="com.micros_retail.xfgclient.transition.worker.RunWorkerListTN" scope="prototype" />
+
+  <bean id="sayHelloWorker" class="com.micros_retail.xfgclient.worker.test.SayHelloWorker" scope="prototype" />
+  <bean id="sayGoodbyeWorker" class="com.micros_retail.xfgclient.worker.test.SayGoodbyeWorker" scope="prototype" />
+  <bean id="failWorker" class="com.micros_retail.xfgclient.worker.test.FailWithConfigurableMessageWorker" scope="prototype" />
+  <bean id="longRunningBusyScreenWorker" class="com.micros_retail.xfgclient.worker.test.LongRunningBusyScreenWorker" scope="prototype" />
+  <bean id="saveCancelTransactionReasonCodeWorker" class="com.micros_retail.xfgclient.worker.reasoncode.SaveCancelTransactionReasonCodeWorker" scope="prototype" />
+  <bean id="saveVoidLineItemReasonCodeWorker" class="com.micros_retail.xfgclient.worker.reasoncode.SaveVoidLineItemReasonCodeWorker" scope="prototype" />
+  <bean id="saveVoidTenderLineReasonCodeWorker" class="com.micros_retail.xfgclient.worker.reasoncode.SaveVoidTenderLineReasonCodeWorker" scope="prototype" />
+  <bean id="xfgCheckForOrphanedTransWorker" class="com.micros_retail.xfgclient.worker.transaction.XfgCheckForOrphanedTransWorker" scope="prototype" />
+
+  <bean id="populateFlashSalesTablesOnPostVoidWorker" class="dtv.pos.reporting.flashsales.PopulateFlashSalesTablesOnPostVoidWorker" scope="prototype" />
+  <bean id="xfgCreateModifiersFromDefaultWorker" class="com.micros_retail.xfgclient.worker.commission.XfgCreateModifiersFromDefaultWorker" scope="prototype" />
+  <bean id="xfgAddWeighedItemPrintLine" class="com.micros_retail.xfgclient.worker.item.XfgAddWeighedItemPrintLineWorker" scope="prototype" />
+  <bean id="setRcptDeliveryMethodWorker" class="com.micros_retail.xfgclient.worker.rcpt.SetRcptDeliveryMethodWorker" scope="prototype" />
+
+  <!-- Email and Receipt related workers -->
+  <bean id="emailRcptsWorker" class="com.micros_retail.xfgclient.rcpt.worker.XfgEmailRcptsWorker" scope="prototype" />
+  <bean id="saveRcptsWorker" class="com.micros_retail.xfgclient.rcpt.worker.XfgSaveRcptsWorker" scope="prototype" />
+
+  <bean id="testFailWorker1" parent="failWorker" scope="prototype">
+    <property name="message">
+      <bean class="com.micros_retail.xfgclient.interpret.i18n.formattable.InterpretedFormattable">
+        <property name="text" value="Some failure message of a required worker; Op.: &#x2755;OPERATOR_LAST_NAME()" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="testFailWorker2" parent="failWorker" scope="prototype">
+    <property name="message">
+      <bean class="com.micros_retail.xfgclient.interpret.i18n.formattable.InterpretedFormattable">
+        <property name="text" value="THIS SHOULD NOT BE DISPLAYED!" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="WORK_testWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="sayHelloWorker" />
+        <ref bean="sayGoodbyeWorker" />
+        <ref bean="longRunningBusyScreenWorker" />
+        <ref bean="testFailWorker1" />
+        <ref bean="testFailWorker2" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="xfgStartupWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <!-- <ref bean="log4jSpringWireupWorker" /> -->
+        <!-- <ref bean="startHardwareWorker" /> -->
+        <ref bean="initBarcodeTranslatorWorker" />
+        <ref bean="logVersionStatusInformationWorker" />
+        <ref bean="logFreeSpaceWarningWorker" />
+        <ref bean="logConfigVersionInformationWorker" />
+        <!-- <ref bean="xfgCheckForOrphanedTransWorker" /> -->
+        <ref bean="checkSSLCertificatesWorker" />
+        <ref bean="healSessionTendersWorker" />
+        <!-- <ref bean="startRegisterStatusWorker" /> -->
+        <!-- <ref bean="startDeviceRegistrationWorker" /> -->
+      </list>
+    </property>
+  </bean>
+
+  <bean id="checkForOrphanedTransWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="xfgCheckForOrphanedTransWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleTransactionCompleteWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="completeSaleTransWorker" />
+        <ref bean="setRcptDeliveryMethodWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleTransactionPreparePrintWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="calculateTlogSequenceWorker" />
+        <ref bean="updateConfigCustomerAccountWorker" />
+        <ref bean="calculateCreditTenderPropertiesWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleTransactionFinishWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="buildReturnedItemJournalWorker" />
+        <ref bean="addCustAccountPersistableWorker" />
+        <ref bean="updateRainCheckRedemptionStatusWorker" />
+        <ref bean="persistObjectsWorker" />
+        <ref bean="persistSystemTotalWorker" />
+        <ref bean="persistVoucherHistoryWorker" />
+        <ref bean="populateFlashSalesTablesWorker" />
+        <ref bean="refreshSalesGoalStatusWorker" />
+        <ref bean="updateSAFQueueWorker" />
+        <ref bean="emailRcptsWorker" />
+        <ref bean="saveRcptsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="cancelTransactionWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="saveCancelTransactionReasonCodeWorker" />
+        <ref bean="completeCancelTransWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="cancelTransactionPreparePrintWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <!-- 
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="addCustomerAccountRcptSourcesWorker" />
+         -->
+        <ref bean="calculateTlogSequenceWorker" />
+        <!-- 
+        <ref bean="updateConfigCustomerAccountWorker" />
+        <ref bean="calculateCreditTenderPropertiesWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="buildReturnedItemJournalWorker" />
+        <ref bean="addCustAccountPersistableWorker" />
+        <ref bean="updateRainCheckRedemptionStatusWorker" />
+         -->
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="persistObjectsWorker" />
+        <!-- <ref bean="persistSystemTotalWorker" /> -->
+        <!-- <ref bean="persistVoucherHistoryWorker" /> -->
+        <ref bean="populateFlashSalesTablesWorker" /> <!-- TODO: REALLY?? -->
+        <!-- 
+        <ref bean="refreshSalesGoalStatusWorker" />
+        <ref bean="updateSAFQueueWorker" />
+         -->
+        <ref bean="emailRcptsWorker" />
+        <ref bean="saveRcptsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="emailSaveRcptsWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="emailRcptsWorker" />
+        <ref bean="saveRcptsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="processCashTransferCountWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="processCashTransferCountWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="persistObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="createCashPickupObjectsWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="createCashPickupObjectsWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="persistObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="calculateTlogSequenceWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="calculateTlogSequenceWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saveRcptsWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="saveRcptsWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="addCustAccountPersistableWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="addCustAccountPersistableWorker" />
+        <ref bean="persistObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="populateFlashSalesTablesWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="populateFlashSalesTablesWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="completeSuspendTransWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="completeSuspendTransWorker" />
+        <ref bean="calculateTlogSequenceWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="entireChainSuspendedTransWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="saveRcptsWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="addCustAccountPersistableWorker" />
+        <ref bean="persistObjectsWorker" />
+        <ref bean="populateFlashSalesTablesWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="completeVoidLineItemWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="saveVoidLineItemReasonCodeWorker" />
+        <ref bean="updateVoidItemWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="completeVoidTenderLineWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="saveVoidTenderLineReasonCodeWorker" />
+        <ref bean="updateTenderVoidWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saleItemAddWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="addPriceChangeModifierToLineItemWorker" />
+        <ref bean="addTransDiscountsToNewItemWorker" />
+        <ref bean="xfgAddWeighedItemPrintLine" />
+        <ref bean="xfgCreateModifiersFromDefaultWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="xfgCreateModifiersFromDefaultWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="xfgCreateModifiersFromDefaultWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="createPasswordStorageFileWorkers" parent="workerList" scope="prototype">
+    <property name="workers">
+      <list>
+        <ref bean="createPasswordStorageFileWorker" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

@@ -1,0 +1,85 @@
+<dataTemplate name="InventoryCountVariance" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+      <!-- Template-specific Text -->
+    <label name="INV_BUCKET" value="_invCountVarianceReportBucket"/>
+    <label name="COUNT_ID" value="_invCountVarianceReportCountNumber"/>
+    <label name="COUNT_TYPE" value="_invCountVarianceReportCountType"/>
+    <label name="COUNT_CYCLE" value="_invCountCycleColon"/>
+    <label name="COUNT_FINAL_CYCLE" value="_invCountVarianceReportFinalCycle"/>
+     <label name="ITEM" value="_rptItem"/>
+    <label name="ID" value="_rptID"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="QTY" value="_rptQuantity"/>
+    <label name="VARIANCE" value="_invCountVarianceReportVariance"/>
+    <label name="CNTRL_QTY" value="_invCountVarianceReportControlQty"/>
+    <label name="COUNTED_QTY" value="_invCountVarianceReportCountedQty"/>
+    <label name="UNIT_VAR" value="_invCountVarianceReportUnitVariance"/>
+    <label name="PERCENT_VAR" value="_invCountVarianceReportPercentVariance"/>
+    <label name="INFINITE_VAR" value="_invCountVarianceReportInfiniteVariance"/>
+    <label name="PERCENT" value="_rptPercent"/>
+    <label name="TITLE" value="_invCountVarianceReport"/>
+ </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+    
+    <!--User Parameters-->
+     <parameter name="countId" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+     <parameter name="countType" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+     <parameter name="countCycle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+   </parameters>
+    
+  <!--Data source and data Structure-->
+    <dataSource>
+    <dataReference name="O_VARIANCE"> 
+      <ResultFields>
+          <ResultField>BucketId</ResultField>
+          <ResultField>ItemId</ResultField>
+          <ResultField>Description</ResultField>
+          <ResultField>ControlQuantity</ResultField>
+          <ResultField>CountedQuantity</ResultField>
+          <ResultField>UnitVariance</ResultField>
+          <ResultField>PercentVariance</ResultField>
+      </ResultFields>
+    </dataReference>
+      <queryReference name="Q_INVENTORY_COUNT_VARIANCE" key="INVENTORY_COUNT_VARIANCE">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+      </Parameters>
+      <ResultFields>
+          <ResultField>code</ResultField>
+          <ResultField>description</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="VARIANCE_COUNT" source="O_VARIANCE">
+      <element name="BKT_ID" value="BucketId"/> 
+      <element name="ITEM_ID" value="ItemId"/> 
+      <element name="DESC" value="Description"/> 
+      <element name="CNTRL_QTY" value="ControlQuantity" formatter="Decimal"/> 
+      <element name="COUNTED_QTY" value="CountedQuantity" formatter="Decimal"/> 
+      <element name="UNIT_VAR" value="UnitVariance" formatter="Decimal"/> 
+      <element name="PERCENT_VAR" value="PercentVariance" formatter="Percent"/>
+      <element name="PERCENT_VAR_RAW" value="PercentVariance"/>  
+    </group>
+    <group name="INV_BUCKET_CODE" source="Q_INVENTORY_COUNT_VARIANCE">
+    <element name="CODE" value="code"/> 
+    <element name="DESC" value="description"/> 
+    </group>
+  </dataStructure>
+</dataTemplate>

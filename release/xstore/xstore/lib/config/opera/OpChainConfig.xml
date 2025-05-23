@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dtv/res/config/OpChainConfig.xsd">
+
+  <OpChain name="GUEST_LOOKUP">
+    <Op class="dtv.pos.guest.op.GuestSearchOp">
+      <Parameter name="RequestType" value="44" />
+      <Parameter name="MaximumGuests" value="20" />
+    </Op>
+    <Op class="dtv.pos.guest.op.SetGuestInformationOnTenderOp" />
+  </OpChain>
+   <OpChain name="POSTVOID_GUEST_LOOKUP">
+    <Op class="dtv.pos.guest.op.PromptGuestSearchForPostVoidTenderOp" />
+  </OpChain>
+  <OpChain name="VOID_ROOM_CHARGE">
+    <Op class="dtv.tenderauth.impl.opera.VoidRoomChargeOp">
+      <Parameter name="ContinueOnFailure" value="false" />
+    </Op>
+  </OpChain>
+  <OpChain name="TENDER_ROOM_CHARGE" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.CreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderId" value="ROOM_CHARGE" />
+    </Op>
+    <OpChainRoute chainKey="GUEST_LOOKUP" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <ValidationOp validationsBean="tenderAvailabilityRules" />
+    <PromptOp class="dtv.pos.tender.PromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderauth.impl.opera.AuthorizeRoomChargeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <Op class="dtv.pos.hardware.op.CaptureSignatureOp" contextKey="SALE_TENDER_SIGCAP" breakpoint="true">
+      <Parameter name="ErrorPromptKey" value="SIGCAP_ERROR"/>
+    </Op>
+    <Op class="dtv.pos.hardware.op.VerifySignatureOp" />
+    <Op class="dtv.pos.hardware.op.CreateTenderSignatureOp" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="REFUND_ROOM_CHARGE" signal="TransactionModified" contextKey="REFUND_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.CreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Refund" />
+      <Parameter name="TenderId" value="ROOM_CHARGE" />
+    </Op>
+    <OpChainRoute chainKey="GUEST_LOOKUP" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <ValidationOp validationsBean="tenderAvailabilityRules" />
+    <PromptOp class="dtv.pos.tender.PromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderauth.impl.opera.AuthorizeRoomChargeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  
+</OpChainSet>

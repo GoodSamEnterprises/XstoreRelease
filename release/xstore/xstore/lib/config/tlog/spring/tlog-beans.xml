@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+  default-init-method="init">
+
+  <!-- Spring beans that are singletons or framework beans can be defined in this file. Any realm-specific beans 
+    (validations, services, workers, etc) should be defined in their relevant Spring file that should be in the same 
+    directory as this file. -->
+
+  <context:annotation-config />
+  
+  <beans profile="tlog">
+    <bean id="theAllmightyThor" class="dtv.util.temp.InjectionHammerInitializer" />
+  
+    <bean id="eventManager" class="dtv.event.EventManager" />
+    <bean id="stationState" class="dtv.pos.iframework.security.StationState" />
+    <bean id="testHarness" class="dtv.xunit.DummyTestHarness" />
+        
+    <bean id="processLogger" class="dtv.pos.framework.logging.ProcessLogger" />
+    
+    <bean id="ccaHelper" class="dtv.pos.register.cca.ConfigurableCustomerAccountHelper" />
+    <bean id="customerAccountHelper" class="dtv.pos.customer.account.CustomerAccountHelper" />
+    <bean id="customerAccountFactory" class="dtv.pos.customer.account.CustomerAccountFactory" />
+    <bean id="tenderHelper" class="dtv.pos.tender.TenderHelper" lazy-init="true" />
+    <bean id="voucherConfigHelper" class="dtv.pos.tender.voucher.config.VoucherConfigHelper" init-method="initialize" />
+    <bean id="contextConfigHelper" class="dtv.pos.framework.ui.context.ContextConfigHelper" init-method="initialize" />
+    <bean id="componentPropertySetConfigHelper" class="dtv.pos.framework.ui.context.ComponentPropertySetConfigHelper" init-method="initialize" />
+    <bean id="componentGroupConfigHelper" class="dtv.pos.framework.ui.context.ComponentGroupConfigHelper" init-method="initialize" />    
+    <bean id="accountManager" class="dtv.pos.customer.account.AccountManager" scope="applicationMode" />
+    <bean id="logBuilder" class="dtv.logbuilder.LogBuilder" factory-method="getInstance" />   
+  </beans>
+  
+  <beans>
+    <bean id="trainingModeHelper" class="dtv.pos.assistance.NotTrainingModeHelper" />
+  </beans>
+</beans>

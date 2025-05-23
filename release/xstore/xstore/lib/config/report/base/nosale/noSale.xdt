@@ -1,0 +1,73 @@
+<dataTemplate name="NoSale" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+
+    <label name="ASSOCIATE" value="_rptNoSaleAssociate"/>
+    <label name="REGISTER" value="_rptRegister"/>
+    <label name="TRANSACTION" value="_rptTransaction"/>
+    <label name="DATE" value="_rptDate"/>
+    <label name="TIME" value="_rptTime"/>
+    <label name="REASON_CODE_DESCRIPTION" value="_rptNoSaleResasonCodeDescription"/>   
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_NOSALE" key="NO_SALE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>trans_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>begin_datetime</ResultField>
+        <ResultField>reason_code</ResultField>
+        <ResultField>employee_id</ResultField>
+        <ResultField>employee_name</ResultField>
+        <ResultField>description</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_NOSALE" source="Q_NOSALE">
+     <element name="TRANSACTION" value="trans_seq"/>
+      <element name="DATE" value="trans_date"  formatter="DateShort"/>
+      <element name="WORKSTATION" value="wkstn_id"/>
+      <element name="BEGIN_DATETIME" value="begin_datetime" formatter="TimeShort"/>
+      <element name="REASON_CODE" value="reason_code"/>
+      <element name="DESCRIPTION" value="description"/>
+      <element name="EMP_ID" value="employee_id"/>
+      <element name="EMP_NAME" value="employee_name" formatter="LastFirstNameFromString"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

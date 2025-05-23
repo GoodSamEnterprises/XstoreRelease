@@ -1,0 +1,1021 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+  <FormatterMap>
+    <Formatter name="CfeAddress" class="oracle.retail.xstore.countrypack.br.sat.rcpt.format.SatRcptAddressFormatter" /> 
+    <Formatter name="NfeKeyPrintFirstHalf" class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.formatters.NfeKeyFormatter" nfePart="First" />
+    <Formatter name="NfeKeyPrintSecondHalf" class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.formatters.NfeKeyFormatter" nfePart="Second" />
+    <Formatter name="NfeKeyBarcodeFirstHalf" class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.formatters.NfeKeyFormatter" nfePart="First" nfeMode="Plain" />
+    <Formatter name="NfeKeyBarcodeSecondHalf" class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.formatters.NfeKeyFormatter" nfePart="Second" nfeMode="Plain" />  
+  </FormatterMap>
+
+  <!-- ################################################################################################# -->
+  <!-- #################################### RCPT Copy Rules ######################################## -->
+  <!-- ################################################################################################# -->
+  <ReceiptCopyRules>
+    <ReceiptCopyRule name="RETAIL_SALE" document="CUSTOMER">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.TransactionTypeRule" type="RETAIL_SALE" />
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.CanceledTransactionReceiptEnabledRule" />
+      <Rule class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.copyrules.AllFiscalItemsCopyRule" inverted="true" />      
+    </ReceiptCopyRule>
+    <ReceiptCopyRule name="NFCeRETAIL_SALE" document="NFCe">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.TransactionTypeRule" type="RETAIL_SALE" />
+      <Rule class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.copyrules.IsNfceCopyRule" />
+    </ReceiptCopyRule>
+    <ReceiptCopyRule name="SATeRETAIL_SALE" document="SAT">
+      <Rule class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.copyrules.IsSatCopyRule" />
+    </ReceiptCopyRule>
+
+    <!-- Post Void -->
+    <ReceiptCopyRule name="POSTVOID" document="POSTVOID" enabled="false">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.TransactionTypeRule" type="POST_VOID" />
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.NoCanceledTransactionRule" />
+    </ReceiptCopyRule>
+    <ReceiptCopyRule name="NFCePOSTVOID" document="NFCePOSTVOID">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.TransactionTypeRule" type="POST_VOID" />
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.NoCanceledTransactionRule" />
+      <Rule class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.copyrules.IsNfceCopyRule" />
+    </ReceiptCopyRule>
+
+    <ReceiptCopyRule name="SATePOSTVOID" document="SATePOSTVOID">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.TransactionTypeRule" type="POST_VOID" />
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.NoCanceledTransactionRule" />
+      <Rule class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.copyrules.IsSatCopyRule" />
+    </ReceiptCopyRule>
+
+  </ReceiptCopyRules>
+
+  <!-- ################################################################################################# -->
+  <!-- ####################################### RCPT IDs ############################################ -->
+  <!-- ################################################################################################# -->
+
+  <receipts>
+    <receipt document="NFCe" sectionref="NFCeRcpt" />
+    <receipt document="SAT" sectionref="SATRcpt" />
+    <receipt document="NFCePOSTVOID" sectionref="NFCePOSTVOIDRcpt" />
+    <receipt document="SATePOSTVOID" sectionref="SATePOSTVOIDRcpt" />
+  </receipts>
+
+  <sections>
+    <section name="tax_code_summary_detail">
+      <!-- TODO BR: evaluate if using the standard countrypack implementation -->
+      <iterator method="getTaxLineItems">
+        <sectionref>br_tax_detail</sectionref>
+      </iterator>
+    </section>
+
+    <section name="br_tax_detail">
+      <condition method="getTaxPercentage" comparison="GREATER_THAN_ZERO" />
+      <row>
+        <field method="getAuthorityName" align="R" loc="-22" />
+        <field method="getTaxPercentage" formatter="Percent" align="R" loc="-15" />
+        <field method="getTaxAmount" formatter="Money" align="R" loc="-3" />
+      </row>
+    </section>
+
+
+    <section name="ReceiptEnd">
+      <row />
+      <horizontal_rule style="*" />     
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <!-- ################################################################################################# -->
+
+    <section name="SectionSeparator">
+      <row />
+    </section>
+    
+    <section name="SolidLine">
+      <horizontal_rule style="—" />      
+    </section>
+    <section name="DashLine">
+      <horizontal_rule style="-" />      
+    </section>
+
+    <!-- NFCe receipt -->
+    <section name="NFCeRCPT">
+      <sectionref>NFCeHeader</sectionref>
+      <sectionref>DashLine</sectionref>
+
+      <sectionref>NFCeMandatoryTextI</sectionref>
+      <sectionref>NFCeMandatoryTextIII</sectionref>
+
+      <sectionref>NFCeItemInformation</sectionref>
+      <sectionref>NFCeSumOfItemsForTheTransaction</sectionref>
+      <row />
+      <sectionref>TransactionTotalAmount</sectionref>
+      <row />
+      <sectionref>NFCeTenderTotal</sectionref>
+      <sectionref>br_tenders</sectionref>
+      <row />
+      <sectionref>change</sectionref>
+      <sectionref>DashLine</sectionref>
+
+      <sectionref>NFCeTaxInformation</sectionref>
+      <row />
+      <sectionref>ReturnInformation</sectionref>
+      <sectionref>DashLine</sectionref>
+
+      <sectionref>NFCeAccessInformation</sectionref>
+      <sectionref>DashLine</sectionref>
+
+      <sectionref>NFCeCustomerInformation</sectionref>
+      <sectionref>NFCeCustomerInformationNull</sectionref>
+
+      <sectionref>DashLine</sectionref>
+
+      <sectionref>NFCeFooter</sectionref>
+      <sectionref>ReceiptEnd</sectionref>
+    </section>
+
+    <section name="NFCePOSTVOIDRcpt">
+      <call method="getVoidedTransaction">
+        <sectionref>NFCeHeader</sectionref>
+        <sectionref>DashLine</sectionref>
+
+        <sectionref>POSTVOIDText</sectionref>
+        <sectionref>DashLine</sectionref>
+
+        <sectionref>NFCeAccessInformation</sectionref>
+        <sectionref>DashLine</sectionref>
+
+        <sectionref>NFCeCustomerInformation</sectionref>
+        <sectionref>NFCeCustomerInformationNull</sectionref>
+        <sectionref>POSTVOIDCancelationText</sectionref>
+        <sectionref>DashLine</sectionref>
+
+        <sectionref>NFCeFooter</sectionref>
+        <sectionref>POSTVOIDCancelationText</sectionref>
+        <sectionref>ReceiptEnd</sectionref>
+      </call>
+    </section>
+
+    <section name="NFCeHeader">
+      <row />
+      <sectionref>logo</sectionref>
+      <row />
+      <call method="getRetailLocationIdObject" impl="dtv.pos.docbuilding.RetailLocationLookupCall">
+        <sectionref>CorporateName</sectionref>
+        <sectionref>CompanyAddress</sectionref>
+        <sectionref>CompanyInfo</sectionref>
+      </call>
+    </section>
+
+    <section name="CorporateName">
+      <row align="C">
+        <field method="getStringProperty" method_param="BR::CORP_NAME" />
+      </row>
+      <sectionref>CompanyName</sectionref>
+    </section>
+
+    <section name="CompanyName">
+      <condition method="getStringProperty" method_param="BR::CORP_FANTASY_NAME" comparison="NOT_NULL" />
+      <row align="C">
+        <field method="getStringProperty" method_param="BR::CORP_FANTASY_NAME" />
+      </row>
+    </section>
+
+    <section name="CompanyAddress">
+      <region left_margin="1" alignment="C">
+        <field method="." formatter="BasicAddress" />
+      </region>
+    </section>
+
+    <section name="CompanyInfo">
+      <row align="C">
+        <field text="_countrypack.br.rcpt.cnpj" />
+        <sp/>
+        <field method="getStringProperty" method_param="BR::CNPJ" />
+        <sp/>
+        <field text="_countrypack.br.rcpt.ie" />
+        <sp/>
+        <field method="getStringProperty" method_param="BR::IE" />
+      </row>
+    </section>
+
+    <section name="NFCeMandatoryTextI">
+      <row />
+      <region left_margin="1" alignment="C">
+        <field text="_countrypack.br.rcpt.nfceMandatoryTextI" style="BOLD" />
+      </region> 
+      <region left_margin="1" alignment="C">
+        <field text="_countrypack.br.rcpt.nfceMandatoryTextII" />
+      </region>            
+    </section>
+
+    <section name="NFCeMandatoryTextIII">
+      <row />
+      <row align="C" charsize="X2H">
+        <field text="_countrypack.br.rcpt.nfceMandatoryTextIII" style="BOLD" />
+      </row>
+      <row />
+    </section>
+
+    <section name="POSTVOIDText">
+      <row />
+      <row align="C">
+        <field text="_countrypack.br.rcpt.postVoidTextHeader" />
+      </row>
+      <sectionref>NFCeMandatoryTextI</sectionref>
+      <sectionref>DashLine</sectionref>
+      <row align="C">
+        <field text="_countrypack.br.rcpt.postVoidTextFooter" />
+      </row>
+    </section>
+
+    <section name="NFCeItemInformation">
+      <sectionref>DashLine</sectionref>
+      <sectionref>NFCeItemInformationHeader</sectionref>
+      <sectionref>DashLine</sectionref>
+      <sectionref>NFCeItemInformationLines</sectionref>
+      <sectionref>DashLine</sectionref>
+    </section>
+
+    <section name="NFCeItemInformationHeader">
+      <row>        
+        <field text="_countrypack.br.rcpt.code"/>        
+        <field text="_countrypack.br.rcpt.description" loc="15"/>
+      </row>
+      <row>        
+        <field text="_countrypack.br.rcpt.qty" align="R" loc="10" />
+        <field text="_countrypack.br.rcpt.unit" loc="15" />
+        <field text="_countrypack.br.rcpt.price" align="R" loc="-15" />
+        <field text="_countrypack.br.rcpt.amount" align="R" loc="-3" />
+      </row>
+    
+<!--       <row align="L"> -->
+<!--         <field text=" # |CODE|DESCRIPTION|QTD|UN|UNIT R$|ITEM R$" /> -->
+<!--       </row> -->
+    </section>
+
+    <section name="NFCeItemInformationLines">
+      <iterator method="getRetailTransactionLineItems">
+        <sectionref>NFCe_nonvoided_item</sectionref>
+      </iterator>
+    </section>
+
+    <section name="NFCe_nonvoided_item">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.ISaleReturnLineItem" />
+      <condition class="dtv.pos.docbuilding.conditions.VoidedLineCondition" />
+      <condition method="getExtendedAmount" comparison="GREATER_THAN_ZERO" />
+      <row>        
+        <field method="getItem.getItemId" />
+        <field method="getItemDescription" loc="15"/>
+      </row>
+      <row>
+        <field method="getQuantity" formatter="Quantity" align="R" loc="10" />
+        <field method="getItem.getOptions.getUnitOfMeasureCode" loc="15" />        
+        <field method="getBaseUnitPrice" formatter="Money" loc="-15" />
+        <field method="getGrossAmount" formatter="Money" loc="-3" />
+      </row>
+      <sectionref>br_item_discounts</sectionref>
+      <row />
+    </section>
+
+    <section name="br_item_discounts">
+      <condition class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.conditions.LineItemTotalDiscountCondition" />
+      <sectionref>br_item_discount_line</sectionref>
+      <sectionref>br_item_payable_line</sectionref>
+    </section>
+
+    <section name="br_item_discount_line">
+      <row>
+        <field text="_countrypack.br.rcpt.discount" loc="-9" />
+        <field loc="-1" formatter="Money">
+          <aggregate class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.docbuilders.LineItemTotalDiscountField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="br_item_payable_line">
+      <row>
+        <field text="_countrypack.br.rcpt.extAmount" loc="-9" />
+        <field method="getExtendedAmount" formatter="Money" loc="-1" />
+      </row>
+    </section>
+
+    <section name="NFCeSumOfItemsForTheTransaction">
+      <row>
+        <field text="_countrypack.br.rcpt.sum.item.quantity" />
+        <field formatter="Quantity" loc="-3">
+          <aggregate class="dtv.pos.common.rcpt.SoldItemsCountDocBuilderField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="TransactionTotalAmount">
+      <row align="L">
+        <field text="_countrypack.br.rcpt.subtotal" />
+        <field formatter="Money" loc="-3">
+          <aggregate class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.docbuilders.RcptSubTotalField" />
+        </field>
+      </row>
+      <row />
+
+      <row align="L">
+        <field text="_countrypack.br.rcpt.totaldiscount" />
+        <field formatter="Money" loc="-3">
+          <aggregate class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.docbuilders.RcptTotalDiscountField" />
+        </field>
+      </row>
+      <row />
+      <row>
+        <field text="_countrypack.br.rcpt.tran.total.amount" />
+        <field method="getTotal" formatter="Money" loc="-3" />
+      </row>
+    </section>
+
+    <section name="NFCeTenderTotal">
+      <row>
+        <field text="_countrypack.br.rcpt.tender.total" style="BOLD" />
+        <field text="_countrypack.br.rcpt.tender.value" loc="-3" style="BOLD" />
+      </row>
+    </section>
+
+    <section name="nontenderRetail_creditcard_customer" />
+
+    <section name="NFCeTaxInformation">      
+      <region align="C">
+        <condition method="getStringProperty" method_param="BR::IBPT_TAX_SENTENCE" comparison="NOT_NULL" />
+        <field method="getStringProperty" method_param="BR::IBPT_TAX_SENTENCE" />
+      </region>
+    </section>
+
+    <section name="ReturnInformation">
+      <row align="C">
+        <field text="_countrypack.br.rcpt.storeNumber" />
+        <field method="getRetailLocationId" />
+        <sp/>
+        <field text="_countrypack.br.rcpt.date" />
+        <field method="getBusinessDate" formatter="DateShort" />
+        <sp/>
+        <field text="_countrypack.br.rcpt.workstation" />
+        <field method="getWorkstationId" />
+        <sp/>
+        <field text="_countrypack.br.rcpt.transactionNumber" />
+        <field method="getTransactionSequence" />
+      </row>
+      <sectionref>trans_barcode</sectionref>
+    </section>
+
+    <section name="NFCeAccessInformation">
+      <sectionref>NFCeContingencyText</sectionref>
+      <row align="C">
+        <field text="_countrypack.br.rcpt.nfceNumber" />
+        <field method="getStringProperty" method_param="BR::NFCE_NO" />
+        <sp/>
+        <field text="_countrypack.br.rcpt.series" />
+        <field method="getDecimalProperty" method_param="BR::NFCE_SERIE" />
+      </row>
+      <row align="C">
+        <!-- <field text="Emissão: " /> -->
+        <field method="getDateProperty" method_param="BR::NFCE_ISSUE_DATE_TIME" formatter="DateTimeMedium" />
+      </row>
+      <row />
+      <row align="C">
+        <field text="_countrypack.br.rcpt.accessKeyTextI" />
+      </row>
+      <row align="C">
+        <field text="_countrypack.br.rcpt.accessKeyTextII" />
+      </row>
+      <call method="getRetailLocationIdObject" impl="dtv.pos.docbuilding.RetailLocationLookupCall">
+        <row align="C">
+          <field method="getStringProperty" method_param="BR::QR_URL" />
+        </row>
+      </call>
+      <row />
+      <row align="C">
+        <field text="_countrypack.br.rcpt.accessKey" />
+      </row>
+      <row align="C">
+        <field method="getStringProperty" method_param="BR::NFCE_CHAVE" formatter="NfeKeyPrintFirstHalf"/>        
+      </row>
+      <row align="C">
+        <field method="getStringProperty" method_param="BR::NFCE_CHAVE" formatter="NfeKeyPrintSecondHalf"/> 
+      </row>
+    </section>
+
+    <section name="NFCeContingencyText">
+      <condition method="getBooleanProperty" method_param="BR::NFCE_CONTINGENCY" comparison="TRUE" />
+      <row align="C">
+        <field text="_countrypack.br.rcpt.conting" />
+      </row>
+      <row />
+    </section>
+
+    <section name="POSTVOIDCancelationText">
+      <row align="C">
+        <field text="_countrypack.br.rcpt.postVoidCancelationText" />
+      </row>
+    </section>
+
+    <section name="NFCeCustomerInformation">
+      <condition method="getStringProperty" method_param="TAX_ID" comparison="NOT_NULL" />
+      <row align="C">
+        <field text="_countrypack.br.rcpt.consumer" />
+      </row>
+      <row align="C">
+        <field text="_countrypack.br.rcpt.taxId" />
+        <sp/>
+        <field method="getStringProperty" method_param="TAX_ID" />
+      </row>
+    </section>
+
+    <section name="NFCeCustomerInformationNull">
+      <condition method="getStringProperty" method_param="TAX_ID" comparison="IS_NULL" />
+      <row align="C">
+        <field text="_countrypack.br.rcpt.noConsumer" />
+      </row>
+    </section>
+
+    <section name="NFCeFooter">
+      <sectionref>QRCode</sectionref>
+      <sectionref>NFCeSubmissionInfo</sectionref>
+    </section>
+
+    <section name="NFCeSubmissionInfo">
+      <condition method="getStringProperty" method_param="BR::NFCE_CONTINGENCY" comparison="IS_NULL" />
+      <row align="C">
+        <field text="_countrypack.br.rcpt.protocol" />
+        <sp/>
+        <field method="getStringProperty" method_param="BR::NFCE_AUTH_PROTOCL_NO" />        
+      </row>
+      <row align="C">
+        <field method="getDateProperty" method_param="BR::NFCE_AUTH_DATE_TIME" formatter="DateTimeMedium" />
+      </row>
+    </section>
+
+    <section name="QRCode">
+      <row align="C">
+        <field text="_countrypack.br.rcpt.qrCode" />
+      </row>
+      <barcode symbology="QR CODE" height="250" width="500">
+        <field method="getStringProperty" method_param="BR::NFCE_QR_CODE_STRING" align="C" />
+      </barcode>
+    </section>
+
+
+    <!-- SATe Receipt -->
+
+    <section name="SATRCPTtransaction">
+      <sectionref>SATHeader</sectionref>
+      <sectionref>DashLine</sectionref>
+
+      <sectionref>SATDocumentInformation</sectionref>
+      <sectionref>SectionSeparator</sectionref>
+
+      <sectionref>SATCustomerInformation</sectionref>
+      <sectionref>SATCustomerInformationNull</sectionref>
+      <sectionref>DashLine</sectionref>
+
+      <sectionref>SATItemInformation</sectionref>
+      <sectionref>SectionSeparator</sectionref>
+
+      <sectionref>TransactionTotalAmount</sectionref>
+      <row />
+      <sectionref>br_tenders</sectionref>
+      <row />
+      <sectionref>change</sectionref>
+      <sectionref>DashLine</sectionref>
+
+      <sectionref>SATTaxInformation</sectionref>
+      <sectionref>DashLine</sectionref>
+      <sectionref>trans_barcode</sectionref>
+      <sectionref>DashLine</sectionref>
+
+      <sectionref>SATAccessInformation</sectionref>
+      <row />
+
+      <sectionref>ReceiptEnd</sectionref>
+    </section>
+
+    <section name="SATePOSTVOIDRcptTransaction">
+      <call method="getVoidedTransaction">
+        <sectionref>SATHeader</sectionref>
+        <sectionref>DashLine</sectionref>
+
+        <sectionref>SATDocumentInformation</sectionref>
+        <sectionref>SectionSeparator</sectionref>
+
+        <sectionref>SATCustomerInformation</sectionref>
+        <sectionref>SATCustomerInformationNull</sectionref>
+        <sectionref>POSTVOIDCustomerInformation</sectionref>
+        <sectionref>DashLine</sectionref>
+
+        <sectionref>POSTVOIDTotalInformation</sectionref>
+        <row />
+
+        <sectionref>SATAccessInformation</sectionref>
+        <row />
+
+        <sectionref>ReceiptEnd</sectionref>
+      </call>
+    </section>
+
+
+    <section name="SATHeader">
+      <row />
+      <sectionref>logo</sectionref>
+      <row />
+      <call method="getRetailLocationIdObject" impl="dtv.pos.docbuilding.RetailLocationLookupCall">
+        <sectionref>CorporateName</sectionref>
+        <sectionref>CompanyAddress</sectionref>
+        <sectionref>CompanyInfo</sectionref>
+      </call>
+    </section>
+
+    <section name="SATDocumentInformation">
+      <row align="C">
+        <field text="_countrypack.br.rcpt.satNumber" />
+        <sp/>
+        <field method="getStringProperty" method_param="BR::NFCE_NO" />
+      </row>
+      <row align="C">
+        <field text="_countrypack.br.rcpt.satDocument" />
+      </row>
+    </section>
+
+    <section name="SATCustomerInformation">
+      <condition method="getStringProperty" method_param="TAX_ID" comparison="NOT_NULL" />
+      <row align="C">
+        <field text="_countrypack.br.rcpt.satConsumer" />
+        <sp/>
+        <field method="getStringProperty" method_param="TAX_ID" />
+      </row>
+    </section>
+
+    <section name="SATCustomerInformationNull">
+      <condition method="getStringProperty" method_param="TAX_ID" comparison="IS_NULL" />
+      <row align="C">
+        <field text="_countrypack.br.rcpt.satNoConsumer" />
+      </row>
+    </section>
+
+    <section name="POSTVOIDCustomerInformation">
+      <row align="C">
+        <field text="_countrypack.br.rcpt.satPostVoidText" />
+      </row>
+    </section>
+
+    <section name="SATItemInformation">
+      <sectionref>NFCeItemInformationHeader</sectionref>
+      <sectionref>DashLine</sectionref>
+      <sectionref>SATItemInformationLines</sectionref>
+    </section>
+
+    <section name="SATItemInformationLines">
+      <iterator method="getRetailTransactionLineItems">
+        <sectionref>NFCe_nonvoided_item</sectionref>
+      </iterator>
+    </section>  
+    
+    <section name="POSTVOIDTotalInformation">
+      <row align="L">
+        <field text="_countrypack.br.rcpt.satPostVoidTotal" style="Bold" />
+        <field method="getTotal" formatter="Money" loc="-3" style="Bold" />
+      </row>
+    </section>
+    
+    <section name="br_tenders">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trn.IPosTransaction" />
+      <horizontal_rule style="Double" />
+      <iterator method="getLineItemsByTypeCode" method_param="TENDER">
+        <condition class="dtv.pos.docbuilding.conditions.VoidedLineCondition" />
+        <condition class="dtv.pos.docbuilding.conditions.IncludeTenderStateCondition" value="CHANGE" inverted="true" />
+        <sectionref>nonchange_tender</sectionref>
+      </iterator>
+    </section>
+
+    <section name="nontenderRetail_creditcard_customer" />
+
+    <section name="SATTaxInformation">
+      <row align="C">
+        <field text="_countrypack.br.rcpt.satTaxInformation" />
+      </row>      
+      <region align="C">
+        <condition method="getStringProperty" method_param="BR::INF_CPL" comparison="NOT_NULL" />        
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.docbuilders.RcptInfCplDocBuilderField" />
+        </field>
+      </region>
+      <region align="C">
+        <condition method="getDecimalProperty" method_param="BR::SAT_CFE_LEI_12741" comparison="NOT_NULL" />
+        <field formatter="Money" >
+          <aggregate class="oracle.retail.xstore.countrypack.br.pos.hardware.rcptbuilding.docbuilders.RcptTotalTaxDocBuilderField" />
+        </field>
+      </region>
+    </section>
+
+    <section name="SATAccessInformation">
+      <row align="C">
+        <field text="_countrypack.br.rcpt.satAccessNumber" />
+        <sp/>
+        <field method="getStringProperty" method_param="BR::SAT_RESP_NO" />
+      </row>
+      <row Align="C">
+        <field method="getDateProperty" method_param="BR::NFCE_ISSUE_DATE_TIME" formatter="DateTimeMedium" />
+      </row>
+      <row align="C">
+        <field method="getStringProperty" method_param="BR::NFCE_CHAVE" formatter="NfeKeyPrintFirstHalf"/>        
+      </row>
+      <row align="C">
+        <field method="getStringProperty" method_param="BR::NFCE_CHAVE" formatter="NfeKeyPrintSecondHalf"/> 
+      </row>
+      <sectionref>SATBarcode</sectionref>
+      <sectionref>SATQRCode</sectionref>
+    </section>
+
+    <section name="SATBarcode">
+      <sectionref>SATBarcode_1</sectionref>
+      <row />
+      <sectionref>SATBarcode_2</sectionref>
+    </section>
+
+    <section name="SATBarcode_1">
+      <barcode symbology="Code 128 Parsed" textposition="NONE" prefix="{C">        
+        <field method="getStringProperty" method_param="BR::NFCE_CHAVE" formatter="NfeKeyBarcodeFirstHalf"/> 
+      </barcode>
+    </section>
+    <section name="SATBarcode_2">
+      <barcode symbology="Code 128 Parsed" textposition="NONE" prefix="{C">
+        <field method="getStringProperty" method_param="BR::NFCE_CHAVE" formatter="NfeKeyBarcodeSecondHalf"/> 
+      </barcode>
+    </section>
+
+    <section name="SATQRCode">
+      <barcode symbology="QR CODE" height="250" width="500">
+        <field method="getStringProperty" method_param="BR::NFCE_QR_CODE_STRING" align="C" />
+      </barcode>
+    </section>
+    
+    
+    <section name="SATRCPT">
+      <sectionref>CfeHeader</sectionref>
+      <sectionref>DashLine</sectionref>    
+      <sectionref>CfeBody</sectionref>
+      <sectionref>DashLine</sectionref>
+      <sectionref>CfeFooter</sectionref>        
+      <sectionref>SectionSeparator</sectionref>
+      <sectionref>CfeQRCode</sectionref>
+      <sectionref>page_break</sectionref>    
+    </section>
+    <section name="CfeQRCode">
+      <barcode symbology="QR CODE" height="250" width="500">
+        <field method="getQrCode" align="C" />
+      </barcode>
+      <row />
+      <region align="C">
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.br.sat.rcpt.docbuilding.SatRcptQRMessageDocBuilderField" />
+        </field>
+      </region>
+    </section>
+    <section name="CfeHeader">
+      <row />
+      <sectionref>logo</sectionref>
+      <row />
+      <call method="getHeader">
+        <row align="C">
+          <field method="getFantasyName" />
+        </row>
+        <row align="C">
+          <field method="getCompanyName" />
+        </row>
+        <region left_margin="1" alignment="C">
+          <field method="." formatter="CfeAddress" />
+        </region>
+        <row align="C">
+          <field text="_countrypack.br.rcpt.cnpj" />
+          <sp/>
+          <field method="getCompanyCnpj"/>
+          <sp/>
+          <field text="_countrypack.br.rcpt.ie" />
+          <sp/>
+          <field method="getCompanyIe" />
+        </row>
+        <row align="C">
+          <field text="_countrypack.br.rcpt.im" />
+          <sp/>
+          <field method="getCompanyIm"/>
+        </row>
+      </call>      
+    </section>
+    <section name="CfeBody">
+      <sectionref>CfeBodyGroup1</sectionref> 
+      <sectionref>CfeBodyGroup1_Homologation</sectionref>      
+      <sectionref>DashLine</sectionref>  
+      <sectionref>CfeBodyGroup2</sectionref> 
+      <sectionref>DashLine</sectionref>   
+      <sectionref>CfeBodyGroup3</sectionref>
+      <sectionref>DashLine</sectionref>  
+      <sectionref>CfeBodyGroup4</sectionref>
+      <sectionref>SectionSeparator</sectionref>
+      <sectionref>CfeBodyGroup5</sectionref>  
+      <sectionref>SectionSeparator</sectionref>
+      <sectionref>CfeBodyGroup6</sectionref>
+      <sectionref>SectionSeparator</sectionref>
+      <sectionref>CfeBodyGroup7</sectionref>
+      <sectionref>DashLine</sectionref>
+      <sectionref>CfeBodyGroup9</sectionref>  
+    </section>
+    <section name="CfeBodyGroup1">
+      <condition method="getBody.getGroup1.isHomologation" comparison="FALSE" />    
+      <call method="getBody.getGroup1">
+        <row align="C">
+          <field text="_countrypack.br.rcpt.satNumber" style="BOLD" />
+          <sp/>
+          <field method="getDocumentNumber" style="BOLD" />
+        </row>
+        <row align="C">
+          <field text="_countrypack.br.rcpt.satDocument" style="BOLD" />
+        </row>      
+        <row align="C">
+          <condition method="getFooter.getSatCancKey" comparison="NOT_BLANK" />
+          <field text="_countrypack.br.rcpt.postVoidTextHeader" style="BOLD" />
+        </row>   
+      </call>
+    </section>
+    <section name="CfeBodyGroup1_Homologation">
+      <condition method="getBody.getGroup1.isHomologation" comparison="TRUE" />    
+      <row align="C">
+        <field text="_countrypack.br.rcpt.satNumber" style="BOLD" />
+        <sp/>
+        <field text="000000" style="BOLD" />
+      </row>
+      <row align="C">
+        <field text="_countrypack.br.rcpt.satDocument" style="BOLD" />
+      </row>    
+      <row align="C">
+        <condition method="getFooter.getSatCancKey" comparison="NOT_BLANK" />
+        <field text="_countrypack.br.rcpt.postVoidTextHeader" style="BOLD" />
+      </row>    
+      <row />
+      <row align="C">
+        <field text="= TESTE =" style="BOLD" />
+      </row>
+      <row /> 
+      <horizontal_rule style=">" />
+      <horizontal_rule style=">" />
+      <horizontal_rule style=">" />
+    </section>
+    <section name="CfeBodyGroup2">
+      <call method="getBody.getGroup2">    
+        <row align="C">
+          <condition method="getTaxId" comparison="NOT_NULL" />
+          <field text="_countrypack.br.rcpt.satConsumer" />
+          <sp/>
+          <field method="getTaxId" />
+        </row>
+        <row align="C">
+          <condition method="getTaxId" comparison="IS_NULL" />
+          <field text="_countrypack.br.rcpt.satNoConsumer" />
+        </row> 
+      </call>
+    </section>      
+    <section name="CfeBodyGroup3">
+      <row>
+        <field text="#|COD|QTD|UN|VL UN R$|(VL TR R$)*" />    
+      </row> 
+      <row>
+        <field text="DESC|VL ITEM R$" />    
+      </row> 
+    </section> 
+    <section name="CfeBodyGroup4">
+      <call method="getBody">
+        <iterator method="getGroup4List">
+          <row>
+            <field method="getItemSequence" />
+            <sp />
+            <field method="getItemCode" />
+            <sp />
+            <field method="getItemDecimalQty" formatter="Quantity" />
+            <sp />
+            <field method="getItemUnit" />
+            <field text=" X " />
+            <field method="getItemDecimalUnitPrice" formatter="Money" />  
+            <field text=" (" />
+            <field method="getItemDecimalLei12741" formatter="Money" />                      
+            <field text=")" />          
+          </row>
+          <row>
+            <field method="getItemDesc" />
+            <field method="getItemDecimalExtendedPrice" formatter="Money" loc="-1" />
+          </row>
+          <row>
+            <condition method="getItemDecimalDiscount" comparison="LESS_THAN_ZERO" />
+            <field text="_countrypack.br.rcpt.itemDiscount" />
+            <field method="getItemDecimalDiscount" formatter="Money" loc="-1" />
+          </row>
+          <row>
+            <condition method="getItemDecimalSurcharge" comparison="GREATER_THAN_ZERO" />
+            <field text="_countrypack.br.rcpt.itemSurcharge" />
+            <field method="getItemDecimalSurcharge" formatter="Money" loc="-1" />
+          </row>
+          <row>
+            <condition method="getItemDecimalDeductISS" comparison="LESS_THAN_ZERO" />
+            <field text="_countrypack.br.rcpt.issqnDiscount" />
+            <field method="getItemDecimalDeductISS" formatter="Money" loc="-1" />
+          </row>
+          <row>
+            <condition method="getItemDecimalIssBc" comparison="GREATER_THAN_ZERO" />
+            <field text="_countrypack.br.rcpt.issqnBasis" />
+            <field method="getItemDecimalIssBc" formatter="Money" loc="-1" />
+          </row>                    
+          <row>
+            <condition method="getItemDecimalRatDesc" comparison="LESS_THAN_ZERO" />
+            <field text="_countrypack.br.rcpt.itemDiscountSubtotal" />
+            <field method="getItemDecimalRatDesc" formatter="Money" loc="-1" />
+          </row>
+          <row>
+            <condition method="getItemDecimalRatAcr" comparison="GREATER_THAN_ZERO" />
+            <field text="_countrypack.br.rcpt.itemSuchargeSubtotal" />
+            <field method="getItemDecimalRatAcr" formatter="Money" loc="-1" />
+          </row>
+        </iterator>
+      </call>
+    </section>
+    <section name="CfeBodyGroup5">
+      <call method="getBody.getGroup5">
+        <row>            
+          <field text="_countrypack.br.rcpt.totalGrossAmount" />
+          <field method="getTotalDecimalItemsAmount" formatter="Money" loc="-1" />
+        </row>
+        <row>
+          <condition method="getTotalDecimalItemsDiscount" comparison="LESS_THAN_ZERO" />
+          <field text="_countrypack.br.rcpt.totalItemDiscountAmount" />
+          <field method="getTotalDecimalItemsDiscount" formatter="Money" loc="-1" />
+        </row>
+        <row>
+          <condition method="getTotalDecimalItemsSurcharge" comparison="GREATER_THAN_ZERO" />
+          <field text="_countrypack.br.rcpt.totalItemSurchargeAmount" />
+          <field method="getTotalDecimalItemsSurcharge" formatter="Money" loc="-1" />
+        </row>
+        <row>
+          <condition method="getTotalDecimalTransactionDiscount" comparison="LESS_THAN_ZERO" />
+          <field text="_countrypack.br.rcpt.totalTansactionDiscount" />
+          <field method="getTotalDecimalTransactionDiscount" formatter="Money" loc="-1" />
+        </row>
+        <row>
+          <condition method="getTotalDecimalTransactionSurcharge" comparison="GREATER_THAN_ZERO" />
+          <field text="_countrypack.br.rcpt.totalTansactionSurcharge" />
+          <field method="getTotalDecimalTransactionSurcharge" formatter="Money" loc="-1" />
+        </row>
+        <row>            
+          <field text="_countrypack.br.rcpt.totalAmount" style="BOLD" />
+          <field method="getTotalDecimalAmount" formatter="Money" loc="-1" style="BOLD" />
+        </row>
+      </call>
+    </section>
+    <section name="CfeBodyGroup6">
+      <call method="getBody">
+        <iterator method="getGroup6List">
+          <row>
+            <field method="getTenderTranslationKey" />
+            <field method="getTenderDecimalAmount" formatter="Money" loc="-1" />
+          </row>
+        </iterator>
+        <row>
+          <field text="_countrypack.br.rcpt.change" />
+          <field method="getChangeDecimalAmount" formatter="Money" loc="-1" />
+        </row>        
+      </call>
+    </section>
+    <section name="CfeBodyGroup7">
+      <call method="getBody.getGroup7">
+        <region>
+          <condition method="getFiscalStatement" comparison="NOT_BLANK" />
+          <field method="getFiscalStatement" />
+        </region>
+      </call>
+    </section>
+    
+    <section name="CfeBodyGroup9">
+      <call method="getBody.getGroup9">
+        <row>
+          <field text="_countrypack.br.rcpt.satTaxInformation" />
+        </row>     
+        <region align="C">   
+          <field>
+            <aggregate class="oracle.retail.xstore.countrypack.br.sat.rcpt.docbuilding.SatRcptInfCplDocBuilderField" />
+          </field>
+        </region>
+        <sectionref>SectionSeparator</sectionref>
+        <row>
+          <field text="_countrypack.br.rcpt.vCFeLei12741Items" />
+        </row>  
+        <region align="C">
+          <condition method="getvCFeLei12741DecimalAmount" comparison="GREATER_THAN_ZERO" />
+          <field formatter="Money" >
+            <aggregate class="oracle.retail.xstore.countrypack.br.sat.rcpt.docbuilding.SatRcptTotalTaxDocBuilderField" />
+          </field>
+        </region>
+      </call>
+      <sectionref>SectionSeparator</sectionref>
+      <call method="getTransaction">  
+        <sectionref>trans_barcode</sectionref> 
+      </call>
+    </section>
+    <section name="CfeFooter">
+      <call method="getFooter">
+        <row align="C">
+          <field text="_countrypack.br.rcpt.satAccessNumber" />
+          <sp/>
+          <field method="getSatSeriesNumber" style="BOLD"  />
+        </row>
+        <row Align="C">
+          <field method="getSatDateTime" formatter="DateTimeMedium" />
+        </row>
+        <row align="C">
+          <field method="getSatKey" formatter="NfeKeyPrintFirstHalf" style="BOLD" />        
+        </row>
+        <row align="C">
+          <field method="getSatKey" formatter="NfeKeyPrintSecondHalf" style="BOLD"/> 
+        </row>
+        <sectionref>CfeNfeKeyBarcode</sectionref> 
+      </call>       
+    </section>       
+    
+    <section name="CfeNfeKeyBarcode">
+      <barcode symbology="Code 128 Parsed" textposition="NONE" prefix="{C">        
+        <field method="getSatKey" formatter="NfeKeyBarcodeFirstHalf"/> 
+      </barcode>
+      <row />
+      <barcode symbology="Code 128 Parsed" textposition="NONE" prefix="{C">        
+        <field method="getSatKey" formatter="NfeKeyBarcodeSecondHalf"/> 
+      </barcode>      
+    </section>
+    
+    <section name="SATePOSTVOID">
+      <sectionref>CfeHeader</sectionref>
+      <sectionref>DashLine</sectionref>    
+      <sectionref>CfeVoidBody</sectionref>
+      <sectionref>CfeVoidFooter</sectionref>
+      <sectionref>SectionSeparator</sectionref>
+      <sectionref>CfeVoidQRCode</sectionref> 
+      <sectionref>DashLine</sectionref>    
+      <sectionref>CfeFooter</sectionref>        
+      <sectionref>SectionSeparator</sectionref>
+      <sectionref>CfeQRCode</sectionref>     
+      <sectionref>page_break</sectionref>    
+    </section>
+    
+    <section name="CfeVoidFooter">
+      <region>
+        <field text="_countrypack.br.rcpt.satPostVoidedText" style="BOLD" />
+      </region>
+      <sectionref>SectionSeparator</sectionref>
+      <call method="getFooter">
+        <row align="C">
+          <field text="_countrypack.br.rcpt.satAccessNumber" />
+          <sp/>
+          <field method="getSatSeriesNumber" style="BOLD"  />
+        </row>
+        <row Align="C">
+          <field method="getSatCancDateTime" formatter="DateTimeMedium" />
+        </row>
+        <row align="C">
+          <field method="getSatCancKey" formatter="NfeKeyPrintFirstHalf" style="BOLD" />        
+        </row>
+        <row align="C">
+          <field method="getSatCancKey" formatter="NfeKeyPrintSecondHalf" style="BOLD"/> 
+        </row>
+        <sectionref>CfeVoidNfeKeyBarcode</sectionref> 
+      </call>       
+    </section>
+    
+    <section name="CfeVoidNfeKeyBarcode">
+      <barcode symbology="Code 128 Parsed" textposition="NONE" prefix="{C">        
+        <field method="getCancSatKey" formatter="NfeKeyBarcodeFirstHalf"/> 
+      </barcode>
+      <row />
+      <barcode symbology="Code 128 Parsed" textposition="NONE" prefix="{C">        
+        <field method="getCancSatKey" formatter="NfeKeyBarcodeSecondHalf"/> 
+      </barcode>      
+    </section>
+    <section name="CfeVoidQRCode">
+      <barcode symbology="QR CODE" height="250" width="500">
+        <field method="getCancQrCode" align="C" />
+      </barcode>
+    </section>
+    <section name="CfeVoidBody">
+      <sectionref>CfeBodyGroup1</sectionref> 
+      <sectionref>CfeBodyGroup1_Homologation</sectionref>
+      <sectionref>DashLine</sectionref>
+      <region>
+        <field text="_countrypack.br.rcpt.satPostVoidText" style="BOLD" />
+      </region>
+      <sectionref>SectionSeparator</sectionref>
+      <sectionref>CfeBodyGroup2</sectionref>
+      <sectionref>SectionSeparator</sectionref>
+      <row>            
+        <field text="_countrypack.br.rcpt.totalAmount" style="BOLD" />
+        <field method="getTotalDecimalAmount" formatter="Money" loc="-1" style="BOLD" />
+      </row>
+      <sectionref>SectionSeparator</sectionref>
+      
+    </section>
+
+    
+  </sections>
+</ReceiptDefinitions>

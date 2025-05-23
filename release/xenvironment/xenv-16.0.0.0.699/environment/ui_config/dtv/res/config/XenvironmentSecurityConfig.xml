@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	SecurityConfigs are mappings to security options in the application. A somewhat 
+			arbitrary type is defined here and referenced throughout the application 
+			and its configuration files.
+			
+			This configuration supports the notion that two menu options could have 
+			different passwords.
+			
+			Type => a unique security configuration by name
+			Classname => The security validator impl to be used for this config
+				- SystemPasswordValidator
+				- CorporatePasswordValidator
+				- SimpleValidator
+				- XstorePasswordValidatorImpl
+				- IPCValidator
+				- DBMSValidator
+			PasswordPrompt => prompt translation key for asking the user for a specific password/security type
+			failmessagekey => prompt translation key for notifing the user that they failed password validation
+			encrypted_formula => optional for some validators
+			interactive => boolean that defines if a validator requires user interaction to validate an entered password				
+ -->
+<SecurityConfigs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:noNamespaceSchemaLocation="SecurityConfig.xsd">
+    <SecurityConfig>
+        <type>SYSTEM_USERNAME_PASSWORD</type>
+        <classname>dtv.env.security.validate.XstoreUserValidator</classname>
+        <usernamePrompt>_usernamePrompt</usernamePrompt>
+        <passwordPrompt>_passwordPrompt</passwordPrompt>
+        <failMessageKey>_xstoreUserPasswordInvalid</failMessageKey>
+        <interactive>true</interactive>
+    </SecurityConfig>
+    <SecurityConfig>
+        <type>SYSTEM_PASSWORD</type>
+        <classname>dtv.env.security.validate.SystemPasswordValidator</classname>
+        <passwordPrompt>_systemPasswordPrompt</passwordPrompt>
+        <failMessageKey>_systemPasswordInvalid</failMessageKey>
+        <encrypted_formula decrypter="Encrypter"/>
+        <interactive>true</interactive>
+    </SecurityConfig>
+    <SecurityConfig>
+        <type>MENU_CONFIG_PASSWORD</type>
+        <classname>dtv.env.security.validate.SystemPasswordValidator</classname>
+        <passwordPrompt>_systemPasswordPrompt</passwordPrompt>
+        <failMessageKey>_systemPasswordInvalid</failMessageKey>
+        <encrypted_formula decrypter="Encrypter"/>
+        <interactive>true</interactive>
+    </SecurityConfig>
+    <SecurityConfig>
+        <type>IPC_CFG</type>
+        <classname>dtv.env.security.validate.IPCValidator</classname>
+        <passwordPrompt>_blank</passwordPrompt>
+        <failMessageKey>_blank</failMessageKey>
+        <encrypted_formula decrypter="Encrypter"/>
+        <interactive>false</interactive>
+    </SecurityConfig>
+</SecurityConfigs>

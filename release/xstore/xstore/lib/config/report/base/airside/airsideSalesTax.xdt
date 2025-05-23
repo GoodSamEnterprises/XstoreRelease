@@ -1,0 +1,115 @@
+<dataTemplate name="airsideSalesTaxreport" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    <label name="SUMMARY" value="_rptSummary"/>
+    <label name="DETAIL" value="_rptDetail"/>   
+    
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="ITEM" value="_rptID"/>
+    <label name="ITM" value="_rptItem"/>
+    <label name="ITEM_DESC" value="_rptDescription"/>
+    <label name="REPORT_DATE" value="_rptRetailPeriodColon"/>
+    <label name="TRANSACTION" value="_rptTransactionNumber"/>
+    <label name="FLIGHT" value="_rptAirsideFlightNumber"/>
+    <label name="FINAL_DEST" value="_rptAirsideDestinationAirport"/>
+    <label name="QTY" value="_rptQuantity"/>
+    <label name="UNIT_PRICE" value="_rptAirsideUnitPrice"/>
+    <label name="AMOUNT" value="_rptAirsideAmt"/>
+    <label name="SHOP" value="_rptAirsideShopId"/>
+    <label name="DATE" value="_rptDateColon"/>
+    <label name="DATE/TIME" value="_rptAirsideTransactionDate"/>
+    <label name="SUB_TOTAL" value="_rptAirsideSubTotalTrans"/>
+    <label name="TOTAL" value="_rptTotal"/>
+    <label name="DEST_ZONE" value="_rptDestinationzone"/>
+    <label name="AMT_COLON" value="_rptAmountColon"/>
+    <label name="QTY_COLON" value="_rptQuantityColon"/>
+    <label name="PRICE_COLON" value="_rptUnitPriceColon"/>
+    </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+   
+    <!-- User Parameters -->
+    
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriod;Date]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>
+	<parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+    </parameters>
+  <dataSource>
+    <queryReference name="Q_AIRSIDE_SALES_TAX" key="AIRSIDE_SALES_TAX_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>dtvStartDate</Parameter>       
+      </Parameters>
+      <ResultFields>
+        <ResultField>destination_zone</ResultField>
+        <ResultField>zone_description</ResultField>
+        <ResultField>transaction_date</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>item_description</ResultField>
+        <ResultField>transaction_number</ResultField>
+        <ResultField>flight_number</ResultField>
+        <ResultField>destination_airport</ResultField>
+		<ResultField>item_qty</ResultField>
+		<ResultField>unit_price</ResultField>
+		<ResultField>extended_amt</ResultField>		
+		<ResultField>shop_id</ResultField>
+        </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_AIR" source="Q_AIRSIDE_SALES_TAX">
+      <element name="DEST_ZONE" value="destination_zone"/>
+      <element name="ZONE_DESC" value="zone_description" />
+      <element name="TRANS_DATE" value="transaction_date" formatter="DateTimeShort"/>
+	  <element name="ITM_ID" value="item_id"/>
+      <element name="ITM_DESC" value="item_description" />
+      <element name="TRANS_NMBR" value="transaction_number"/>
+      <element name="FLIGHT_NMBR" value="flight_number" />
+      <element name="DEST_AP" value="destination_airport"/>
+      <element name="ITM_QTY" value="item_qty" />
+      <element name="UNIT_PRICE" value="unit_price" formatter="Money"/>
+	  <element name="AMT" value="extended_amt" formatter="Money"/>	 
+      <element name="SHP_ID" value="shop_id"/>
+    </group>    
+    <group name="G_AIR_DEST_ZONE" source="Q_AIRSIDE_SALES_TAX">
+      <element name="DEST_ZONE" value="destination_zone" group-by="true"/>
+      <element name="ZONE_DESC" value="zone_description" />
+      <element name="ITM_QTY" value="item_qty" function="SUM"/>
+      <element name="UNIT_PRICE" value="unit_price" function="SUM" formatter="Money"/>
+	  <element name="AMT" value="extended_amt" function="SUM" formatter="Money"/>	  
+    </group>
+    <group name="G_AIR_TRANS_NMBR" source="Q_AIRSIDE_SALES_TAX">
+      <element name="DEST_ZONE" value="destination_zone" group-by="true"/>
+      <element name="TRANS_NMBR" value="transaction_number" group-by="true"/>
+      <element name="ZONE_DESC" value="zone_description" />
+      <element name="ITM_QTY" value="item_qty" function="SUM"/>
+      <element name="UNIT_PRICE" value="unit_price" function="SUM" formatter="Money"/>
+	  <element name="AMT" value="extended_amt" function="SUM" formatter="Money"/>	  
+    </group>
+    <group name="G_AIR_TOTAL" source="Q_AIRSIDE_SALES_TAX">
+      <element name="ITM_QTY" value="item_qty" function="SUM"/>
+      <element name="UNIT_PRICE" value="unit_price" function="SUM" formatter="Money"/>
+	  <element name="AMT" value="extended_amt" function="SUM" formatter="Money"/>	  
+    </group>       
+  </dataStructure>
+</dataTemplate>

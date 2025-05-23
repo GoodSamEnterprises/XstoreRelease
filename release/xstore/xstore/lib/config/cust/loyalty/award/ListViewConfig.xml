@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../pos/config/dtv/res/config/ListViewConfig.xsd">
+  <Header name="LOYALTY_CARD_SUMMARY">
+    <Row>
+      <Column start="0" width="25" translatable="_loyaltyCardNumber" />
+      <Column start="25" width="17" translatable="_expires" />
+      <Column start="42" width="15" translatable="_loyaltyAccountId" />
+      <Column start="57" width="14" translatable="_loyaltyAccountPoints" />
+      <Column start="71" width="15" translatable="_awardAccountId" />
+      <Column start="86" width="14" translatable="_awardAccountBalance" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="LOYALTY_CARD_SUMMARY">
+    <Row>
+      <Column start="0" width="25" method="getCardNumber" />
+      <Column start="25" width="17" method="getExpirationDate" formatter="DateMedium" />
+      <Column start="42" width="15" method="getPrimaryLoyaltyAccount.getAccountId" />
+      <Column start="57" width="14" method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="Decimal" />
+      <Column start="71" width="15" method="getPrimaryAwardAccount.getAccountId" />
+      <Column start="86" width="14" method="getPrimaryAwardAccount.getAccountBalance" formatter="Money" alignment="RIGHT" />
+    </Row>
+  </Element>
+  <Header name="LOYALTY_CARDS">
+    <Row>
+      <Column start="0" width="34" translatable="_loyaltyCardNumber" />
+      <Column start="34" width="32" translatable="_loyaltyCardLoyaltyBalance" alignment="RIGHT" />
+      <Column start="70" width="30" translatable="_loyaltyCardAwardBalance" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="LOYALTY_CARDS_WITH_DATE">
+    <Row>
+      <Column start="0" width="34" method="getCardNumber" />
+      <Column start="34" width="32" alignment="RIGHT" method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="Decimal" />
+      <Column start="70" width="30" alignment="RIGHT" method="getPrimaryAwardAccount.getAccountBalance" formatter="Money" />
+    </Row>
+    <Row>
+      <Column start="3" width="70">
+	      <AppendingFormattable separator=":\u00A0">
+	        <Translatable>_loyaltyExpiration</Translatable>
+	        <EvaluatedFormattable method="getExpirationDate" formatter="DateMedium" />
+	      </AppendingFormattable>
+      </Column>
+    </Row>
+  </Element>
+  <Element name="LOYALTY_CARDS_WITHOUT_DATE">
+    <Row>
+      <Column start="0" width="34" method="getCardNumber" />
+      <Column start="34" width="32" alignment="RIGHT" method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="Decimal" />
+      <Column start="70" width="30" alignment="RIGHT" method="getPrimaryAwardAccount.getAccountBalance" formatter="Money" />
+    </Row>
+  </Element>
+</ListView>

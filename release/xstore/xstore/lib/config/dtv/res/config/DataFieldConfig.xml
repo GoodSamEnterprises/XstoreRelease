@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataFields xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DataFieldConfig.xsd">
+
+  <!-- Note: the "editFormat" definitions for the data fields in this file can be found in the
+        FormatResource properties bundle (e.g., FormatResource_en.properties). -->
+
+  <DataField name="Default" editFormat="Simple" />
+  <DataField name="Disabled" editFormat="Simple">
+    <EntryDisabled dtype="Boolean"><![CDATA[true]]></EntryDisabled>
+  </DataField>
+  <DataField name="Date" editFormat="Date" />
+  <DataField name="Time" editFormat="TimeMedium" />
+  <DataField name="TimeShort" editFormat="TimeShort" />
+  <DataField name="Integer" editFormat="Integer">
+    <DisplayFormat dtype="String"><![CDATA[Numeric]]></DisplayFormat>
+  </DataField>
+  <DataField name="Decimal" editFormat="Decimal">
+    <Parameter name="maximumFractionalDigits">
+      <param_value dtype="Integer"><![CDATA[6]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Numeric" editFormat="Numeric">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[16]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Percent" editFormat="Percent">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[3]]></param_value>
+    </Parameter>
+    <Parameter name="maximumFractionalDigits">
+      <param_value dtype="Integer"><![CDATA[0]]></param_value>
+    </Parameter>
+    <Parameter name="maximumAllowedValue">
+      <param_value dtype="BigDecimal"><![CDATA[100]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Quantity" editFormat="Decimal">
+    <Parameter name="maximumFractionalDigits">
+      <param_value dtype="Integer"><![CDATA[0]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="QuantityShort" editFormat="Decimal">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[3]]></param_value>
+    </Parameter>
+    <Parameter name="maximumFractionalDigits">
+      <param_value dtype="Integer"><![CDATA[0]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Money" editFormat="Money">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[10]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="MoneyNegative" editFormat="Money">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[10]]></param_value>
+    </Parameter>
+    <Parameter name="allowNegative">
+      <param_value dtype="Boolean"><![CDATA[true]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="ID" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[30]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w-]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="IDLong" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[60]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\-\u00C0-\u00FF]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Name" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[20]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\'\&\-\u00C0-\u00FF]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="NameMI" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[1]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[\w{1}]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="NameFull" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[60]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\'\&\-\.]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Type" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[20]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Description" editFormat="Simple">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[254]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Address" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[60]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="AddressShort" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[30]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="StateShort" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[2]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="PostalCode" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[10]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s-]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Email" editFormat="CaseMixed">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[254]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[^<>(),;:\s\[\]\\"]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="Phone" editFormat="PhoneEntry">
+    <EditPattern dtype="String"><![CDATA[###-###-####]]></EditPattern>
+  </DataField>
+  <DataField name="PhoneExt" editFormat="PhoneEntry">
+    <EditPattern dtype="String"><![CDATA[###-###-#### x.#####]]></EditPattern>
+  </DataField>
+  <DataField name="SSN" editFormat="Ssn">
+    <EditPattern dtype="String"><![CDATA[###-##-####]]></EditPattern>
+  </DataField>
+  <DataField name="Password" editFormat="Simple">
+    <MaxCharacters dtype="Integer"><![CDATA[20]]></MaxCharacters>
+    <EntryMasked dtype="Boolean"><![CDATA[true]]></EntryMasked>
+  </DataField>
+  <DataField name="TransactionBarcode" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[25]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[0123456789AaCcDdEeFfGgHhIiJjKkLlMmNnPpQqRrTtWwXxYy]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="LayawayId" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[24]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\-\u00C0-\u00FF]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="CreditTrack" editFormat="Simple">
+    <MaxCharacters dtype="Integer">120</MaxCharacters>
+  </DataField>
+  <DataField name="ExpDateMMYY" editFormat="Numeric">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[4]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="TrackingNumber" editFormat="Simple">
+    <MaxCharacters dtype="Integer"><![CDATA[60]]></MaxCharacters>
+  </DataField>
+  <DataField name="ChallengeAnswer" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[60]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="BirthDate" editFormat="BirthDate" />
+  <DataField name="FlightNumber" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[10]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s]*]]></param_value>
+      <!-- <param_value dtype="String"><![CDATA[[a-zA-Z\s\d]{1,2}[a-zA-Z\s\d]?[[0-9]\s]*]]></param_value> -->
+    </Parameter>
+  </DataField>
+  <DataField name="AirportCode" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[3]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\'\&\-\u00C0-\u00FF]*]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="AirportName" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[120]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s-/\.\\']*]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="FiscalCode" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[40]]></param_value>
+    </Parameter>
+  </DataField>
+  <DataField name="TaxCode" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[40]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="ManualAtCode" editFormat="Numeric">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[10]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="Serial" editFormat="CaseAllUpper">
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[A-Z0-9\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="SeatNumber" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[4]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="TaxFreeCardToken" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[30]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[A-Z0-9]*]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="EtihadNumber" editFormat="Numeric">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[12]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="externalOrder" editFormat="Simple">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[25]]></param_value>
+    </Parameter>
+  </DataField>
+
+
+  <DataField name="MoneyNegativeAllowNull" editFormat="Money">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[10]]></param_value>
+    </Parameter>
+    <Parameter name="allowNegative">
+      <param_value dtype="Boolean"><![CDATA[true]]></param_value>
+    </Parameter>
+    <Parameter name="allowNull">
+      <param_value dtype="Boolean"><![CDATA[false]]></param_value>
+    </Parameter>
+  </DataField>
+  
+    <!-- dtv.ui.swing.text.BoundedPlainDocument.NO_MAX_CHARACTERS indicates that -1000 means "no max" -->  
+  <DataField name="UnlimitedText" editFormat="Simple" maxCharacters="-1000" editable="false" />
+</DataFields>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+  
+  <bean id="addressVerificationServices" class="oracle.retail.avs.qas.impl.AddressVerificationServicesImpl" init-method="init"/>
+  <bean id="VerificationSearchEngineHelpder" class="oracle.retail.avs.qas.impl.AddressVerificationVerificatonEngineHelperImpl"/>
+  <bean id="MexVerificationSearchEngineHelpder" class="oracle.retail.avs.qas.impl.MexAddressVerificationVerificatonEngineHelperImpl"/>
+  <bean id="SinglelineSearchEngineHelpder" class="oracle.retail.avs.qas.impl.AddressVerificationSinglelineEngineHelperImpl"/>
+  <bean id="addressVerificationHelper" class="dtv.pos.address.AddressVerificationHelper"/>
+  
+  <bean id="qasJaxWsHandlerResolver" parent="wsLoggingHandlerResolver">
+    <property name="handlers">
+      <list value-type="java.xml.ws.handler.Handler" merge="true">
+        <bean class="oracle.retail.avs.qas.impl.QASAuthHandler">
+          <property name="authTokenName" value="AUTH-TOKEN" />
+          <property name="authToken" value="#{systemProperties['oracle.retail.xstore.avs.password']}" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="QASJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="ADDRESS_VERIFICATION" />
+    <property name="serviceInterface" value="com.qas.ondemand_2011_03.QAPortType" />
+    <property name="namespaceUri" value="http://www.qas.com/OnDemand-2011-03" />
+    <property name="serviceName" value="QASOnDemandIntermediary" />
+    <property name="portName" value="QAPortType" />
+    <property name="handlerResolver" ref="qasJaxWsHandlerResolver" />
+    <!--  property name="lookupServiceOnStartup" value="true" / -->
+  </bean>
+
+  <bean id="IS_SEARCH_OK" class="oracle.retail.avs.qas.impl.search.QASIsSearchAvailableServiceHandler" init-method="init">
+    <property name="serviceId" value="ADDRESS_VERIFICATION" />
+    <property name="servicePort" ref="QASJaxWsServicePort" />
+    <property name="exceptionHandler" ref="qasExceptionHandler" />
+  </bean>
+  
+  <bean id="GET_ADDRESS_PROMPTS" class="oracle.retail.avs.qas.impl.prompts.QASGetAddressPromptsServiceHandler" init-method="init">
+    <property name="serviceId" value="ADDRESS_VERIFICATION" />
+    <property name="servicePort" ref="QASJaxWsServicePort" />
+    <property name="exceptionHandler" ref="qasExceptionHandler" />
+  </bean>
+
+  <bean id="SEARCH_ADDRESS" class="oracle.retail.avs.qas.impl.search.QASSearchAddressServiceHandler" init-method="init">
+    <property name="serviceId" value="ADDRESS_VERIFICATION" />
+    <property name="servicePort" ref="QASJaxWsServicePort" />
+    <property name="exceptionHandler" ref="qasExceptionHandler" />
+  </bean>
+  
+  <bean id="GET_ADDRESS" class="oracle.retail.avs.qas.impl.format.QASGetFormattedAddressServiceHandler" init-method="init">
+    <property name="serviceId" value="ADDRESS_VERIFICATION" />
+    <property name="servicePort" ref="QASJaxWsServicePort" />
+    <property name="exceptionHandler" ref="qasExceptionHandler" />
+  </bean>
+  
+  <bean id="GET_AVAILABLE_COUNTRIES" class="oracle.retail.avs.qas.impl.search.QASGetLicensedCountriesServiceHandler" init-method="init">
+    <property name="serviceId" value="ADDRESS_VERIFICATION" />
+    <property name="servicePort" ref="QASJaxWsServicePort" />
+    <property name="exceptionHandler" ref="qasExceptionHandler" />
+  </bean>
+  
+  <bean id="GET_AVAILABLE_LAYOUTS" class="oracle.retail.avs.qas.impl.search.QASGetAvailableLayoutsServiceHandler" init-method="init">
+    <property name="serviceId" value="ADDRESS_VERIFICATION" />
+    <property name="servicePort" ref="QASJaxWsServicePort" />
+    <property name="exceptionHandler" ref="qasExceptionHandler" />
+  </bean>
+  
+  <bean id="REFINE_SEARCH_ADDRESS" class="oracle.retail.avs.qas.impl.refine.QASRefineAddressServiceHandler" init-method="init">
+    <property name="serviceId" value="ADDRESS_VERIFICATION" />
+    <property name="servicePort" ref="QASJaxWsServicePort" />
+    <property name="exceptionHandler" ref="qasExceptionHandler" />
+  </bean>
+  
+  <bean id="GET_EXAMPLE_ADDRESSES" class="oracle.retail.avs.qas.impl.search.QASGetExampleAddressesServiceHandler" init-method="init">
+    <property name="serviceId" value="ADDRESS_VERIFICATION" />
+    <property name="servicePort" ref="QASJaxWsServicePort" />
+    <property name="exceptionHandler" ref="qasExceptionHandler" />
+  </bean>
+  
+  <bean id="qasExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="oracle.retail.avs.qas.AddressVerificationServiceResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="INVALID_REFINEMENT_VALUE" />
+              <property name="throws" value="oracle.retail.xstore.avs.impl.exceptions.AvsSelectionNotValidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="ADDRESS_VERIFICATION_NOT_AVAILABLE" />
+              <property name="throws" value="oracle.retail.xstore.avs.impl.exceptions.AvsCountryValidationFailureException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="TOO_MANY_MATCHES" />
+              <property name="throws" value="oracle.retail.xstore.avs.impl.exceptions.AvsTooManyMatchesException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_MATCHES" />
+              <property name="throws" value="oracle.retail.xstore.avs.impl.exceptions.AvsNoMatchesException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+</beans>

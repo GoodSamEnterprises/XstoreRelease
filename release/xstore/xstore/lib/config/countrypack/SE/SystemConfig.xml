@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <SystemConfig dtype="Default">
+
+    <Tax dtype="Default">
+      <EnableVatTaxSummaryPrint dtype="Boolean">true</EnableVatTaxSummaryPrint>
+      <DisableChangeTaxAmount dtype="Boolean">true</DisableChangeTaxAmount>
+      <SelectTaxPercentFromList dtype="Boolean">true</SelectTaxPercentFromList>
+      <IgnoreTaxGroups dtype="String"></IgnoreTaxGroups>
+    </Tax>
+
+   <MixedTransactionSettings dtype="Default">
+      <AllowSaleItemTypeInMixedTransaction dtype="Default">
+        <!-- What this section really means is the inverse of "Must this item type be exclusive in a
+             transaction?" For example, if SALE is set to false, then SALE type items only can be
+             added to transactions with no items or with other SALE type items. -->
+        <SALE dtype="Boolean">false</SALE>
+        <RETURN dtype="Boolean">false</RETURN>
+        <LAYAWAY dtype="Boolean">false</LAYAWAY>
+        <SPECIALORDER dtype="Boolean">false</SPECIALORDER>
+        <SENDSALE dtype="Boolean">false</SENDSALE>
+        <WORKORDER dtype="Boolean">false</WORKORDER>
+        <REMOTESEND dtype="Boolean">false</REMOTESEND>
+      </AllowSaleItemTypeInMixedTransaction>
+    </MixedTransactionSettings>
+
+    <LocalCurrencyId dtype="String">SEK</LocalCurrencyId>
+    <MeasurementUnits dtype="Default">
+      <!-- VALUES:  CELSIUS, FAHRENHEIT, KELVIN -->
+      <Temperature dtype="String">CELSIUS</Temperature>
+      <!-- VALUES:  IMPERIAL, METRIC -->
+      <Length dtype="String">METRIC</Length>
+    </MeasurementUnits>
+
+    <FiscalConfig dtype="Default">
+      <CashLimits dtype="Default">
+        <OverridableLimit dtype="BigDecimal">12000</OverridableLimit>
+        <OverridableLimitCurrency dtype="String">EUR</OverridableLimitCurrency>
+      </CashLimits>
+      <Country dtype="Default">
+        <Se dtype="Default">
+	      <SignTransactions dtype="Boolean">true</SignTransactions>
+	      <OrganizationCode dtype="String"></OrganizationCode>
+        </Se>
+      </Country>
+    </FiscalConfig>
+
+    <XReport dtype="Default">
+      <NonPhysItemTypcode dtype="String">REPAIR,WARRANTY</NonPhysItemTypcode>
+      <NonPhysItemSubtype dtype="String">FEE,DEPOSIT</NonPhysItemSubtype>
+    </XReport>
+    
+    <InvoiceConfig dtype="Default">
+      <EnableInvoicing dtype="Boolean">true</EnableInvoicing>
+    </InvoiceConfig>
+
+    <TaxFreeConfig dtype="Default">
+      <FintraxConfig dtype="Default">
+        <ShopCountryCode dtype="String">752</ShopCountryCode>
+        <MinAmountThreshold dtype="BigDecimal">200.00</MinAmountThreshold>
+        <MandatoryFields dtype="String">lastName,firstName,countryCode,identityDocumentNumber</MandatoryFields>
+        <OptionalFields dtype="String">street,city,postalCode,birthDate,identityDocumentCountryCode,emailAddress,finalDestination,arrivalDate,departureDate</OptionalFields>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">month</TimeUnit>
+          <UnitLimit dtype="String">3</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </FintraxConfig>
+      <GlobalBlueConfig dtype="Default">
+        <MandatoryFields dtype="String">countryCode</MandatoryFields>
+        <OptionalFields dtype="String">identityDocumentNumber,lastName,firstName,street,postalCode,city,emailAddress,identityDocumentCountryCode</OptionalFields>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">day</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">allAboveMinimum</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </GlobalBlueConfig>
+    </TaxFreeConfig>
+
+    <TrainingMode dtype="Default">
+      <TrainingModeEnabled dtype="Boolean">true</TrainingModeEnabled>
+      <TrainingModeRestrictEmployeeAccess dtype="Boolean">true</TrainingModeRestrictEmployeeAccess>
+      <TrainingModeRestrictReceiptPrinting dtype="Boolean">false</TrainingModeRestrictReceiptPrinting>
+      <TrainingModeRestrictEnterExitPrinting dtype="Boolean">true</TrainingModeRestrictEnterExitPrinting>
+      <TrainingModeProcessPosLog dtype="Boolean">true</TrainingModeProcessPosLog>
+      <TrainingModeRtlLocCloseFromPrimaryWSOnly dtype="Boolean">false</TrainingModeRtlLocCloseFromPrimaryWSOnly>
+    </TrainingMode>
+
+
+  </SystemConfig>
+</Store>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldSet xmlns="http://micros.com/xstore/config/form/field" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormFieldConfig.xsd">
+  <Field name="nationalTaxIdLabel" type="Label" text="_countrypack.br.customer.info.taxid" />
+  <Field name="personalTaxIdLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.stateTaxId" />
+
+  <Field name="iatLabel" type="Label" text="_countrypack.br.item.fractionalQtyItem" />  
+  <Field name="iat" type="Label" resource="iat" />
+  
+  <Field name="manufacturedLabel" type="Label" text="_countrypack.br.item.manufactured" />  
+  <Field name="manufactured" type="Label" resource="manufactured" />
+  
+  <Field name="ncmLabel" type="Label" text="_countrypack.br.item.ncm" />  
+  <Field name="ncm" type="Label" resource="ncm" />  
+  
+  <Field name="taxDetailsLabel" type="Label" text="_countrypack.br.item.taxDetails" />  
+  <Field name="taxDetails" type="Label" resource="taxDetails" />
+  
+  <Field name="satMaintenanceLogHeader" type="Label" text="_countrypack.br.sat.maintenance.log" />  
+  
+  <Field name="satMaintenanceLogList" type="List" resource="logListModel">
+    <Parameter name="ColumnHeaderType" value="SAT_MAINTENANCE_LOG_SUMMARY" />
+    <Parameter name="CellType" value="SAT_MAINTENANCE_LOG_SUMMARY" />
+    <!-- Possible values [SINGLE_SELECTION, MULTIPLE_SELECTION, NO_SELECTION] -->
+    <Parameter name="ListSelectionMode" value="NO_SELECTION" />
+  </Field>
+  
+<!--   NFE TOTALS -->
+  <Field name="icmsBasisLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.icmsBasis" />  
+  <Field name="icmsBasis" type="Label" resource="icmsBasis" formatterRef="Money" />
+  <Field name="icmsAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.icms" />  
+  <Field name="icmsAmount" type="Label" resource="icmsAmount" formatterRef="Money" />
+  
+  <Field name="issBasisLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.servBasis" />  
+  <Field name="issBasis" type="Label" resource="issBasis" formatterRef="Money" />
+  <Field name="issAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.serv" />  
+  <Field name="issAmount" type="Label" resource="issAmount" formatterRef="Money" />
+  
+  <Field name="productAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.product" />  
+  <Field name="productAmount" type="Label" resource="productAmount" formatterRef="Money" />
+  <Field name="freightAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.freight" />  
+  <Field name="freightAmount" type="Label" resource="freightAmount" formatterRef="Money" />
+  
+  <Field name="serviceAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.serviceAmount" />  
+  <Field name="serviceAmount" type="Label" resource="serviceAmount" formatterRef="Money" />
+  
+  <Field name="insuranceAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.insurance" />  
+  <Field name="insuranceAmount" type="Label" resource="insuranceAmount" formatterRef="Money" />
+  <Field name="otherAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.other" />  
+  <Field name="otherAmount" type="Label" resource="otherAmount" formatterRef="Money" />
+  
+  <Field name="iiAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.ii" />  
+  <Field name="iiAmount" type="Label" resource="iiAmount" formatterRef="Money" />
+  <Field name="pisAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.pis" />  
+  <Field name="pisAmount" type="Label" resource="pisAmount" formatterRef="Money" />
+  
+  <Field name="cofinsAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.cofins" />  
+  <Field name="cofinsAmount" type="Label" resource="cofinsAmount" formatterRef="Money" />
+  
+  <Field name="discountAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.discount" />  
+  <Field name="discountAmount" type="Label" resource="discountAmount" formatterRef="Money" />
+  <Field name="edit_discountAmount" type="Text" resource="discountAmount" dataFieldRef="Money" />
+  <Field name="detail_totalAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.amount.total" />  
+  <Field name="detail_totalAmount" type="Label" resource="totalAmount" formatterRef="Money" />
+
+<!--   NFE TOTALS -->
+
+<!-- NFE MAINTENANCE DETAIL -->
+  <Field name="workstationIdLabel" type="Label" text="_countrypack.br.nfe.reversal.worksationId" /> 
+  <Field name="workstationId" type="Label" resource="workstationId" /> 
+  <Field name="saiEntDatetimeLabel" type="Label" text="_countrypack.br.nfe.maintenance.summary.saiDate" /> 
+  <Field name="saiEntDatetime" type="Label" resource="saiEntDatetime" formatterRef="DateMedium" /> 
+  <Field name="usageTypeCodeLabel" type="Label" text="_countrypack.br.nfe.maintenance.summary.usageType" /> 
+  <Field name="usageTypeCode" type="Label" resource="usageTypeCode" /> 
+  <Field name="statusCodeLabel" type="Label" text="_countrypack.br.nfe.maintenance.summary.status" /> 
+  <Field name="statusCode" type="Label" resource="statusCode" /> 
+  <Field name="queueSequenceLabel" type="Label" text="_countrypack.br.nfe.maintenance.summary.queueSeq" /> 
+  <Field name="queueSequence" type="Label" resource="queueSequence" /> 
+  <Field name="transTypeCodeLabel" type="Label" text="_countrypack.br.nfe.maintenance.summary.transtype" /> 
+  <Field name="transTypeCode" type="Label" resource="transTypeCode" /> 
+  <Field name="nfeCfopNatopLabel" type="Label" text="_countrypack.br.nfe.maintenance.summary.cfop_natop" /> 
+  <Field name="nfeCfopNatop" type="Label" resource="nfeCfopNatop" /> 
+  <Field name="chaveNfeLabel" type="Label" text="_countrypack.br.nfe.maintenance.summary.chavenfe" /> 
+  <Field name="chaveNfe" type="Label" resource="chaveNfe" /> 
+  <Field name="summary_totalAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.summary.total" /> 
+  <Field name="summary_totalAmount" type="Label" resource="totalAmount" /> 
+  <Field name="nfeInfCplFilteredLabel" type="Label" text="_countrypack.br.nfe.maintenance.summary.infcpl" /> 
+  <Field name="nfeInfCplFiltered" type="Label" resource="nfeInfCplFiltered" />
+  
+  <Field name="nfeMaintenanceItemsList" type="List" resource="itemListModel">
+    <Parameter name="ColumnHeaderType" value="NFE_MAINTENANCE_ITEM_SUMMARY" />
+    <Parameter name="CellType" value="NFE_MAINTENANCE_ITEM_SUMMARY" />
+    <!-- Possible values [SINGLE_SELECTION, MULTIPLE_SELECTION, NO_SELECTION] -->
+    <Parameter name="ListSelectionMode" value="SINGLE_SELECTION" />
+  </Field>
+  
+  <Field name="nfeTransactionsList" type="List" resource="transactionListModel">
+    <Parameter name="ColumnHeaderType" value="NFE_MAINTENANCE_TRANSACTION_SUMMARY" />
+    <Parameter name="CellType" value="NFE_MAINTENANCE_TRANSACTION_SUMMARY" />
+    <!-- Possible values [SINGLE_SELECTION, MULTIPLE_SELECTION, NO_SELECTION] -->
+    <Parameter name="ListSelectionMode" value="SINGLE_SELECTION" />
+  </Field>
+  
+  <Field name="nfe_federalTaxIdLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.taxId" />  
+  <Field name="nfe_federalTaxId" type="Text" resource="federalTaxId" />
+  <Field name="nfe_federalTaxId_readonly" type="Label" resource="federalTaxId" />
+  <Field name="nfe_stateTaxIdLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.stateTaxId" />  
+  <Field name="nfe_stateTaxId" type="Text" resource="stateTaxId" />
+  <Field name="nfe_stateTaxId_readonly" type="Label" resource="stateTaxId" />
+  <Field name="nfe_nameLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.fullName" />  
+  <Field name="nfe_name" type="Text" resource="name" />
+  <Field name="nfe_name_readonly" type="Label" resource="name" />
+  <Field name="nfe_streetNameLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrStName" />  
+  <Field name="nfe_streetName" type="Text" resource="streetName" />
+  <Field name="nfe_streetName_readonly" type="Label" resource="streetName" />
+  <Field name="nfe_streetNumberLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrStNumber" />  
+  <Field name="nfe_streetNumber" type="Text" resource="streetNumber" />
+  <Field name="nfe_streetNumber_readonly" type="Label" resource="streetNumber" />
+  <Field name="nfe_complementoLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrComplemento" />  
+  <Field name="nfe_complemento" type="Text" resource="complemento" />
+  <Field name="nfe_complemento_readonly" type="Label" resource="complemento" />
+  <Field name="nfe_cityLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrCity" />  
+  <Field name="nfe_city" type="Text" resource="city" />
+  <Field name="nfe_city_readonly" type="Label" resource="city" />
+  <Field name="nfe_neighborhoodLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrNeighborHood" />  
+  <Field name="nfe_neighborhood" type="Text" resource="neighborhood" />
+  <Field name="nfe_neighborhood_readonly" type="Label" resource="neighborhood" />
+  <Field name="nfe_cityCodeLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrCityCode" />  
+  <Field name="nfe_cityCode" type="Text" resource="cityCode" dataFieldRef="Nfe_CityCode" />
+  <Field name="nfe_cityCode_readonly" type="Label" resource="cityCode" />
+  <Field name="nfe_postalCodeLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrZip" />  
+  <Field name="nfe_postalCode" type="Text" resource="postalCode" dataFieldRef="PostalCode" />
+  <Field name="nfe_postalCode_readonly" type="Label" resource="postalCode" />
+  <Field name="nfe_DestStateComboBoxLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrState" />  
+  <Field name="nfe_DestStateComboBox" type="ComboBox" resource="nfeDestStateComboBox" />
+  <Field name="nfe_DestStateComboBox_readonly" type="Label" resource="state" />
+  <Field name="nfe_countryNameLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrCountry" />  
+  <Field name="nfe_countryName" type="Text" resource="countryName" />
+  <Field name="nfe_countryName_readonly" type="Label" resource="countryName" />
+  <Field name="nfe_countryNameLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrCountry" />  
+  <Field name="nfe_countryName" type="Label" resource="countryName" />
+  <Field name="nfe_telephoneLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.telephone" />  
+  <Field name="nfe_telephone" type="Text" resource="telephone" />
+  <Field name="nfe_telephone_readonly" type="Label" resource="telephone" />
+  <Field name="nfe_emailAddressLabel" type="Label" text="_countrypack.br.nfe.maintenance.detail.dest.addrEmail" />  
+  <Field name="nfe_emailAddress" type="Text" resource="emailAddress" />
+  <Field name="nfe_emailAddress_readonly" type="Label" resource="emailAddress" />
+
+  <Field name="nfeInfCplList" type="List" resource="infCplListModel">
+<!--     <Parameter name="ColumnHeaderType" value="INF_CPL" /> -->
+<!--     <Parameter name="CellType" value="INF_CPL" /> -->
+    <!-- Possible values [SINGLE_SELECTION, MULTIPLE_SELECTION, NO_SELECTION] -->
+    <Parameter name="ListSelectionMode" value="SINGLE_SELECTION" />
+  </Field>
+  
+  <Field name="nfeTendersList" type="List" resource="tenderListModel">
+    <Parameter name="ColumnHeaderType" value="NFE_MAINTENANCE_TENDER_SUMMARY" />
+    <Parameter name="CellType" value="NFE_MAINTENANCE_TENDER_SUMMARY" />
+    <!-- Possible values [SINGLE_SELECTION, MULTIPLE_SELECTION, NO_SELECTION] -->
+    <Parameter name="ListSelectionMode" value="SINGLE_SELECTION" />
+  </Field>
+  
+  <Field name="nfeLogsList" type="List" resource="logListModel">
+    <Parameter name="ColumnHeaderType" value="NFE_MAINTENANCE_LOG_SUMMARY" />
+    <Parameter name="CellType" value="NFE_MAINTENANCE_LOG_SUMMARY" />
+    <!-- Possible values [SINGLE_SELECTION, MULTIPLE_SELECTION, NO_SELECTION] -->
+    <Parameter name="ListSelectionMode" value="SINGLE_SELECTION" />
+  </Field>
+  
+  <Field name="nfe_ItemIdLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.id" />  
+  <Field name="nfe_ItemId" type="Text" resource="itemId" dataFieldRef="Nfe_ItemId" />
+  <Field name="nfe_NcmLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.ncm" />  
+  <Field name="nfe_Ncm" type="Text" resource="ncm" dataFieldRef="Nfe_Ncm" />
+  <Field name="nfe_CestLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.cest" />  
+  <Field name="nfe_Cest" type="Text" resource="cest" dataFieldRef="Nfe_Cest" />
+  <Field name="nfe_EanLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.ean" />  
+  <Field name="nfe_Ean" type="Text" resource="ean" dataFieldRef="Nfe_Ean" />
+  <Field name="nfe_ItemDescriptionLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.des" />  
+  <Field name="nfe_ItemDescription" type="Text" resource="itemDescription" dataFieldRef="Nfe_ItemDescription"/>
+  <Field name="nfe_IatLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.iat" />  
+  <Field name="nfe_Iat" type="Text" resource="iat" dataFieldRef="Nfe_Iat" />
+  <Field name="nfe_InfAdProdLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.infadprod" />  
+  <Field name="nfe_InfAdProd" type="Text" resource="infAdProd" dataFieldRef="Nfe_InfAdProd" />
+  <Field name="nfe_IpptLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.ippt" />  
+  <Field name="nfe_Ippt" type="Text" resource="ippt" dataFieldRef="Nfe_Ippt" />
+  <Field name="nfe_CfopLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.cfop" />  
+  <Field name="nfe_Cfop" type="Text" resource="cfop" dataFieldRef="Nfe_Cfop" />
+  <Field name="nfe_CstLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.cst" />  
+  <Field name="nfe_ItemOrigim" type="Text" resource="itemOrigim" dataFieldRef="Nfe_ItemOrigim" />
+  <Field name="nfe_ItemCst" type="Text" resource="itemCst" dataFieldRef="Nfe_ItemCst" />
+  <Field name="nfe_TaxSituationCodeLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.taxcode" />  
+  <Field name="nfe_TaxSituationCode" type="Text" resource="taxSituationCode" dataFieldRef="Nfe_TaxSituationCode" />
+  <Field name="nfe_OrigimLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.cst.origim" />  
+  <Field name="nfe_Cst2Label" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.cst2" />  
+  <Field name="nfe_UnitOfMeasureCodeLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.unid" />  
+  <Field name="nfe_UnitOfMeasureCode" type="Text" resource="unitOfMeasureCode" dataFieldRef="Nfe_UnitOfMeasureCode" />
+  <Field name="nfe_ExTipiLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.exTipi" />  
+  <Field name="nfe_ExTipi" type="Text" resource="exTipi" dataFieldRef="Nfe_ExTipi"/>
+  <Field name="nfe_FreightAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.freight" />  
+  <Field name="nfe_FreightAmount" type="Text" resource="freightAmount" dataFieldRef="Money_9_2" />
+  <Field name="nfe_InsuranceAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.insurance" />  
+  <Field name="nfe_InsuranceAmount" type="Text" resource="insuranceAmount" dataFieldRef="Money_9_2" />
+  <Field name="nfe_OtherAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.other" />  
+  <Field name="nfe_OtherAmount" type="Text" resource="otherAmount" dataFieldRef="Money_9_2" />
+  <Field name="nfe_ItemQuantityLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.qty" />  
+  <Field name="nfe_ItemQuantity" type="Label" resource="quantity" />
+  <Field name="nfe_UnitPriceLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.unit" />  
+  <Field name="nfe_UnitPrice" type="Text" resource="unitPrice" dataFieldRef="Money_9_2" />
+  <Field name="nfe_ItemExtendedAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.total" />  
+  <Field name="nfe_ItemExtendedAmount" type="Label" resource="extendedAmount" />
+  <Field name="nfe_IcmsRateLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.rate.icms" />  
+  <Field name="nfe_IcmsRate" type="Text" resource="icmsRate" dataFieldRef="Money_2_2" />
+  <Field name="nfe_IcmsBasisLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.icmsBasis" />  
+  <Field name="nfe_IcmsBasis" type="Text" resource="icmsBasis" dataFieldRef="Money_9_2" />
+  <Field name="nfe_IcmsAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.icms" />  
+  <Field name="nfe_IcmsAmount" type="Label" resource="icmsAmount" />
+  <Field name="nfe_IcmsStRateLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.rate.service" />  
+  <Field name="nfe_IcmsStRate" type="Text" resource="icmsStRate" dataFieldRef="Money_2_2" />
+  <Field name="nfe_IcmsStBasisLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.serBasis" />  
+  <Field name="nfe_IcmsStBasis" type="Text" resource="icmsStBasis" dataFieldRef="Money_9_2" />
+  <Field name="nfe_IcmsStAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.service" />  
+  <Field name="nfe_IcmsStAmount" type="Label" resource="icmsStAmount" />
+  <Field name="nfe_ItemDiscountAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.discount" />  
+  <Field name="nfe_ItemDiscountAmount" type="Text" resource="discountAmount" dataFieldRef="Money_9_2" />
+  <Field name="nfe_IpiRateLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.rate.ipi" />  
+  <Field name="nfe_IpiRate" type="Text" resource="ipiRate" dataFieldRef="Money_2_2" />
+  <Field name="nfe_IpiAmountLabel" type="Label" text="_countrypack.br.nfe.maintenance.edit.items.amount.ipi" />  
+  <Field name="nfe_IpiAmount" type="Label" resource="ipiAmount" />
+  
+  
+<!-- NFE MAINTENANCE DETAIL -->
+</FieldSet>

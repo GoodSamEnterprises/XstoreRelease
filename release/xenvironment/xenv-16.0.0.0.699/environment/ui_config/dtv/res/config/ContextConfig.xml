@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	ContextConfig is a overall controlling aspect of the application for menu, app colors etc...
+	Context Entries
+		Name => a unique name for a given context
+		menu => a MenuConfig.xml reference to the root menu context to display for a given context
+		menu_enabled => boolean specifies if a menu is available
+		default_context => one and only one for the application e.g. MAIN_CONTEXT
+		hot_key_enabled => this is a special context that disables all global hotkeys
+		run_once => this is a special case for an initial startup scenario that allows for an option 
+					to be available once until the user envokes the available option then it is no longer available.
+		TIMEOUT => How long this context is displayed e.g. 3 as a factor of ~30 seconds i.e. 1=30 2=60 etc...
+ -->
+<Contexts xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="ContextConfig.xsd">
+    <Context>
+        <name>MAIN_CONTEXT</name>
+        <menu>MAIN_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>true</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <run_once name="MAIN_CONTEXT_RUNONCE"/>
+    </Context>
+    <Context>
+        <name>MAIN_CONTEXT_RUNONCE</name>
+        <menu>MAIN_CONTEXT_RUNONCE</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+    </Context>
+    <Context>
+        <name>MAIN_CONTEXT_NOXSTORE</name>
+        <menu>MAIN_CONTEXT_NOXSTORE</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+    </Context>
+    <Context>
+        <name>MAIN_DISASTER_RECOVERY_CONTEXT</name>
+        <menu>MAIN_DISASTER_RECOVERY_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+    </Context>
+    <Context>
+        <name>MAIN_SYSTEM_INFO_CONTEXT</name>
+        <menu>MAIN_SYSTEM_INFO_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <!-- as a factor of ~30 seconds i.e. 1=30 2=60 etc... -->
+        <TIMEOUT>3</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT</name>
+        <menu>MAIN_PLUGIN_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>3</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_PINGER</name>
+        <menu>MAIN_PLUGIN_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>3</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_PORTMONITOR</name>
+        <menu>MAIN_PLUGIN_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>5</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_TCPMON</name>
+        <menu>MAIN_PLUGIN_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>2</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_DBMONITOR</name>
+        <menu>MAIN_PLUGIN_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>5</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_DBCTLMONITOR</name>
+        <menu>MAIN_PLUGIN_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>5</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_TAILFILE</name>
+        <menu>MAIN_PLUGIN_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>6</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_LOGFILE_MONITOR</name>
+        <menu>MAIN_PLUGIN_CONTEXT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>6</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_MARKERFILE</name>
+        <menu>MAIN_PLUGIN_CONTEXT_MARKERFILE</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>6</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_TRACERT</name>
+        <menu>MAIN_PLUGIN_CONTEXT_TRACERT</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>6</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_REGISTERSTATUS_LIST</name>
+        <menu>MAIN_PLUGIN_CONTEXT_REGISTERSTATUS_LIST</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>6</TIMEOUT>
+    </Context>
+    <Context>
+        <name>MAIN_PLUGIN_CONTEXT_UPDATEHISTORY_VIEWER</name>
+        <menu>MAIN_PLUGIN_CONTEXT_UPDATEHISTORY_VIEWER</menu>
+        <menu_enabled>true</menu_enabled>
+        <default_context>false</default_context>
+        <hot_key_enabled>true</hot_key_enabled>
+        <TIMEOUT>6</TIMEOUT>
+    </Context>
+</Contexts>

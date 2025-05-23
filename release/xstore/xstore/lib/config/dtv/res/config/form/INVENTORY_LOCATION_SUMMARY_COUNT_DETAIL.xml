@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri Jun 02 15:19:37 EDT 2006 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">INVENTORY_LOCATION_SUMMARY_COUNT_DETAIL</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginFullView</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+0,0,1,0</param_value>
+      </ComponentParameter>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_inventoryLocationCountSummaryTitle</TextKey>
+        <Font fontSize="+3" fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_inventoryLocationSummaryCountDetailTitle</TextKey>
+        <Font fontSize="+3"  fontStyle="BOLD" />
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <CustomView dtype="Class">dtv.pos.inventory.count.summary.LocationSummaryCountView</CustomView>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_EXIT" />
+      <Action dataKey="PRIOR" text="_inventoryLocationSummaryCountPrior" keyStroke="F2" />
+      <Action dataKey="NEXT" text="_inventoryLocationSummaryCountNext" keyStroke="F3" />
+      <Action dataKey="BACK_TO_SUMMARY" text="_inventoryLocationSummaryCountSummary" keyStroke="F4" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

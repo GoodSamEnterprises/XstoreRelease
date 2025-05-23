@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <Query name="REPORT_ITEM_PRICE_INIT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          INSERT INTO rpt_item_price (organization_id, item_id, regular_price) 
+          VALUES(?,?,?)        
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argItemId" />
+      <Parameter name="argRegularPrice" />
+    </SQL>
+  </Query>
+  <Query name="TRUNCATE_ITEM_RPT_TABLE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          TRUNCATE TABLE rpt_item_price        
+      ]]></Statement>
+    </SQL>
+  </Query>
+</QuerySet>

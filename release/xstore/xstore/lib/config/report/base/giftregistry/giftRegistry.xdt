@@ -1,0 +1,90 @@
+<dataTemplate name="GiftRegistry" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="Title" value="_rptGiftRegistryTitle"/>
+    <label name="CustName" value="_rptCustomerName"/>
+    <label name="ItemId" value="_rptItem"/>
+    <label name="Description" value="_rptDescription"/>
+    <label name="Price" value="_rptGiftRegistryItemPrice"/>
+    <label name="Desired" value="_rptGiftRegistryQtyDesired"/>
+    <label name="purchased" value="_rptGiftRegistryQtyPurchased"/>
+    <label name="Line_Count" value="_rptGiftRegistryLineCount"/>
+    <label name="Item_Count" value="_rptGiftRegistryItemCount"/>
+    <label name="Venue" value="_rptGiftRegistryVenue"/>
+    <label name="Registry_id" value="_rptGiftRegistryId"/>
+    <label name="Event_Date" value="_rptGiftRegistryEventDate"/>
+    <label name="Event_Name" value="_rptGiftRegistryEventName"/>
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="giftRegistryhidePurchased" class="java.lang.Boolean" isForPrompting="false" include_in_output="true"/> 
+     <!-- User Parameters -->
+	<parameter name="venue" class="dtv.xst.crm.impl.registry.GiftRegistryAddress" isForPrompting="false" formatter="BasicAddress"/>
+	</parameters>
+  
+  <dataSource>
+    <dataReference name="O_GIFT_REGISTRY_HEADER">
+        <ResultFields>
+          <ResultField>DataModel.getRegistryId</ResultField>
+          <ResultField>DataModel.getEventDate</ResultField>
+          <ResultField>DataModel.getEventName</ResultField>
+          <ResultField>DataModel.getLineCount</ResultField>
+          <ResultField>DataModel.getItemCount</ResultField>
+        </ResultFields>
+    </dataReference>
+     
+    <dataReference name="GIFT_REGISTRY" key="DataModel.getItems">  
+      <ResultFields>
+        <ResultField>ItemId</ResultField>
+        <ResultField>ItemDescription</ResultField>
+        <ResultField>Price</ResultField>
+        <ResultField>PurchasedQuantity</ResultField>
+        <ResultField>DesiredQuantity</ResultField>
+       </ResultFields>
+    </dataReference>
+    
+    
+    <dataReference name="GIFT_REGISTRY_BARCODE"> 
+    <ResultFields> 
+    <ResultField>GiftRegistryBarcode</ResultField>
+    </ResultFields>
+    </dataReference>
+  </dataSource>
+  
+  <dataStructure>
+    <group name="G_GIFT_REGISTRY_HEADER" source="O_GIFT_REGISTRY_HEADER">
+     <element name="REG_ID" value="DataModel.getRegistryId"/>
+     <element name="EVT_DTE" value="DataModel.getEventDate" formatter="DateMedium"/>
+     <element name="EVT_NME" value="DataModel.getEventName"/>
+     <element name="LINE_CNT" value="DataModel.getLineCount"/>
+     <element name="ITM_CNT" value="DataModel.getItemCount"/>
+    </group>
+    <group name="G_GIFT_REGISTRY" source="GIFT_REGISTRY">
+     <element name="ITM" value="ItemId"/>
+     <element name="DESC" value="ItemDescription"/>
+     <element name="PRICE" value="Price" formatter="money"/>
+     <element name="P_QTY" value="PurchasedQuantity"/>
+     <element name="D_QTY" value="DesiredQuantity"/>
+    </group>
+    <group name="G_REGISTRY_BARCODE" source="GIFT_REGISTRY_BARCODE">
+    <element name="BARCODE" value="GiftRegistryBarcode" barcode="Code93"/>
+    </group>
+  </dataStructure>
+  
+</dataTemplate>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OpChainConfig.xsd">
+
+  <OpChain name="PRE_TENDERING.1">
+    <WorkerOp workersBean="frSetDocumentTypeWorkers" />
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.pre">
+    <Op class="oracle.retail.xstore.countrypack.fr.register.op.FrAssignSequenceOp">
+      <Parameter name="PeekSequence" value="true" />
+      <Parameter name="HandleSequence" value="true" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.FISCAL.AFTER_TRAN_SAVE">
+    <Op class="oracle.retail.xstore.countrypack.fr.register.op.FrAssignSequenceOp" />
+    <Op class="oracle.retail.xstore.countrypack.fr.register.op.FrConfirmTransSignatureOp" />
+    <WorkerOp workersBean="frUpdateTotalsWorkers" />
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.local.1">
+    <WorkerOp workersBean="frSignTransactionWorkers" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.CREATE_INVOICE">
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="COUNTRYPACK.INVOICE" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.SetInvoiceBeanAsReportDataScourceOp" />
+    <Op class="oracle.retail.xstore.countrypack.fr.register.op.FrInvoiceAddReportParametersOp" />
+    <Op class="oracle.retail.xstore.countrypack.fr.register.op.FrSignInvoiceOp" />
+    <Op class="dtv.pos.reporting.fill.FillReportNoUiOp" />
+    <Op class="dtv.pos.reporting.print.PrintReportOp" longrunning="true">
+      <Parameter name="continueOnError" value="true" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.fr.op.FrCreateInvoiceOp" />
+  </OpChain>
+
+  <OpChain name="POST_VOID_MAIN.2.post" >
+    <WorkerOp workersBean="frVoidTotalsWorkers" />
+    <WorkerOp workersBean="frWriteEventTransVoidedWorkers" />
+  </OpChain>
+
+  <OpChain name="WORKSTATION_OPEN_EXT.local.2">
+    <Op class="oracle.retail.xstore.countrypack.fr.op.FrSummaryClosureOp" >
+      <Parameter name="HandleInvoices" value="false" />
+    </Op>
+    <WorkerOp workersBean="frWkstnOpenWorkers" />
+  </OpChain>
+
+  <OpChain name="EXT_WORKSTATION_OPEN_CHECK.local" >
+    <WorkerOp workersBean="frWriteEventWorkstationOpenWorkers" />
+  </OpChain>
+
+  <OpChain name="NOTIFY_CLOSE_WORKSTATION.local" >
+    <WorkerOp workersBean="frWriteEventWorkstationCloseWorkers" />
+  </OpChain>
+
+  <OpChain name="RETAIL_LOCATION_OPEN_ACTIVITY.local.2" >
+    <OpChainRoute chainKey="RETAIL_LOCATION_OPEN_ACTIVITY.local.2.FR" condition="dtv.pos.register.condition.RegisterNotInTrainingModeRunCondition" />
+  </OpChain>
+    
+  <OpChain name="RETAIL_LOCATION_OPEN_ACTIVITY.local.2.FR" >
+    <WorkerOp workersBean="frWriteEventStoreOpenWorkers" />
+    <Op class="oracle.retail.xstore.countrypack.fr.op.FrSummaryClosureOp" >
+      <Parameter name="HandleInvoices" value="true" />
+    </Op>
+    <WorkerOp workersBean="frStoreOpenArchiveWorkers" />
+  </OpChain>
+
+  <OpChain name="RETAIL_LOCATION_CLOSE.local.2" >
+    <WorkerOp workersBean="frWriteEventStoreCloseWorkers" />
+  </OpChain>
+
+  <OpChain name="REGISTER_SHUTDOWN.local" >
+    <WorkerOp workersBean="frWriteEventSystemShutdownWorkers" />
+  </OpChain>
+
+  <OpChain name="SHOW_CERTIFICATION_INFORMATION">
+    <Op class="oracle.retail.xstore.countrypack.fr.register.op.FrDisplayCertificationOp" />
+  </OpChain>
+
+  <OpChain name="CHECK_DATABASE_TAMPERING">
+    <Op class="oracle.retail.xstore.countrypack.fr.register.op.FrCheckAgainstDatabaseTamperingOp" breakpoint="true" />
+  </OpChain>
+
+  <OpChain name="REPRINT_PREPARE_RECEIPTS">
+    <Op class="oracle.retail.xstore.countrypack.fr.register.op.FrWriteReceiptDuplicateOp" />
+    <Op class="oracle.retail.xstore.countrypack.fr.op.FrGetReprintRcptsOp" />
+  </OpChain>
+
+  <OpChain name="TRAINING_MODE_ENTER.local">
+    <Op class="dtv.pos.hardware.op.CompleteFiscalTransactionOp" longRunning="true" />
+    <WorkerOp workersBean="frWriteEventTrainingInWorkers" />
+  </OpChain>
+
+  <OpChain name="TRAINING_MODE_EXIT.local.complete">
+    <WorkerOp workersBean="frWriteEventTrainingOutWorkers" />
+  </OpChain>
+
+  <OpChain name="ROLLBACK_TRANS_FINISH.local" >
+    <WorkerOp workersBean="frWriteEventTransCancelledWorkers" />
+  </OpChain>
+
+  <OpChain name="REGISTER_STARTUP.local.post" >
+    <WorkerOp workersBean="frRegisterStartupWorkers" />
+  </OpChain>
+
+  <OpChain name="TECHNICAL_EVENT_LOG_REPORT">
+    <WorkerOp workersBean="frWriteEventJETReportCreateWorkers" />
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="COUNTRYPACK.TECHNICAL_EVENT_LOG_REPORT" />
+    </Op>
+    <Op class="dtv.pos.reporting.PromptReportParametersOp" breakpoint="true" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.FR.JET_COMMENT" >
+    <PromptOp class="oracle.retail.xstore.countrypack.fr.op.FrInsertJetCommentOp" />
+  </OpChain>
+
+</OpChainSet>

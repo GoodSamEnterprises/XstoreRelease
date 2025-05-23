@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+  
+  <bean id="usaAddressLinesAdapter" class="oracle.retail.avs.qas.impl.format.DatabaseLayoutToLocaleAdapter">
+    <property name="layout" value="Database Layout" />
+    <property name="cityLabel" value="City name" />
+    <property name="stateLabel" value="State code" />
+    <property name="postalCodeLabel" value="" />
+  </bean>
+  
+  <bean id="canAddressLinesAdapter" class="oracle.retail.avs.qas.impl.format.DatabaseLayoutToLocaleAdapter">
+    <property name="layout" value="Database Layout" />
+    <property name="cityLabel" value="Municipality name" />
+    <property name="stateLabel" value="Province code" />
+    <property name="postalCodeLabel" value="Postal code" />
+  </bean>
+  
+  <bean id="gbrAddressLinesAdapter" class="oracle.retail.avs.qas.impl.format.DatabaseLayoutToLocaleAdapter">
+    <property name="layout" value="Database Layout" />
+    <property name="cityLabel" value="Town" />
+    <property name="stateLabel" value="County" />
+    <property name="postalCodeLabel" value="Postcode" />
+  </bean>
+
+  <bean id="fraAddressLinesAdapter" class="oracle.retail.avs.qas.impl.format.DatabaseLayoutToLocaleAdapter">
+    <property name="layout" value="Database Layout" />
+    <property name="cityLabel" value="Commune" />
+    <property name="stateLabel" value="Département" />
+    <property name="postalCodeLabel" value="Code postal" />
+  </bean>
+   
+  <!--  Germany  -->
+  <bean id="dueAddressLinesAdapter" class="oracle.retail.avs.qas.impl.format.DatabaseLayoutToLocaleAdapter">
+    <property name="layout" value="Database Layout" />
+    <property name="cityLabel" value="Town" />
+    <property name="stateLabel" value="State" />
+    <property name="postalCodeLabel" value="Postcode" />
+  </bean>
+
+  <!--  Spain  -->
+  <bean id="espAddressLinesAdapter" class="oracle.retail.avs.qas.impl.format.DatabaseLayoutToLocaleAdapter">
+    <property name="layout" value="Database Layout" />
+    <property name="cityLabel" value="Town" />
+    <property name="stateLabel" value="Province" />
+    <property name="postalCodeLabel" value="Postcode" />
+  </bean>
+
+  <bean id="nldAddressLinesAdapter" class="oracle.retail.avs.qas.impl.format.DatabaseLayoutToLocaleAdapter">
+    <property name="layout" value="Database Layout" />
+    <property name="cityLabel" value="NEN town/city" />
+    <property name="stateLabel" value="Province" />
+    <property name="postalCodeLabel" value="Postcode" />
+  </bean>
+
+  <bean id="altAddressLinesAdapter" class="oracle.retail.avs.qas.impl.format.AltDatabaseLayoutLayoutToLocaleAdapter">
+    <property name="layout" value="Database Layout" />
+    <property name="addressLine1Label" value="Delivery address line 1" />
+    <property name="addressLine2Label" value="Delivery address line 2" />
+    <property name="addressLine3Label" value="Delivery address line 3" />
+  </bean>
+
+  <!-- The Sweden data set never returns a value for the "state". -->
+  <bean id="sweAddressLinesAdapter" class="oracle.retail.avs.qas.impl.format.DatabaseLayoutToLocaleAdapter">
+    <property name="layout" value="Database Layout" />
+    <property name="cityLabel" value="Postal area" />
+    <property name="stateLabel" value="NONE" />
+    <property name="postalCodeLabel" value="Postcode" />
+  </bean>
+
+  <bean id="usaQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="USA" />
+    <property name="countryISOCode" value="US" />
+    <property name="engineType" value="Verification" />
+    <property name="addressLinesToLocaleAdapter" ref="usaAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="NoReplacement" />
+  </bean>
+
+  <bean id="canQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="CAN" />
+    <property name="countryISOCode" value="CA" />
+    <property name="engineType" value="Verification" />
+    <property name="addressLinesToLocaleAdapter" ref="canAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="NoReplacement" />
+  </bean>
+
+  <bean id="gbrQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="GBR" />
+    <property name="countryISOCode" value="GB" />
+    <property name="engineType" value="Singleline" />
+    <property name="addressLinesToLocaleAdapter" ref="gbrAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="CompleteRepacement" />
+  </bean>
+
+  <bean id="fraQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="FRX" />
+    <property name="countryISOCode" value="FR" />
+    <property name="engineType" value="Verification" />
+    <property name="addressLinesToLocaleAdapter" ref="fraAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="CompleteRepacement" />
+  </bean>
+  
+  <bean id="deuQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="DEU" />
+    <property name="countryISOCode" value="DE" />
+    <property name="engineType" value="Verification" />
+    <property name="addressLinesToLocaleAdapter" ref="dueAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="CompleteRepacement" />
+  </bean>
+  
+  <!-- The Spain data set never returns a value for the "state". -->
+  <bean id="espQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="ESP" />
+    <property name="countryISOCode" value="ES" />
+    <property name="engineType" value="Singleline" />
+    <property name="addressLinesToLocaleAdapter" ref="espAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="CompleteRepacement" />
+  </bean>
+
+  <bean id="nldQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="NLD" />
+    <property name="countryISOCode" value="NL" />
+    <property name="engineType" value="Verification" />
+    <property name="addressLinesToLocaleAdapter" ref="nldAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="CompleteRepacement" />
+  </bean>
+
+  <!-- The Italy data set never returns a value for the "state". -->
+  <bean id="itaQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="ITA" />
+    <property name="countryISOCode" value="IT" />
+    <property name="engineType" value="Verification" />
+    <property name="addressLinesToLocaleAdapter" ref="altAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="NoReplacement" />
+  </bean>
+
+  <bean id="mexQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="MEX" />
+    <property name="countryISOCode" value="MX" />
+    <property name="engineType" value="MexVerification" />
+    <property name="addressLinesToLocaleAdapter" ref="altAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="PartialReplacement" />
+  </bean>
+
+  <bean id="braQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="BRA" />
+    <property name="countryISOCode" value="BR" />
+    <property name="engineType" value="Singleline" />
+    <property name="addressLinesToLocaleAdapter" ref="altAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="NoReplacement" />
+  </bean>
+
+  <bean id="prtQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="PRT" />
+    <property name="countryISOCode" value="PT" />
+    <property name="engineType" value="Verification" />
+    <property name="addressLinesToLocaleAdapter" ref="altAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="CompleteRepacement" />
+  </bean>
+  
+  <bean id="sweQasCountryConversion" class="oracle.retail.avs.qas.impl.QASCountryConversionBean" init-method="init">
+    <property name="countryUNCode" value="SWE" />
+    <property name="countryISOCode" value="SE" />
+    <property name="engineType" value="Singleline" />
+    <property name="addressLinesToLocaleAdapter" ref="sweAddressLinesAdapter" />
+    <property name="stateNameToCodeEnum" value="NoReplacement" />
+  </bean>
+</beans>

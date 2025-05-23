@@ -1,0 +1,118 @@
+<dataTemplate name="SalesByHourAnalysis" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="NA_SYMBOL" value="_rptNotApplicableSymbol"/>
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="CRITERIA_REGISTER" value="_rptRegisterColon"/>
+    <label name="CRITERIA_EMPLOYEE" value="_rptSalesByHourAnalysisReportEmployeeColon"/>
+
+    <label name="HOURS" value="_rptSalesByHourAnalysisHours"/>
+    <label name="TRANS_COUNT" value="_rptTransCount"/>
+    <label name="NET_SALES" value="_rptNetSales"/>
+    <label name="PERCENT" value="_rptPercent"/>
+
+    <label name="DOW1" value="_rptSalesByHourAnalysisDayOfWeek1"/>
+    <label name="DOW2" value="_rptSalesByHourAnalysisDayOfWeek2"/>
+    <label name="DOW3" value="_rptSalesByHourAnalysisDayOfWeek3"/>
+    <label name="DOW4" value="_rptSalesByHourAnalysisDayOfWeek4"/>
+    <label name="DOW5" value="_rptSalesByHourAnalysisDayOfWeek5"/>
+    <label name="DOW6" value="_rptSalesByHourAnalysisDayOfWeek6"/>
+    <label name="DOW7" value="_rptSalesByHourAnalysisDayOfWeek7"/>
+
+    <label name="COUNT" value="_rptCount"/>
+    <label name="AMOUNT" value="_rptAmount"/>
+    <label name="TOTAL" value="_rptTotal"/>
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startDate" class="java.util.Date" isForPrompting="false" include_in_output="false">
+      <defaultValueExpression><![CDATA[$P{dateRange}.getStartDate()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endDate" class="java.util.Date" isForPrompting="false" include_in_output="false">
+      <defaultValueExpression><![CDATA[$P{dateRange}.getEndDate()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="employeeId" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSalesByHourReportEmployee;Text;Simple;maxLength=30]]></parameterDescription>
+    </parameter>
+    <parameter name="registerId" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSalesByHourAnalysisReportRegisterSearch;Text;Simple;maxCharacters=20]]></parameterDescription>
+    </parameter>    
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_SALES" key="SALE_BY_HOUR_ANALYSIS_REPORT">
+      <Parameters>
+        <Parameter>employeeId</Parameter>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>registerId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>hour_period</ResultField>
+        <ResultField>trans_count</ResultField>
+        <ResultField>net_amount</ResultField>
+        <ResultField>dow1</ResultField>
+        <ResultField>dow2</ResultField>
+        <ResultField>dow3</ResultField>
+        <ResultField>dow4</ResultField>
+        <ResultField>dow5</ResultField>
+        <ResultField>dow6</ResultField>
+        <ResultField>dow7</ResultField>
+      </ResultFields>
+    </queryReference>  
+  </dataSource>
+  <dataStructure>
+    <group name="G_SALES" source="Q_SALES">
+      <element name="HOUR_START" value="hour_period" translation-prefix="_rptHourStart" />
+      <element name="HOUR_END" value="hour_period" translation-prefix="_rptHourEnd"/>
+      <element name="TRANS_CNT" value="trans_count" formatter="Decimal"/>
+      <element name="NET_AMT_RAW" value="net_amount"/>
+      <element name="NET_AMT" value="net_amount" formatter="Money"/>
+      <element name="DOW1" value="dow1" formatter="Money"/>
+      <element name="DOW2" value="dow2" formatter="Money"/>
+      <element name="DOW3" value="dow3" formatter="Money"/>
+      <element name="DOW4" value="dow4" formatter="Money"/>
+      <element name="DOW5" value="dow5" formatter="Money"/>
+      <element name="DOW6" value="dow6" formatter="Money"/>
+      <element name="DOW7" value="dow7" formatter="Money"/>
+    </group>
+    <group name="G_SALES_TOT" source="Q_SALES">
+      <element name="TRANS_CNT" value="trans_count" formatter="Decimal" function="SUM"/>
+      <element name="NET_AMT_RAW" value="net_amount" function="SUM"/>
+      <element name="NET_AMT" value="net_amount" formatter="Money" function="SUM"/>
+      <element name="DOW1" value="dow1" formatter="Money" function="SUM"/>
+      <element name="DOW2" value="dow2" formatter="Money" function="SUM"/>
+      <element name="DOW3" value="dow3" formatter="Money" function="SUM"/>
+      <element name="DOW4" value="dow4" formatter="Money" function="SUM"/>
+      <element name="DOW5" value="dow5" formatter="Money" function="SUM"/>
+      <element name="DOW6" value="dow6" formatter="Money" function="SUM"/>
+      <element name="DOW7" value="dow7" formatter="Money" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

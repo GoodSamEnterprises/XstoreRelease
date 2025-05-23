@@ -1,0 +1,280 @@
+/*     */ package dtv.xst.dao.prc.impl;
+/*     */ 
+/*     */ import dtv.data2.access.IDataAccessObject;
+/*     */ import dtv.data2.access.IObjectId;
+/*     */ import dtv.data2.access.impl.jdbc.IFiller;
+/*     */ import dtv.data2.access.impl.jdbc.IJDBCTableAdapter;
+/*     */ import dtv.util.DtvDate;
+/*     */ import dtv.xst.dao.prc.DealFieldTestPropertyId;
+/*     */ import java.math.BigDecimal;
+/*     */ import java.sql.PreparedStatement;
+/*     */ import java.sql.ResultSet;
+/*     */ import java.sql.SQLException;
+/*     */ import java.sql.Timestamp;
+/*     */ import java.util.Date;
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ public class DealFieldTestPropertyDBA
+/*     */   implements IJDBCTableAdapter
+/*     */ {
+/*     */   private static final long serialVersionUID = 190421877L;
+/*     */   private Long _organizationId;
+/*     */   private String _dealId;
+/*     */   private Integer _ordinal;
+/*     */   private Integer _itemConditionGroup;
+/*     */   private Integer _itemConditionSeq;
+/*     */   private String _propertyCode;
+/*     */   private String _type;
+/*     */   private String _stringValue;
+/*     */   private Date _dateValue;
+/*     */   private BigDecimal _decimalValue;
+/*     */   private Date _createDate;
+/*     */   private String _createUserId;
+/*     */   private Date _updateDate;
+/*     */   private String _updateUserId;
+/*     */   private static final String SELECT_OBJECT = "SELECT t.organization_id, t.deal_id, t.item_ordinal, t.item_condition_group, t.item_condition_seq, t.property_code, t.type, t.string_value, t.date_value, t.decimal_value, t.create_date, t.create_user_id, t.update_date, t.update_user_id FROM prc_deal_field_test_p t";
+/*     */   private static final String SELECT_WHERE_OBJECT = " WHERE organization_id = ?  AND deal_id = ?  AND item_ordinal = ?  AND item_condition_group = ?  AND item_condition_seq = ?  AND property_code = ?  ";
+/*     */   
+/*     */   public String getSelect() {
+/*  43 */     return getSelectImpl();
+/*     */   }
+/*     */   
+/*     */   private String getSelectImpl() {
+/*  47 */     return "SELECT t.organization_id, t.deal_id, t.item_ordinal, t.item_condition_group, t.item_condition_seq, t.property_code, t.type, t.string_value, t.date_value, t.decimal_value, t.create_date, t.create_user_id, t.update_date, t.update_user_id FROM prc_deal_field_test_p t";
+/*     */   }
+/*     */ 
+/*     */ 
+/*     */   
+/*     */   public String getSelectWhere() {
+/*  53 */     return " WHERE organization_id = ?  AND deal_id = ?  AND item_ordinal = ?  AND item_condition_group = ?  AND item_condition_seq = ?  AND property_code = ?  ";
+/*     */   }
+/*     */   
+/*  56 */   private static final String[] INSERT_OBJECT = new String[] { "INSERT INTO prc_deal_field_test_p(organization_id, deal_id, item_ordinal, item_condition_group, item_condition_seq, property_code, type, string_value, date_value, decimal_value, create_date, create_user_id, update_date, update_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" };
+/*     */   
+/*     */   public String[] getInsert() {
+/*  59 */     return INSERT_OBJECT;
+/*     */   }
+/*     */   
+/*     */   public Object[][] getInsertParameters() {
+/*  63 */     Object[][] insertParameterObject = { { this._organizationId, this._dealId, this._ordinal, this._itemConditionGroup, this._itemConditionSeq, this._propertyCode, this._type, this._stringValue, this._dateValue, this._decimalValue, this._createDate, this._createUserId, this._updateDate, this._updateUserId } };
+/*  64 */     return insertParameterObject;
+/*     */   }
+/*     */   
+/*  67 */   private static final int[][] INSERT_PARAMETER_TYPES_OBJECT = new int[][] { { -5, 12, 4, 4, 4, 12, 12, 12, 91, 3, 91, 12, 91, 12 } };
+/*     */   
+/*     */   public int[][] getInsertParameterTypes() {
+/*  70 */     return INSERT_PARAMETER_TYPES_OBJECT;
+/*     */   }
+/*     */   
+/*  73 */   private static final String[] UPDATE_OBJECT = new String[] { "UPDATE prc_deal_field_test_p SET type = ?, string_value = ?, date_value = ?, decimal_value = ?, update_date = ?, update_user_id = ?" };
+/*     */   
+/*     */   public String[] getUpdate() {
+/*  76 */     return UPDATE_OBJECT;
+/*     */   }
+/*     */   
+/*     */   public Object[][] getUpdateParameters() {
+/*  80 */     Object[][] updateParameterObject = { { this._type, this._stringValue, this._dateValue, this._decimalValue, this._updateDate, this._updateUserId } };
+/*  81 */     return updateParameterObject;
+/*     */   }
+/*     */   
+/*  84 */   private static final int[][] UPDATE_PARAMETER_TYPE_OBJECT = new int[][] { { 12, 12, 91, 3, 91, 12 } };
+/*     */   public int[][] getUpdateParameterTypes() {
+/*  86 */     return UPDATE_PARAMETER_TYPE_OBJECT;
+/*     */   }
+/*     */   
+/*  89 */   private static final String[] DELETE_OBJECT = new String[] { "DELETE FROM prc_deal_field_test_p" }; private static final String WHERE_OBJECT = " WHERE organization_id = ?  AND deal_id = ?  AND item_ordinal = ?  AND item_condition_group = ?  AND item_condition_seq = ?  AND property_code = ?  ";
+/*     */   
+/*     */   public String[] getDelete() {
+/*  92 */     return DELETE_OBJECT;
+/*     */   }
+/*     */ 
+/*     */ 
+/*     */   
+/*     */   public String getWhere() {
+/*  98 */     return " WHERE organization_id = ?  AND deal_id = ?  AND item_ordinal = ?  AND item_condition_group = ?  AND item_condition_seq = ?  AND property_code = ?  ";
+/*     */   }
+/*     */   public Object[] getWhereParameters() {
+/* 101 */     return new Object[] { this._organizationId, this._dealId, this._ordinal, this._itemConditionGroup, this._itemConditionSeq, this._propertyCode };
+/*     */   }
+/*     */   
+/* 104 */   private static final int[] WHERE_PARAMETER_OBJECT = new int[] { -5, 12, 4, 4, 4, 12 };
+/*     */   
+/*     */   public int[] getWhereParameterTypes() {
+/* 107 */     return WHERE_PARAMETER_OBJECT;
+/*     */   }
+/*     */   public String getTableName() {
+/* 110 */     return "prc_deal_field_test_p";
+/*     */   }
+/*     */   
+/*     */   public IFiller getFiller() {
+/* 114 */     return getFillerImpl();
+/*     */   }
+/*     */   
+/*     */   private IFiller getFillerImpl() {
+/* 118 */     return new DealFieldTestPropertyFiller(this);
+/*     */   }
+/*     */   
+/*     */   private static class DealFieldTestPropertyFiller
+/*     */     implements IFiller {
+/*     */     private DealFieldTestPropertyDBA _parent;
+/*     */     
+/*     */     public DealFieldTestPropertyFiller(DealFieldTestPropertyDBA argParent) {
+/* 126 */       this._parent = argParent;
+/*     */     }
+/*     */ 
+/*     */     
+/*     */     public void fill(ResultSet argResultSet) throws SQLException {
+/* 131 */       long l = argResultSet.getLong(1);
+/* 132 */       if (l != 0L || argResultSet.getObject(1) != null) {
+/* 133 */         this._parent._organizationId = Long.valueOf(l);
+/*     */       }
+/*     */ 
+/*     */       
+/* 137 */       this._parent._dealId = argResultSet.getString(2);
+/*     */ 
+/*     */       
+/* 140 */       int primitiveResult = argResultSet.getInt(3);
+/* 141 */       if (primitiveResult != 0 || argResultSet.getObject(3) != null) {
+/* 142 */         this._parent._ordinal = Integer.valueOf(primitiveResult);
+/*     */       }
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */       
+/* 148 */       primitiveResult = argResultSet.getInt(4);
+/* 149 */       if (primitiveResult != 0 || argResultSet.getObject(4) != null) {
+/* 150 */         this._parent._itemConditionGroup = Integer.valueOf(primitiveResult);
+/*     */       }
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */       
+/* 156 */       primitiveResult = argResultSet.getInt(5);
+/* 157 */       if (primitiveResult != 0 || argResultSet.getObject(5) != null) {
+/* 158 */         this._parent._itemConditionSeq = Integer.valueOf(primitiveResult);
+/*     */       }
+/*     */ 
+/*     */       
+/* 162 */       this._parent._propertyCode = argResultSet.getString(6);
+/* 163 */       this._parent._type = argResultSet.getString(7);
+/* 164 */       this._parent._stringValue = argResultSet.getString(8);
+/*     */       
+/* 166 */       Timestamp t9 = argResultSet.getTimestamp(9);
+/* 167 */       if (t9 != null) {
+/* 168 */         this._parent._dateValue = (Date)new DtvDate(t9.getTime());
+/*     */       } else {
+/*     */         
+/* 171 */         this._parent._dateValue = null;
+/*     */       } 
+/*     */       
+/* 174 */       this._parent._decimalValue = argResultSet.getBigDecimal(10);
+/*     */       
+/* 176 */       Timestamp t11 = argResultSet.getTimestamp(11);
+/* 177 */       if (t11 != null) {
+/* 178 */         this._parent._createDate = (Date)new DtvDate(t11.getTime());
+/*     */       } else {
+/*     */         
+/* 181 */         this._parent._createDate = null;
+/*     */       } 
+/*     */       
+/* 184 */       this._parent._createUserId = argResultSet.getString(12);
+/*     */       
+/* 186 */       Timestamp t13 = argResultSet.getTimestamp(13);
+/* 187 */       if (t13 != null) {
+/* 188 */         this._parent._updateDate = (Date)new DtvDate(t13.getTime());
+/*     */       } else {
+/*     */         
+/* 191 */         this._parent._updateDate = null;
+/*     */       } 
+/*     */       
+/* 194 */       this._parent._updateUserId = argResultSet.getString(14);
+/*     */     }
+/*     */   }
+/*     */   
+/*     */   public IDataAccessObject loadDAO(IDataAccessObject argDAO) {
+/* 199 */     argDAO.suppressStateChanges(true);
+/* 200 */     DealFieldTestPropertyDAO dao = (DealFieldTestPropertyDAO)argDAO;
+/* 201 */     dao.setOrganizationId(this._organizationId);
+/* 202 */     dao.setDealId(this._dealId);
+/* 203 */     dao.setOrdinal(this._ordinal);
+/* 204 */     dao.setItemConditionGroup(this._itemConditionGroup);
+/* 205 */     dao.setItemConditionSeq(this._itemConditionSeq);
+/* 206 */     dao.setPropertyCode(this._propertyCode);
+/* 207 */     dao.setType(this._type);
+/* 208 */     dao.setStringValue(this._stringValue);
+/* 209 */     dao.setDateValue(this._dateValue);
+/* 210 */     dao.setDecimalValue(this._decimalValue);
+/* 211 */     dao.setCreateDate(this._createDate);
+/* 212 */     dao.setCreateUserId(this._createUserId);
+/* 213 */     dao.setUpdateDate(this._updateDate);
+/* 214 */     dao.setUpdateUserId(this._updateUserId);
+/* 215 */     argDAO.suppressStateChanges(false);
+/* 216 */     return (IDataAccessObject)dao;
+/*     */   }
+/*     */   
+/*     */   public IDataAccessObject loadDefaultDAO() {
+/* 220 */     return loadDAO((IDataAccessObject)new DealFieldTestPropertyDAO());
+/*     */   }
+/*     */   
+/*     */   public void fill(IDataAccessObject argDAO) {
+/* 224 */     DealFieldTestPropertyDAO dao = (DealFieldTestPropertyDAO)argDAO;
+/* 225 */     this._organizationId = dao.getOrganizationId();
+/* 226 */     this._dealId = dao.getDealId();
+/* 227 */     this._ordinal = dao.getOrdinal();
+/* 228 */     this._itemConditionGroup = dao.getItemConditionGroup();
+/* 229 */     this._itemConditionSeq = dao.getItemConditionSeq();
+/* 230 */     this._propertyCode = dao.getPropertyCode();
+/* 231 */     this._type = dao.getType();
+/* 232 */     this._stringValue = dao.getStringValue();
+/* 233 */     this._dateValue = dao.getDateValue();
+/* 234 */     this._decimalValue = dao.getDecimalValue();
+/* 235 */     this._createDate = dao.getCreateDate();
+/* 236 */     this._createUserId = dao.getCreateUserId();
+/* 237 */     this._updateDate = dao.getUpdateDate();
+/* 238 */     this._updateUserId = dao.getUpdateUserId();
+/*     */   }
+/*     */   
+/*     */   public PreparedStatement writeObjectId(IObjectId argId, PreparedStatement argStatement) throws SQLException {
+/* 242 */     DealFieldTestPropertyId id = (DealFieldTestPropertyId)argId;
+/* 243 */     argStatement.setLong(1, id.getOrganizationId().longValue());
+/* 244 */     argStatement.setString(2, id.getDealId());
+/* 245 */     argStatement.setInt(3, id.getOrdinal().intValue());
+/* 246 */     argStatement.setInt(4, id.getItemConditionGroup().intValue());
+/* 247 */     argStatement.setInt(5, id.getItemConditionSeq().intValue());
+/* 248 */     argStatement.setString(6, id.getPropertyCode());
+/* 249 */     return argStatement;
+/*     */   }
+/*     */   
+/*     */   public IObjectId getObjectId() {
+/* 253 */     DealFieldTestPropertyId id = new DealFieldTestPropertyId();
+/* 254 */     id.setOrganizationId(this._organizationId);
+/* 255 */     id.setDealId(this._dealId);
+/* 256 */     id.setOrdinal(this._ordinal);
+/* 257 */     id.setItemConditionGroup(this._itemConditionGroup);
+/* 258 */     id.setItemConditionSeq(this._itemConditionSeq);
+/* 259 */     id.setPropertyCode(this._propertyCode);
+/* 260 */     return (IObjectId)id;
+/*     */   }
+/*     */ 
+/*     */   
+/*     */   public void fill(IJDBCTableAdapter argAdapter) {}
+/*     */ 
+/*     */   
+/*     */   public boolean isExtensible() {
+/* 268 */     return false;
+/*     */   }
+/*     */   
+/*     */   public String getImplementingClass() {
+/* 272 */     return null;
+/*     */   }
+/*     */ }
+
+
+/* Location:              C:\WIP-Xstore_Delta-main\release\xstore\xstore\lib\dtv-dtx.jar!\dtv\xst\dao\prc\impl\DealFieldTestPropertyDBA.class
+ * Java compiler version: 8 (52.0)
+ * JD-Core Version:       1.1.3
+ */

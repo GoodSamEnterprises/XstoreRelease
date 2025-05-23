@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  default-init-method="init">
+
+  <context:annotation-config />
+
+  <beans profile="xstore">
+    <!-- base overrides start -->
+    <bean id="addressDataSource" class="dtv.xst.address.DtxAddressDataSource" depends-on="dataFactoryAssistant" />
+    <!-- <bean id="addressDataSource" class="dtv.util.address.datasource.FileAddressDataSource" /> -->
+    
+    <bean id="addressService" class="oracle.retail.xstore.countrypack.br.address.BrAddressService" factory-method="getInternalInstance">
+      <property name="dataSource" ref="addressDataSource" />
+    </bean>
+    
+    <bean id="abstractAddressFieldService" class="oracle.retail.xstore.countrypack.br.address.BrAddressFieldService" abstract="true">
+      <constructor-arg ref="addressService" />
+      <constructor-arg>
+        <list>
+          <value>AUTO_POPULATE_FROM_POSTAL</value>
+          <value>RESTRICT_LISTS_BY_COUNTRY</value>
+        </list>
+      </constructor-arg>
+    </bean>
+    
+    <bean id="currentTransactionListModel" class="oracle.retail.xstore.countrypack.br.pos.register.BrRetailTransactionListModel" scope="prototype" />
+    <bean id="countryPack.fiscalHelper" class="oracle.retail.xstore.countrypack.br.BrFiscalHelper" />
+    
+    <!-- Field validators for edit models -->
+    <bean id="custMaintModelFieldValidatorFactory" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory" scope="prototype">
+      <property name="parameters">
+        <map>
+          <entry key="emailAddress" value-ref="emailAddressFieldValidator" />
+          <entry key="contactPref" value-ref="contactPrefFieldValidator" />
+          <entry key="nationalTaxId" value-ref="taxCodeFieldValidator" />
+          <entry key="personalTaxId" value-ref="fiscalCodeFieldValidator" />
+          
+          <entry key="county" value-ref="customerCityCodeValidator" />
+        </map>
+      </property>
+    </bean>
+    
+    <bean id="customerCityCodeValidator" class="oracle.retail.xstore.countrypack.br.validation.CityCodeValidator" parent="fiscalCodeFieldValidator" scope="prototype">
+      <property name="validationType" value="CustomerStoreSame" />
+    </bean>
+ 
+  
+    <bean id="allowReturnInputQtyRule" class="dtv.pos.register.returns.verification.ValidateAllowItemReturnInputQtyRule"
+      scope="prototype">
+      <!-- removed privilege override since qty to be returned cannot exceed the original purchased qty -->
+      <!-- <property name="privilege" value="RETURN_QUANTITY_EXCEED_ORIG_QUANTITY" /> -->
+    </bean>
+    
+    <!-- Validations overrrides -->
+    <bean id="itemPriceRules" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="itemPriceRule" />
+          <ref bean="countryPack.itemPriceDisallowGiveAwaysRule" />
+        </list>
+      </property>
+    </bean>
+
+    <!-- Calculators ovverides -->
+    <bean id="baseTaxableAmountCalculator" class="oracle.retail.xstore.countrypack.br.pos.register.tax.BrTaxableAmountCalculator"
+      scope="prototype" />
+    <bean id="taxModifierCalculator" class="oracle.retail.xstore.countrypack.br.pos.register.tax.BrTaxModifierCalculator"
+      scope="prototype" />
+    <bean id="TransactionTaxCalculator" class="oracle.retail.xstore.countrypack.br.pos.register.tax.BrTransactionTaxCalculator"
+      scope="prototype" />
+
+    <bean id="vatTaxStrategy" class="oracle.retail.xstore.countrypack.br.tax.BrTaxStrategy" />
+
+    <bean id="countyVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+    </bean>
+    <bean id="apartmentVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+    </bean>
+    <bean id="neighborhoodVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+    </bean>
+
+    <bean id="taxCodeVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+    </bean>
+
+    <bean id="fiscalCodeVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+    </bean>    
+
+    <!--     Brazil specific beans start -->
+    <bean id="countryPack.br.cfopHelper" class="oracle.retail.xstore.countrypack.br.nfe.CfopHelper" />
+    <bean id="countryPack.br.itemMaintenanceHelper" class="oracle.retail.xstore.countrypack.br.item.maintenance.ItemMaintenanceHelper" />
+    <bean id="countryPack.br.nfeQueueHelper" class="oracle.retail.xstore.countrypack.br.nfe.NfeQueueHelper" />
+    <bean id="countryPack.br.satHelper" class="oracle.retail.xstore.countrypack.br.sat.SatHelper" />
+    <bean id="countryPack.br.nfceHelper" class="oracle.retail.xstore.countrypack.br.nfce.NfceHelper" />
+    <bean id="countryPack.br.taxHelper" class="oracle.retail.xstore.countrypack.br.BrTaxHelper" />
+    <bean id="countryPack.br.cstHelper" class="oracle.retail.xstore.countrypack.br.BrCstHelper" />
+    <bean id="countryPack.br.nfeInfCplHelper" class="oracle.retail.xstore.countrypack.br.nfe.NfeInfCplHelper" />
+    <bean id="countryPack.br.nfeTaxMapHelper" class="oracle.retail.xstore.countrypack.br.nfe.NfeTaxMapHelper" />
+    <bean id="countryPack.br.nfeTaxHelper" class="oracle.retail.xstore.countrypack.br.nfe.NfeTaxHelper" />
+    <bean id="countryPack.br.nfeTaxCstHelper" class="oracle.retail.xstore.countrypack.br.nfe.NfeTaxCstHelper" />
+    <bean id="countryPack.br.taxRateHelper" class="oracle.retail.xstore.countrypack.br.pos.register.tax.BrTaxRateHelper" />
+    <bean id="countryPack.br.nfeMaintenanceHelper" class="oracle.retail.xstore.countrypack.br.nfe.maintenance.NfeMaintenanceHelper" />
+    <bean id="countryPack.br.nfeMaintenanceCalculator" class="oracle.retail.xstore.countrypack.br.nfe.maintenance.NfeMaintenanceCalculator" />
+    <bean id="countryPack.br.nfeQueueMapper" class="oracle.retail.xstore.countrypack.br.nfe.mapping.NfeQueueMapper" />
+    
+    <bean id="countryPack.br.nfeProcessor" class="oracle.retail.xstore.countrypack.br.nfe.process.NfeProcessor" scope="prototype" >
+      <property name="nfeWorkers">
+        <list value-type="oracle.retail.xstore.countrypack.br.nfe.process.INfeProcessorWorker">
+          <ref bean="countryPack.br.errorMonitor" />
+          <ref bean="countryPack.br.fileResponseMonitor" />
+          <ref bean="countryPack.br.nfeFileIncomingQueueProcessor" />
+          <ref bean="countryPack.br.nfeFileSkipProcessor" />
+          <ref bean="countryPack.br.nfeFileCancelProcessor" />
+          <ref bean="countryPack.br.nfeResendProcessor" />
+          <ref bean="countryPack.br.nfeEmailProcessor" />
+          <ref bean="countryPack.br.mockSubmittedNfeProcessor" />          
+          <ref bean="countryPack.br.expiredNfeProcessor" />
+        </list>
+      </property>
+    </bean>
+    <bean id="countryPack.br.nfeProcessor.parameters" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+      <property name="properties">
+        <props>
+          <prop key="oracle.retail.xstore.countrypack.br.nfe.process.AbstractIncomingQueueProcessor.delayMillis">24000</prop>
+        </props>
+      </property>
+    </bean>
+    <bean id="countryPack.br.nfeProcessorParameters" class="oracle.retail.xstore.countrypack.br.nfe.process.NfeProcessorParameters">
+      <property name="envioDir" value="#{systemProperties['oracle.br.nfe.integration.dir']}\\EntradaNotas" />
+      <property name="retornoDir" value="#{systemProperties['oracle.br.nfe.integration.dir']}\\SaidaNotas" />
+      <property name="retornoArquivoDir" value="#{systemProperties['oracle.br.nfe.integration.dir']}\\SaidaNotas\\archive" />
+      <property name="retornoErroDir" value="#{systemProperties['oracle.br.nfe.integration.dir']}\\SaidaNotas\\error" />
+      <property name="printQueue" value="1" />
+      <property name="defaultDelayMillis" value="6000" />
+      <property name="processorReceiveTimeoutMillis" value="0" />
+      <property name="processorResendReceiveTimeoutMillis" value="0" />
+      <property name="standalone" value="false" />
+      <property name="customProperties" ref="countryPack.br.nfeProcessor.parameters" />
+    </bean>
+    <bean id="countryPack.br.errorMonitor" class="oracle.retail.xstore.countrypack.br.nfe.process.ErrorMonitor" scope="prototype" />
+    <bean id="countryPack.br.fileResponseMonitor" class="oracle.retail.xstore.countrypack.br.nfe.process.response.FileResponseMonitor" scope="prototype" />
+    <bean id="countryPack.br.nfeFileIncomingQueueProcessor" class="oracle.retail.xstore.countrypack.br.nfe.process.FileIncomingQueueProcessor" scope="prototype" />
+    <bean id="countryPack.br.nfeFileSkipProcessor" class="oracle.retail.xstore.countrypack.br.nfe.process.FileSkipProcessor" scope="prototype" />
+    <bean id="countryPack.br.nfeFileCancelProcessor" class="oracle.retail.xstore.countrypack.br.nfe.process.FileCancelProcessor" scope="prototype" />
+    <bean id="countryPack.br.nfeResendProcessor" class="oracle.retail.xstore.countrypack.br.nfe.process.NfeResendProcessor" scope="prototype" />
+    <bean id="countryPack.br.nfeEmailProcessor" class="oracle.retail.xstore.countrypack.br.nfe.process.NfeEmailProcessor" scope="prototype" />
+    <bean id="countryPack.br.expiredNfeProcessor" class="oracle.retail.xstore.countrypack.br.nfe.process.ExpiredNfeProcessor" scope="prototype" />
+    <!-- mock processors -->
+    <bean id="countryPack.br.mockSubmittedNfeProcessor" class="oracle.retail.xstore.countrypack.br.nfe.process.mock.MockSubmittedNfeProcessor" scope="prototype" >
+    	<property name="mockProcessor" value="true" />
+    </bean>
+    <bean id="countryPack.br.mockCancelRequestNfeProcessor" class="oracle.retail.xstore.countrypack.br.nfe.process.mock.MockCancelRequestNfeProcessor" scope="prototype" >
+    	<property name="mockProcessor" value="true" />
+    </bean>
+    
+    <bean id="countryPack.br.pafNfeSaleCapture" class="oracle.retail.xstore.countrypack.br.nfe.mapping.PafNfeSaleCapture"
+      scope="prototype" />
+    <bean id="countryPack.br.pafNfceSaleCapture" class="oracle.retail.xstore.countrypack.br.nfce.mapping.PafNfceSaleCapture"
+      scope="prototype" />
+    <bean id="countryPack.br.pafNfeReversalCapture" class="oracle.retail.xstore.countrypack.br.nfe.reversal.PafNfeReversalCapture"
+      scope="prototype" />
+    <bean id="countryPack.br.pafNfeResendCapture" class="oracle.retail.xstore.countrypack.br.nfe.mapping.PafNfeResendCapture"
+      scope="prototype" />
+    <bean id="countryPack.br.pafNfeEmailCapture" class="oracle.retail.xstore.countrypack.br.nfe.mapping.PafNfeEmailCapture"
+      scope="prototype" />
+    
+    <bean id="countryPack.br.nfeXmlObjectFactory" class="oracle.retail.xstore.countrypack.br.nfe.mapping.NfeXmlObjectFactory" >
+      <property name="version" value="#{systemProperties['oracle.br.nfe.version'] ?: '4_00'}" />
+    </bean>
+    <bean id="countryPack.br.satXmlObjectFactory" class="oracle.retail.xstore.countrypack.br.sat.mapping.SatXmlObjectFactory" >
+      <property name="version" value="#{systemProperties['oracle.br.sat.version'] ?: '0_07'}" />
+    </bean>
+     
+    
+    <bean id="countryPack.br.nfeMapperFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="oracle.retail.xstore.countrypack.br.nfe.mapping.INfeXmlMapperFactory" />
+      <property name="serviceMappings">
+        <props> 
+          <prop key="NFE">countryPack.br.nfeMapper_#{systemProperties['oracle.br.nfe.version'] ?: '4_00'}</prop>
+          <prop key="NFCE">countryPack.br.nfceMapper_#{systemProperties['oracle.br.nfe.version'] ?: '4_00'}</prop>
+          <prop key="SAT">countryPack.br.satMapper_#{systemProperties['oracle.br.sat.version'] ?: '0_07'}</prop>
+          <prop key="SKIP">countryPack.br.destroyMapper_#{systemProperties['oracle.br.nfe.version'] ?: '4_00'}</prop>
+          <prop key="CANCEL">countryPack.br.cancelMapper_#{systemProperties['oracle.br.nfe.version'] ?: '4_00'}</prop>
+          <prop key="CANCEL_SAT">countryPack.br.satCancelSaleMapper_#{systemProperties['oracle.br.sat.version'] ?: '0_07'}</prop>
+        </props>
+      </property>
+    </bean>
+  
+    <bean id="countryPack.br.nfeMapper_3_10" class="oracle.retail.xstore.countrypack.br.nfe.mapping.TnfeMapper_3_10" scope="prototype" />
+    <bean id="countryPack.br.nfeMapper_4_00" class="oracle.retail.xstore.countrypack.br.nfe.mapping.TnfeMapper_4_00" scope="prototype" />
+    
+    <bean id="countryPack.br.nfceMapper_3_10" class="oracle.retail.xstore.countrypack.br.nfce.mapping.TnfceMapper_3_10" scope="prototype" />
+    <bean id="countryPack.br.nfceMapper_4_00" class="oracle.retail.xstore.countrypack.br.nfce.mapping.TnfceMapper_4_00" scope="prototype" />
+    
+    <bean id="countryPack.br.destroyMapper_3_10" class="oracle.retail.xstore.countrypack.br.nfe.mapping.DestroyMapper_3_10" scope="prototype" />
+    <bean id="countryPack.br.destroyMapper_4_00" class="oracle.retail.xstore.countrypack.br.nfe.mapping.DestroyMapper_4_00" scope="prototype" />
+    
+    <bean id="countryPack.br.cancelMapper_3_10" class="oracle.retail.xstore.countrypack.br.nfe.mapping.CancelMapper_3_10" scope="prototype" />
+    <bean id="countryPack.br.cancelMapper_4_00" class="oracle.retail.xstore.countrypack.br.nfe.mapping.CancelMapper_4_00" scope="prototype" />
+    
+    
+    <bean id="countryPack.br.satMapper_0_06" class="oracle.retail.xstore.countrypack.br.sat.mapping.TSatMapper_0_06" scope="prototype" />
+    <bean id="countryPack.br.satMapper_0_07" class="oracle.retail.xstore.countrypack.br.sat.mapping.TSatMapper_0_07" scope="prototype" />
+    
+    <bean id="countryPack.br.satCancelSaleMapper_0_06" class="oracle.retail.xstore.countrypack.br.sat.mapping.TSatCancelSaleMapper_0_06" scope="prototype" />
+    <bean id="countryPack.br.satCancelSaleMapper_0_07" class="oracle.retail.xstore.countrypack.br.sat.mapping.TSatCancelSaleMapper_0_07" scope="prototype" />
+  
+    <bean id="countryPack.br.nfeStandaloneMapperFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="oracle.retail.xstore.countrypack.br.nfe.mapping.INfeStandaloneXmlMapperFactory" />
+      <property name="serviceMappings">
+        <props>
+          <prop key="STATUS">countryPack.br.satStatusMapper</prop>
+          <prop key="LOCK">countryPack.br.satLockMapper</prop>
+          <prop key="UNLOCK">countryPack.br.satUnlockMapper</prop>
+          <prop key="LOG">countryPack.br.satLogMapper</prop>
+        </props>
+      </property>
+    </bean>
+  
+    <bean id="countryPack.br.satStatusMapper" class="oracle.retail.xstore.countrypack.br.sat.mapping.SatStatusMapper"
+      scope="prototype" />
+    <bean id="countryPack.br.satLockMapper" class="oracle.retail.xstore.countrypack.br.sat.mapping.SatLockMapper" scope="prototype" />
+    <bean id="countryPack.br.satUnlockMapper" class="oracle.retail.xstore.countrypack.br.sat.mapping.SatUnlockMapper"
+      scope="prototype" />
+    <bean id="countryPack.br.satLogMapper" class="oracle.retail.xstore.countrypack.br.sat.mapping.SatLogMapper" scope="prototype" />
+    
+    
+    <!-- Validations -->
+    <bean id="countryPack.br.nfeThreshold" class="oracle.retail.xstore.countrypack.br.nfe.validation.NfeThresholdValidationRule" scope="prototype" />
+    <bean id="countryPack.br.preTenderingRules" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="countryPack.anyZeroPriceItem" />
+          <ref bean="countryPack.br.nfeThreshold" />
+          <ref bean="countryPack.br.hasPhysicalItemValidationRule" />
+          <ref bean="countryPack.br.itemMatchFiscalDocValidationRule" />
+        </list>
+      </property>
+    </bean>
+    <bean id="countryPack.br.itemNcmRules" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="countryPack.br.nonNullItemNcmRule" />
+          <ref bean="countryPack.br.itemNcmRule" />
+        </list>
+      </property>
+    </bean>
+    <bean id="countryPack.br.nonNullItemNcmRule" parent="nonNullValueRule">
+      <property name="valueKey">
+        <util:constant static-field="oracle.retail.xstore.countrypack.br.BrValueKeys.ENTERED_ITEM_NCM" />
+      </property>
+    </bean>
+    <bean id="countryPack.br.itemNcmRule" class="oracle.retail.xstore.countrypack.br.pos.shared.validation.ItemNcmValidationRule" scope="prototype" />
+    <bean id="countryPack.br.submitNfeRules" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="countryPack.br.emailValidationRule" />
+          <ref bean="countryPack.br.cfopValidationRule" />
+          <ref bean="countryPack.br.transactionLineItemsValidationRule" />
+        </list>
+      </property>
+    </bean>
+    <bean id="countryPack.br.nfeCustomerRules" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="countryPack.br.hasCustomerValidationRule" />
+          <ref bean="countryPack.br.customerTaxIdValidationRule" />
+          <ref bean="countryPack.br.customerStateTaxIdValidationRule" />          
+          <ref bean="countryPack.br.customerBairroValidationRule" />
+          <ref bean="countryPack.br.customerCityNameValidationRule" />
+          <ref bean="countryPack.br.customerStateValidationRule" />
+          <ref bean="countryPack.br.customerCityCodeValidationRule" />
+          <ref bean="countryPack.br.customerPostalCodeValidationRule" />
+          <ref bean="countryPack.br.customerTelephoneValidationRule" />
+          <ref bean="countryPack.br.customerAddressValidationRule" />
+        </list>
+      </property>
+    </bean>
+    <bean id="countryPack.br.emailValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.EmailValidationRule" scope="prototype" />
+    <bean id="countryPack.br.cfopValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CfopValidationRule" scope="prototype" />
+    <bean id="countryPack.br.transactionLineItemsValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.TransactionLineItemsValidationRule"
+      scope="prototype" />
+    <bean id="countryPack.br.hasCustomerValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.HasCustomerValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.validate.submit.nfe.taxIdRequired" />
+    </bean>
+    <bean id="countryPack.br.customerTaxIdValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CustomerTaxIdValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.customer.invalidTaxId" />
+    </bean>
+    <bean id="countryPack.br.customerStateTaxIdValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CustomerStateTaxIdValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.customer.invalidStateTaxId" />
+    </bean>    
+    <bean id="countryPack.br.customerBairroValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CustomerBairroValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.validate.submit.nfe.bairroRequired" />
+    </bean>
+    <bean id="countryPack.br.customerCityNameValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CustomerCityNameValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.validate.submit.nfe.invalidCityName" />
+    </bean>
+    <bean id="countryPack.br.customerStateValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CustomerStateValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.validate.submit.nfe.stateRequired" />
+    </bean>
+    <bean id="countryPack.br.customerCityCodeValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CustomerCityCodeValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.validate.submit.nfe.invalidCityId" />
+    </bean>
+    <bean id="countryPack.br.customerPostalCodeValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CustomerPostalCodeValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.validate.submit.nfe.invalidPostalCode" />
+    </bean>
+    <bean id="countryPack.br.customerTelephoneValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CustomerTelephoneValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.validate.submit.nfe.invalidTelephone" />
+    </bean>
+    <bean id="countryPack.br.customerAddressValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.CustomerAddressValidationRule" scope="prototype">
+      <property name="failureKey" value="_countrypack.br.validate.submit.nfe.addressFormat" />
+    </bean>
+    <bean id="countryPack.br.nfeIssueReverseRules" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="countryPack.br.nfeCancelAllowedValidationRule" />
+        </list>
+      </property>
+    </bean>
+    <bean id="countryPack.br.nfeCancelAllowedValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.maintenance.validation.NfeCancelAllowedValidationRule"
+      scope="prototype">
+      <property name="failureKey" value="_countrypack.br.nfe.maintenance.notvalid.cancel" />
+      <property name="validStatusCodes">
+        <list>
+          <value>OPEN</value>
+          <value>REJECTED</value>
+          <value>ERROR</value>
+          <value>SKIP_FAILED</value>
+          <value>CONTING</value>
+          <value>APPROVED</value>
+        </list>
+      </property>
+    </bean>
+    <bean id="countryPack.br.nfeIssueReprintRules" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="countryPack.br.nfeApprovedValidationRule" />
+        </list>
+      </property>
+    </bean>
+    <bean id="countryPack.br.nfeApprovedValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.maintenance.validation.NfeStatusValidationRule"
+      scope="prototype">
+      <property name="failureKey" value="_countrypack.br.nfe.maintenance.notvalid.status" />
+      <property name="validStatusCodes">
+        <list>
+          <value>CONTING</value>
+          <value>APPROVED</value>
+        </list>
+      </property>
+    </bean>
+    <bean id="countryPack.br.hasPhysicalItemValidationRule" class="oracle.retail.xstore.countrypack.br.validation.HasPhysicalItemValidationRule" scope="prototype" />
+    <bean id="countryPack.br.disalowMixSaleReturnNFe" parent="validationRuleList">
+      <property name="rules">
+        <list>
+          <ref bean="countryPack.br.itemMatchFiscalDocValidationRule" />
+        </list>
+      </property>
+    </bean>
+    <bean abstract="true" id="countryPack.br.itemMatchFiscalDocRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.ItemIntoCorrespondigFiscalDocRule" scope="prototype">
+      <property name="valueKey">
+        <util:constant static-field="dtv.pos.spring.ValueKeys.CURRENT_SALE_LINE" />
+      </property>
+    </bean>
+    <bean id="countryPack.br.itemMatchFiscalDocValidationRule" parent="countryPack.br.itemMatchFiscalDocRule">
+      <property name="failedMessage" value="_countrypack.br.nfe.itemDoNotMatchToFiscalDoc" />
+    </bean>
+    <bean id="countryPack.br.originalTransactionIsDonationValidationRule" class="oracle.retail.xstore.countrypack.br.nfe.validation.OriginalTransactionIsDonationValidationRule" scope="prototype" />
+    
+
+  </beans> <!-- end xstore -->
+
+  <beans profile="retail" >
+
+    <!-- Opclass Replacements -->
+    <bean id="dtv.pos.register.tax.CalculateSaleItemTaxOp" parent="opClassReplacement">
+      <constructor-arg value="oracle.retail.xstore.countrypack.br.pos.register.tax.BrCalculateSaleItemTaxOp" />
+    </bean>
+    <!-- base overrides end -->
+
+  </beans> <!-- end retail -->
+  <!--     Brazil specific beans end -->
+
+</beans>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- CHECKED: CONFIRMS WITH BASE 7.0.0 -->
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+
+  <FormatterMap>
+    <Formatter name="UnitOfMeasureSymbol" class="com.micros_retail.xfgclient.docbuilding.i18n.UnitOfMeasureFormatter" ctx="RECEIPT" formatterType="UnitOfMeasureSymbol" />
+    <Formatter name="UnitOfMeasureSymbolPerUnit" class="com.micros_retail.xfgclient.docbuilding.i18n.UnitOfMeasureFormatter" ctx="RECEIPT" formatterType="UnitOfMeasureSymbolPerUnit" />
+    <Formatter name="UnitOfMeasureName" class="com.micros_retail.xfgclient.docbuilding.i18n.UnitOfMeasureFormatter" ctx="RECEIPT" formatterType="UnitOfMeasureName" />
+    <Formatter name="Quantity" class="dtv.pos.i18n.format.DecimalFormatter" format="0.###" />
+    <Formatter name="XfgQuantity" class="com.micros_retail.xfgclient.docbuilding.i18n.XfgQuantityFormatter" ctx="RECEIPT" formatterType="XfgQuantity" />
+  </FormatterMap>
+
+  <sections>
+
+    <section name="item_header">
+      <!-- item header -->
+      <sectionref>item_details</sectionref>
+    </section>
+
+    <section name="item_details">
+      <!-- item iterator -->
+      <iterator method="getLineItemsByTypeCodeFiltered">
+        <method_param dtype="String">ITEM</method_param>
+        <method_param dtype="String">dtv.pos.hardware.rcptbuilding.DefaultRcptLineItemFilter</method_param>
+        <!-- The following line is an example of a summary filter, for base we are not going to use a summary filter-->
+        <!-- <method_param dtype="String">dtv.pos.hardware.rcptbuilding.SummaryRcptLineItemFilter</method_param> -->
+        <condition class="dtv.pos.docbuilding.conditions.VoidedLineCondition" />
+        <condition class="dtv.pos.docbuilding.conditions.VoidedCustomerAccountDetailLineCondition" />
+        <sectionref>nonvoided_item</sectionref>
+        <sectionref>nonvoided_scale_weighed_item</sectionref>
+      </iterator>
+    </section>
+
+    <section name="nonvoided_item">
+      <condition class="dtv.pos.docbuilding.conditions.AllowDonationLineItemOnReceipts" />
+      <condition class="com.micros_retail.xfgclient.docbuilding.conditions.XfgRcptScaleWeighedItemCondition" inverted="true" />
+      <row>
+        <condition method="getWeightEntryMethodCode.toString" comparison="EQUAL" value="KEYBOARD" />
+        <field text="_xfgclient.scale.manualWeightEntry" />
+      </row>
+      <row>
+        <condition class="com.micros_retail.xfgclient.docbuilding.conditions.XfgRcptQuantityCondition" />
+        <field formatter="XfgQuantity" align="R" loc="8" >
+          <aggregate class="com.micros_retail.xfgclient.rcpt.XfgQuantityDocBuilderField" />
+        </field>
+        <sp />
+        <field method="getItem.getOptions.getUnitOfMeasureCode" formatter="UnitOfMeasureSymbol" />
+        <field align="R" loc="15"><text dtype="String"><![CDATA[ x]]></text></field>
+        <field method="getBaseUnitPrice" formatter="Money" align="R" loc="25" />
+        <sp />
+        <field text="_xfgclient.receipt.retailtransactioncurrency" />
+        <field method="getItem.getOptions.getUnitOfMeasureCode" formatter="UnitOfMeasureSymbolPerUnit" />
+      </row>
+      <row>
+        <condition class="dtv.pos.docbuilding.conditions.PriceTaxInclusiveCondition" inverted="false" />
+        <field method="getItemDescription" />
+        <field align="R" loc="-15">
+          <aggregate class="dtv.pos.docbuilding.TaxGroupNameField" />
+        </field>
+        <field method="getExtendedAmount" formatter="Money" align="R" loc="-3" />
+        <field loc="-1">
+          <aggregate class="dtv.pos.register.tax.TaxFlagDocBuilderField" />
+        </field>
+      </row>
+      <row>
+        <condition class="dtv.pos.docbuilding.conditions.PriceTaxInclusiveCondition" inverted="true" />
+        <field method="getItemDescription" />
+        <field method="getExtendedAmount" formatter="Money" align="R" loc="-3" />
+        <field loc="-1">
+          <aggregate class="dtv.pos.register.tax.TaxFlagDocBuilderField" />
+        </field>
+      </row>
+      <row>
+        <condition method="getItem.getItemDimensions.getDimension1" comparison="NOT_NULL" />
+        <field>
+          <aggregate class="dtv.pos.register.sale.ItemDimensionDocBuilderField" />
+          <Parameter name="DimensionIndex" value="1" />
+        </field>
+      </row>
+      <row>
+        <condition method="getItem.getItemDimensions.getDimension2" comparison="NOT_NULL" />
+        <field>
+          <aggregate class="dtv.pos.register.sale.ItemDimensionDocBuilderField" />
+          <Parameter name="DimensionIndex" value="2" />
+        </field>
+      </row>
+      <row>
+        <condition method="getItem.getItemDimensions.getDimension3" comparison="NOT_NULL" />
+        <field>
+          <aggregate class="dtv.pos.register.sale.ItemDimensionDocBuilderField" />
+          <Parameter name="DimensionIndex" value="3" />
+        </field>
+      </row>
+      <sectionref>kit_components</sectionref>
+      <sectionref>item_serial_number</sectionref>
+      <sectionref>item_inventory_locations</sectionref>
+      <sectionref>return_proration</sectionref>
+      <sectionref>return_reason_code</sectionref>
+      <sectionref>item_discounts</sectionref>
+      <sectionref>return_verification</sectionref>
+      <sectionref>layaway_info</sectionref>
+      <sectionref>SP_ORDER_INFO</sectionref>
+      <sectionref>WARRANTY_COVERAGE</sectionref>
+      <sectionref>WARRANTY_LINE</sectionref>
+      <sectionref>registry_info</sectionref>
+      <sectionref>item_comments</sectionref>
+    </section>
+
+  </sections>
+</ReceiptDefinitions>

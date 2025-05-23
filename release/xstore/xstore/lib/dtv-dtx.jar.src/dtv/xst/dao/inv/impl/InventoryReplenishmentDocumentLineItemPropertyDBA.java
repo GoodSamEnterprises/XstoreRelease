@@ -1,0 +1,273 @@
+/*     */ package dtv.xst.dao.inv.impl;
+/*     */ 
+/*     */ import dtv.data2.access.IDataAccessObject;
+/*     */ import dtv.data2.access.IObjectId;
+/*     */ import dtv.data2.access.impl.jdbc.IFiller;
+/*     */ import dtv.data2.access.impl.jdbc.IJDBCTableAdapter;
+/*     */ import dtv.util.DtvDate;
+/*     */ import dtv.xst.dao.inv.InventoryReplenishmentDocumentLineItemPropertyId;
+/*     */ import java.math.BigDecimal;
+/*     */ import java.sql.PreparedStatement;
+/*     */ import java.sql.ResultSet;
+/*     */ import java.sql.SQLException;
+/*     */ import java.sql.Timestamp;
+/*     */ import java.util.Date;
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ public class InventoryReplenishmentDocumentLineItemPropertyDBA
+/*     */   implements IJDBCTableAdapter
+/*     */ {
+/*     */   private static final long serialVersionUID = 61675295L;
+/*     */   private String _documentId;
+/*     */   private String _documentTypeCode;
+/*     */   private Integer _inventoryDocumentLineNumber;
+/*     */   private Long _organizationId;
+/*     */   private Long _retailLocationId;
+/*     */   private String _propertyCode;
+/*     */   private String _type;
+/*     */   private String _stringValue;
+/*     */   private Date _dateValue;
+/*     */   private BigDecimal _decimalValue;
+/*     */   private Date _createDate;
+/*     */   private String _createUserId;
+/*     */   private Date _updateDate;
+/*     */   private String _updateUserId;
+/*     */   private static final String SELECT_OBJECT = "SELECT t.invctl_document_id, t.document_typcode, t.invctl_document_line_nbr, t.organization_id, t.rtl_loc_id, t.property_code, t.type, t.string_value, t.date_value, t.decimal_value, t.create_date, t.create_user_id, t.update_date, t.update_user_id FROM inv_rep_document_lineitm_p t";
+/*     */   private static final String SELECT_WHERE_OBJECT = " WHERE invctl_document_id = ?  AND document_typcode = ?  AND invctl_document_line_nbr = ?  AND organization_id = ?  AND rtl_loc_id = ?  AND property_code = ?  ";
+/*     */   
+/*     */   public String getSelect() {
+/*  43 */     return getSelectImpl();
+/*     */   }
+/*     */   
+/*     */   private String getSelectImpl() {
+/*  47 */     return "SELECT t.invctl_document_id, t.document_typcode, t.invctl_document_line_nbr, t.organization_id, t.rtl_loc_id, t.property_code, t.type, t.string_value, t.date_value, t.decimal_value, t.create_date, t.create_user_id, t.update_date, t.update_user_id FROM inv_rep_document_lineitm_p t";
+/*     */   }
+/*     */ 
+/*     */ 
+/*     */   
+/*     */   public String getSelectWhere() {
+/*  53 */     return " WHERE invctl_document_id = ?  AND document_typcode = ?  AND invctl_document_line_nbr = ?  AND organization_id = ?  AND rtl_loc_id = ?  AND property_code = ?  ";
+/*     */   }
+/*     */   
+/*  56 */   private static final String[] INSERT_OBJECT = new String[] { "INSERT INTO inv_rep_document_lineitm_p(invctl_document_id, document_typcode, invctl_document_line_nbr, organization_id, rtl_loc_id, property_code, type, string_value, date_value, decimal_value, create_date, create_user_id, update_date, update_user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" };
+/*     */   
+/*     */   public String[] getInsert() {
+/*  59 */     return INSERT_OBJECT;
+/*     */   }
+/*     */   
+/*     */   public Object[][] getInsertParameters() {
+/*  63 */     Object[][] insertParameterObject = { { this._documentId, this._documentTypeCode, this._inventoryDocumentLineNumber, this._organizationId, this._retailLocationId, this._propertyCode, this._type, this._stringValue, this._dateValue, this._decimalValue, this._createDate, this._createUserId, this._updateDate, this._updateUserId } };
+/*  64 */     return insertParameterObject;
+/*     */   }
+/*     */   
+/*  67 */   private static final int[][] INSERT_PARAMETER_TYPES_OBJECT = new int[][] { { 12, 12, 4, -5, -5, 12, 12, 12, 91, 3, 91, 12, 91, 12 } };
+/*     */   
+/*     */   public int[][] getInsertParameterTypes() {
+/*  70 */     return INSERT_PARAMETER_TYPES_OBJECT;
+/*     */   }
+/*     */   
+/*  73 */   private static final String[] UPDATE_OBJECT = new String[] { "UPDATE inv_rep_document_lineitm_p SET type = ?, string_value = ?, date_value = ?, decimal_value = ?, update_date = ?, update_user_id = ?" };
+/*     */   
+/*     */   public String[] getUpdate() {
+/*  76 */     return UPDATE_OBJECT;
+/*     */   }
+/*     */   
+/*     */   public Object[][] getUpdateParameters() {
+/*  80 */     Object[][] updateParameterObject = { { this._type, this._stringValue, this._dateValue, this._decimalValue, this._updateDate, this._updateUserId } };
+/*  81 */     return updateParameterObject;
+/*     */   }
+/*     */   
+/*  84 */   private static final int[][] UPDATE_PARAMETER_TYPE_OBJECT = new int[][] { { 12, 12, 91, 3, 91, 12 } };
+/*     */   public int[][] getUpdateParameterTypes() {
+/*  86 */     return UPDATE_PARAMETER_TYPE_OBJECT;
+/*     */   }
+/*     */   
+/*  89 */   private static final String[] DELETE_OBJECT = new String[] { "DELETE FROM inv_rep_document_lineitm_p" }; private static final String WHERE_OBJECT = " WHERE invctl_document_id = ?  AND document_typcode = ?  AND invctl_document_line_nbr = ?  AND organization_id = ?  AND rtl_loc_id = ?  AND property_code = ?  ";
+/*     */   
+/*     */   public String[] getDelete() {
+/*  92 */     return DELETE_OBJECT;
+/*     */   }
+/*     */ 
+/*     */ 
+/*     */   
+/*     */   public String getWhere() {
+/*  98 */     return " WHERE invctl_document_id = ?  AND document_typcode = ?  AND invctl_document_line_nbr = ?  AND organization_id = ?  AND rtl_loc_id = ?  AND property_code = ?  ";
+/*     */   }
+/*     */   public Object[] getWhereParameters() {
+/* 101 */     return new Object[] { this._documentId, this._documentTypeCode, this._inventoryDocumentLineNumber, this._organizationId, this._retailLocationId, this._propertyCode };
+/*     */   }
+/*     */   
+/* 104 */   private static final int[] WHERE_PARAMETER_OBJECT = new int[] { 12, 12, 4, -5, -5, 12 };
+/*     */   
+/*     */   public int[] getWhereParameterTypes() {
+/* 107 */     return WHERE_PARAMETER_OBJECT;
+/*     */   }
+/*     */   public String getTableName() {
+/* 110 */     return "inv_rep_document_lineitm_p";
+/*     */   }
+/*     */   
+/*     */   public IFiller getFiller() {
+/* 114 */     return getFillerImpl();
+/*     */   }
+/*     */   
+/*     */   private IFiller getFillerImpl() {
+/* 118 */     return new InventoryReplenishmentDocumentLineItemPropertyFiller(this);
+/*     */   }
+/*     */   
+/*     */   private static class InventoryReplenishmentDocumentLineItemPropertyFiller
+/*     */     implements IFiller {
+/*     */     private InventoryReplenishmentDocumentLineItemPropertyDBA _parent;
+/*     */     
+/*     */     public InventoryReplenishmentDocumentLineItemPropertyFiller(InventoryReplenishmentDocumentLineItemPropertyDBA argParent) {
+/* 126 */       this._parent = argParent;
+/*     */     }
+/*     */     public void fill(ResultSet argResultSet) throws SQLException {
+/* 129 */       this._parent._documentId = argResultSet.getString(1);
+/* 130 */       this._parent._documentTypeCode = argResultSet.getString(2);
+/*     */ 
+/*     */       
+/* 133 */       int i = argResultSet.getInt(3);
+/* 134 */       if (i != 0 || argResultSet.getObject(3) != null) {
+/* 135 */         this._parent._inventoryDocumentLineNumber = Integer.valueOf(i);
+/*     */       }
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */       
+/* 141 */       long primitiveResult = argResultSet.getLong(4);
+/* 142 */       if (primitiveResult != 0L || argResultSet.getObject(4) != null) {
+/* 143 */         this._parent._organizationId = Long.valueOf(primitiveResult);
+/*     */       }
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */       
+/* 149 */       primitiveResult = argResultSet.getLong(5);
+/* 150 */       if (primitiveResult != 0L || argResultSet.getObject(5) != null) {
+/* 151 */         this._parent._retailLocationId = Long.valueOf(primitiveResult);
+/*     */       }
+/*     */ 
+/*     */       
+/* 155 */       this._parent._propertyCode = argResultSet.getString(6);
+/* 156 */       this._parent._type = argResultSet.getString(7);
+/* 157 */       this._parent._stringValue = argResultSet.getString(8);
+/*     */       
+/* 159 */       Timestamp t9 = argResultSet.getTimestamp(9);
+/* 160 */       if (t9 != null) {
+/* 161 */         this._parent._dateValue = (Date)new DtvDate(t9.getTime());
+/*     */       } else {
+/*     */         
+/* 164 */         this._parent._dateValue = null;
+/*     */       } 
+/*     */       
+/* 167 */       this._parent._decimalValue = argResultSet.getBigDecimal(10);
+/*     */       
+/* 169 */       Timestamp t11 = argResultSet.getTimestamp(11);
+/* 170 */       if (t11 != null) {
+/* 171 */         this._parent._createDate = (Date)new DtvDate(t11.getTime());
+/*     */       } else {
+/*     */         
+/* 174 */         this._parent._createDate = null;
+/*     */       } 
+/*     */       
+/* 177 */       this._parent._createUserId = argResultSet.getString(12);
+/*     */       
+/* 179 */       Timestamp t13 = argResultSet.getTimestamp(13);
+/* 180 */       if (t13 != null) {
+/* 181 */         this._parent._updateDate = (Date)new DtvDate(t13.getTime());
+/*     */       } else {
+/*     */         
+/* 184 */         this._parent._updateDate = null;
+/*     */       } 
+/*     */       
+/* 187 */       this._parent._updateUserId = argResultSet.getString(14);
+/*     */     }
+/*     */   }
+/*     */   
+/*     */   public IDataAccessObject loadDAO(IDataAccessObject argDAO) {
+/* 192 */     argDAO.suppressStateChanges(true);
+/* 193 */     InventoryReplenishmentDocumentLineItemPropertyDAO dao = (InventoryReplenishmentDocumentLineItemPropertyDAO)argDAO;
+/* 194 */     dao.setDocumentId(this._documentId);
+/* 195 */     dao.setDocumentTypeCode(this._documentTypeCode);
+/* 196 */     dao.setInventoryDocumentLineNumber(this._inventoryDocumentLineNumber);
+/* 197 */     dao.setOrganizationId(this._organizationId);
+/* 198 */     dao.setRetailLocationId(this._retailLocationId);
+/* 199 */     dao.setPropertyCode(this._propertyCode);
+/* 200 */     dao.setType(this._type);
+/* 201 */     dao.setStringValue(this._stringValue);
+/* 202 */     dao.setDateValue(this._dateValue);
+/* 203 */     dao.setDecimalValue(this._decimalValue);
+/* 204 */     dao.setCreateDate(this._createDate);
+/* 205 */     dao.setCreateUserId(this._createUserId);
+/* 206 */     dao.setUpdateDate(this._updateDate);
+/* 207 */     dao.setUpdateUserId(this._updateUserId);
+/* 208 */     argDAO.suppressStateChanges(false);
+/* 209 */     return (IDataAccessObject)dao;
+/*     */   }
+/*     */   
+/*     */   public IDataAccessObject loadDefaultDAO() {
+/* 213 */     return loadDAO((IDataAccessObject)new InventoryReplenishmentDocumentLineItemPropertyDAO());
+/*     */   }
+/*     */   
+/*     */   public void fill(IDataAccessObject argDAO) {
+/* 217 */     InventoryReplenishmentDocumentLineItemPropertyDAO dao = (InventoryReplenishmentDocumentLineItemPropertyDAO)argDAO;
+/* 218 */     this._documentId = dao.getDocumentId();
+/* 219 */     this._documentTypeCode = dao.getDocumentTypeCode();
+/* 220 */     this._inventoryDocumentLineNumber = dao.getInventoryDocumentLineNumber();
+/* 221 */     this._organizationId = dao.getOrganizationId();
+/* 222 */     this._retailLocationId = dao.getRetailLocationId();
+/* 223 */     this._propertyCode = dao.getPropertyCode();
+/* 224 */     this._type = dao.getType();
+/* 225 */     this._stringValue = dao.getStringValue();
+/* 226 */     this._dateValue = dao.getDateValue();
+/* 227 */     this._decimalValue = dao.getDecimalValue();
+/* 228 */     this._createDate = dao.getCreateDate();
+/* 229 */     this._createUserId = dao.getCreateUserId();
+/* 230 */     this._updateDate = dao.getUpdateDate();
+/* 231 */     this._updateUserId = dao.getUpdateUserId();
+/*     */   }
+/*     */   
+/*     */   public PreparedStatement writeObjectId(IObjectId argId, PreparedStatement argStatement) throws SQLException {
+/* 235 */     InventoryReplenishmentDocumentLineItemPropertyId id = (InventoryReplenishmentDocumentLineItemPropertyId)argId;
+/* 236 */     argStatement.setString(1, id.getDocumentId());
+/* 237 */     argStatement.setString(2, id.getDocumentTypeCode());
+/* 238 */     argStatement.setInt(3, id.getInventoryDocumentLineNumber().intValue());
+/* 239 */     argStatement.setLong(4, id.getOrganizationId().longValue());
+/* 240 */     argStatement.setLong(5, id.getRetailLocationId().longValue());
+/* 241 */     argStatement.setString(6, id.getPropertyCode());
+/* 242 */     return argStatement;
+/*     */   }
+/*     */   
+/*     */   public IObjectId getObjectId() {
+/* 246 */     InventoryReplenishmentDocumentLineItemPropertyId id = new InventoryReplenishmentDocumentLineItemPropertyId();
+/* 247 */     id.setDocumentId(this._documentId);
+/* 248 */     id.setDocumentTypeCode(this._documentTypeCode);
+/* 249 */     id.setInventoryDocumentLineNumber(this._inventoryDocumentLineNumber);
+/* 250 */     id.setOrganizationId(this._organizationId);
+/* 251 */     id.setRetailLocationId(this._retailLocationId);
+/* 252 */     id.setPropertyCode(this._propertyCode);
+/* 253 */     return (IObjectId)id;
+/*     */   }
+/*     */ 
+/*     */   
+/*     */   public void fill(IJDBCTableAdapter argAdapter) {}
+/*     */ 
+/*     */   
+/*     */   public boolean isExtensible() {
+/* 261 */     return false;
+/*     */   }
+/*     */   
+/*     */   public String getImplementingClass() {
+/* 265 */     return null;
+/*     */   }
+/*     */ }
+
+
+/* Location:              C:\WIP-Xstore_Delta-main\release\xstore\xstore\lib\dtv-dtx.jar!\dtv\xst\dao\inv\impl\InventoryReplenishmentDocumentLineItemPropertyDBA.class
+ * Java compiler version: 8 (52.0)
+ * JD-Core Version:       1.1.3
+ */

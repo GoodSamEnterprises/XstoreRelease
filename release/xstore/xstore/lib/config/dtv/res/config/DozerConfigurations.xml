@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: this file must be named dozerBeanMapping.xml, and it must be somewhere
+     on the classpath accessible to Dozer; given this, then Dozer's DozerBeanMapperSingletonWrapper
+     class should pick up these configs w/o trouble. -->
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+  <mapping>
+    <class-a>dtv.pos.ejournal.EjournalEditModel</class-a>
+    <class-b>dtv.pos.ejournal.TransactionSearchCriteria</class-b>
+    <field copy-by-reference = "true">
+      <a>tender</a>
+      <b>tender</b>
+    </field>
+    <field copy-by-reference = "true">
+      <a>tranType</a>
+      <b>tranType</b>
+    </field>
+  </mapping>
+  <mapping>
+    <class-a>com.micros.xstore.config.opchain.OperationType</class-a>
+    <class-b>com.micros.xstore.config.opchain.OperationType</class-b>
+    <field copy-by-reference="true">
+      <a>clazz</a>
+      <b>clazz</b>
+    </field>
+  </mapping>
+</mappings>

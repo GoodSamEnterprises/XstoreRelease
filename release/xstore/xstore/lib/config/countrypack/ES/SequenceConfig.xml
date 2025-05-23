@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SequenceSet xmlns:dtv="http://www.datavantagecorp.com/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="SequenceConfig.xsd">
+
+  <Sequence name="COUNTRYPACK.ES.SIMPLE_INVOICE_SEQUENCE">
+    <FileName dtype="String">esInvoiceSimple.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="FS" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.ES.INVOICE_SEQUENCE">
+    <FileName dtype="String">esInvoice.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="FT" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.ES.CREDIT_NOTE_SEQUENCE">
+    <FileName dtype="String">esCreditNote.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="FR" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.ES.MANUAL_SIMPLE_INVOICE_SEQUENCE">
+    <FileName dtype="String">esManualInvoiceSimple.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="MFS" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.ES.MANUAL_INVOICE_SEQUENCE">
+    <FileName dtype="String">esManualInvoice.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="MFT" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.ES.MANUAL_CREDIT_NOTE_SEQUENCE">
+    <FileName dtype="String">esManualCreditNote.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="MFR" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+</SequenceSet>

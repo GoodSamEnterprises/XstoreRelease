@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MBeanInfoSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MBeanInfoConfig.xsd">
+  <MBean name="dtv.jmx.DtvHttpFilter" 
+    description="manages the custom http interface">
+    <Constructor name="DtvHttpFilter" 
+      description="Default Constructor"/>
+    <Attribute name="Started" type="boolean" 
+      description="is the server active" 
+      readable="true" writable="false" is="true"/>
+    <Attribute name="Port" type="int" 
+      description="Port HTTP server is listening to" 
+      readable="true" writable="true" is="false"/>
+    <Attribute name="Delegate" type="java.lang.String" 
+      description="Class handling filtering" 
+      readable="true" writable="true" is="false"/>
+    <Attribute name="Style" type="java.lang.String" 
+      description="Sets the CSS style to insert in the html." 
+      readable="false" writable="true" is="false"/>
+    <Method name="addUserAuthentication" type="void" impact="ACTION"
+      description="Adds a user authentication. (Only available when not started.)">
+      <Parameter name="userName" type="java.lang.String" description="The user for the new authorization."/>
+      <Parameter name="password" type="java.lang.String" description="The password for the new authorization."/>
+    </Method>
+    <Method name="start" type="void" impact="ACTION"
+      description="Starts the server." />
+    <Method name="addHiddenDomain" type="void" impact="ACTION"
+      description="Adds a user authentication. (Only available when started.)">
+      <Parameter name="domain" type="java.lang.String" 
+        description="A domain to hide in the console." />
+    </Method>
+  </MBean>
+  
+  <MBean name="dtv.hardware.posprinting.PrintQueueMgr" description="Use this MBean to manage the receipt print queue.">
+    <Attribute name="Status" type="java.lang.String" description="Status of the print queue" readable="true" writable="false" is="false"/>
+    <Attribute name="PendingCount" type="int" description="Number of pending jobs" readable="true" writable="false" is="false"/>
+    <Attribute name="RemoteQueueingEnabled" type="boolean" description="Is remote queueing enabled?" readable="true" writable="true" is="false"/>
+    <Method name="listJobs" type="java.lang.String" description="View print jobs that are in the queue." impact="INFO"/>
+    <Method name="print" type="java.lang.String" description="Create a print job." impact="ACTION_INFO">
+      <Parameter name="source" type="java.lang.String" description="The source of the print job"/>
+      <Parameter name="data" type="java.lang.String" description="The data to print"/>
+    </Method>
+    <Method name="printBarcode" type="java.lang.String" description="Create a print job to create a barcode." impact="ACTION_INFO">
+      <Parameter name="source" type="java.lang.String" description="The source of the print job."/>
+      <Parameter name="encoding" type="java.lang.String" description="The encoding to use."/>
+      <Parameter name="data" type="java.lang.String" description="The data to encode as a barcode and print."/>
+    </Method>
+    <Method name="cancelPrintJob" type="java.lang.String" description="Cancel a print job." impact="ACTION_INFO">
+      <Parameter name="jobId" type="int" description="The ID of the job to cancel"/>
+    </Method>
+    <Method name="start" type="void" impact="ACTION" description="Start the queue" />
+    <Method name="stop" type="void" impact="ACTION" description="Stop the queue" />
+    <Method name="pause" type="java.lang.String" impact="ACTION" description="Pause the queue" />
+    <Method name="resume" type="java.lang.String" impact="ACTION" description="Resume the queue" />
+    <Method name="flush" type="java.lang.String" impact="ACTION" description="Flush the queue" />
+  </MBean>
+  
+  <MBean name="dtv.pos.appmanagement.jmx.PosDebug" description="This MBean can be used to view information about the current system state.">
+    <Method name="debugMenu" type="java.lang.String" description="View information about the currently loaded menu." impact="INFO"/>
+    <Method name="debugTransaction" type="java.lang.String" description="View information about the current transaction." impact="INFO"/>
+    <Method name="debugCurrentMemory" type="java.lang.String" description="View information about the current memory usage." impact="INFO"/>
+    <Method name="debugFocus" type="java.lang.String" description="View information about the current focus." impact="INFO"/>
+    <Method name="forceGarbageCollection" type="java.lang.String" description="Force garbage collection" impact="INFO"/>
+    <Method name="debugOpChainProcessor" type="java.lang.String" description="View current state of op chain processors." impact="INFO"/>
+  </MBean>
+  
+  <MBean name="dtv.data2.cache.jmx.CacheStatusMBean" description="This MBean can be used to view information about caches.">
+    <Method name="getCacheStatus" type="java.lang.String" description="View information about all caches." impact="INFO"/>
+    <Method name="clearCaches" type="java.lang.String" description="Clear all caches." impact="INFO"/>
+  </MBean>
+  
+  <MBean name="dtv.pos.appmanagement.jmx.LogLevelConfig" description="This MBean can be used to configure runtime log levels.">
+    <Method name="changelogLevel" type="void" description="Change log level for Log4j category" impact="ACTION">
+      <Parameter name="argTargetCategory" type="java.lang.String" description="Target log category"/>
+      <Parameter name="argLogLevel" type="java.lang.String" description="Log level to set on the category.  Debug is default."/>
+    </Method>
+  </MBean>
+  <MBean name="dtv.pos.appmanagement.jmx.StoreCalendarInformation" description="Information on the current date and business date.">
+    <Attribute name="LastDayOfWeek" type="int" description="The last day of the week" readable="true" writable="false" is="false"/>
+    <Attribute name="FirstDayOfWeek" type="int" description="The first day of the week" readable="true" writable="false" is="false"/>
+
+    <Attribute name="Implementation" type="java.lang.String" description="The class implementing store calendar" readable="true" writable="false" is="false"/>
+
+    <Attribute name="CurrentDateTime" type="java.lang.String" description="The current date and time" readable="true" writable="false" is="false"/>
+    <Attribute name="NextOpenDate" type="java.lang.String" description="The next open date" readable="true" writable="false" is="false"/>
+    <Attribute name="CurrentBusinessDate" type="java.lang.String" description="The current business date" readable="true" writable="false" is="false"/>
+  </MBean>
+  
+  <MBean name="dtv.pos.appmanagement.jmx.ConfigurationInformation" 
+    description="Information about how the POS is configured.">
+    <Method name="Version" type="java.lang.String" impact="INFO"
+      description="View version information." />
+    <Method name="SystemConfig" type="java.lang.String" impact="INFO"
+      description="View configuration settings from SystemConfig.xml." />
+    <Method name="OpChainConfig" type="java.lang.String" impact="INFO"
+      description="View configuration settings from OpChainConfig.xml." />
+    <Method name="HardwareConfig" type="java.lang.String" impact="INFO"
+      description="View configuration settings from HardwareConfig.xml." />
+    <Method name="AuthConfig" type="java.lang.String" impact="INFO"
+      description="View configuration settings from AuthConfig.xml." />
+    <Method name="PreFlightChecks" type="java.lang.String" impact="INFO" 
+      description="Runs the pre-flight checks and shows each result." />
+    <Method name="SystemProperties" type="java.lang.String" impact="INFO"
+      description="View system properties that are currently." />
+  </MBean>
+  
+  <MBean name="dtv.hardware.rcptbuilding.config.RcptTrace" description="Useful for tracing receipt configuration.">
+    <Method name="viewReceipt" type="java.lang.String" impact="INFO" description="Generates the receipts for the current transaction.">
+      <Parameter name="original" type="boolean" description="Includes REPRINT text if false." />
+      <Parameter name="suppressTracing" type="boolean" description="Includes tracing information if false." />
+      <Parameter name="lineCharacters" type="java.lang.String" description="The line width in characters for the generated receipts. (optional; 44 if omitted)" />
+    </Method>
+    <Method name="traceRcpt" type="java.lang.String" impact="INFO" description="Generates files that graphviz can turn into SVG files.">
+      <Parameter name="saveToDir" type="java.lang.String" description="directory in which to save generated files. (optional)" />
+      <Parameter name="rcptType" type="java.lang.String" description="RcptType to generate. (optional; all if omitted)" />
+    </Method>
+  </MBean>
+  
+  <MBean name="dtv.jmx.ClassPathMBean" description="Useful for exploring the classpath">
+    <Method name="listPackageLocations" type="java.lang.String" impact="INFO" description="Lists all locations of a given package.">
+      <Parameter name="package" type="java.lang.String" description="the package to find" />
+    </Method>
+    <Method name="listPackageContents" type="java.lang.String" impact="INFO" description="Lists all the contents of given package." >
+      <Parameter name="package" type="java.lang.String" description="the package to find" />      
+    </Method>
+    <Method name="listConfigLocations" type="java.lang.String" impact="INFO" description="Lists locations of the given configuration file taking dtv.config.path into account." >
+      <Parameter name="filename" type="java.lang.String" description="the configuration file to find" />      
+    </Method>
+  </MBean>
+  
+  <MBean name="dtv.pos.tools.TlogGeneratorMBean" description="Use this bean to generate Tlogs.">
+    <Attribute name="ServerReference" type="java.lang.String"
+         description="String containing reference to the server." 
+      readable="false" writable="true" is="false"/>
+    <Method name="generateTlog" type="java.lang.String" impact="INFO" description="To search for a specific value, enter either a start or end value and leave the other one blank. To use the default log file, leave the log filename blank.">
+      <Parameter name="argStartDate" type="java.lang.String" description="start date YYYY-MM-DD"/>
+      <Parameter name="argEndDate" type="java.lang.String" description="end date YYYY-MM-DD"/>
+    <Parameter name="argRetailLocIdStart" type="java.lang.String" description="start retail location ID"/>
+      <Parameter name="argRetailLocIdEnd" type="java.lang.String" description="end retail location ID"/>
+    <Parameter name="argRegisterIdStart" type="java.lang.String" description="start register ID"/>
+    <Parameter name="argRegisterIdEnd" type="java.lang.String" description="end register ID"/>
+    <Parameter name="argTranIdStart" type="java.lang.String" description="start transaction ID"/>
+    <Parameter name="argTranIdEnd" type="java.lang.String" description="end transaction ID"/>
+    <Parameter name="filename" type="java.lang.String" description="custom log filename"/>
+    </Method>
+  </MBean>
+  
+  <MBean name="dtv.jmx.html.HttpsServer" 
+    description="manages the custom https interface">
+    <Constructor name="HttpsServer" 
+      description="Default Constructor"/>
+    <!-- attributes -->
+    <Attribute name="Active" type="boolean" 
+      description="Active: true if the HttpsServer is in the ONLINE state." 
+      readable="true" writable="false" is="true"/>
+    <Attribute name="ActiveClientCount" type="int" 
+      description="The number of clients being processed currently by the HttpsServer" 
+      readable="true" writable="false" is="false"/>
+    <Attribute name="Host" type="java.lang.String" 
+      description="hostname" 
+      readable="true" writable="false" is="false"/>
+    <Attribute name="LastConnectedClient" type="java.lang.String" 
+      description="The IP address of the last connected client" 
+      readable="true" writable="false" is="false"/>
+    <Attribute name="MaxActiveClientCount" type="int" 
+      description="The maximum number of clients the HttpsServer can process concurrently." 
+      readable="true" writable="false" is="false"/>
+    <Attribute name="Port" type="int" 
+      description="Port HTTP server is listening to" 
+      readable="true" writable="true" is="false"/>
+    <Attribute name="KeyStore" type="java.lang.String" 
+      description="Name of the keystore file" 
+      readable="true" writable="true" is="false"/>
+    <Attribute name="KeyStorePassword" type="java.lang.String" 
+      description="Password for the keystore file" 
+      readable="false" writable="true" is="false"/>
+    <Attribute name="KeyAlias" type="java.lang.String" 
+      description="Name of the key alias" 
+      readable="true" writable="true" is="false"/>
+    <Attribute name="ServedClientCount" type="int" 
+      description="The number of clients that have been processed by the HttpsServer since its creation." 
+      readable="true" writable="false" is="false"/>
+    <Attribute name="Privileges" type="int" 
+      description="The privileges that must be authorized to allow login." 
+      readable="true" writable="true" is="false"/>
+    <Attribute name="State" type="int" 
+      description="State of the HttpsServer." 
+      readable="true" writable="false" is="false"/>
+    <Attribute name="StateString" type="java.lang.String" 
+      description="State of the HttpsServer." 
+      readable="true" writable="false" is="false"/>
+    <Attribute name="Style" type="java.lang.String" 
+      description="The CSS style to insert in the html." 
+      readable="false" writable="true" is="false"/>
+    <Attribute name="ImageDirectory" type="java.lang.String" 
+      description="The directory that should be used for /img/ requests."
+      readable="true" writable="true" is="false"/>
+    <Attribute name="HeadingMessageFormat" type="java.lang.String" 
+      description="Sets the HTML used for the head of each page."
+      readable="true" writable="true" is="false"/>
+    <Attribute name="LogDirectory" type="java.lang.String" 
+      description="The directory containing XStore Log Documents" 
+      readable="true" writable="false" is="false"/>
+    <!-- methods -->
+    <Method name="addBasicAuthentication" type="void" impact="ACTION"
+      description="Adds a user authentication. (Only available when not started.)">
+      <Parameter name="userName" type="java.lang.String" 
+        description="The user for the new authorization."/>
+      <Parameter name="password" type="java.lang.String" 
+        description="The password for the new authorization."/>
+    </Method>
+    <Method name="addAuthenticationMethod" type="void" impact="ACTION"
+      description="Adds an authentication method. (Only available when not started.)">
+      <Parameter name="methodClass" type="java.lang.String" 
+        description="The class for the new authentication method."/>
+    </Method>
+    <Method name="start" type="void" impact="ACTION"
+      description="Starts the server." />
+    <Method name="stop" type="void" impact="ACTION"
+      description="Starts the server." />
+    <Method name="addHiddenDomain" type="void" impact="ACTION"
+      description="Adds a user authentication. (Only available when started.)">
+      <Parameter name="domain" type="java.lang.String" 
+        description="A domain to hide in the console." />
+    </Method>
+  </MBean>
+  
+  <MBean name="dtv.ipc.server.ServerMBean" description="Receives messages from the Xstore environment.">
+    <Constructor name="Server" description="Default Constructor" />
+    <Attribute name="Port" type="int" description="The port on which the server is listening for messages."
+      readable="true" writable="true" is="false" />
+    <Attribute name="KeyAlias" type="java.lang.String" description="Name of the key alias."
+      readable="false" writable="true" is="false" />
+    <Attribute name="KeyStore" type="java.lang.String" description="Name of the keystore file."
+      readable="false" writable="true" is="false" />
+    <Attribute name="KeyStorePassword" type="java.lang.String" description="Password for the keystore." 
+      readable="false" writable="true" is="false" />
+    <Method name="startServer" type="void" impact="ACTION" description="Starts the IPC server." />
+    <Method name="stopServer" type="void" impact="ACTION" description="Stops the IPC server." />
+  </MBean>
+  
+  <MBean name="dtv.data2.access.status.DataSourceStatusMBean" description="A jmx MBean responsible for supplying the current status of the PM Types and Datasources.">
+    <Method name="getDataSourceStatus" type="java.lang.String" description="Get Status" impact="INFO"/>
+  </MBean>
+  
+  <MBean name="dtv.pos.appmanagement.jmx.SendIpcMessageMBean" description="Use this bean to re-poll the environment.">
+    <Method name="repoll" type="java.lang.String" description="Re-poll the environment. Use with care." impact="ACTION"/>
+  </MBean>
+
+</MBeanInfoSet>

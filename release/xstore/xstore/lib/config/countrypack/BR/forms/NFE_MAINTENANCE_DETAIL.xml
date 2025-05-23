@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+  
+  <Form name="NFE_MAINTENANCE_DETAIL" type="MULTI_PURPOSE_VIEW" formLayoutRef="TOP_TO_BOTTOM_TRANSPARENT">
+    <Header viewAction="ABORT_CHANGES_TOUCH">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="nfeMaintenanceDetailHeaderLayout" />
+    </Header>
+    
+    <Page name="ItemsTab" text="_countrypack.br.nfe.maintenance.detail.items.tab" displayOrder="10">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="nfeMaintenanceItemsLayout" />      
+      <ActionGroups view="ITEMS" edit="ITEMS" />
+    </Page>
+    <Page name="TransTab" text="_countrypack.br.nfe.maintenance.detail.trans.tab" displayOrder="20">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="nfeTransactionsLayout" />      
+      <ActionGroups view="TRANS" edit="TRANS" />
+    </Page>
+    <Page name="TotalTab" text="_countrypack.br.nfe.maintenance.detail.total.tab" displayOrder="30">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="nfeTotalLayout" />      
+      <ActionGroups view="TOTAL" edit="TOTAL" />
+    </Page>
+    <Page name="DestinationTab" text="_countrypack.br.nfe.maintenance.detail.dest.tab" displayOrder="40">
+      <Panel startX="10" width="80" startY="0" height="100" fieldLayoutRef="nfeDestinationLayout" />      
+      <ActionGroups view="DESTINATION" edit="DESTINATION" />
+    </Page>
+    <Page name="InfCplTab" text="_countrypack.br.nfe.maintenance.detail.infcpl.tab" displayOrder="50">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="nfeInfCplLayout" />      
+      <ActionGroups view="INF_CPL" edit="INF_CPL" />
+    </Page>    
+    <Page name="TendersTab" text="_countrypack.br.nfe.maintenance.detail.tenders.tab" displayOrder="60">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="nfeTendersLayout" />      
+<!--       <ActionGroups view="TENDERS" edit="TENDERS" /> -->
+    </Page>
+    
+    <Page name="LogsTab" text="_countrypack.br.nfe.maintenance.detail.log.tab" displayOrder="70">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="nfeLogsLayout" />      
+<!--       <ActionGroups view="LOG" edit="LOG" /> -->
+    </Page>
+    
+    
+
+    <!--********************************** -->
+    <!--** DEFAULT action keys ** -->
+    <!--********************************** -->
+    <ActionGroup name="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::ABORT_RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REPRINT_NFE" />
+<!--       not supported for v16 -->
+<!--       <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REVERSE_NFE" /> -->
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!--ITEMS -->
+    <ActionGroup name="ITEMS">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::ABORT_RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::ITEM_EDIT" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::ITEM_EDIT" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REPRINT_NFE" />
+      <!--       not supported for v16 -->
+<!--       <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REVERSE_NFE" /> -->
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!--TRANS -->
+    <ActionGroup name="TRANS">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::ABORT_RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::TRAN_DETAIL" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REPRINT_NFE" />
+      <!--       not supported for v16 -->
+<!--       <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REVERSE_NFE" /> -->
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!--TOTAL -->
+    <ActionGroup name="TOTAL">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::ABORT_RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::TOTAL_EDIT" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::TOTAL_EDIT" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::RESUBMIT_NFE" />      
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REPRINT_NFE" />
+      <!--       not supported for v16 -->
+<!--       <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REVERSE_NFE" /> -->
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!--DESTINATION -->
+    <ActionGroup name="DESTINATION">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::ABORT_RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::DESTINATION_EDIT" />      
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::DESTINATION_EDIT" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REPRINT_NFE" />
+      <!--       not supported for v16 -->
+<!--       <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REVERSE_NFE" /> -->
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>    
+    <!--INF_CPL -->
+    <ActionGroup name="INF_CPL">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::ABORT_RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::INF_CPL_EDIT" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::INF_CPL_EDIT" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::SALE::RESUBMIT_NFE" />
+      <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REPRINT_NFE" />
+      <!--       not supported for v16 -->
+<!--       <Action ref="COUNTRYPACK::BR::NFE::MAINTENANCE::REVERSE_NFE" /> -->
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+  </Form>
+
+</FormSet>

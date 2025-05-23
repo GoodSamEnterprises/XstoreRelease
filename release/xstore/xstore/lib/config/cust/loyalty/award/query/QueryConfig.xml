@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../pos/config/dtv/res/config/query/QueryConfig.xsd">
+  <Query name="REDEEMED_AWARDS_DISCOUNT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.dsc.DiscountId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[        
+          WHERE organization_id = ?
+            AND /*UPPER*/ typcode = ?
+            AND /*UPPER*/ app_mthd_code = 'TRANSACTION'        
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argTypeCode" />
+      <Expression trigger="argEffectiveDate"><![CDATA[(effective_datetime IS NULL OR effective_datetime <= ?)]]></Expression>
+      <Expression trigger="argExpirationDate"><![CDATA[(expr_datetime IS NULL OR expr_datetime >= ?)]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY effective_datetime DESC, expr_datetime DESC]]></Suffix>
+  </Query>
+</QuerySet>

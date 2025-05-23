@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+  default-init-method="init">
+
+  <!-- Only beans that are specific to the dataloader application or that need to override implementations 
+       of more general beans should exist in this file. -->
+
+  <context:annotation-config/>
+
+  <beans profile="dataloader">  
+    <bean id="dataLoaderConfigParameters" class="dtv.data2.dataloader.ConfigParameters">
+      <property name="dataFileLocation" value="./download" />
+      <property name="dataSource" value="Local" />
+      <property name="recordsPerTransaction" value="500" />
+      <property name="archivePath" value="./download/archive" />
+      <property name="archiveDays" value="30" />
+      <property name="processListFiles" value="false" />
+      <property name="organizationId" value="#{systemProperties[T(dtv.util.common.CommonConstants).ORGANIZATION_ID]}" />
+    </bean>
+
+    <bean id="dataLoader" class="dtv.data2.dataloader.DataLoader" scope="prototype">
+      <constructor-arg ref="dataLoaderFileTypeDetectors" />
+    </bean>
+
+    <util:list id="dataLoaderFileTypeDetectors" value-type="dtv.data2.dataloader.pluggable.IDataFileTypeDetector">
+      <ref bean="xstoreFileTypeDetector" />
+      <ref bean="momFileTypeDetectorbyFName" />
+    </util:list>
+
+    <bean id="dataLoaderFileArchiver" class="dtv.data2.dataloader.DefaultFileArchiver" />
+    <bean id="dataLoaderResultsWriter" class="dtv.data2.dataloader.FileResultsWriter" init-method="create" scope="prototype" />
+    
+    <bean id="eventManager" class="dtv.event.EventManager" />
+    <bean id="stationState" class="dtv.pos.iframework.security.StationState" />
+
+    <bean id="dataFileIteratorLocatorFactory" class="dtv.data2.dataloader.pluggable.DataFileIteratorLocatorFactoryBean">
+      <property name="serviceMappings" ref="dataFileIteratorMappings" />
+    </bean>
+
+    <bean id="dataFileIteratorMappings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+      <property name="properties">
+        <props>
+          <prop key="XST_MNT">XSTORE_MNT</prop>
+          <prop key="MOM_REGPC">momSingleLineUnitIterator</prop>
+          <prop key="MOM_CLRPC">momSingleLineUnitIterator</prop>
+          <prop key="MOM_PRMPC">momPromotionFileIterator</prop>
+          <prop key="MOM_ORGHIER">momSingleLineUnitIterator</prop>
+          <prop key="MOM_STORE">momSingleLineUnitIterator</prop>
+          <prop key="MOM_STOREADDR">momSingleLineUnitIterator</prop>
+          <prop key="MOM_DIFFGROUPHEAD">momSingleLineUnitIterator</prop>
+          <prop key="MOM_DIFFGROUPDETAIL">momSingleLineUnitIterator</prop>
+          <prop key="MOM_DIFF">momSingleLineUnitIterator</prop>
+          <prop key="MOM_MERCHHIER">momSingleLineUnitIterator</prop>
+          <prop key="MOM_ITEMHEAD">momSingleLineUnitIterator</prop>
+          <prop key="MOM_ITEMLOC">momSingleLineUnitIterator</prop>
+          <prop key="MOM_RELITEMHEAD">momSingleLineUnitIterator</prop>
+          <prop key="MOM_RELITEMDETAIL">momSingleLineUnitIterator</prop>
+          <prop key="MOM_VAT">momSingleLineUnitIterator</prop>
+          <prop key="MOM_VATITEM">momSingleLineUnitIterator</prop>
+        </props>
+      </property>
+    </bean>
+
+    <!-- Xstore MNT/DTX Detectors -->
+    <bean id="xstoreFileTypeDetector" class="dtv.data2.dataloader.pluggable.xst.XstoreFileTypeDetector" />
+    
+    <!-- MOM Detector by file name. It detects a MOM file type by matching 
+      its file name to the regular expression listed in momFileNameExpr bean. -->
+    <bean id="momFileTypeDetectorbyFName" class="dtv.dataloader.mom.MOMFileTypeDetectorbyFName" scope="prototype" />
+
+    <!-- Xstore MNT/DTX Processors -->
+    <bean id="XSTORE_MNT" class="dtv.data2.dataloader.pluggable.xst.XstoreDataFileIterator" scope="prototype" />
+    <bean id="dataFileProcessor" class="dtv.data2.dataloader.fileprocessing.DataFileProcessor" />
+    
+    <bean id="xstoreFileLineParserFactory" class="dtv.util.spring.DefaultProvidingServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.data2.dataloader.fileprocessing.IFileLineParserFactory" />
+      <property name="defaultBeans">
+        <props>
+          <prop key="getFileLineParser">delimitedFileLineParser</prop>
+        </props>
+      </property>
+      <property name="serviceMappings">
+        <props>
+          <prop key="RUN_SQL">runSqlFileLineParser</prop>
+          <prop key="BEGIN_RUN_SQL">runSqlFileLineParser</prop>
+          <prop key="XML_PERSISTABLES">xmlPersistablesFileLineParser</prop>
+        </props>
+      </property>
+    </bean>
+
+    <bean id="runSqlFileLineParser" class="dtv.data2.dataloader.fileprocessing.RunSqlFileLineParser" />
+    <bean id="xmlPersistablesFileLineParser" class="dtv.data2.dataloader.fileprocessing.XmlPersistablesFileLineParser" />
+    <bean id="delimitedFileLineParser" class="dtv.data2.dataloader.fileprocessing.DelimitedValueFileLineParser" primary="true" />
+
+    <!-- File name sorting strategy for xstore mnt, reo, rep -->
+    <bean id="xstoreFileNameSortingStrategy" class="dtv.data2.dataloader.pluggable.xst.XstoreFileNameSortingStrategy"/>
+
+    <!-- File name sorting strategy for RMS and RPM. The sorting orders are listed in fileTypes.  Although the sorting strategy 
+      configuration lists all MOM file types, not all file types have file loading dependencies.
+      The actual dependencies are:
+         MOM_STOREADDR depends on MOM_STORE
+         MOM_DIFFGROUPDETAIL depends on MOM_DIFFGROUPHEAD
+         MOM_DIFF depends on MOM_DIFFGROUPDETAIL, MOM_DIFFGROUPHEAD
+         MOM_ITEMHEAD depends on MOM_DIFF, MOM_DIFFGROUPDETAIL, MOM_DIFFGROUPHEAD, MOM_MERCHHIER
+         MOM_ITEMLOC depends on MOM_ITEMHEAD
+         MOM_VATITEM depends on MOM_ITEMLOC
+         MOM_RELITEMDETAIL, MOM_RELITEMHEAD, MOM_ITEMLOC
+     -->
+    <bean id="momFileNameSortingStrategy" class="dtv.dataloader.mom.MOMFileNameSortingStrategy">
+        <property name="fileTypes">
+            <list>
+                <value>MOM_ORGHIER</value>
+                <value>MOM_STORE</value>
+                <value>MOM_STOREADDR</value>
+                <value>MOM_MERCHHIER</value>
+                <value>MOM_VAT</value>
+                <value>MOM_DIFFGROUPHEAD</value>
+                <value>MOM_DIFFGROUPDETAIL</value>
+                <value>MOM_DIFF</value>
+                <value>MOM_ITEMHEAD</value>
+                <value>MOM_ITEMLOC</value>
+                <value>MOM_VATITEM</value>
+                <value>MOM_RELITEMHEAD</value>
+                <value>MOM_RELITEMDETAIL</value>
+                <value>MOM_REGPC</value>
+                <value>MOM_CLRPC</value>
+                <value>MOM_PRMPC</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- This bean is needed by Xadmin's file-drop system; it defines which MOM file types are
+         exported using the store-specific files vs. the "corp" version, so that Xadmin will ONLY
+         deploy store-specific files but NOT give them to DataLoader for Xcenter DB, whereas "corp"
+         files will NOT be deployed but WILL be loaded to the Xcenter DB using DataLoader -->
+    <util:list id="storeVsCorpMOMTypes" value-type="java.lang.String">
+      <value>MOM_ITEMHEAD</value>
+      <value>MOM_PRMPC</value> <!-- we don't get a "corp" version of this file officially, but,
+                                    we still don't want the store versions of this dataloaded to
+                                    Xcenter DB -->
+    </util:list>
+
+    <bean id="momFileNameExpr" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+      <property name="properties">
+        <props>
+          <prop key="MOM_REGPC">(?i)(^|[0-9]*_[0-9]*_!!_)regpc_[0-9]{14}_[0-9]*_s.dat$</prop>
+          <prop key="MOM_CLRPC">(?i)(^|[0-9]*_[0-9]*_!!_)clrpc_[0-9]{14}_[0-9]*_s.dat$</prop>
+          <prop key="MOM_PRMPC">(?i)(^|[0-9]*_[0-9]*_!!_)prmpc_[0-9]{14}_[0-9]*_s.dat$</prop>
+          <prop key="MOM_ORGHIER">(?i)(^|[0-9]*_[0-9]*_!!_)orghierarchy_[0-9]{14}_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_STORE">(?i)(^|[0-9]*_[0-9]*_!!_)store_[0-9]{14}_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_STOREADDR">(?i)(^|[0-9]*_[0-9]*_!!_)storeaddr_[0-9]{14}_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_DIFFGROUPHEAD">(?i)(^|[0-9]*_[0-9]*_!!_)diffgrphdr_[0-9]{14}_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_DIFFGROUPDETAIL">(?i)(^|[0-9]*_[0-9]*_!!_)diffgrpdtl_[0-9]{14}_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_DIFF">(?i)(^|[0-9]*_[0-9]*_!!_)diffs_[0-9]{14}_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_MERCHHIER">(?i)(^|[0-9]*_[0-9]*_!!_)merchhierarchy_[0-9]{14}_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_ITEMHEAD">(?i)(^|[0-9]*_[0-9]*_!!_)itemhdr_[0-9]{14}_([0-9]*|corp)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_ITEMLOC">(?i)(^|[0-9]*_[0-9]*_!!_)itemloc_[0-9]{14}_S_([0-9]*)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_RELITEMHEAD">(?i)(^|[0-9]*_[0-9]*_!!_)relitemhead_[0-9]{14}_[0-9]*_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_RELITEMDETAIL">(?i)(^|[0-9]*_[0-9]*_!!_)relitemdet_[0-9]{14}_[0-9]*_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_VAT">(?i)(^|[0-9]*_[0-9]*_!!_)vat_[0-9]{14}_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_VATITEM">(?i)(^|[0-9]*_[0-9]*_!!_)vatitem_[0-9]{14}_[0-9]*_(full|delta)_[0-9]*.dat$</prop>
+        </props>
+      </property>
+    </bean>
+    <bean id="momStoreIdExpr" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+      <property name="properties">
+        <props>
+          <prop key="MOM_REGPC">(?i)_([a-zA-Z0-9]*)_(s).dat$</prop>
+          <prop key="MOM_CLRPC">(?i)_([a-zA-Z0-9]*)_(s).dat$</prop>
+          <prop key="MOM_PRMPC">(?i)_([a-zA-Z0-9]*)_(s).dat$</prop>
+          <prop key="MOM_ITEMHEAD">(?i)_([a-zA-Z0-9]*)_(full|delta)_([0-9]*).dat$</prop>
+          <prop key="MOM_ITEMLOC">(?i)_([a-zA-Z0-9]*)_(full|delta)_([0-9]*).dat$</prop>
+          <prop key="MOM_RELITEMHEAD">(?i)_([a-zA-Z0-9]*)_(full|delta)_([0-9]*).dat$</prop>
+          <prop key="MOM_RELITEMDETAIL">(?i)_([a-zA-Z0-9]*)_(full|delta)_([0-9]*).dat$</prop>
+          <prop key="MOM_VATITEM">(?i)_([a-zA-Z0-9]*)_(full|delta)_([0-9]*).dat$</prop>
+        </props>
+      </property>
+    </bean>
+    <bean id="momNumberOfLinesExpr" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+      <property name="properties">
+        <props>
+          <prop key="MOM_ORGHIER">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_STORE">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_STOREADDR">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_DIFFGROUPHEAD">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_DIFFGROUPDETAIL">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_DIFF">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_MERCHHIER">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_ITEMHEAD">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_ITEMLOC">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_RELITEMHEAD">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_RELITEMDETAIL">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_VAT">(?i)([0-9]*)(?=.dat$)</prop>
+          <prop key="MOM_VATITEM">(?i)([0-9]*)(?=.dat$)</prop>
+        </props>
+      </property>
+    </bean>
+    <bean id="momFillTypeExpr" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+      <property name="properties">
+        <props>
+          <prop key="MOM_ORGHIER">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_STORE">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_STOREADDR">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_DIFFGROUPHEAD">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_DIFFGROUPDETAIL">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_DIFF">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_MERCHHIER">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_ITEMHEAD">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_ITEMLOC">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_RELITEMHEAD">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_RELITEMDETAIL">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_VAT">(?i)_(full|delta)_[0-9]*.dat$</prop>
+          <prop key="MOM_VATITEM">(?i)_(full|delta)_[0-9]*.dat$</prop>
+        </props>
+      </property>
+    </bean>
+    
+    <bean id="momTimestampExpr" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    	<property name="properties">
+    		<props>
+          		<prop key="MOM_ORGHIER">([0-9]{14})</prop>
+          		<prop key="MOM_STORE">([0-9]{14})</prop>
+          		<prop key="MOM_STOREADDR">([0-9]{14})</prop>
+          		<prop key="MOM_MERCHHIER">([0-9]{14})</prop>
+          		<prop key="MOM_VAT">([0-9]{14})</prop>
+          		<prop key="MOM_DIFF">([0-9]{14})</prop>
+          		<prop key="MOM_DIFFGROUPHEAD">([0-9]{14})</prop>
+          		<prop key="MOM_DIFFGROUPDETAIL">([0-9]{14})</prop>
+          		<prop key="MOM_ITEMHEAD">([0-9]{14})</prop>
+          		<prop key="MOM_ITEMLOC">([0-9]{14})</prop>
+          		<prop key="MOM_VATITEM">([0-9]{14})</prop>
+          		<prop key="MOM_RELITEMHEAD">([0-9]{14})</prop>
+          		<prop key="MOM_RELITEMDETAIL">([0-9]{14})</prop>
+          		<prop key="MOM_REGPC">([0-9]{14})</prop>
+          		<prop key="MOM_CLRPC">([0-9]{14})</prop>
+    		    <prop key="MOM_PRMPC">([0-9]{14})</prop>
+    		</props>
+    	</property>
+	</bean>
+
+    <!-- MOM Processor -->
+    <bean id="momSingleLineUnitIterator" class="dtv.dataloader.mom.MOMDataFileIterator" scope="prototype" />
+    <bean id="momPromotionFileIterator" class="dtv.dataloader.mom.MOMPromotionFileIterator" scope="prototype"/>
+
+    <util:map id="momTransformers" scope="prototype">
+      <entry key="MOM_REGPC" value-ref="regularPriceTransformer" />
+      <entry key="MOM_CLRPC" value-ref="clearancePriceTransformer" />
+      <entry key="MOM_PRMPC" value-ref="promotionTransformer" />
+      <entry key="MOM_ORGHIER" value-ref="orgHierarchyTransformer" />
+      <entry key="MOM_STORE" value-ref="storeTransformer" />
+      <entry key="MOM_STOREADDR" value-ref="storeAddressTransformer" />
+      <entry key="MOM_DIFFGROUPHEAD" value-ref="diffGroupHeadTransformer" />
+      <entry key="MOM_DIFFGROUPDETAIL" value-ref="diffGroupDetailTransformer" />
+      <entry key="MOM_DIFF" value-ref="diffTransformer" />
+      <entry key="MOM_MERCHHIER" value-ref="merchHierarchyTransformer" />
+      <entry key="MOM_ITEMHEAD" value-ref="itemHeadTransformer" />
+      <entry key="MOM_ITEMLOC" value-ref="itemLocTransformer" />
+      <entry key="MOM_RELITEMHEAD" value-ref="relitemHeadTransformer" />
+      <entry key="MOM_RELITEMDETAIL" value-ref="relitemDetailTransformer" />
+      <entry key="MOM_VAT" value-ref="VATTransformer" />
+      <entry key="MOM_VATITEM" value-ref="VATItemTransformer" />
+    </util:map>
+
+    <!-- transformers for regular price update -->
+    <bean id="regularPriceTransformer" class="dtv.dataloader.mom.RegularPriceTransformer" />
+
+    <!--  transformers for clearance price update -->
+    <bean id="clearancePriceTransformer" class="dtv.dataloader.mom.ClearancePriceTransformer" />
+
+    <!--  transformers for promotion update -->
+    <bean id="promotionTransformer" class="dtv.dataloader.mom.PromotionTransformer">
+      <constructor-arg>
+        <props>
+          <prop key="EXCLUDE_DISCOUNTED">false</prop>
+          <prop key="EXCLUDE_PRICE_OVERRIDEN">false</prop>
+          <prop key="GENEROSITY_CAP">-1</prop>
+          <prop key="overlapSimplePromotions">false</prop>
+        </props>
+      </constructor-arg>
+    </bean>
+
+    <!--  transformers for organization hierarchy -->
+    <bean id="orgHierarchyTransformer" class="dtv.dataloader.mom.OrgHierarchyTransformer" />
+
+    <!--  transformers for store -->
+    <bean id="storeTransformer" class="dtv.dataloader.mom.StoreTransformer">
+      <property name="useTillAccountability" value="false" />
+      <property name="locationType" value="STORE" />
+    </bean>
+
+    <!--  transformers for store address -->
+    <bean id="storeAddressTransformer" class="dtv.dataloader.mom.StoreAddressTransformer">
+      <property name="addrType" value="01" />
+    </bean>
+
+    <!--  transformers for diffs -->
+    <bean id="diffGroupHeadTransformer" class="dtv.dataloader.mom.DiffGroupHeadTransformer" />
+    <bean id="diffGroupDetailTransformer" class="dtv.dataloader.mom.DiffGroupDetailTransformer" />
+    <bean id="diffTransformer" class="dtv.dataloader.mom.DiffTransformer" >
+      <property name="defaultDiffGroupIdPrefix" value="****" />
+    </bean>
+
+    <!-- transformer for merch hierarchy  -->
+    <bean id="merchHierarchyTransformer" class="dtv.dataloader.mom.MerchHierarchyTransformer"/>
+
+    <!--  transformer for item head -->
+    <bean id="itemHeadTransformer" class="dtv.dataloader.mom.ItemHeadTransformer" >
+      <property name="defaultDiffGroupIdPrefix" value="****" />
+    </bean>
+
+    <!--  transformer for item location -->
+    <bean id="itemLocTransformer" class="dtv.dataloader.mom.ItemLocTransformer" >
+        <property name="nonTaxableTaxGroupId" value="0" />
+        <property name="translateItemDescriptionEnabled" value="true"/>
+    </bean>
+
+    <!--  transformer for related item head -->
+    <bean id="relitemHeadTransformer" class="dtv.dataloader.mom.RelatedItemHeadTransformer" >
+      <property name="promptToAddMessageKey" value="_commonAttachedItemsPrompt" />
+    </bean>
+
+    <!--  transformer for related item detail -->
+    <bean id="relitemDetailTransformer" class="dtv.dataloader.mom.RelatedItemDetailTransformer" >
+      <property name="promptToAddMessageKey" value="_commonAttachedItemsPrompt" />
+    </bean>
+    
+    <!--  transformer for VAT -->
+    <bean id="VATTransformer" class="dtv.dataloader.mom.VATTransformer">
+      <constructor-arg type="boolean" value="true" />
+      <constructor-arg type="java.lang.String" value="HALF_UP" />
+      <constructor-arg type="int" value="2" /> 
+    </bean>
+    
+    <!--  transformer for VAT Item -->
+    <bean id="VATItemTransformer" class="dtv.dataloader.mom.VATItemTransformer" />
+
+  </beans>
+
+  <beans>
+    <bean id="pmTypeHelper" class="dtv.data2.access.pm.SingleDataSourcePmTypeHelper">
+      <constructor-arg>
+        <bean class="dtv.data2.access.impl.config.PmTypeMappingConfigHelper" />
+      </constructor-arg>
+    </bean>
+    <bean id="trainingModeHelper" class="dtv.pos.assistance.NotTrainingModeHelper" />
+  </beans>
+</beans>

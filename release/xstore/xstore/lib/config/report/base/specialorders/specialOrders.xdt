@@ -1,0 +1,107 @@
+<dataTemplate name="SpecialOrders" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+
+    <label name="STATUS" value="_rptStatusColon"/>
+    <label name="SORT_BY" value="_rptSortByColon"/>
+    <label name="ORDER_BY_TRANSACTION_ID" value="_rptSpecialOrdersSortOrderCode1"/>
+    <label name="ORDER_BY_CUSTOMER_NAME" value="_rptSpecialOrdersSortOrderCode2"/>
+    <label name="ORDER_BY_SETUP_DATE" value="_rptSpecialOrdersSortOrderCode3"/>
+    <label name="ALL" value="_rptDefaultAll"/>
+
+    <label name="SUMMARY" value="_rptSummary"/>
+    <label name="COUNT" value="_rptSpecialOrdersTotalCount"/>
+    <label name="TOTAL" value="_rptTotalColon"/>
+
+    <label name="DETAIL" value="_rptDetail"/>
+    <label name="ACCT_ID" value="_rptAccount"/>
+    <label name="TRAN ID" value="_rptTrans"/>
+    <label name="TRANSACTION_LINE_NUMBER" value="_rptSpecialOrdersLineNumber"/>
+    <label name="CUSTOMER_NAME" value="_rptCustomerName"/>
+    <label name="SETUP_DATE" value="_rptSpecialOrdersSetupDate"/>
+    <label name="ACCT_STATUE" value="_rptStatus"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="EXT_AMT" value="_rptAmount"/>
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startDate" class="java.util.Date" isForPrompting="false">
+        <defaultValueExpression><![CDATA[$P{dateRange}.getStartDate()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endDate" class="java.util.Date" isForPrompting="false">
+        <defaultValueExpression><![CDATA[$P{dateRange}.getEndDate()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="argStatusFilter" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptStatusParameter;Combo;dtv.pos.register.specorder.SpecOrderSearchStatusType;all=_rptParamSelectionAll]]></parameterDescription>
+        <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>
+    <parameter name="sortOrder" class="java.lang.String" isForPrompting="true" include_in_output="true">
+        <parameterDescription><![CDATA[_rptSortOrderParameter;Combo;dtv.pos.reporting.fill.SoftEnumFactory;CCIAD.trans_seq DESC, CCIAD.rtrans_lineitm_seq ASC=_rptSpecialOrdersSortOrderCode1|CP.last_name ASC, CCIAD.trans_seq DESC, CCIAD.rtrans_lineitm_seq ASC=_rptSpecialOrdersSortOrderCode2|CCA.acct_setup_date DESC, CCIAD.trans_seq DESC, CCIAD.rtrans_lineitm_seq ASC=_rptSpecialOrdersSortOrderCode3]]></parameterDescription>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_SPECIAL_ORDERS" key="SPECIAL_ORDERS_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startDate</Parameter>
+        <Parameter>endDate</Parameter>
+        <Parameter>argStatusFilter</Parameter>
+        <Parameter>sortOrder</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>rtrans_lineitm_seq</ResultField>
+        <ResultField>cat_name</ResultField>
+        <ResultField>cust_acct_id</ResultField>
+        <ResultField>cust_acct_statcode</ResultField>
+        <ResultField>acct_setup_date</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>extended_amt</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_SPECIAL_ORDERS" source="Q_SPECIAL_ORDERS">
+        <element name="TRAN_ID"  value="trans_seq"/>
+        <element name="LINE_NUM" value="rtrans_lineitm_seq"/>
+        <element name="CAT_NAME" value="cat_name" formatter="LastFirstNameFromString"/>
+        <element name="ACCT_ID"  value="cust_acct_id"/>
+        <element name="ACCT_STATE_CODE" value="cust_acct_statcode" translation-prefix="_dtv.pos.customer.account.type.CustomerAccountStateType."/>
+        <element name="ACCT_SETUP_DATE" value="acct_setup_date" formatter="DateMedium"/>
+        <element name="ITEM_ID" value="item_id"/>
+        <element name="DESC" value="description" />
+        <element name="EXT_AMT" value="extended_amt" formatter="Money"/>
+    </group>
+    <group name="G_SPECIAL_ORDERS_TOTALS" source="Q_SPECIAL_ORDERS">
+        <element name="COUNT"   value="trans_seq"    function="COUNTDISTINCT"/>
+        <element name="EXT_AMT" value="extended_amt" function="SUM" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

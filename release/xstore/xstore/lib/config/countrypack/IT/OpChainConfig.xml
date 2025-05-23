@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OpChainConfig.xsd">
+
+  <OpChain name="SALE_COMPLETE_AFTER_START.local.2">
+    <Op class="oracle.retail.xstore.countrypack.it.register.op.AmountLimitRegistrationCheckApplicabilityOp">
+      <Parameter name="OpChainKey" value="COUNTRYPACK.IT.AMOUNT_LIMIT_REGISTRATION" />
+    </Op>
+  </OpChain>
+  <OpChain name="COUNTRYPACK.IT.AMOUNT_LIMIT_REGISTRATION">
+    <PromptOp class="oracle.retail.xstore.countrypack.it.register.op.AmountLimitRegistrationSelectCustomerTypeOp" breakpoint="true" key="COUNTRYPACK.IT.AMOUNT_LIMIT_REGISTRATION.SEL_CUSTOMER_TYPE" />
+    <Op class="oracle.retail.xstore.countrypack.it.register.op.AmountLimitRegistrationGetRequiredCustomerDataOp" />
+  </OpChain>
+  <OpChain name="VALIDATE_REGISTER_STARTUP_START.local">
+    <OpChainRoute chainKey="VALIDATE_REGISTER_STARTUP_START.pre" />
+    <PromptOp class="oracle.retail.xstore.countrypack.common.hardware.fiscal.op.CheckFiscalPrinterDateTimeOp" />
+    <OpChainRoute chainKey="VALIDATE_REGISTER_STARTUP_START.post" />
+  </OpChain>
+
+  <OpChain name="PRE_TENDERING_ACTIVITY.local">
+    <OpChainRoute chainKey="PRE_TENDERING_ACTIVITY.pre" />
+    <ValidationOp validationsBean="countrypack.fiscalPrinter.preTenderingRules" />
+
+    <OpChainRoute chainKey="PRE_TENDERING_ACTIVITY.local.pre" />
+    <OpChainRoute chainKey="PRE_TENDERING_ACTIVITY.post" />
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_BEFORE_FINISH.local.pre" >
+    <Op class="oracle.retail.xstore.countrypack.common.hardware.fiscal.op.AlertReceiptNearEndOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.hardware.fiscal.op.PromptPaperOutOp" />
+    <OpChainRoute chainKey="SALE_COMPLETE_FINISH.1" />
+  </OpChain>
+
+  <OpChain name="WORKSTATION_OPEN_EXT.local.2">
+    <Op class="oracle.retail.xstore.countrypack.common.op.WorkstationOpenResetSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+      <Parameter name="SequenceType" value="COUNTRYPACK.FISCAL_FILE_CREDIT_NOTE_NUMBER" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="RETAIL_LOCATION_OPEN_ACTIVITY.local.2">
+    <Op class="oracle.retail.xstore.countrypack.common.op.StoreOpenResetSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.RETAIL_LOCATION_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+      <Parameter name="SequenceType" value="COUNTRYPACK.FISCAL_DB_CREDIT_NOTE_NUMBER" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="WORKSTATION_CLOSE.local">
+    <OpChainRoute chainKey="COUNTRYPACK.WORKSTATION_END_DAY" condition="oracle.retail.xstore.countrypack.common.IsFiscalPrinterConfigured" />
+  </OpChain>
+
+  <OpChain name="WORKSTATION_OPEN_EXT.local">
+    <OpChainRoute chainKey="WORKSTATION_OPEN_EXT.pre" />
+    <OpChainRoute chainKey="WORKSTATION_OPEN_EXT.local.1" />
+    <OpChainRoute chainKey="WORKSTATION_OPEN_EXT.local.2" />
+    <OpChainRoute chainKey="COUNTRYPACK.WORKSTATION_BEGIN_DAY" condition="oracle.retail.xstore.countrypack.common.IsFiscalPrinterConfigured" />
+    <OpChainRoute chainKey="WORKSTATION_OPEN_EXT.local.3" />
+    <OpChainRoute chainKey="WORKSTATION_OPEN_EXT.post" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.CREATE_INVOICE.local.post" >
+  	<Op class="oracle.retail.xstore.countrypack.it.einvoice.op.ItCreateEInvoiceOp" />
+  </OpChain>  
+</OpChainSet>

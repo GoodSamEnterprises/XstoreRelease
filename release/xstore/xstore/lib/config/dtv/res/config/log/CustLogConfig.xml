@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <!-- ***************************************************** -->
+  <!-- ** ROUTING RULES -->
+  <!-- ***************************************************** -->
+  <RoutingRules>
+    <RoutingRule name="CUSTOMER" document="CUSTOMER_EDIT" file="CUSTOMER">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.crm.cust.IPartyLogModel" />
+    </RoutingRule>
+  </RoutingRules>
+  
+  <!-- ***************************************************** -->
+  <!-- ** LOG DOCUMENT TYPES -->
+  <!-- ***************************************************** -->
+  <LogTypes>
+    <LogType document="CUSTOMER_EDIT" sectionref="CUSTOMER_EDIT" />
+  </LogTypes>
+  
+  <!-- ***************************************************** -->
+  <!-- ** SECTIONS -->
+  <!-- ***************************************************** -->
+  <sections>
+    <section name="CUSTOMER_EDIT">
+      <xml><![CDATA[
+        <Customer Action="!{dtv.logbuilder.ActionTypeDocBuilderField}">
+          <DateTime>!{dtv.pos.logbuilder.CurrentTimeDocBuilderField}</DateTime>
+          <CustomerID>#{getParty.getCustomerId}</CustomerID>
+          <AlternateID>#{getParty.getPartyId}</AlternateID>
+          <ActiveFlag>#{getParty.getActive}</ActiveFlag>
+          
+          <CustomerAccount>
+            <?iterator method="getParty.getCustomerGroups"?>
+            <dtv:CustomerGroup>
+              <dtv:CustomerGroupId>#{getCustomerGroupId}</dtv:CustomerGroupId>
+            </dtv:CustomerGroup>
+            <?_iterator?>
+            
+            <?iterator method="getLoyaltyAccounts"?>
+            <LoyaltyAccount>
+              <LoyaltyProgramID>#{getLoyaltyProgramId}</LoyaltyProgramID>
+              <LoyaltyAccountID>#{getAccountId}</LoyaltyAccountID>
+              <EffectiveDate>#{getEffectiveDate}</EffectiveDate>
+              <ExpirationDate>#{getExpirationDate}</ExpirationDate>
+              <Points>#{getAccountBalance}</Points>
+            </LoyaltyAccount>
+            <?_iterator?>
+          </CustomerAccount>
+          
+          <?condition method="getParty.getSignUpRetailLocationId" comparison="NOT_NULL"?>
+          <Affiliation>
+            <Name>SignUpRetailLocation</Name>
+            <AffiliationType>dtv:SignUpRetailLocation</AffiliationType>
+            <RetailStoreID>#{getParty.getSignUpRetailLocationId}</RetailStoreID>
+          </Affiliation>
+          <?_condition?>
+          
+          <?condition method="getParty.getAllegianceRetailLocationId" comparison="NOT_NULL"?>
+          <Affiliation>
+            <Name>AllegianceRetailLocation</Name>
+            <AffiliationType>dtv:AllegianceRetailLocation</AffiliationType>
+            <RetailStoreID>#{getParty.getAllegianceRetailLocationId}</RetailStoreID>
+          </Affiliation>
+          <?_condition?>
+          
+          <?call method="getParty"?>
+          <EntityInformation PartyType="Individual">
+            <?condition method="getOrganizationName" comparison="NOT_BLANK"?>
+            <Organization>
+              <Name>#{getOrganizationName}</Name>
+              <TaxpayerID />
+              <LegalStatusCode>#{getOrganizationTypeCode}</LegalStatusCode>
+            </Organization>
+            <?_condition?>
+            
+            <Individual>
+              <?sectionref name="party_name"?>
+                   
+              <PersonalSummary>
+                <Date>!{dtv.pos.logbuilder.CurrentTimeDocBuilderField}</Date>
+                <BirthDate>#{getBirthDate}[date]</BirthDate>
+                <GenderType>#{getGender}</GenderType>
+                <Ethnicity></Ethnicity>
+                <MaritialStatusCode></MaritialStatusCode>
+              </PersonalSummary>
+              
+              <ContactInformation>
+                <?iterator method="getTelephoneInformation"?>
+                <?sectionref name="party_telephone"?>
+                <?_iterator?>
+                                
+                <?iterator method="getLocaleInformation"?>
+                <?sectionref name="party_address"?>
+                <?_iterator?>
+                
+                <EmailReceiptsFlag>#{getEmailRcpts}</EmailReceiptsFlag>
+                <?iterator method="getEmailInformation"?>
+                <?sectionref name="party_email"?>
+                <?_iterator?>
+
+                <dtv:ContactPreference>#{getContactPref}</dtv:ContactPreference>
+              </ContactInformation>
+            </Individual>
+          </EntityInformation>
+
+          <dtv:OrganizationName>#{getOrganizationName}</dtv:OrganizationName>
+          <dtv:EmployeeId>#{getEmployeeId}</dtv:EmployeeId>
+          <dtv:EnrollDate>#{getCreateDate}[date]</dtv:EnrollDate>
+          <dtv:AnniversaryDate>#{getAnniversaryDate}[date]</dtv:AnniversaryDate>
+          <dtv:MailingListFlag>#{getMailingList}[boolean]</dtv:MailingListFlag>
+          <dtv:PreferredLocale>#{getPreferredLocale}</dtv:PreferredLocale>
+          <?_call?>          
+        </Customer>
+      ]]></xml>
+    </section>
+
+    <section name="party_name">
+      <xml><![CDATA[
+        <Name>
+          <Name Location="dtv:Salutation">#{getSalutation}</Name>
+          <Name Location="First">#{getFirstName}</Name>
+          <Name Location="Middle">#{getMiddleName}</Name>
+          <Name Location="Last">#{getLastName}</Name>
+          <Name Location="dtv:Suffix">#{getSuffix}</Name>
+        </Name>
+      ]]></xml>
+    </section>
+
+    <section name="party_address">
+      <condition method="getAddress1" comparison="NOT_NULL" />
+      <xml><![CDATA[
+        <Address PrimaryFlag="#{getPrimary}[boolean]" TypeCode="#{getAddressType}">
+          <AddressLine1>#{getAddress1}</AddressLine1>
+          <AddressLine2>#{getAddress2}</AddressLine2>
+          <AddressLine3>#{getAddress3}</AddressLine3>
+          <AddressLine4>#{getAddress4}</AddressLine4>
+          <ApartmentNumber>#{getApartment}</ApartmentNumber>
+          <City>#{getCity}</City>
+          <Territory>#{getState}</Territory>
+          <PostalCode>#{getPostalCode}</PostalCode>
+          <Country>#{getCountry}</Country>
+          <dtv:Neighborhood>#{getNeighborhood}</dtv:Neighborhood>
+          <dtv:County>#{getCounty}</dtv:County>
+          <dtv:Contact>#{getContact}[boolean]</dtv:Contact>
+        </Address>
+      ]]></xml>
+    </section>
+
+    <section name="party_telephone">
+      <condition method="getTelephoneNumber" comparison="NOT_NULL" />
+      <xml><![CDATA[
+        <Telephone PrimaryFlag="#{getPrimary}[boolean]" TypeCode="#{getTelephoneType}">
+          <FullTelephoneNumber>#{getTelephoneNumber}</FullTelephoneNumber>
+          <dtv:ContactFlag>#{getContact}[boolean]</dtv:ContactFlag>
+        </Telephone>
+      ]]></xml>
+    </section>
+
+    <section name="party_email">
+      <condition method="getEmailAddress" comparison="NOT_NULL" />
+      <xml><![CDATA[
+        <EMail PrimaryFlag="#{getPrimary}[boolean]" TypeCode="#{getEmailType}">
+          <EMailAddress>#{getEmailAddress}</EMailAddress>
+          <dtv:ContactFlag>#{getContact}</dtv:ContactFlag>
+        </EMail>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>
+ 

@@ -1,0 +1,168 @@
+<dataTemplate name="productRequestDetailStatus" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+      <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="DASH" value="_rptDashDelimiter"/>
+    <label name="TITLE" value="_rptProductDetailStatusReport_Title"/>
+    <label name="ORDR_STS" value="_rptProductDetailStatusReportOrderStatusSearchLabel"/>
+    <label name="DATE_RANGE" value="_rptDateRange"/>
+    <label name="REQUESTOR_ID" value="_rptProductDetailStatusReportRequestorIDSearchLabel"/>
+    <label name="ITM_ID" value="_rptProductDetailStatusReportItemIDSearchLabel"/>
+    <label name="SRC_ENTITY_LBL" value="_rptProductDetailStatusReportSourcingEntitySearchLabel"/>
+    <label name="SRC_ENTITY" value="_rptProductDetailStatusReportSourcingEntity"/>
+    <label name="REQUESTR_LABEL" value="_rptProductDetailStatusReportRequestorLabel"/>
+    <label name="STS_LABEL" value="_rptProductDetailStatusReportStatusLabel"/>
+    <label name="SKU_LABEL" value="_rptProductDetailStatusReportSKULabel"/>
+    <label name="DOC_ID" value="_rptProductDetailStatusReportDocumentIdTitleLabel"/>
+    <label name="REQ_DATE" value="_rptProductDetailStatusReportRequestDateTitleLabel"/>
+    <label name="REQUESTOR" value="_rptProductDetailStatusReportRequestorTitleLabel"/>
+    <label name="SHIP_TO" value="_rptProductDetailStatusReportShipToTitleLabel"/>
+    <label name="SOURCING" value="_rptProductDetailStatusReportSourcing"/>
+    <label name="SRC_COLON" value="_rptProductDetailStatusReportSourcingcolon"/>
+    <label name="ADDRESS1" value="_rptProductDetailStatusReportAddress1TitleLabel"/>
+    <label name="ADDRESS2" value="_rptProductDetailStatusReportAddress2TitleLabel"/>
+    <label name="SHIPPER" value="_rptProductDetailStatusReportShipperTitleLabel"/>
+    <label name="CTZ" value="_rptProductDetailStatusReportCityStateZipTitleLabel"/>
+    <label name="COMMENTS" value="_rptProductDetailStatusReportCommentsTitleLabel"/>
+    <label name="ITM_TITLE" value="_rptItem "/>
+    <label name="DESCRIPTION" value="_rptDescription "/>
+    <label name="VENDOR" value="_rptProductDetailStatusReportVendorPartNumberTitleLabel"/>
+    <label name="ITM_GRP_CDE" value="_rptProductDetailStatusReportItemGroupCodeTitleLabel"/>
+    <label name="QTY" value="_rptQuantity "/>
+    <label name="DATE" value="_rptDate "/>
+    <label name="R_QTY" value="_rptProductDetailStatusReportQtyRequestedTitleLabel"/>
+    <label name="CONFIRMED_TITLE" value="_rptProductDetailStatusReportConfirmedTitleLabel"/>
+    <label name="ASN_TITLE" value="_rptProductDetailStatusReportASNTitleLabel"/>
+    <label name="RECEIVED_TITLE" value="_rptProductDetailStatusReportReceivedTitleLabel"/>
+    <label name="NUMBER" value="_rptProductDetailStatusReportConfirmedNumberTitleLabel"/>
+    <label name="STATUS _TITLE" value="_rptStatus "/>
+    <label name="LINE_COMMENTS" value="_rptProductDetailStatusReportLineCommentsLabel"/>
+    <label name="TOTAL_WEIGHT" value="_rptProductDetailStatusReportTotalWeightLabel"/>
+    <label name="TOTAL" value="_rptTotal"/>
+ </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+    
+     <!-- User Parameters -->
+	<parameter name="argReportDocStatus" class="java.lang.String">
+		<parameterDescription><![CDATA[_rptProductDetailStatusReportOrderStatusSearchLabel;Combo;dtv.pos.inventory.replenishment.docbuilding.RequestDocumentStatusTypeLoader;all=_rptParamSelectionAll]]></parameterDescription>
+		
+	</parameter>
+	<parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange">
+		<parameterDescription><![CDATA[_rptProductDetailStatusReportRequestDateRangeSearchLabel;DateRange]]></parameterDescription>
+		
+	</parameter>
+	<parameter name="argReportStartDate" class="java.util.Date" isForPrompting="false" formatter="DateMedium">
+		
+	</parameter>
+	<parameter name="argReportEndDate" class="java.util.Date" isForPrompting="false" formatter="DateMedium">
+		
+	</parameter>
+	<parameter name="argRequestorId" class="java.lang.String">
+		<parameterDescription><![CDATA[_rptProductDetailStatusReportRequestorIDSearchLabel;Text;Simple;maxLength=20]]></parameterDescription>
+		
+	</parameter>
+	<parameter name="argReportItemId" class="java.lang.String">
+		<parameterDescription><![CDATA[_rptProductDetailStatusReportItemIDSearchLabel;Text;Simple;maxLength=20]]></parameterDescription>
+		
+	</parameter>
+	<parameter name="argReportSourceId" class="java.lang.String">
+		<parameterDescription><![CDATA[_rptProductDetailStatusReportSourcingEntitySearchLabel;Text;Simple;maxLength=20]]></parameterDescription>
+		
+	</parameter>
+	<parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+    <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+    <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+   </parameters>
+    
+  <!--Data source and data Structure-->
+    <dataSource>
+    <dataReference name="O_PROD_REQ_DETAIL">
+      <ResultFields>
+        <ResultField>DocumentId</ResultField>
+        <ResultField>RequestDate</ResultField>
+        <ResultField>RequestorName</ResultField>
+        <ResultField>SourceId</ResultField>
+        <ResultField>SourceName</ResultField>
+        <ResultField>SourceAddress</ResultField>
+        <ResultField>SourceAddress2</ResultField>
+        <ResultField>SourceCityStateZip</ResultField>
+        <ResultField>ShipToName</ResultField>
+        <ResultField>ShipToAddress</ResultField>
+        <ResultField>ShipToAddress2</ResultField>
+        <ResultField>ShipToCityStateZip</ResultField>
+        <ResultField>Shipper</ResultField>
+        <ResultField>DocNote</ResultField>
+        <ResultField>ItemId</ResultField>
+        <ResultField>ItemDescription</ResultField>
+        <ResultField>Vendor</ResultField>
+        <ResultField>QtyRequested</ResultField>
+        <ResultField>ConfirmationDate</ResultField>
+        <ResultField>ConfirmedQuantity</ResultField>
+        <ResultField>ConfirmationNumber</ResultField>
+        <ResultField>ShippedDate</ResultField>
+        <ResultField>ShippedQuantity</ResultField>
+        <ResultField>ReceivedDate</ResultField>
+        <ResultField>ReceivedQuantity</ResultField>
+        <ResultField>LineItemStatusCode</ResultField>
+        <ResultField>LineItemComment</ResultField>
+        <ResultField>Weight</ResultField>
+        <ResultField>TotalWeight</ResultField>
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_PROD_REQ_DETAIL" source="O_PROD_REQ_DETAIL">
+     <element name="DOC_ID" value="DocumentId"/>
+     <element name="REQ_DATE" value="RequestDate" formatter="DateMedium"/>
+     <element name="R_NAME" value="RequestorName"/>
+     <element name="SRC_ID" value="SourceId"/>
+     <element name="SRC_ADDR1" value="SourceAddress"/>
+     <element name="SRC_ADDR2" value="SourceAddress2"/>
+     <element name="SRC_CSZ" value="SourceCityStateZip"/>
+     <element name="SHIP_TO" value="ShipToName"/>
+     <element name="SHIP_ADDR" value="ShipToAddress"/>
+     <element name="SHIP_ADDR2" value="ShipToAddress2"/>
+     <element name="SHIP_CSZ" value="ShipToCityStateZip"/>
+     <element name="SHIPPER" value="Shipper"/>
+     <element name="DOC_NOTE" value="DocNote"/>
+     <element name="ITM_ID" value="ItemId"/>
+     <element name="ITM_DESC" value="ItemDescription"/>
+     <element name="VNDR" value="Vendor"/>
+     <element name="REQ_QTY" value="QtyRequested"/>
+     <element name="CONFIRM_DATE" value="ConfirmationDate" formatter="DateMedium"/>
+     <element name="CONFIRM_QTY" value="ConfirmedQuantity"/>
+     <element name="CONFIRM_NBR" value="_rptProductDetailStatusReportConfirmedNumberTitleLabel"/>
+     <element name="SHIP_DATE" value="ShippedDate"/>
+     <element name="SHIP_QTY" value="ShippedQuantity"/>
+     <element name="REC_DATE" value="ReceivedDate" formatter="DateMedium"/>
+     <element name="REC_QTY" value="ReceivedQuantity"/>
+     <element name="ITM_STS_CDE" value="LineItemStatusCode" translation-prefix="_dtv.pos.inventory.replenishment.ReplenishmentStatus." />
+     <element name="LINE_CMT" value="LineItemComment"/>
+     <element name="WGT" value="Weight"/>
+     <element name="TOT_WGT" value="TotalWeight"  />
+   </group>
+   <group name="O_TOTL" source="O_PROD_REQ_DETAIL">
+      <element name="DOC_ID" value="DocumentId" group-by="true"/>
+      <element name="TOT_WGT" value="TotalWeight" formatter="Decimal" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>
+    

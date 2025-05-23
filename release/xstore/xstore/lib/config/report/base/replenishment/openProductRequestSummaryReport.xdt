@@ -1,0 +1,50 @@
+<dataTemplate name="OpenProductRequestSummary" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+      <!-- Template-specific Text -->
+    <label name="DOCUMENT" value="_rptOpenProductRequestSummaryDocumentId"/>
+    <label name="DATE_SUBMITTED" value="_rptOpenProductRequestSummarySubmittedDate"/>
+    <label name="SRC_ENTITY" value="_rptOpenProductRequestSummarySourceEntityName"/>
+    <label name="TITLE" value="_rptOpenProductRequestSummaryReportTitle"/>
+ </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+   </parameters>
+    
+  <!--Data source and data Structure-->
+    <dataSource>
+    <queryReference name="Q_PRD_RQST_SUM" key="OPEN_PRODUCT_REQUEST_SUMMARY_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+      </Parameters>
+      <ResultFields>
+          <ResultField>documentId</ResultField>
+          <ResultField>submittedDate</ResultField>          
+          <ResultField>sourceEntityName</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="RQST_SUM" source="Q_PRD_RQST_SUM">
+      <element name="D_ID" value="documentId"/> 
+      <element name="SUB_DATE" value="submittedDate" formatter="DateMedium"/>
+      <element name="SRC" value="sourceEntityName"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

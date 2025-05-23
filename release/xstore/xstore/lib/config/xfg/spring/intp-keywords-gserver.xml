@@ -1,0 +1,1241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config />
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="KW_GS_ExecuteGSAction" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean class="com.micros_retail.xfgclient.interpret.IntpCmd">
+        <property name="cmd" value="ACTION_IDX" />
+        <property name="dev" ref="DEV_Screen" />
+        <property name="params" value="&#x2754;P0" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ExecuteGSAnimation" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean class="com.micros_retail.xfgclient.interpret.IntpCmd">
+        <property name="cmd" value="ANIMATION_IDX" />
+        <property name="dev" ref="DEV_Screen" />
+        <property name="params" value="&#x2754;P0" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ConfigureScreen" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==false &amp;&amp; #{feeHelper.isFeeLineEnabled()==false}" />
+          <property name="params" value="ACTIVATE_SALES_TAX_LINE" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==false &amp;&amp; #{feeHelper.isFeeLineEnabled()==true}"/>
+          <property name="params" value="ACTIVATE_SALES_TAX_LINE_WITH_FEES" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==true &amp;&amp; #{feeHelper.isFeeLineEnabled()==true}" />
+          <property name="params" value="ACTIVATE_FEES" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_DisableTransactionDiscountLine" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText"
+            value="#{T(com.micros_retail.xfgclient.config.ConfigurationMgr).getTransactionDiscountDisplayLineEnabled()==true}" />
+          <property name="dev" ref="DEV_GSB_CustTransactionDiscountText" />
+          <property name="params" value="_xfgclient.discount.transactiondiscount" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText"
+            value="#{T(com.micros_retail.xfgclient.config.ConfigurationMgr).getTransactionDiscountDisplayLineEnabled()==true}" />
+          <property name="dev" ref="DEV_GSB_CustTransactionDiscount" />
+          <property name="params" value="_xfgclient.gsbtranactiondiscount.text" />
+        </bean>
+        <ref bean="KW_GS_ConfigureScreen" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_EnableTransactionDiscountLine" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==true &amp;&amp; #{feeHelper.isFeeLineEnabled()==false}" />
+          <property name="params" value="ACTIVATE_TRANS_DISCOUNT_LINE" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==false &amp;&amp; #{feeHelper.isFeeLineEnabled()==false}" />
+          <property name="params" value="ACTIVATE_SALES_TAX_LINE_WITH_TRANS_DISCOUNT" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==false &amp;&amp; #{feeHelper.isFeeLineEnabled()==true}" />
+          <property name="params" value="ACTIVATE_SALES_TAX_LINE_WITH_FEES_AND_TRANS_DISCOUNT" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==true &amp;&amp; #{feeHelper.isFeeLineEnabled()==true}" />
+          <property name="params" value="ACTIVATE_FEES_WITH_TRANS_DISCOUNT" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_TransactionDiscountText" />
+          <property name="params" value="_xfgclient.discount.transactiondiscount" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_TransactionDiscount" />
+          <property name="params" value="_xfgclient.gsbtranactiondiscount.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_CustTransactionDiscountText" />
+          <property name="params" value="_xfgclient.discount.transactiondiscount" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_CustTransactionDiscount" />
+          <property name="params" value="_xfgclient.gsbtranactiondiscount.text" />
+        </bean>
+        <bean parent="INTPCMD_SelectLastItem">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_UPD_Status" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_Operator" />
+          <property name="params" value="_xfgclient.gsboperator.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_RegisterNR" />
+          <property name="params" value="_xfgclient.gsbregisternr.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_GSB_TransactionNR" />
+              <ref bean="DEV_GSB_CustTransactionNR" />
+            </list>
+          </property>
+          <property name="params" value="_xfgclient.gsbtransactionnr.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_GSB_ItemCount" />
+              <ref bean="DEV_GSB_CustItemCount" />
+            </list>
+          </property>
+          <property name="params" value="_xfgclient.gsbitemcount.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_StoreName" />
+          <property name="params" value="_xfgclient.gsbstore.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText" value="&#x2754;!BEAN_xfgCustomerHelper.getAssignedCustomer()!=&quot;&quot;" />
+          <property name="dev">
+            <list>
+              <ref bean="DEV_GSB_CustomerInfoName" />
+              <ref bean="DEV_GSB_CustCustomerInfo" />
+            </list>
+          </property>
+          <property name="params" value="_xfgclient.attachedcustomer.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText" value="&#x2754;!BEAN_xfgCustomerHelper.getAssignedCustomer()!=&quot;&quot;" />
+          <property name="dev">
+            <list>
+              <ref bean="DEV_GSB_CustomerInfoAwards" />
+              <ref bean="DEV_GSB_CustCustomerInfoAwards" />
+            </list>
+          </property>
+          <property name="params" value="_xfgclient.attachedcustomer.awards" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText" value="&#x2754;!BEAN_xfgCustomerHelper.getAssignedCustomer()!=&quot;&quot;" />
+          <property name="dev">
+            <list>
+              <ref bean="DEV_GSB_CustomerInfoLoyalty" />
+              <ref bean="DEV_GSB_CustCustomerInfoLoyalty" />
+            </list>
+          </property>
+          <property name="params" value="_xfgclient.attachedcustomer.loyalty" />
+        </bean>
+        <bean parent="INTPCMD_Clear">
+          <property name="conditionText" value="&#x2754;!BEAN_xfgCustomerHelper.getAssignedCustomer()==&quot;&quot;" />
+          <property name="dev">
+            <list>
+              <ref bean="DEV_GSB_CustCustomerInfo" />
+              <ref bean="DEV_GSB_CustCustomerInfoAwards" />
+              <ref bean="DEV_GSB_CustCustomerInfoLoyalty" />
+              <ref bean="DEV_GSB_CustomerInfoName" />
+              <ref bean="DEV_GSB_CustomerInfoAwards" />
+              <ref bean="DEV_GSB_CustomerInfoLoyalty" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ListTransactionTotal" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <ref bean="KW_GS_UPD_Status" />
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText"
+            value="#{T(com.micros_retail.xfgclient.config.ConfigurationMgr).getTransactionDiscountDisplayLineEnabled()==false}" />
+          <property name="dev" ref="DEV_TransactionList" />
+          <property name="params" value="_xfgclient.list.sum.total" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TransactionChanged" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==true &amp;&amp; #{feeHelper.isFeeLineEnabled()==false}" />
+          <property name="dev" ref="DEV_GSB_Total" />
+          <property name="params" value="_xfgclient.gsbtotal.textwithcaption" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==true &amp;&amp; #{feeHelper.isFeeLineEnabled()==true}" />
+          <property name="dev" ref="DEV_GSB_Total" />
+          <property name="params" value="_xfgclient.gsbtotal.textwithcaption" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==false &amp;&amp; #{feeHelper.isFeeLineEnabled()==true}" />
+          <property name="dev" ref="DEV_GSB_Total" />
+          <property name="params" value="_xfgclient.gsbtotal.textwithcaption" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText"
+            value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==false &amp;&amp; #{feeHelper.isFeeLineEnabled()==false}" />
+          <property name="dev" ref="DEV_GSB_Total" />
+          <property name="params" value="_xfgclient.gsbtotal.textwithcaption" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_Fees" />
+          <property name="params" value="_xfgclient.gsbfees.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_CustTotal" />
+          <property name="params" value="_xfgclient.custsum.total" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_CustSubTotalInfo" />
+          <property name="params" value="_xfgclient.custsubtotal.info" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_CustTaxInfo" />
+          <property name="params" value="_xfgclient.custtax.info" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_CustFeesInfo" />
+          <property name="params" value="_xfgclient.custfees.info" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_SavedAmount" />
+          <property name="params" value="_xfgclient.odis.savedamount.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_CustSavedAmount" />
+          <property name="params" value="_xfgclient.cdis.savedamount.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText" value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==false" />
+          <property name="dev" ref="DEV_GSB_Tax" />
+          <property name="params" value="_xfgclient.gsbtax.text" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText" value="&#x2754;BEAN_xfgTaxHelper.isPriceTaxInclusive()==false" />
+          <property name="dev" ref="DEV_GSB_Subtotal" />
+          <property name="params" value="_xfgclient.gsbsubtotal.text" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TransactionInit" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+      <ref bean="KW_GS_DisableTransactionDiscountLine" />
+        <bean parent="INTPCMD_Clear">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_TransactionList" />
+              <ref bean="DEV_GSB_TransactionDiscountText" />
+              <ref bean="DEV_GSB_TransactionDiscount" />
+              <ref bean="DEV_GSB_CustTransactionDiscountText" />
+              <ref bean="DEV_GSB_CustTransactionDiscount" />
+              <ref bean="DEV_GSB_CustList" />
+              <ref bean="DEV_GSB_CustTaxInfo" />
+              <ref bean="DEV_GSB_CustSubTotalInfo" />
+              <ref bean="DEV_GSB_CustFeesInfo" />
+              <ref bean="DEV_GSB_Total" />
+              <ref bean="DEV_GSB_CustomerInfoName" />
+              <ref bean="DEV_GSB_CustomerInfoAwards" />
+              <ref bean="DEV_GSB_CustomerInfoLoyalty" />
+              <ref bean="DEV_GSB_CustCustomerInfo" />
+              <ref bean="DEV_GSB_CustCustomerInfoAwards" />
+              <ref bean="DEV_GSB_CustCustomerInfoLoyalty" />
+              <ref bean="DEV_GSB_Tax" />
+              <ref bean="DEV_GSB_Subtotal" />
+              <ref bean="DEV_GSB_Fees" />
+              <ref bean="DEV_GSB_SavedAmount" />
+              <ref bean="DEV_GSB_CustSavedAmount" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ClearTransactionList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_Clear">
+        <property name="dev" ref="DEV_TransactionList" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TransactionList_DisableSelection" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_DisableSelection">
+        <property name="dev" ref="DEV_TransactionList" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TransactionList_EnableSelection" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_EnableSelection">
+        <property name="dev" ref="DEV_TransactionList" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TransactionList_DisableSelectable" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_DisableSelectable">
+        <property name="dev" ref="DEV_TransactionList" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TransactionList_EnableSelectable" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_EnableSelectable">
+        <property name="dev" ref="DEV_TransactionList" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ItemSoldList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_DisableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_TransactionList" />
+          <property name="params">
+            <list>
+              <bean class="com.micros_retail.xfgclient.interpret.i18n.MergedArrayTranslatable">
+                <property name="separator" value="&#x2665;" />
+                <property name="ignoreEmptyLines" value="true" />
+                <property name="translatables">
+                  <array>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.SimpleTranslatable">
+                      <property name="text" value="_xfgclient.list.item.sale.quantity.combined" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.ConditionalTranslatable">
+                      <property name="conditionText"
+                        value="&#x2754;!P0.getSerialNumber()!=&quot;&quot; &amp;&amp; &#x2754;!P0.getVoucher()==&quot;&quot;" />
+                      <property name="text" value="_xfgclient.list.item.serial" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.ConditionalTranslatable">
+                      <property name="conditionText"
+                        value="&#x2754;!P0.getSerialNumber()!=&quot;&quot; &amp;&amp; &#x2754;!P0.getVoucher()!=&quot;&quot;" />
+                      <property name="text" value="_xfgclient.list.voucher.serial" />
+                    </bean>
+                  </array>
+                </property>
+              </bean>
+              <value>&#x2754;P0.lineItemSequence</value>
+              <value>&#x2755;if(&#x2754;P0.getVoid())0&#x2755;else 1&#x2755;end</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_CustList" />
+          <property name="params">
+            <list>
+              <bean class="com.micros_retail.xfgclient.interpret.i18n.MergedArrayTranslatable">
+                <property name="separator" value="&#x2665;" />
+                <property name="ignoreEmptyLines" value="true" />
+                <property name="translatables">
+                  <array>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.SimpleTranslatable">
+                      <property name="text" value="_xfgclient.custlist.item.sale.quantity.combined" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.ConditionalTranslatable">
+                      <property name="conditionText"
+                        value="&#x2754;!P0.getSerialNumber()!=&quot;&quot; &amp;&amp; &#x2754;!P0.getVoucher()==&quot;&quot;" />
+                      <property name="text" value="_xfgclient.custlist.item.serial" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.ConditionalTranslatable">
+                      <property name="conditionText"
+                        value="&#x2754;!P0.getSerialNumber()!=&quot;&quot; &amp;&amp; &#x2754;!P0.getVoucher()!=&quot;&quot;" />
+                      <property name="text" value="_xfgclient.custlist.voucher.serial" />
+                    </bean>
+                  </array>
+                </property>
+              </bean>
+              <value>&#x2754;P0.lineItemSequence</value>
+              <value>&#x2755;if(&#x2754;P0.getVoid())0&#x2755;else 1&#x2755;end</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_EnableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ItemInvAdjustmentAddedList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_DisableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_TransactionList" />
+          <property name="params">
+            <list>
+              <bean class="com.micros_retail.xfgclient.interpret.i18n.MergedArrayTranslatable">
+                <property name="separator" value="&#x2665;" />
+                <property name="ignoreEmptyLines" value="true" />
+                <property name="translatables">
+                  <array>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.SimpleTranslatable">
+                      <property name="text" value="_xfgclient.list.item.inventoryadjustment.add" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.ConditionalTranslatable">
+                      <property name="conditionText" value="&#x2754;!P0.getSerialNumber()!=&quot;&quot;" />
+                      <property name="text" value="_xfgclient.list.item.inventoryadjustment.serial" />
+                    </bean>
+                  </array>
+                </property>
+              </bean>
+              <value>&#x2754;P0.lineItemSequence</value>
+              <value>1</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_EnableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_InventoryAdjustmentItemVoidedList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_DisableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+        <bean parent="INTPCMD_DisableElement">
+          <property name="dev" ref="DEV_TransactionList" />
+          <property name="params">
+            <value>&#x2754;P0.lineItemSequence</value>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_EnableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ItemVoidedList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_DisableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_TransactionList" />
+              <ref bean="DEV_GSB_CustList" />
+            </list>
+          </property>
+          <property name="params">
+            <list>
+              <bean class="com.micros_retail.xfgclient.interpret.i18n.MergedArrayTranslatable">
+                <property name="separator" value="&#x2665;" />
+                <property name="ignoreEmptyLines" value="true" />
+                <property name="translatables">
+                  <array>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.SimpleTranslatable">
+                      <property name="text" value="_xfgclient.list.item.void.quantity.combined" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.ConditionalTranslatable">
+                      <property name="conditionText"
+                        value="&#x2754;!P0.getSerialNumber()!=&quot;&quot; &amp;&amp; &#x2754;!P0.getVoucher()==&quot;&quot;" />
+                      <property name="text" value="_xfgclient.list.item.serial.void" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.ConditionalTranslatable">
+                      <property name="conditionText"
+                        value="&#x2754;!P0.getSerialNumber()!=&quot;&quot; &amp;&amp; &#x2754;!P0.getVoucher()!=&quot;&quot;" />
+                      <property name="text" value="_xfgclient.list.voucher.serial.void" />
+                    </bean>
+                  </array>
+                </property>
+              </bean>
+              <value>-&#x2754;P0.lineItemSequence</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_EnableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TenderAddedList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_DisableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_TransactionList" />
+              <ref bean="DEV_GSB_CustList" />
+            </list>
+          </property>
+          <property name="params">
+            <list>
+              <bean class="com.micros_retail.xfgclient.interpret.i18n.MergedArrayTranslatable">
+                <property name="separator" value="&#x2665;" />
+                <property name="ignoreEmptyLines" value="true" />
+                <property name="translatables">
+                  <array>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.SimpleTranslatable">
+                      <property name="text" value="_xfgclient.list.tender.add" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.interpret.i18n.ConditionalTranslatable">
+                      <property name="conditionText"
+                        value="&#x2754;!P0.getSerialNumber()!=&quot;&quot; &amp;&amp; &#x2754;!P0.getVoucher()!=&quot;&quot;" />
+                      <property name="text" value="_xfgclient.list.tender.voucher.serial" />
+                    </bean>
+                  </array>
+                </property>
+              </bean>
+              <value>&#x2754;P0.retailTransactionLineItemSequence</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_EnableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TenderVoidedList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_DisableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_TransactionList" />
+              <ref bean="DEV_GSB_CustList" />
+            </list>
+          </property>
+          <property name="params">
+            <list>
+              <value>_xfgclient.list.tender.void</value>
+              <value>-&#x2754;P0.retailTransactionLineItemSequence</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_EnableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_DealUpdatedList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_DisableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_TransactionList" />
+              <ref bean="DEV_GSB_CustList" />
+            </list>
+          </property>
+          <property name="params" value="_xfgclient.list.deal.update" />
+        </bean>
+        <bean parent="INTPCMD_EnableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_YesNoEntry" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_YesNoButton1" />
+          <property name="params" value="_xfgclient.key.yes.label" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_YesNoButton2" />
+          <property name="params" value="_xfgclient.key.no.label" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_CustomYesNoEntry" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_YesNoButton1" />
+          <property name="params" value="&#x2754;P1" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_YesNoButton2" />
+          <property name="params" value="&#x2754;P2" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_Choice3Entry" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_Choice3Button1" />
+          <property name="params" value="&#x2754;P1" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_Choice3Button2" />
+          <property name="params" value="&#x2754;P2" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_Choice3Button3" />
+          <property name="params" value="&#x2754;P3" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ActivateRegisterStatusColor" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_ViewScreen">
+        <property name="params" value="REGISTER_STATUS_GREEN" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SelectListDefaultButton" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_Enable">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_SelectListButton1" />
+              <ref bean="DEV_SelectListButton2" />
+              <ref bean="DEV_SelectListScrollUp" />
+              <ref bean="DEV_SelectListScrollDown" />
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton1" />
+          <property name="params" value="_xfgclient.button.ok" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton2" />
+          <property name="params" value="_xfgclient.button.cancel" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="SELECT_LIST_FOOTER_SMALL_SPACE" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SelectListCustButton" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_Enable">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_SelectListButton1" />
+              <ref bean="DEV_SelectListButton2" />
+              <ref bean="DEV_SelectListScrollUp" />
+              <ref bean="DEV_SelectListScrollDown" />
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton1" />
+          <property name="params" value="&#x2754;P1" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton2" />
+          <property name="params" value="&#x2754;P2" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="SELECT_LIST_FOOTER_SMALL_SPACE" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SelectListNoCancel" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_Enable">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_SelectListButton1" />
+              <ref bean="DEV_SelectListScrollUp" />
+              <ref bean="DEV_SelectListScrollDown" />
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_Disable">
+          <property name="dev" ref="DEV_SelectListButton2" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton1" />
+          <property name="params" value="_xfgclient.button.ok" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton2" />
+          <property name="params" value="_xfgclient.button.cancel" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="SELECT_LIST_FOOTER_LARGE_SPACE" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SelectListNoCancelNoScroll" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_Enable">
+          <property name="dev" ref="DEV_SelectListButton1" />
+        </bean>
+        <bean parent="INTPCMD_Disable">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_SelectListButton2" />
+              <ref bean="DEV_SelectListScrollUp" />
+              <ref bean="DEV_SelectListScrollDown" />
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton1" />
+          <property name="params" value="_xfgclient.button.ok" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton2" />
+          <property name="params" value="_xfgclient.button.cancel" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="SELECT_LIST_FOOTER_LARGE_SPACE_NO_SCROLL" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SelectListCustLargeButtonNoScroll" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_Enable">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_SelectListButton1" />
+              <ref bean="DEV_SelectListButton2" />
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_Disable">
+          <property name="dev">
+            <list>
+              <ref bean="DEV_SelectListScrollUp" />
+              <ref bean="DEV_SelectListScrollDown" />
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton1" />
+          <property name="params" value="&#x2754;P1" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectListButton2" />
+          <property name="params" value="&#x2754;P2" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="SELECT_LIST_FOOTER_LARGE_BUTTON_NO_SCROLL" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_PlayerResultsListInit" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_Clear">
+          <property name="dev" ref="DEV_PlayerResultsList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_PlayerResultsListAdd" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_SetText">
+        <property name="dev" ref="DEV_PlayerResultsList" />
+        <property name="params">
+          <list>
+            <value>&#x2754;P0</value>
+            <value>&#x2754;P1</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SelectListInit" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_Clear">
+          <property name="dev" ref="DEV_SelectList" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="SELECT_LIST_RESET_COLUMNS" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SelectListAdd" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_SetText">
+        <property name="dev" ref="DEV_SelectList" />
+        <property name="params">
+          <list>
+            <value>&#x2754;P0</value>
+            <value>&#x2754;P1</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_StoreMessageListAdd" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectList" />
+          <property name="params">
+            <list>
+              <value>&#x2754;P0</value>
+              <value>&#x2754;P3</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_SetFilename">
+          <property name="dev" ref="DEV_SelectList" />
+          <property name="params">
+            <list>
+              <value>&#x2754;P1</value>
+              <value>&#x2754;P3</value>
+              <value>0</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_SetFilename">
+          <property name="dev" ref="DEV_SelectList" />
+          <property name="params">
+            <list>
+              <value>&#x2754;P2</value>
+              <value>&#x2754;P3</value>
+              <value>2</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_SetKeyCodeType">
+          <property name="conditionText" value="&#x2754;P2!=&quot;&quot;" />
+          <property name="dev" ref="DEV_SelectList" />
+          <property name="params">
+            <list>
+              <value>1</value> <!-- key code -->
+              <value>3</value> <!-- key type -->
+              <value>&#x2754;P3</value> <!-- row -->
+              <!-- <value>2</value> --> <!-- column (empty = all columns) -->
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_HouseAccountListAdd" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_SelectList" />
+          <property name="params">
+            <list>
+              <value>&#x2754;P0</value>
+              <value>&#x2754;P2</value>
+            </list>
+          </property>
+        </bean>
+        <bean parent="INTPCMD_SetFilename">
+          <property name="dev" ref="DEV_SelectList" />
+          <property name="params">
+            <list>
+              <value>&#x2754;P1</value>
+              <value>&#x2754;P2</value>
+              <value>0</value>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SelectList_DisableSelectable" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_DisableSelectable">
+        <property name="dev" ref="DEV_SelectList" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SelectList_EnableSelectable" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_EnableSelectable">
+        <property name="dev" ref="DEV_SelectList" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ItemSearchListInit" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_Clear">
+        <property name="dev" ref="DEV_ItemSearchList" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ItemSearchListAdd" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_SetText">
+        <property name="dev" ref="DEV_ItemSearchList" />
+        <property name="params">
+          <list>
+            <value>&#x2754;P0</value>
+            <value>&#x2754;P1</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_CustomerSearchListInit" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_Clear">
+        <property name="dev" ref="DEV_CustomerSearchList" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_CustomerSearchListAdd" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_SetText">
+        <property name="dev" ref="DEV_CustomerSearchList" />
+        <property name="params">
+          <list>
+            <value>&#x2754;P0</value>
+            <value>&#x2754;P1</value>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ItemSearchListSelectFirst" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_ViewScreen">
+        <property name="params" value="SELECT_FIRST_ITEM_SEARCH_RESULT" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_CustomerSearchListSelectFirst" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_ViewScreen">
+        <property name="params" value="SELECT_FIRST_CUSTOMER_SEARCH_RESULT" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_OpenBusyScreen" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_ViewScreen">
+        <property name="params" value="OPEN_BUSY_POPUP" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_OpenBusyScreenWindow" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_BusyScreenText" />
+          <property name="params" value="&#x2754;P0" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_CloseBusyScreen" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="CLOSE_BUSY_POPUP" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="CLOSE_BUSY_POPUP_WINDOW" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ScaleInit" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText" value="(&#x2754;P3==false) &amp;&amp; (&#x2754;P4==false)" />
+          <property name="params" value="SCALE_CERT_WITH_NO_ZERO_SET" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText" value="(&#x2754;P3==true) &amp;&amp; (&#x2754;P4==false)" />
+          <property name="params" value="SCALE_CERT_WITH_ZERO_SET" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText" value="(&#x2754;P3==false) &amp;&amp; (&#x2754;P4==true)" />
+          <property name="params" value="SCALE_CERT_WITH_TARE" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText" value="(&#x2754;P3==true) &amp;&amp; (&#x2754;P4==true)" />
+          <property name="params" value="SCALE_CERT_WITH_ZERO_SET_AND_TARE" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_GSB_ScaleCert" />
+          <property name="params" value="_xfgclient.gsbscale.text" />
+        </bean>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="ACTIVATE_SCALE_INFO" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_SetItemGridPage" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetPage">
+          <property name="params" value="&#x2754;P0" />
+        </bean>
+        <!-- <bean parent="INTPCMD_TriggerAction"> <property name="dev" ref="DEV_ItemGridButton1" /> </bean> -->
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="params" value="PLU_LIST_OPEN" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_LoadItemGridPages" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <bean parent="INTPCMD_SetPage">
+        <property name="params" value="&#x2754;P0" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TillCount" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_Clear" >
+          <property name="dev" ref="DEV_GSB_Total" />
+        </bean>
+        <bean parent="INTPCMD_SetText" >
+          <property name="dev" ref="DEV_GSB_TillAudit" />
+          <property name="params" value="_tillCountSummaryTitle" />
+        </bean>
+        <bean parent="INTPCMD_SetText" >
+          <property name="dev" ref="DEV_GSB_CashierId" />
+          <property name="params" value="_xfgclient.gsbcachierid" />
+        </bean>
+        <bean parent="INTPCMD_SetText" >
+          <property name="dev" ref="DEV_GSB_TillId" />
+          <property name="params" value="_xfgclient.gsbtillid" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="KW_GS_TillAudit" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <ref bean="KW_GS_TillCount" />
+        <bean parent="INTPCMD_SetText" >
+          <property name="dev" ref="DEV_ODis" />
+          <property name="params" value="_xfgclient.odis.tillCount" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="KW_GS_ChangeFloat" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <ref bean="KW_GS_TillCount" />
+        <bean parent="INTPCMD_SetText" >
+          <property name="dev" ref="DEV_ODis" />
+          <property name="params" value="_xfgclient.odis.changeFloat" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TillCountList" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_SetText">
+          <property name="dev" ref="DEV_TransactionList" />
+          <property name="params">
+            <list>
+              <value>&#x2754;P0</value>
+              <value>&#x2754;P1</value>
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TillCountList_DisableSelection" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_DisableSelectable">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+        <bean parent="INTPCMD_DisableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_TillCountList_EnableSelection" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_EnableSelectable">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+        <bean parent="INTPCMD_EnableSelection">
+          <property name="dev" ref="DEV_TransactionList" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_ShowTrainingMode" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText" value="&#x2754;BEAN_trainingModeHelper.isTrainingMode()==true" />
+          <property name="params" value="REGISTER_TRAINING_MODE" />
+        </bean>
+        <bean parent="INTPCMD_SetText">
+          <property name="conditionText" value="&#x2754;BEAN_trainingModeHelper.isTrainingMode()==true" />
+          <property name="dev" ref="DEV_GSB_TrainingModeText" />
+          <property name="params" value="_xfgclient.trainingmode" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KW_GS_HideTrainingMode" class="com.micros_retail.xfgclient.interpret.IntpKeyword">
+    <property name="cmds">
+      <list>
+        <bean parent="INTPCMD_ViewScreen">
+          <property name="conditionText" value="&#x2754;BEAN_trainingModeHelper.isTrainingMode()==false" />
+          <property name="params" value="REGISTER_NON_TRAINING_MODE" />
+        </bean>
+        <bean parent="INTPCMD_Clear">
+          <property name="conditionText" value="&#x2754;BEAN_trainingModeHelper.isTrainingMode()==false" />
+          <property name="dev" ref="DEV_GSB_TrainingModeText" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+</beans>

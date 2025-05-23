@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed Apr 27 14:45:43 EDT 2011 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+  <Form name="ADDRESS_LOOKUP" type="POPUP_VIEW_PANEL">
+    <Page name="addressLookup">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="addressLookupLayout" />      
+    </Page>
+    <ActionGroup name="DEFAULT">
+      <Action dataKey="ADDRESS_LOOKUP_CANCEL" text="_cancel" keyStroke="Escape" />
+	    <Action dataKey="ADDRESS_LOOKUP_CLEAR_HISTORY"   text="_addressLookupStartNewSearch" keyStroke="F2" />
+	    <Action dataKey="ADDRESS_LOOKUP"  text="_addressLookup" keyStroke="F8"/>
+    </ActionGroup>
+    <ActionGroup name="REFINE_WITH_ADDRESS_LIST">
+      <Action dataKey="ADDRESS_LOOKUP_CANCEL" text="_cancel" keyStroke="Escape" />
+	    <Action dataKey="ADDRESS_LOOKUP_CLEAR_HISTORY"   text="_addressLookupStartNewSearch" keyStroke="F2"/>
+	    <Action dataKey="REFINE_WITH_ADDRESS_LIST"  text="_refineAddress"  keywords="actionForSelectedListItem" keyStroke="F8" />
+    </ActionGroup>
+    <ActionGroup name="REFINE_WITHOUT_ADDRESS_LIST">
+      <Action dataKey="ADDRESS_LOOKUP_CANCEL" text="_cancel" keyStroke="Escape" />
+      <Action dataKey="ADDRESS_LOOKUP_CLEAR_HISTORY"   text="_addressLookupStartNewSearch" keyStroke="F2"/>
+      <Action dataKey="REFINE_WITHOUT_ADDRESS_LIST"  text="_refineAddress" keyStroke="F8" />
+    </ActionGroup>
+  </Form>
+</FormSet>

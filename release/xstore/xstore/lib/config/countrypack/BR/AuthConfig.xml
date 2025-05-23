@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AuthConfig.xsd">
+
+  <AuthRequestMap name="BR::NFE::NFE_SERVICE::ABSTRACT">
+    <AuthRequest key="ISSUE" class="oracle.retail.xstore.countrypack.br.nfe.auth.NfeServiceAuthRequest" />
+    <AuthRequest key="REVERSE" class="oracle.retail.xstore.countrypack.br.nfe.auth.NfeServiceReverseRequest" />
+  </AuthRequestMap>
+
+  <AuthProcess name="BR::NFE::NFE_SERVICE::ABSTRACT" Abstract="true">
+    <AuthProcessClass dtype="Class">oracle.retail.xstore.countrypack.br.nfe.auth.NfeServiceAuthProcess</AuthProcessClass>
+    <Parameter name="communicator" value="oracle.retail.xstore.countrypack.br.nfe.auth.NfeServiceAuthCommunicator" />
+    <Parameter name="requestConverter" value="oracle.retail.xstore.countrypack.br.nfe.auth.NfeServiceAuthConverter" />
+    <Parameter name="responseConverter" value="oracle.retail.xstore.countrypack.br.nfe.auth.NfeServiceAuthConverter" />
+    <Parameter name="communicatorReceiveTimeoutMillis"><value dtype="Integer">240000</value></Parameter>
+    <parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various reasons -->
+      <param_value dtype="Map">
+        <MapEntry key="APPROVED">
+          <value dtype="ParameterizedFormattable" TranslationKey="_countrypack.br.nfe.auth.approved">
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <!-- 
+        <MapEntry key="RESPONSE_CODE_999">
+          <value dtype="ParameterizedFormattable" TranslationKey="_countrypack.br.nfe.auth.failed.999" />
+        </MapEntry>
+         -->
+        <MapEntry key="RESPONSE_CODE_OTHER">
+          <value dtype="ParameterizedFormattable" TranslationKey="_countrypack.br.nfe.auth.failed">
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <value dtype="Translatable">_countrypack.br.nfe.auth.offline</value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the Xstore code occurs -->
+          <value dtype="Translatable">_countrypack.br.nfe.auth.fatalError</value>
+        </MapEntry>
+      </param_value>
+    </parameter>
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">101</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN WS IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL:SHOULDNT BE POSSIBLE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+
+  <AuthProcess name="BR::NFE::NFE_SERVICE" extends="BR::NFE::NFE_SERVICE::ABSTRACT">
+  </AuthProcess>
+
+</AuthConfig>

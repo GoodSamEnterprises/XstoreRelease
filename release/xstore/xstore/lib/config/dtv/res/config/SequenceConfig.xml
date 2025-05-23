@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SequenceSet xmlns:dtv="http://www.datavantagecorp.com/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="SequenceConfig.xsd">
+  
+  <SequencePath name="Active">sequence/active/</SequencePath>
+  <SequencePath name="Training">sequence/train/</SequencePath>
+  
+  <Sequence name="_COMMON_" abstract="true">
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">false</RetailLocationLevel>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="_COMMON-ENCODED_" ref="_COMMON_" abstract="true">
+    <SequenceType dtype="String">ENCODED</SequenceType>
+    <RetailLocationLevel dtype="Boolean">false</RetailLocationLevel>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="EncodedLong">YYYYYY</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  
+  <!-- Sequence definition for transaction numbers (numeric)-->
+  <Sequence name="Transaction" ref="_COMMON_">
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <FileName dtype="String">transactionSeq.seq</FileName>
+    <SequencePart partType="NEXT_NUMBER" padLength="9">
+      <InitialValue dtype="Long">0</InitialValue>
+      <!-- the transaction barcode has 5 digits of base-26, so 11,881,375 is the maximum value in base-10 -->
+      <MaximumValue dtype="EncodedLong">YYYYY</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="EMPLOYEE" ref="_COMMON_">
+    <FileName dtype="String">employeeSeq.seq</FileName>
+  </Sequence>
+  <!-- Sequence definition for party IDs (numeric) -->
+  <Sequence name="Party" ref="_COMMON_">
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <FileName dtype="String">partySeq.seq</FileName>
+  </Sequence>
+  <Sequence name="INV_CTL_CONTROL" ref="_COMMON_">
+    <FileName dtype="String">invCtlControlSeq.seq</FileName>
+  </Sequence>
+  <!-- Sequence definition for address IDs (alpha-numeric) -->
+  <Sequence name="ADDRESS" ref="_COMMON_">
+    <FileName dtype="String">addressSeq.seq</FileName>
+  </Sequence>
+  <!-- Sequence definition for voucher IDs (alpha-numeric) -->
+  <Sequence name="Voucher" ref="_COMMON_">
+    <FileName dtype="String">voucherSeq.seq</FileName>
+  </Sequence>
+  <Sequence name="GIFT_CERTIFICATE" ref="_COMMON_">
+    <FileName dtype="String">giftCertificateSeq.seq</FileName>
+    <SequencePart partType="TEXT" param="GC" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="STORE_CREDIT" ref="_COMMON_">
+    <FileName dtype="String">storeCreditSeq.seq</FileName>
+    <SequencePart partType="TEXT" param="SC" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <!-- end vouchers -->
+  <Sequence name="TAX_EXEMPTION" ref="_COMMON-ENCODED_">
+    <FileName dtype="String">taxExemption.seq</FileName>
+  </Sequence>
+  <!-- Sequence definition for SendSale document IDs (numeric) -->
+  <Sequence name="SEND_SALE_INV_DOC" ref="_COMMON_">
+    <FileName dtype="String">inventoryCount.seq</FileName>
+  </Sequence>
+  <!-- Sequence definition for Layaway account IDs -->
+  <Sequence name="LAYAWAY" ref="_COMMON_">
+    <FileName dtype="String">layaway.seq</FileName>
+    <SequencePart partType="TEXT" param="L" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <!-- Sequence definition for special order account IDs -->
+  <Sequence name="SP_ORDER" ref="_COMMON_">
+    <FileName dtype="String">sporder.seq</FileName>
+    <SequencePart partType="TEXT" param="S" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <!-- Sequence definition for special order account IDs -->
+  <Sequence name="SEND_SALE" ref="_COMMON_">
+    <FileName dtype="String">sendsale.seq</FileName>
+    <SequencePart partType="TEXT" param="H" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <!-- Sequence definition for work order account IDs -->
+  <Sequence name="WORK_ORDER" ref="_COMMON_">
+    <FileName dtype="String">workorder.seq</FileName>
+    <SequencePart partType="TEXT" param="W" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <!-- Sequence definition for customer accounts -->
+  <Sequence name="CUSTOMER_ACCOUNT" ref="_COMMON_">
+    <FileName dtype="String">custAcct.seq</FileName>
+  </Sequence>
+  <Sequence name="SESSION_ID" ref="_COMMON_">
+    <FileName dtype="String">sessionId.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+  </Sequence>
+  <Sequence name="ASN" ref="_COMMON-ENCODED_">
+    <FileName dtype="String">asn.seq</FileName>
+    <SequencePart partType="TEXT" param="ASN" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="TRANSFER" ref="_COMMON-ENCODED_">
+    <FileName dtype="String">transfer.seq</FileName>
+    <SequencePart partType="TEXT" param="TF" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="RETURN_TO_VENDOR" ref="_COMMON-ENCODED_">
+    <FileName dtype="String">rtv.seq</FileName>
+    <SequencePart partType="TEXT" param="RTV" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="SHIPMENT_OUT" ref="_COMMON-ENCODED_">
+    <FileName dtype="String">shipment.seq</FileName>
+    <SequencePart partType="TEXT" param="SH" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="SHIPPING_CARTON" ref="_COMMON_">
+    <FileName dtype="String">shippingCarton.seq</FileName>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="TIMECARD_ENTRY_ID" ref="_COMMON_">
+    <FileName dtype="String">timecardEntryId.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="PAYROLL_NOTES_SEQ" ref="_COMMON_">
+    <FileName dtype="String">payrollNotesSeq.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+  </Sequence>
+  <Sequence name="TIMECARD_COMMENT_SEQ" ref="_COMMON_">
+    <FileName dtype="String">timecardCommentSeq.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="WORK_ORDER_SHIPMENT" ref="_COMMON-ENCODED_">
+    <FileName dtype="String">workOrderShipment.seq</FileName>
+  </Sequence>
+  <Sequence name="SAVED_REPORT" ref="_COMMON-ENCODED_">
+    <FileName dtype="String">savedReportSeq.seq</FileName>
+  </Sequence>
+  <Sequence name="VOUCHER_HISTORY_SEQ" ref="_COMMON_">
+    <FileName dtype="String">voucherHistorySeq.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+  </Sequence>
+  <Sequence name="CUSTOMER_ACCOUNT_JOURNAL_SEQ" ref="_COMMON_">
+    <FileName dtype="String">custAccountSeq.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+  </Sequence>
+  <Sequence name="GUID" ref="_COMMON_">
+    <FileName dtype="String">guid.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="10">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="STATE_JOURNAL">
+    <FileName dtype="String">stateJournal.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <SequencePart partType="NEXT_NUMBER" padLength="10">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="AUTH" ref="_COMMON_">
+    <FileName dtype="String">auth.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <SequencePart partType="NEXT_NUMBER" padLength="10">
+      <InitialValue dtype="Long">0</InitialValue>
+      <!-- must fit in an int -->
+      <MaximumValue dtype="Long">2147483647</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="STAN6" ref="_COMMON_">
+    <FileName dtype="String">stan6.seq</FileName>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue>
+      <!-- must fit in an int -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="GENERIC_LINE_NUMBER" ref="_COMMON_">
+    <FileName dtype="String">genericLineNumber.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="INVENTORY_COUNT" ref="_COMMON-ENCODED_">
+    <FileName dtype="String">inventoryCount.seq</FileName>
+  </Sequence>
+  <Sequence name="UNAPPLIED_VOUCHER" ref="_COMMON_">
+    <FileName dtype="String">unappliedVoucherSeq.seq</FileName>
+  </Sequence>
+  <Sequence name="WARRANTY" ref="_COMMON_">
+    <FileName dtype="String">warranty.seq</FileName>
+    <SequencePart partType="TEXT" param="WA" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="WARRANTY_JOURNAL" ref="_COMMON_">
+    <FileName dtype="String">warrantyJournal.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+  </Sequence>
+  <Sequence name="PRIVATE_CREDIT_CLIENT_ORDER_ID" ref="_COMMON_">
+    <FileName dtype="String">clientOrderId.seq</FileName>
+  </Sequence>
+  <Sequence name="PRIVATE_CREDIT_MICROFILM_NUMBER" ref="_COMMON_">
+    <FileName dtype="String">microfilmNumber.seq</FileName>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="3">
+      <TruncateLength dtype="Integer">3</TruncateLength>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="4">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">9999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="BOUNCE_BACK_COUPON_NUMBER" ref="_COMMON_">
+    <FileName dtype="String">bounceBackCouponNbr.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC_TWO_DIGIT_SUM</SequenceType>
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="4" />
+    <SequencePart partType="NEXT_NUMBER" padLength="4">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">9999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="JULIAN_DATE" padLength="3" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+  </Sequence>
+  <Sequence name="DOCUMENT_SEQUENCE_NUMBER" ref="_COMMON_">
+    <FileName dtype="String">document.seq</FileName>
+  </Sequence>
+  <Sequence name="INVENTORY_MOVEMENT" ref="_COMMON_">
+    <FileName dtype="String">inventoryMovement.seq</FileName>
+  </Sequence>
+  <Sequence name="SAF" ref="_COMMON_">
+    <FileName dtype="String">saf.seq</FileName>
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="0" />
+    <SequencePart partType="NEXT_NUMBER" padLength="0">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">9999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="SAF_TRANS_NBR" ref="_COMMON_">
+    <FileName dtype="String">safTrans.seq</FileName>
+    <SequencePart partType="NEXT_NUMBER" padLength="2">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">99</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="SAF_SEQ_NBR" ref="_COMMON_">
+    <FileName dtype="String">safSeq.seq</FileName>
+    <SequencePart partType="NEXT_NUMBER" padLength="3">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="FLOOR_LIMIT_AUTH_CODE" ref="_COMMON_">
+    <FileName dtype="String">floorLimitAuthCode.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC_MOD10</SequenceType>
+    <SequencePart partType="NEXT_NUMBER" padLength="5">
+      <InitialValue dtype="Long">10001</InitialValue>
+      <MaximumValue dtype="Long">99999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="LOG_TRICKLE" ref="_COMMON_">
+    <FileName dtype="String">logTrickle.seq</FileName>
+  </Sequence>
+  <Sequence name="EMPLOYEE_MESSAGE" ref="_COMMON_">
+    <FileName dtype="String">employeeMessage.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+  </Sequence>
+  <Sequence name="ADDRESS_MODIFIER" ref="_COMMON_">
+    <FileName dtype="String">addressModifier.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+  </Sequence>
+  <Sequence name="SALES_GOAL" ref="_COMMON_">
+    <FileName dtype="String">salesGoalId.seq</FileName>
+  </Sequence>
+  
+  <!-- 344027: Inventory Replenishment -->
+  <Sequence name="REPLENISHMENT_DOCUMENT" ref="_COMMON_">
+    <FileName dtype="String">replenishmentDocument.seq</FileName>
+    <SequencePart partType="TEXT" param="RO" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="REPLENISHMENT" ref="_COMMON-ENCODED_">
+    <FileName dtype="String">replenishmentDocument.seq</FileName>
+    <SequencePart partType="TEXT" param="RD" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <!-- /344027: Inventory Replenishment -->
+
+  <Sequence name="PRESALE" ref="_COMMON_">
+    <FileName dtype="String">presale.seq</FileName>
+    <SequencePart partType="TEXT" param="P" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="ONHOLD" ref="_COMMON_">
+    <FileName dtype="String">onhold.seq</FileName>
+    <SequencePart partType="TEXT" param="OH" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  
+  <Sequence name="HOUSE_ACCOUNTS_BUYER" >
+    <FileName dtype="String">houseAcctBuyer.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="HAU" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  
+  <Sequence name="HOUSE_ACCOUNT" ref="_COMMON_">
+    <FileName dtype="String">houseAccountSeq.seq</FileName>
+    <SequencePart partType="TEXT" param="HA" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="BATCH_CLOSE" ref="_COMMON_">
+    <FileName dtype="String">closeBatchSeq.seq</FileName>
+    <SequencePart partType="TEXT" param="CB" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>  
+
+  <Sequence name="RAINCHECK">
+    <FileName dtype="String">raincheckSeq.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="RC" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <!-- Sequence definition for customer IDs (alpha-numeric) -->
+  <Sequence name="Customer">
+    <FileName dtype="String">customerSeq.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="C" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <!-- Sequence definition for gift registry journal IDs (numeric) -->
+  <Sequence name="GiftRegistryJournal" ref="_COMMON_">
+    <FileName dtype="String">giftRegistryJournalSeq.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+  </Sequence>
+  
+  <!-- Sequence definition for associate task IDs (numeric) -->
+  <Sequence name="ASSOCIATE_TASK" ref="_COMMON_">
+    <FileName dtype="String">associateTask.seq</FileName>
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+  </Sequence>
+
+</SequenceSet>

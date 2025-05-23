@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+  
+  <ReceiptCopyRules>
+    <ReceiptCopyRule name="EFTLINK_RECEIPT" document="EFTLINK_RECEIPT">
+      <Rule class="dtv.tenderauth.impl.eftlink.EftLinkCopyRule" />
+    </ReceiptCopyRule>
+  </ReceiptCopyRules>
+  
+  <receipts>
+    <receipt document="EFTLINK_RECEIPT" sectionref="EFTLINK_RECEIPT" />
+  </receipts>
+  
+  <sections>
+    <section name="tenders">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trn.IPosTransaction" />
+      <horizontal_rule style="Double" />
+      <iterator method="getLineItemsByTypeCode" method_param="TENDER">
+        <condition class="dtv.tenderauth.impl.eftlink.conditions.EftLinkVoidedLineCondition" />
+        <condition class="dtv.pos.docbuilding.conditions.IncludeTenderStateCondition" value="CHANGE" inverted="true" />
+        <sectionref>nonchange_tender</sectionref>
+      </iterator>
+      <horizontal_rule style="Double" />
+    </section>
+
+    <section name="storecopy_tenders">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trn.IPosTransaction" />
+      <horizontal_rule style="Double" />
+      <iterator method="getLineItemsByTypeCode" method_param="TENDER">
+        <condition class="dtv.tenderauth.impl.eftlink.conditions.EftLinkVoidedLineCondition" />
+        <condition class="dtv.pos.docbuilding.conditions.IncludeTenderStateCondition" value="CHANGE" inverted="true" />
+        <sectionref>storecopy_nonchange_tender</sectionref>
+      </iterator>
+      <horizontal_rule style="Double" />
+    </section>  
+    
+    <section name="creditcard_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.ICreditDebitTenderLineItem" />
+      <sectionref>creditcard_detail_customer</sectionref>
+      <sectionref>eftlink_receipt_section</sectionref>
+    </section>
+
+    <section name="storecopy_creditcard_tender">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.ttr.ICreditDebitTenderLineItem" />
+      <sectionref>creditcard_detail</sectionref>
+      <sectionref>eftlink_receipt_section</sectionref>
+      <sectionref>credit_card_imprint</sectionref>
+    </section>  
+    
+    <section name="EFTLINK_RECEIPT">
+      <call method="getParentTransction">
+        <sectionref>header</sectionref>
+      </call>
+      <sectionref name="eftlink_receipt_section" />
+      <sectionref>page_break</sectionref>
+    </section>
+    
+    <section name="eftlink_receipt_section">
+      <condition method="getReceiptLines" comparison="NOT_EMPTY" />
+      <iterator method="getReceiptLines">
+        <region>
+          <condition method="getBarcode" comparison="IS_NULL" />
+          <field><aggregate class="dtv.tenderauth.impl.eftlink.EftLinkTextBuilderField" /></field>
+        </region>
+        <sectionref name="eftlink_barcode" />
+      </iterator>
+    </section>
+    
+    <section name="eftlink_barcode">
+      <condition method="getBarcode" comparison="NOT_NULL" />
+      <barcode symbology="Code 93">
+        <field method="getBarcode" />
+      </barcode>
+    </section>
+    
+    <section name="creditcard_detail_customer">
+      <condition class="dtv.pos.docbuilding.conditions.TenderIdCondition" tenderId="ROOM_CHARGE" inverted="true" />
+      <condition method="getReceiptLines" comparison="IS_EMPTY" />
+      <row>
+        <field method="getTender.getDescription" />
+        <field method="getAmount" formatter="Money" loc="-3" />
+      </row>
+      <row><field method="getMaskAccountNumberDao" loc="5" /></row>
+      <row>
+        <field text="_authnbr" loc="5" /><sp/>
+        <field method="getAuthorizationCode" />
+      </row>
+      <row>
+        <field text="_transType" loc="5" /><sp/>
+        <field><aggregate class="dtv.pos.common.rcpt.RcptTransactionTypeDocBuilderField" /></field>
+      </row>
+      <row>
+        <condition method="getParentTransaction.getPostVoid" comparison="TRUE" />
+        <field text="_authTime" loc="5" /><sp/>
+        <field formatter="TimeShort"><aggregate class="dtv.pos.common.rcpt.PostVoidAuthTimeDocBuilderField" /></field>
+      </row>
+      <row>
+        <condition method="getParentTransaction.getPostVoid" comparison="FALSE" />
+        <field text="_authTime" loc="5" /><sp/>
+        <field method="getBeginDateTimestamp" formatter="TimeShort" />
+      </row>
+      <row>
+        <condition method="getStringProperty" method_param="REPORTED_BALANCE" comparison="NOT_BLANK" />
+        <field text="_voucherBalance" loc="5" /><sp/>
+        <field method="getStringProperty" method_param="REPORTED_BALANCE" />
+      </row>
+      <row>
+        <condition method="getTraceNumber" comparison="NOT_NULL" />
+        <field text="_traceNumber" loc="5" /><sp/>
+        <field method="getTraceNumber" />
+      </row>
+    </section>
+    
+    <section name="creditcard_detail">
+      <condition class="dtv.pos.docbuilding.conditions.TenderIdCondition" tenderId="ROOM_CHARGE" inverted="true" />
+      <condition method="getReceiptLines" comparison="IS_EMPTY" />
+      <row>
+        <field method="getTender.getDescription" />
+        <field method="getAmount" formatter="Money" loc="-3" />
+      </row>
+      <row>
+        <field method="getMaskAccountNumberDao" loc="5" /><sp/>
+        <!-- PCI default is not to display.  Can be enabled at customer request
+        <field method="getExpirationDate" formatter="CreditCardExp" />
+        -->
+      </row>
+      <row>
+        <field text="_authnbr" loc="5" /><sp/>
+        <field method="getAuthorizationCode" />
+      </row>
+      <row>
+        <field text="_transType" loc="5" /><sp/>
+        <field><aggregate class="dtv.pos.common.rcpt.RcptTransactionTypeDocBuilderField" /></field>
+      </row>
+      <row>
+        <field text="_authTime" loc="5" /><sp/>
+        <field method="getBeginDateTimestamp" formatter="TimeShort" />
+      </row>
+      <row>
+        <condition method="getTraceNumber" comparison="NOT_NULL" />
+        <field text="_traceNumber" loc="5" /><sp/>
+        <field method="getTraceNumber" />
+      </row>
+    </section>
+  </sections>
+</ReceiptDefinitions>

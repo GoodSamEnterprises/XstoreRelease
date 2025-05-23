@@ -1,0 +1,92 @@
+<dataTemplate name="Restock" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="START_TIME_COLON" value="_rptStartTimeColon"/>
+    <label name="END_TIME_COLON" value="_rptEndTimeColon"/>
+    <label name="DEPARTMENT_COLON" value="_rptDepartmentColon"/>
+    <label name="ID" value="_rptID"/>
+    <label name="DEPARTMENT" value="_rptDepartment"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="QTY" value="_rptRestockReportQuantitySold"/>
+    <label name="TOTAL" value="_rptTotal"/>
+    <label name="TOTAL_COLON" value="_rptTotalColon"/>
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="hierarchyId" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_merchLevel1;Combo;dtv.pos.inventory.level.MerchLevel1ListLoader;all=_rptParamSelectionAll]]></parameterDescription>
+      <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startTime" class="java.lang.Integer" formatter="StringTimeShort">
+        <parameterDescription><![CDATA[_rptStartTimeColon;TimeInt;TimeShort;defaultValue=0]]></parameterDescription>
+    </parameter>
+    <parameter name="endTime" class="java.lang.Integer" formatter="StringTimeShort">
+        <parameterDescription><![CDATA[_rptEndTimeColon;TimeInt;TimeShort;defaultValue=235900000]]></parameterDescription>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="merchLevel1Code" class="java.lang.String" isForPrompting="false" include_in_output="false"/>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_RESTOCK_REPORT" key="RESTOCK_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>hierarchyId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startTime</Parameter>
+        <Parameter>endTime</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>level_code</ResultField>
+        <ResultField>merch_level_1</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>item_description</ResultField>
+        <ResultField>quantity</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_RESTOCK" source="Q_RESTOCK_REPORT">
+        <element name="level_code" value="level_code"/>
+        <element name="merch"      value="merch_level_1"/>
+        <element name="desc"       value="description"/>
+        <element name="item"       value="item_id"/>
+        <element name="item_desc"  value="item_description" />
+        <element name="qty"        value="quantity" formatter="Decimal"/>
+    </group>
+    <group name="G_RESTOCK_SUB_TOTAL" source="Q_RESTOCK_REPORT">
+        <element name="merch" group-by="true" value="merch_level_1"/>
+        <element name="TOTAL" value="quantity" function="SUM" formatter="Decimal"/>
+    </group>
+    <group name="G_RESTOCK_TOTAL" source="Q_RESTOCK_REPORT">
+        <element name="TOTAL" value="quantity" function="SUM" formatter="Decimal"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

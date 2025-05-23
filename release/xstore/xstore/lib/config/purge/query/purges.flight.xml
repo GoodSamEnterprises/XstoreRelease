@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <!-- ***************************************************************** -->
+  <!-- ROOTS -->
+  <!-- ***************************************************************** -->
+  <Query name="com_flight_info">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+         DELETE {%ALIAS%} FROM com_flight_info c
+          WHERE organization_id = ?
+            AND scheduled_date_time < ?
+            AND NOT EXISTS
+                  (SELECT p.* FROM trl_rtrans_flight_info p 
+                    WHERE p.organization_id = c.organization_id
+                      AND /*UPPER*/ p.flight_number = c.flight_number)
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+</QuerySet>

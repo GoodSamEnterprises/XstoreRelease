@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="KEY_PlayerStop" class="com.micros_retail.xfgclient.key.PlayerControlKey">
+    <property name="label" value="_xfgclient.key.playerstop.label" />
+    <property name="code" value="1" />
+  </bean>
+
+  <bean id="KEY_PlayerPause" class="com.micros_retail.xfgclient.key.PlayerControlKey">
+    <property name="label" value="_xfgclient.key.playerpause.label" />
+    <property name="code" value="2" />
+  </bean>
+
+  <bean id="KEY_PlayerSingleStep" class="com.micros_retail.xfgclient.key.PlayerControlKey">
+    <property name="label" value="_xfgclient.key.playersinglestep.label" />
+    <property name="code" value="3" />
+  </bean>
+
+  <bean id="KEY_PlayerDisableSingleStep" class="com.micros_retail.xfgclient.key.PlayerControlKey">
+    <property name="label" value="_xfgclient.key.playerdisablesinglestep.label" />
+    <property name="code" value="4" />
+  </bean>
+
+</beans>

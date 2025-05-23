@@ -1,0 +1,1088 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+  default-init-method="init">
+
+  <!-- Service locator for worker beans -->
+  <bean id="workerBeanLocator" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pos.framework.worker.WorkerLocator" />
+  </bean>
+
+  <!-- All workers that are defined as beans in this file should specify a scope of "prototype" because they 
+       represent utility that should not contain any state and should be created, used and discarded and we 
+       do not need or want Spring hanging on to an instance of them forever. All worker beans should specify
+       a parent bean of "workerList", simply for convenience and convention. -->
+
+  <bean id="workerList" class="dtv.pos.framework.worker.WorkerList" scope="prototype" />
+  <bean id="silentWorker" class="dtv.pos.framework.worker.DelegatingSilentWorker" scope="prototype" abstract="true" />
+
+  <!-- Worker beans -->
+  <bean id="determineCurrentDocStatusWorker" class="dtv.pos.inventory.ship.op.DetermineCurrentDocStatusWorker" scope="prototype" />
+  <bean id="processInventoryMovementWorker" class="oracle.retail.xstore.inv.movement.ProcessInventoryMovementWorker" scope="prototype" />
+  <bean id="persistCurrentTransactionWorker" class="dtv.pos.common.op.PersistCurrentTransactionWorker" scope="prototype" />
+  <bean id="generateReceivingFromShippingWorker" class="dtv.pos.inventory.ship.op.GenerateReceivingFromShippingDocWorker" scope="prototype" />
+  <bean id="buildTransFromInvDocWorker" class="dtv.pos.inventory.op.BuildTransFromInvDocWorker" scope="prototype" />
+  <bean id="handleInventoryAdjustmentKitComponentWorker" class="dtv.pos.inventory.op.HandleInventoryAdjustmentKitComponentWorker" scope="prototype" />
+  <bean id="handleInventoryShippingReceivingKitComponentWorker" class="dtv.pos.inventory.op.HandleInventoryShippingReceivingKitComponentWorker" scope="prototype" />
+  <bean id="writeLogEntryForCurrentDocWorker" class="dtv.pos.inventory.op.WriteLogEntryForCurrentDocWorker" scope="prototype" />
+  <bean id="buildInventoryLocationModifiersWorker" class="dtv.pos.inventory.adjustment.BuildInventoryLocationModifiersWorker" scope="prototype" />
+  <bean id="closeInventoryDocWorker" class="dtv.pos.inventory.adjustment.CloseInventoryDocWorker" scope="prototype" />
+  <bean id="updateOrderAccountsWorker" class="dtv.pos.inventory.receive.op.UpdateOrderAccountsWorker" scope="prototype" />
+  <bean id="closeParentDocumentWorker" class="dtv.pos.inventory.receive.op.CloseParentDocumentWorker" scope="prototype" />
+  <bean id="updateOrderShippingWorker" class="dtv.pos.order.maint.UpdateOrderShippingWorker" scope="prototype" />
+  <bean id="closeOutDeliveryOrderWorker" class="dtv.pos.order.maint.CloseOutDeliveryOrderWorker" scope="prototype">
+    <property name="transactionCalculators" ref="calculators" />
+  </bean>
+  <bean id="persistPostVoidWorker" class="dtv.pos.ejournal.postvoid.PersistPostVoidWorker" scope="prototype" />
+  <bean id="voidDiscountWorker" class="dtv.pos.pricing.discount.VoidDiscountWorker" scope="prototype" />
+  <bean id="voidCustomerAccountDiscountWorker" class="dtv.pos.customer.account.op.VoidCustomerAccountDiscountWorker" scope="prototype" />
+  <bean id="processCashTransferCountWorker" class="dtv.pos.till.count.ProcessCashTransferCountWorker" scope="prototype" />
+  <bean id="createTillStartCountObjectsWorker" class="dtv.pos.till.count.CreateTillStartCountObjectsWorker" scope="prototype" />
+  <bean id="updateVoidItemWorker" class="dtv.pos.register.modifyitem.UpdateVoidItemWorker" scope="prototype" />
+  <bean id="updateTenderVoidWorker" class="dtv.pos.tender.modifytender.UpdateTenderVoidWorker" scope="prototype" />
+  <bean id="voidChangeTenderWorker" class="dtv.pos.tender.modifytender.VoidChangeTenderWorker" scope="prototype" />  
+  <bean id="addPriceChangeModifierToLineItemWorker" class="dtv.pos.register.AddPriceChangeModifierToLineItemWorker" scope="prototype" />
+  <bean id="resumeGiftRegistryWorker" class="dtv.pos.register.suspendresume.ResumeGiftRegistryWorker" scope="prototype" />
+  <bean id="resumeGiftRcptRequestsWorker" class="dtv.pos.register.suspendresume.ResumeGiftRcptRequestsWorker" scope="prototype" />
+  <bean id="resumeLoyaltyWorker" class="dtv.pos.register.suspendresume.ResumeLoyaltyWorker" scope="prototype" />
+  <bean id="resumeOrderWorker" class="dtv.pos.register.suspendresume.ResumeOrderWorker" scope="prototype" />
+  <bean id="addTransDiscountsToNewItemWorker" class="dtv.pos.pricing.discount.AddTransDiscountsToNewItemWorker" scope="prototype" />
+  <bean id="applyItemToGiftRegistryWorker" class="dtv.pos.giftregistry.ApplyItemToGiftRegistryWorker" scope="prototype" />
+  <bean id="updateSaleItemsForRegistryWorker" class="dtv.pos.giftregistry.UpdateSaleItemsForRegistryWorker" scope="prototype" />
+  <bean id="updateCustomerConsentSelectionsWorker" class="dtv.pos.customer.consent.UpdateConsentSelectionsWorker" scope="prototype" />
+  
+  <bean id="completeCancelTimeclockTransWorker" class="dtv.pos.timeclock.timecard.op.CompleteCancelTimeclockTransWorker" scope="prototype" />
+  <bean id="completeCancelTransWorker" class="dtv.pos.register.CompleteCancelTransWorker" scope="prototype" />
+  <bean id="completeNoSaleTransWorker" class="dtv.pos.nosale.CompleteNoSaleTransWorker" scope="prototype" />
+  <bean id="completeSaleTransWorker" class="dtv.pos.register.CompleteSaleTransWorker" scope="prototype" />
+  <bean id="completeSuspendTransWorker" class="dtv.pos.register.suspendresume.CompleteSuspendTransWorker" scope="prototype" />
+  <bean id="completeTransactionWorker" class="dtv.pos.common.op.CompleteTransactionWorker" scope="prototype" />
+  <bean id="acceptAllCompleteTransactionWorker" class="dtv.pos.order.maint.AcceptAllCompleteTransactionWorker" scope="prototype" />
+  <bean id="persistBusinessPeriodClose" class="dtv.pos.systemcycle.endofday.PersistBusinessPeriodCloseWorker" scope="prototype" />
+  <bean id="createEndOfRetailPeriodTransWorker" class="dtv.pos.systemcycle.endofday.CreateEndOfRetailPeriodTransWorker" scope="prototype" />
+  <bean id="bringXenvironmentUiToFrontWorker" class="dtv.pos.appmanagement.op.BringXenvironmentUiToFrontWorker" scope="prototype" />
+  
+  <bean id="createReserveInventoryTransactionWorker" class="dtv.pos.order.maint.CreateReserveInventoryTransactionWorker" scope="prototype" />
+  <bean id="createRejectReserveInventoryTransactionWorker" class="dtv.pos.order.maint.CreateRejectReserveInventoryTransactionWorker" scope="prototype" />
+  <bean id="createUnreservedReserveInventoryTransactionWorker" class="dtv.pos.order.maint.CreateUnreservedReserveInventoryTransactionWorker" scope="prototype" />
+  <bean id="closeShippingDocumentWorker" class="dtv.pos.order.maint.CloseShippingDocumentWorker" scope="prototype" />
+  <bean id="createShippingDocumentWorker" class="dtv.pos.order.maint.CreateShippingDocumentWorker" scope="prototype" />
+  
+  <bean id="remapCurrencyDecimalDigitsWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.startup.RemapCurrencyDecimalDigitsWorker" />
+    </property>
+  </bean>
+  
+  <bean id="startHardwareWorker" class="dtv.pos.startup.StartupHardwareWorker" scope="prototype" />
+  <bean id="initBarcodeTranslatorWorker" class="dtv.pos.startup.InitBarcodeTranslatorWorker" scope="prototype" />
+  
+  <bean id="logVersionStatusInformationWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.startup.LogVersionStatusInformationWorker">
+        <property name="level" value="INFO" />
+        <property name="category" value="dtv.xstore.state.app.startup" />
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="logFreeSpaceWarningWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.startup.LogFreeSpaceWarningWorker">
+        <property name="level" value="WARN" />
+        <property name="category" value="dtv.xstore.admin.diskspace" />
+        <property name="freePercentageThreshold" value="10" />
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="logConfigVersionInformationWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.startup.LogConfigVersionInformationWorker">
+        <property name="level" value="INFO" />
+        <property name="category" value="dtv.xstore.configversion" />
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="checkForOrphanedTransWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.startup.orphanedtrans.CheckForOrphanedTransWorker" />
+    </property>
+  </bean>
+  <bean id="checkForOrphanedTransWorkerByCurrentWorkstation" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.startup.orphanedtrans.CheckForOrphanedTransWorker">
+        <property name="filterForCurrentWorkstation" value="true" />
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="checkSSLCertificatesWorker" class="dtv.pos.startup.CheckSSLCertificatesWorker" scope="prototype" />
+  <bean id="healSessionTendersWorker" class="dtv.pos.startup.HealSessionTendersWorker" scope="prototype" />
+  <bean id="createPasswordStorageFileWorker" class="dtv.pos.security.CreatePasswordStorageFileWorker" scope="prototype" />
+  <bean id="unlockUserWorker" class="dtv.pos.security.UnlockUserWorker" scope="prototype" />
+ 
+  <bean id="logSafQueueWarningWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.systemcycle.common.LogSafQueueWarningWorker">
+        <property name="level" value="WARN" />
+        <property name="category" value="dtv.xstore.comm.paysys.safnotempty" />
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="logReplicationQueueWarningWorker" class="dtv.pos.spring.ScheduledTaskWorker" scope="prototype">
+    <property name="uniqueId" value="LogReplicationQueueWarningWorker" />
+    <property name="initialDelaySeconds" value="36000" />
+    <property name="workers">
+      <list>
+        <ref bean="logReplicationQueueWarningActionWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="logReplicationQueueWarningActionWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.systemcycle.common.LogReplicationQueueWarningWorker">
+        <property name="level" value="WARN" />
+        <property name="category" value="dtv.sysadmin.data.repqueue.notempty" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="startDeviceRegistrationWorker" class="dtv.pos.startup.StartDeviceRegistrationWorker" scope="prototype">
+    <property name="uniqueId" value="Device-Registration" />
+    <property name="workers">
+      <list>
+        <ref bean="deviceRegistrationWorker" />
+        <ref bean="xstoreVersionConflictCheckWorker" />
+        <ref bean="xenvVersionConflictCheckWorker" />
+        <ref bean="configVersionConflictCheckWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="deviceRegistrationWorker" class="dtv.pos.register.DeviceRegistrationUpdateWorker" scope="prototype" />
+
+  <bean id="xstoreVersionConflictCheckWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.register.XstoreVersionConflictCheckWorker">
+        <property name="level" value="WARN" />
+        <property name="category" value="dtv.xstore.version.conflict.xst" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="xenvVersionConflictCheckWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.register.XenvVersionConflictCheckWorker">
+        <property name="level" value="WARN" />
+        <property name="category" value="dtv.xstore.version.conflict.env" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="configVersionConflictCheckWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.register.ConfigVersionConflictCheckWorker">
+        <property name="level" value="WARN" />
+        <property name="category" value="dtv.xstore.version.conflict.cfg" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="registerStatusWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.pos.startup.RegisterStatusWorker">
+        <property name="level" value="INFO" />
+        <property name="category" value="dtv.sysadmin.xstore.status" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="startRegisterStatusWorker" class="dtv.pos.spring.ScheduledTaskWorker" scope="prototype">
+    <property name="uniqueId" value="Register-Status" />
+    <property name="daemon" value="true" />
+    <property name="initialDelaySeconds" value="30" />
+    <property name="periodSeconds" value="300" />
+    <property name="workers">
+      <list>
+        <ref bean="registerStatusWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="persistObjectsWorker" class="dtv.pos.common.op.PersistObjectsWorker" scope="prototype" />
+  <bean id="completeAssocAdvanceTransWorker" class="dtv.pos.till.advance.CompleteAssocAdvanceTransWorker" scope="prototype" />
+  <bean id="addFingerprintOfBorrowedUserWorker" class="dtv.pos.hardware.biometric.fingerprint.op.AddFingerprintOfBorrowedUserWorker" scope="prototype" />
+  <bean id="doReloadCacheLocalFingerprintTemplateWorker" class="dtv.pos.hardware.biometric.fingerprint.op.DoReloadCacheLocalFingerprintTemplateWorker" scope="prototype" />
+  <!-- Inventory Count individual workers -->
+  <bean id="generateInventoryCountBucketsWorker" class="dtv.pos.inventory.count.GenerateCountBucketsWorker" scope="prototype" />
+  <bean id="generateInventoryCountSheetsWorker" class="dtv.pos.inventory.count.GenerateCountSheetsWorker" scope="prototype" />
+  <bean id="saveInventoryCountWorker" class="dtv.pos.inventory.count.SaveCountChangesWorker" scope="prototype" />
+  <bean id="initiateInventoryCountWorker" class="dtv.pos.inventory.count.InitiateCountWorker" scope="prototype" />
+  <bean id="updateCountBucketsToPrintedWorker" class="dtv.pos.inventory.count.UpdateCountBucketsToPrintedWorker" scope="prototype" />
+  <bean id="submitCountSheetsForAutoVariancesWorker" class="dtv.pos.inventory.count.SubmitSheetsForAutoVariancesWorker" scope="prototype" />
+  <bean id="generateManualRecountSheetsWorker" class="dtv.pos.inventory.count.GenerateManualRecountSheetsWorker" scope="prototype" />
+  <bean id="addStoreLayoutDetailWorker" class="dtv.pos.inventory.storelayout.AddCountSectionDetailWorker" scope="prototype" />
+  <bean id="createInventoryCountTransactionWorker" class="dtv.pos.inventory.count.CreateInventoryCountTransactionWorker" scope="prototype" />
+  <bean id="logInventoryCountResultsWorker" class="dtv.pos.inventory.count.LogInventoryCountResultsWorker" scope="prototype" />
+  <bean id="adjustInventoryForCountVariancesWorker" class="dtv.pos.inventory.count.AdjustInventoryForFinalVariancesWorker" scope="prototype" />
+  <!-- Location Based Inventory individual workers -->
+  <bean id="processSummaryCountWorker" class="dtv.pos.inventory.count.summary.ProcessSummaryCountWorker" scope="prototype" />
+  
+  <!-- Email and Receipt related workers -->
+  <bean id="emailRcptsWorker" class="dtv.pos.email.receipt.EmailRcptsWorker" scope="prototype" />
+  <bean id="reportErrorWorker" class="dtv.pos.errorscreen.ReportErrorWorker" scope="prototype" />
+  
+  <!-- IP Cash Drawer worker -->
+  <bean id="saveCashDrawerWorker" class="dtv.pos.hardware.op.SaveIPCashDrawerConfigWorker" scope="prototype" />
+  <bean id="clearActiveCashDrawerWorker" class="dtv.pos.hardware.op.ClearActiveCashDrawerWorker" scope="prototype" />
+  <bean id="clearCashDrawerTillWorker" class="dtv.pos.hardware.op.ClearCashDrawerTillWorker" scope="prototype" />
+  <bean id="updateCashDrawerIdWorker" class="dtv.pos.hardware.op.UpdateCashDrawerIdWorker" scope="prototype" />
+  <bean id="setSessionForCashDrawerWorker" class="dtv.pos.hardware.op.SetSessionForCashDrawerWorker" scope="prototype" />
+  <bean id="restoreWorkstationSessionWorker" class="dtv.pos.till.count.RestoreWorkstationSessionWorker" scope="prototype" />
+  
+  <bean id="automaticReportErrorWorker" class="dtv.pos.errorscreen.ReportErrorWorker" scope="prototype">
+    <property name="automatic" value="true" />
+  </bean>
+  
+  <bean id="saveRcptsWorker" class="dtv.pos.hardware.op.SaveRcptsWorker" scope="prototype" />
+  <bean id ="saveSystemTimeWorker" class="dtv.pos.systemcycle.common.SaveSystemTimeWorker" scope="prototype" />
+  <bean id="sendAllocatedOrderEmailWorker" class="dtv.pos.order.maint.SendAllocatedOrderEmailWorker" scope="prototype" />
+  <bean id="sendReceivedOrderEmailWorker" class="dtv.pos.order.maint.SendReceivedOrderEmailWorker" scope="prototype" />
+  <bean id="sendReservedOrderEmailWorker" class="dtv.pos.order.maint.SendReservedOrderEmailWorker" scope="prototype" />
+  <bean id="sendShippedOrderEmailWorker" class="dtv.pos.order.maint.SendShippedOrderEmailWorker" scope="prototype" />
+  <bean id="emailPriceOverrideWorker" class="dtv.pos.register.modifyitem.EmailPriceOverrideWorker" scope="prototype" />
+  <bean id="emailTaxOverrideWorker" class="dtv.pos.register.tax.EmailTaxOverrideWorker" scope="prototype" />
+
+  <bean id="addCustAccountPersistableWorker" class="dtv.pos.customer.account.AddCustAccountPersistableWorker" scope="prototype" />
+  <bean id="calculateTlogSequenceWorker" class="dtv.pos.logbuilder.CalculateTlogSequenceWorker" scope="prototype" />
+  <bean id="updateRainCheckRedemptionStatusWorker" class="dtv.pos.raincheck.UpdateRainCheckRedemptionStatusWorker" scope="prototype" />
+  <bean id="buildReturnedItemJournalWorker" class="dtv.pos.register.returns.verification.BuildReturnedItemJournalWorker" scope="prototype" />
+  <bean id="ejBuildReturnedItemJournalWorker" class="dtv.pos.ejournal.postvoid.verification.EjBuildReturnedItemJournalWorker" scope="prototype" />
+  <bean id="populateFlashSalesTablesWorker" class="dtv.pos.reporting.flashsales.PopulateFlashSalesTablesWorker" scope="prototype" />
+  <bean id="populateFlashSalesTablesOnPostVoidWorker" class="dtv.pos.reporting.flashsales.PopulateFlashSalesTablesOnPostVoidWorker" scope="prototype" />
+  <bean id="refreshSalesGoalStatusWorker" class="dtv.pos.salesgoal.RefreshSalesGoalStatusWorker" scope="prototype" />
+  <bean id="calculateCreditTenderPropertiesWorker" class="dtv.pos.tender.CalculateCreditTenderPropertiesWorker" scope="prototype" />
+  
+  <bean id="startSAFQueuesWorker" parent="silentWorker">
+    <property name="delegate">
+      <bean class="dtv.tenderauth.impl.op.StartSafQueuesWorker" />
+    </property>
+  </bean>
+  
+  <bean id="updateSAFQueueWorker" class="dtv.pos.tender.UpdateSAFQueueWorker" scope="prototype" />
+  <bean id="updateSAFQueueForPostVoidsWorker" class="dtv.pos.ejournal.postvoid.UpdateSAFQueueForPostVoidsWorker" scope="prototype" />
+  <bean id="persistVoucherHistoryWorker" class="dtv.pos.tender.voucher.PersistVoucherHistoryWorker" scope="prototype" />
+  <bean id="persistSystemTotalWorker" class="dtv.pos.till.PersistSystemTotalWorker" scope="prototype" />
+  <bean id="createCashPickupObjectsWorker" class="dtv.pos.till.count.CreateCashPickupObjectsWorker" scope="prototype" />
+  
+  <bean id="markSpecialOrdersAsReadyWorker" class="dtv.pos.register.specorder.account.MarkSpecialOrdersAsReadyWorker" scope="prototype" />
+  <bean id="markCustomerAccountsAsReadyToPickupWorker" class="dtv.pos.register.cca.op.MarkCustomerAccountsAsReadyToPickupWorker" scope="prototype" />
+  <bean id="updateLayawayAccountWorker" class="dtv.pos.register.layaway.account.UpdateLayawayAccountWorker" scope="prototype" />
+  <bean id="updateConfigCustomerAccountWorker" class="dtv.pos.register.cca.op.UpdateConfigCustomerAccountWorker" scope="prototype" />
+  <bean id="updateSpecOrderAccountWorker" class="dtv.pos.register.specorder.account.UpdateSpecOrderAccountWorker" scope="prototype" />
+  <bean id="updateSendSaleAccountWorker" class="dtv.pos.sendsale.op.UpdateSendSaleAccountWorker" scope="prototype" />
+  <bean id="updateWorkOrderAccountWorker" class="dtv.pos.workorder.account.UpdateWorkOrderAccountWorker" scope="prototype" />
+  <bean id="createChargeAcctHistoryWorker" class="dtv.pos.houseaccount.op.CreateChargeAcctHistoryWorker" scope="prototype" />
+  <bean id="updateReversedChargeAcctHistoryWorker" class="dtv.pos.houseaccount.op.UpdateReversedChargeAcctHistoryWorker" scope="prototype" />
+  <bean id="updateChargeAcctInvoicesWorker" class="dtv.pos.houseaccount.op.UpdateChargeAcctInvoicesWorker" scope="prototype" />
+  
+  <bean id="createSpecOrderReceivingDocWorker" class="dtv.pos.register.specorder.account.CreateSpecOrderReceivingDocWorker" scope="prototype">
+    <property name="docName" value="SPECIAL_ORDER" />
+  </bean>  
+  <bean id="createWorkOrderShippingReceivingDocWorker" class="dtv.pos.workorder.account.CreateWorkOrderShippingReceivingDocWorker" scope="prototype">
+    <property name="docName" value="WORK_ORDER" />
+  </bean>
+  <bean id="createSendSaleShippingDocWorker" class="dtv.pos.sendsale.op.CreateSendSaleShippingDocWorker" scope="prototype">
+    <property name="docName" value="SALE" />
+  </bean>
+  <bean id="processSoldWorkOrderInventoryWorker" class="dtv.pos.workorder.inventory.ProcessWorkOrderInventoryWorker" scope="prototype">
+    <property name="workOrderBucket" value="WORK_ORDER" />
+  </bean>
+  
+  <!-- Post Void workers -->
+  <bean id="postVoidInvFromJournalWorker" class="dtv.pos.ejournal.postvoid.PostVoidInventoryFromJournalWorker" scope="prototype" />
+  <bean id="postVoidInvFromPendingWorker" class="dtv.pos.ejournal.postvoid.PostVoidInventoryFromPendingWorker" scope="prototype" />
+  <bean id="postVoidInvFromWorkOrderWorker" class="dtv.pos.ejournal.postvoid.PostVoidInventoryFromWorkOrderWorker" scope="prototype" />
+  <bean id="postVoidCompleteInvUpdatesWorker" class="dtv.pos.ejournal.postvoid.PostVoidCompleteInventoryUpdatesWorker" scope="prototype" />
+
+  <bean id="registerWorkstationActiveWorker" class="dtv.pos.systemcycle.RegisterWorkstationActiveWorker" scope="prototype"/>
+  <bean id="unregisterWorkstationActiveWorker" class="dtv.pos.systemcycle.UnregisterWorkstationActiveWorker" scope="prototype"/>
+
+  <!-- worker chains - note that scope does not need to specified on worker chain beans because 
+       they inherit the scope of the parent workerList bean. -->
+
+  <bean id="createCashPickupObjectsWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="createCashPickupObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="persistSystemTotalWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="persistSystemTotalWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="persistVoucherHistoryWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="persistVoucherHistoryWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="updateSAFQueueForPostVoidsWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="updateSAFQueueForPostVoidsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="updateSAFQueueWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="updateSAFQueueWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="calculateCreditTenderPropertiesWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="calculateCreditTenderPropertiesWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="refreshSalesGoalStatusWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="refreshSalesGoalStatusWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="populateFlashSalesTablesOnPostVoidWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="populateFlashSalesTablesOnPostVoidWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="populateFlashSalesTablesWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="populateFlashSalesTablesWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="buildReturnedItemJournalWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="buildReturnedItemJournalWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="updateRainCheckRedemptionStatusWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="updateRainCheckRedemptionStatusWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="calculateTlogSequenceWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="calculateTlogSequenceWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="addCustAccountPersistableWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="addCustAccountPersistableWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saveShippingWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="buildTransFromInvDocWorker" />
+        <ref bean="handleInventoryShippingReceivingKitComponentWorker" />
+        <ref bean="generateReceivingFromShippingWorker" />
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="writeLogEntryForCurrentDocWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saveReceivingWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="buildTransFromInvDocWorker" />
+        <ref bean="handleInventoryShippingReceivingKitComponentWorker" />
+        <ref bean="updateOrderAccountsWorker" />
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="closeParentDocumentWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="writeLogEntryForCurrentDocWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saveInvAdjustWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="buildInventoryLocationModifiersWorker" />
+        <ref bean="handleInventoryAdjustmentKitComponentWorker" />
+        <ref bean="closeInventoryDocWorker" />
+        <ref bean="buildTransFromInvDocWorker" />
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="writeLogEntryForCurrentDocWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="shipOrderWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="buildTransFromInvDocWorker" />
+        <ref bean="generateReceivingFromShippingWorker" />
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="updateOrderShippingWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="writeLogEntryForCurrentDocWorker" />
+        <ref bean="closeOutDeliveryOrderWorker" />
+        <ref bean="populateFlashSalesTablesWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="closeOrderShippingDocumentWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="closeShippingDocumentWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="reserveOrderInventoryWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="createReserveInventoryTransactionWorker" />
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="createShippingDocumentWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="unreserveOrderInventoryWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="createUnreservedReserveInventoryTransactionWorker" />
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="closeShippingDocumentWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="rejectReservedOrderWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="createRejectReserveInventoryTransactionWorker" />
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="startupWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="createPasswordStorageFileWorker" />
+        <ref bean="unlockUserWorker" />
+        <ref bean="startHardwareWorker" />
+        <ref bean="initBarcodeTranslatorWorker" />
+        <ref bean="logVersionStatusInformationWorker" />
+        <ref bean="logFreeSpaceWarningWorker" />
+        <ref bean="logConfigVersionInformationWorker" />
+        <ref bean="checkForOrphanedTransWorker" />
+        <ref bean="checkSSLCertificatesWorker" />
+        <ref bean="healSessionTendersWorker" />
+        <ref bean="startRegisterStatusWorker" />
+        <ref bean="startDeviceRegistrationWorker" />
+        <ref bean="startSAFQueuesWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="initHardwareWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="startHardwareWorker" />
+        <ref bean="initBarcodeTranslatorWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="orphanedTransactionWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="checkForOrphanedTransWorkerByCurrentWorkstation" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="registerCloserWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="checkForOrphanedTransWorkerByCurrentWorkstation" />
+        <ref bean="logSafQueueWarningWorker" />
+        <ref bean="logReplicationQueueWarningWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="appstatus-CLOSING-RUN" parent="workerList">
+    <!-- invoked from TaskService when xEnvironment notifies all registers of store closing -->
+    <property name="workers">
+      <list>
+        <ref bean="logSafQueueWarningWorker" />
+        <ref bean="logReplicationQueueWarningWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Inventory Count worker lists -->
+  <bean id="storeLayoutAddDetailWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="addStoreLayoutDetailWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saveInventoryCountWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="saveInventoryCountWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountGenerateWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="generateInventoryCountBucketsWorker" />
+        <ref bean="generateInventoryCountSheetsWorker" />
+        <ref bean="saveInventoryCountWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="inventoryCountInitiateWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="initiateInventoryCountWorker" />
+        <ref bean="saveInventoryCountWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountPostPrintWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="updateCountBucketsToPrintedWorker" />
+        <ref bean="saveInventoryCountWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="submitCountSheetsAutoProcessingWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="submitCountSheetsForAutoVariancesWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountManualRecountWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="generateManualRecountSheetsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="inventoryCountCompleteWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="createInventoryCountTransactionWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="saveInventoryCountWorker" />
+        <ref bean="logInventoryCountResultsWorker" />
+        <ref bean="adjustInventoryForCountVariancesWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saveAssociateAdvanceTransWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="completeAssocAdvanceTransWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="persistObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saveEmployeeBorrowWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="addFingerprintOfBorrowedUserWorker" />
+        <ref bean="persistObjectsWorker" />
+        <ref bean="doReloadCacheLocalFingerprintTemplateWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saveItemTransferWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="buildTransFromInvDocWorker" />
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="persistTransAndObjWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="persistObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="persistExchangeSerialTransAndObjWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="persistObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="processSummaryCountWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="processSummaryCountWorker" />
+      </list>
+    </property>
+  </bean>
+  
+    <bean id="emailRcptsWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="emailRcptsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saveCashDrawerWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="saveCashDrawerWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="clearActiveCashDrawerWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="clearActiveCashDrawerWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="clearCashDrawerTillWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="clearCashDrawerTillWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="updateCashDrawerIdWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="updateCashDrawerIdWorker" />
+      </list>
+    </property>
+  </bean>
+  
+   <bean id="setSessionForCashDrawerWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="setSessionForCashDrawerWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="reportErrorWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="reportErrorWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="automaticReportErrorWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="automaticReportErrorWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="saveRcptsWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="saveRcptsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saveSystemTimeWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="saveSystemTimeWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="sendAllocatedOrderEmailWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="sendAllocatedOrderEmailWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="sendReceivedOrderEmailWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="sendReceivedOrderEmailWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="sendReservedOrderEmailWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="sendReservedOrderEmailWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="sendShippedOrderEmailWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="sendShippedOrderEmailWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="emailPriceOverrideWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="emailPriceOverrideWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="emailTaxOverrideWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="emailTaxOverrideWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="ejBuildReturnedItemJournalWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="ejBuildReturnedItemJournalWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saleCompleteCustomerAccountWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="markSpecialOrdersAsReadyWorker" />
+        <ref bean="markCustomerAccountsAsReadyToPickupWorker" />
+        <ref bean="updateLayawayAccountWorker" />
+        <ref bean="updateConfigCustomerAccountWorker" />
+        <ref bean="updateSpecOrderAccountWorker" />
+        <ref bean="updateSendSaleAccountWorker" />
+        <ref bean="updateWorkOrderAccountWorker" />
+        <ref bean="createChargeAcctHistoryWorker" />
+        <ref bean="updateReversedChargeAcctHistoryWorker" />
+        <ref bean="updateChargeAcctInvoicesWorker" />
+        <ref bean="addCustAccountPersistableWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="persistPostVoidWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="persistPostVoidWorker" />
+      </list>
+    </property>
+  </bean>
+    
+  <bean id="voidDiscountWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="voidDiscountWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="processCashTransferCountWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="processCashTransferCountWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="createTillStartCountObjectsWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="createTillStartCountObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="updateVoidItemWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="updateVoidItemWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="updateTenderVoidWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="updateTenderVoidWorker" />
+        <ref bean="voidChangeTenderWorker" />        
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="voidChangeTenderWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="voidChangeTenderWorker" />        
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="addPriceChangeModifierToLineItemWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="addPriceChangeModifierToLineItemWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="entireChainResumeTransWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="resumeGiftRegistryWorker" />
+        <ref bean="resumeOrderWorker" />
+        <ref bean="resumeGiftRcptRequestsWorker" />
+        <ref bean="resumeLoyaltyWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="completeCancelTimeclockTransWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="completeCancelTimeclockTransWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="completeCancelTransWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="completeCancelTransWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="completeNoSaleTransWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="completeNoSaleTransWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="completeSaleTransWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="completeSaleTransWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="completeSuspendTransWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="completeSuspendTransWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="completeTransactionWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="completeTransactionWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="acceptAllCompleteTransactionWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="acceptAllCompleteTransactionWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="persistBusinessPeriodCloseWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="persistBusinessPeriodClose" /> 
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="createEndOfRetailPeriodTransWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="createEndOfRetailPeriodTransWorker" /> 
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="saleCompleteInventoryWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="processSoldWorkOrderInventoryWorker" />
+        <ref bean="createSpecOrderReceivingDocWorker" />
+        <ref bean="createWorkOrderShippingReceivingDocWorker" />
+        <ref bean="createSendSaleShippingDocWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="postVoidInventoryWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="postVoidInvFromJournalWorker" />
+        <ref bean="postVoidInvFromPendingWorker" />
+        <ref bean="postVoidInvFromWorkOrderWorker" />
+        <ref bean="postVoidCompleteInvUpdatesWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="addTransDiscountsToNewItemWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="addTransDiscountsToNewItemWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="updateTransactionForRegistryWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="updateSaleItemsForRegistryWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="registerWorkstationActiveWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="registerWorkstationActiveWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="unregisterWorkstationActiveWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="unregisterWorkstationActiveWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="restoreWorkstationSessionWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="restoreWorkstationSessionWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="processCustomerConsentWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="updateCustomerConsentSelectionsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="showXenvironmentWorkers" parent="workerList" >
+    <property name="workers">
+      <list>
+        <ref bean="bringXenvironmentUiToFrontWorker" />
+      </list>
+    </property>
+  </bean>
+</beans>

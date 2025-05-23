@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  default-init-method="init">
+
+  <!-- Spring beans that are singletons or framework beans can be defined in this file. Any realm-specific beans 
+    (validations, services, workers, etc) should be defined in their relevant Spring file that should be in the same 
+    directory as this file. -->
+
+  <context:annotation-config />
+
+  <beans profile="xstore">
+
+    <bean id="stationState" class="dtv.pos.iframework.security.StationState" >
+      <property name="retailLocationId" value="#{systemProperties[T(dtv.util.common.CommonConstants).RETAIL_LOCATION_ID]}" />
+      <property name="workstationId" value="#{systemProperties[T(dtv.util.common.CommonConstants).WORKSTATION_ID]}" />
+      <property name="systemUser" value="#{T(dtv.pos.framework.security.DefaultSystemUser).INSTANCE}" />
+    </bean>
+
+    <bean id="sourceInfoBeanPostProcessor" class="dtv.util.spring.SourceInfoBeanPostProcessor" />
+    <bean id="singletonValidatorBeanPostProcessor" class="dtv.util.spring.SingletonValidatorBeanPostProcessor"/>
+
+    <!-- framework beans -->
+
+
+    <!-- Due to the dynamic nature of Xstore switching between different application modes (register, back office), 
+      the fact that injections are satisfied at instantiation, the fact that the singleton pattern is abused all over 
+      the place and the fact that Xstore instantiates a lot of things up front and is in a different mode when it goes 
+      to use them, all references to "applicationMode" scoped bean injections need to be paired with the javax.inject.Provider 
+      interface to ensure that the instance for the proper mode is being used. There should be very few beans that are 
+      defined with this scope and, for ease of reference, all of those beans should be defined in this little section. -->
+    <bean id="defaultScope" class="dtv.pos.framework.scope.OpChainBasedScope" scope="applicationMode" />
+    <bean id="transactionScope" class="dtv.pos.framework.scope.XstoreTransactionScope" scope="applicationMode" />
+
+    <bean id="theAllmightyThor" class="dtv.util.temp.InjectionHammerInitializer" />
+    <bean id="processLogger" class="dtv.pos.framework.logging.ProcessLogger" />
+    <bean id="businessDateHelper" class="dtv.pos.common.BusinessDateHelper" />
+    <bean id="inventoryHelper" class="dtv.pos.inventory.InventoryHelper" />
+    <bean id="inventoryStockAdjuster" class="oracle.retail.xstore.inv.impl.InventoryStockAdjuster" />
+    <bean id="specialOrderHelper" class="dtv.pos.register.specorder.SpecOrderHelper" />
+    <bean id="sendSaleHelper" class="dtv.pos.sendsale.common.SendSaleHelper" />
+    <bean id="ccaHelper" class="dtv.pos.register.cca.ConfigurableCustomerAccountHelper" />
+    <bean id="layawayHelper" class="dtv.pos.register.layaway.common.LayawayHelper" />
+    <bean id="customerAccountHelper" class="dtv.pos.customer.account.CustomerAccountHelper" />
+    <bean id="customerAccountFactory" class="dtv.pos.customer.account.CustomerAccountFactory" />
+    <bean id="employeeHelper" class="dtv.pos.employee.EmployeeHelper" lazy-init="true" />
+    <bean id="fingerprintCache" class="dtv.pos.framework.biometric.fingerprint.CacheLocalFingerprintTemplateData" />
+    <bean id="houseAccountHelper" class="dtv.pos.houseaccount.HouseAccountHelper" />
+    <bean id="itemMixingHelper" class="dtv.pos.register.ItemMixingHelper" />
+    <!-- Please leave the following line where it is for now, or else.... -->
+    <bean id="sequenceFactory" class="dtv.util.sequence.SequenceFactory" factory-method="getImpl" />
+
+    <bean id="sequencePartGeneratorFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.util.sequence.generators.ISequencePartGenLocator" />
+      <property name="serviceMappings">
+        <props>
+          <prop key="JULIAN_DATE">julianDatePartGen</prop>
+          <prop key="NEXT_NUMBER">nextNumberPartGen</prop>
+          <prop key="PASS_VALUE_INDEX">passValueIndexPartGen</prop>
+          <prop key="SYSTEM_PROPERTY">systemPropPartGen</prop>
+          <prop key="TEXT">textPartGen</prop>
+        </props>
+      </property>
+    </bean>
+    
+    <bean id="nextNumberPartGen" class="dtv.util.sequence.generators.NextSequencePartGenerator" scope="prototype" />
+    <bean id="julianDatePartGen" class="dtv.util.sequence.generators.JulianDateSequencePartGenerator" scope="prototype" />
+    <bean id="passValueIndexPartGen" class="dtv.util.sequence.generators.PassValueIndexSeqPartGenerator" scope="prototype" />
+    <bean id="textPartGen" class="dtv.util.sequence.generators.TextSequencePartGenerator" scope="prototype" />
+    <bean id="systemPropPartGen" class="dtv.util.sequence.generators.SystemParameterSequencePartGenerator" scope="prototype" />
+    
+    <bean id="sequenceBuilderProviderFactory" class="dtv.util.sequence.builders.SequenceBuilderFactory">
+      <constructor-arg>
+        <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+          <property name="serviceLocatorInterface" value="dtv.util.sequence.builders.ISequenceBuilderLocator" />
+          <property name="serviceMappings">
+            <props>
+              <prop key="NUMERIC">numericSeqBuilder</prop>
+              <prop key="ENCODED">encodedSeqBuilder</prop>
+              <prop key="ALPHA_NUMERIC">alphaNumericSeqBuilder</prop>
+              <prop key="ALPHA_NUMERIC_MOD10">alphaNumericMod10SeqBuilder</prop>
+              <prop key="ALPHA_NUMERIC_XSTORE">alphaNumericXstoreSeqBuilder</prop>
+              <prop key="ALPHA_NUMERIC_TWO_DIGIT_SUM">alphaNumericTwoDigitSumSeqBuilder</prop>
+            </props>
+          </property>
+        </bean>
+      </constructor-arg>
+      <constructor-arg ref="sequencePartGeneratorFactory" />
+      <constructor-arg ref="sequenceStragegyProviderFactory" />
+    </bean>
+    
+    <bean id="numericSeqBuilder" class="dtv.util.sequence.builders.NumericSequenceBuilder" scope="prototype" />
+    <bean id="encodedSeqBuilder" class="dtv.util.sequence.builders.EncodedSequenceBuilder" scope="prototype" />
+    <bean id="alphaNumericSeqBuilder" class="dtv.util.sequence.builders.AlphaNumericSequenceBuilder" scope="prototype" />
+    <bean id="alphaNumericMod10SeqBuilder" class="dtv.util.sequence.builders.AlphaNumericMod10SequenceBuilder" scope="prototype" />
+    <bean id="alphaNumericXstoreSeqBuilder" class="dtv.util.sequence.builders.AlphaNumericXstoreSequenceBuilder" scope="prototype" />
+    <bean id="alphaNumericTwoDigitSumSeqBuilder" class="dtv.util.sequence.builders.AlphaNumericTwoDigitSumSequenceBuilder" scope="prototype" />   
+    
+    <bean id="sequenceStragegyProviderFactory" class="dtv.util.sequence.providers.SequenceProviderFactory">
+       <constructor-arg>
+         <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+           <property name="serviceLocatorInterface" value="dtv.util.sequence.providers.ISequenceProviderLocator" />
+           <property name="serviceMappings">
+             <props>
+               <prop key="FILE_BASED">fileBasedSequenceProvider</prop>
+               <prop key="DB_BASED">dbBasedSequenceProvider</prop>
+             </props>
+           </property>
+         </bean>
+       </constructor-arg>
+     </bean>
+    
+    <bean id="fileBasedSequenceProvider" class="dtv.pos.util.sequence.providers.FileBasedSequenceProvider" scope="prototype" />
+    <bean id="dbBasedSequenceProvider" class="dtv.pos.util.sequence.providers.DbBasedSequenceProvider" scope="prototype" />
+   
+    <bean id="customerConsentDetails" class="dtv.pos.customer.consent.CustomerConsentDetails" scope="prototype" />
+    <bean id="consentUtil" class="dtv.pos.customer.consent.ConsentUtil" scope="prototype" />
+    <bean id="pciScopeInfo" class="dtv.tenderauth.IPciScopeInfo.OutOfScope" />
+    <bean id="customerHelper" class="dtv.pos.customer.CustomerHelper" />
+    <bean id="giftRegistryHelper" class="dtv.pos.giftregistry.GiftRegistryHelper" />
+    <bean id="giftRegistryAttributeCache" class="dtv.xst.crm.impl.registry.GiftRegistryAttributeCache" />
+    <bean id="inventoryLookupHelper" class="dtv.pos.inventory.lookup.InventoryLookupHelper" />
+    <bean id="loyaltyHelper" class="dtv.pos.customer.loyalty.LoyaltyHelper" />
+    <bean id="timeclockHelper" class="dtv.pos.timeclock.TimeclockHelper" />
+    <bean id="couponHelper" class="dtv.pos.coupon.CouponHelper" />
+    <bean id="cashSuggestionHelper" class="dtv.pos.tender.cashsuggestion.CashSuggestionHelper" />
+    <bean id="rcptBuilder" class="dtv.hardware.rcptbuilding.ConfigurableRcptBuilder" />
+    <bean id="rcptBuildingUtil" class="dtv.pos.hardware.op.ReceiptBuildingUtil" scope="prototype" />
+    <bean id="orderMgr" class="dtv.pos.order.OrderMgr" />
+    <bean id="orderUtil" class="dtv.pos.order.OrderUtil" />
+    <bean id="weatherStation" class="dtv.pos.info.weather.SampleWeatherStation" lazy-init="true" destroy-method="destroy" />
+    <bean id="environmentHelper" class="dtv.pos.common.EnvironmentHelper" />
+    <bean id="taskHelper" class="dtv.pos.tasks.TaskHelper" />
+    <bean id="uiInvoker" class="dtv.ui.SwingUIServicesExecutor" destroy-method="destroy" />
+    <bean id="trainingModeHelper" class="dtv.pos.assistance.TrainingModeHelper" />
+    <bean id="payrollHelper" class="dtv.pos.payroll.PayrollHelper" />
+    <bean id="payrollOvertimeConfigHelper" class="dtv.pos.payroll.config.PayrollOvertimeRuleConfigHelper" />
+    <bean id="replenishmentHelper" class="dtv.pos.inventory.replenishment.ReplenishmentHelper" />
+    <bean id="itemLookupHelper" class="dtv.pos.inventory.replenishment.lookup.ItemLookupHelper" />
+    <bean id="itemStyleHelper" class="oracle.retail.xstore.inv.impl.lookup.ItemStyleHelper" />
+    <bean id="ApgCashdrawerUtils" class="dtv.hardware.cashdrawer.ip.ApgCashdrawerUtils">
+      <property name="udpPort" value="10004" />
+    </bean>
+
+    <bean id="schedulingHelper" class="dtv.pos.scheduling.SchedulingHelper" />
+    <bean id="workOrderHelper" class="dtv.pos.workorder.common.WorkOrderHelper" />
+   	<bean id="shippingFeeItemHelper" class="dtv.pos.shippingfee.ShippingFeeItemHelper" />
+    <bean id="autoLogoutTimer" class="dtv.pos.appmanagement.jmx.AutoLogoutTimer" />
+    <bean id="authConfigHelper" class="dtv.tenderauth.config.AuthConfigHelper" init-method="initialize" />
+    <bean id="roundingHelper" class="dtv.pos.tender.rounding.RoundingHelper" />
+    <bean id="tillHelper" class="dtv.pos.till.TillHelper" />
+    <bean id="rcptMgr" class="dtv.pos.hardware.RcptMgr" lazy-init="true" />
+    <bean id="tenderHelper" class="dtv.pos.tender.TenderHelper" lazy-init="true" />
+    <bean id="tenderAuthHelper" class="dtv.tenderauth.impl.PosTenderAuthHelper" />
+    <bean id="warrantyHelper" class="dtv.pos.warranty.WarrantyHelper" />    
+    <bean id="warrantyFactory" class="dtv.pos.warranty.WarrantyFactory" />    
+    <bean id="commissionedAssociatesHelper" class="dtv.pos.commission.CommAssocsHelper" />    
+    <bean id="voucherConfigHelper" class="dtv.pos.tender.voucher.config.VoucherConfigHelper" init-method="initialize" />
+    <bean id="sessionManager" class="dtv.pos.till.SessionManager" init-method="initialize" lazy-init="true" />
+    <bean id="systemCycleHelper" class="dtv.pos.framework.systemcycle.SystemCycleHelper" lazy-init="true" />
+    <bean id="registrationHelper" class="dtv.pos.register.RegistrationHelper" />
+    <bean id="emailManager" class="dtv.pos.email.XstoreEmailManager" init-method="create" destroy-method="destroy" />
+    <bean id="twitterHelper" class="dtv.pos.info.twitter.TwitterHelper" lazy-init="true" />
+    <bean id="securityUtil" class="dtv.pos.framework.security.SecurityUtil" />
+    <bean id="saleItemHelper" class="dtv.pos.register.sale.SaleItemHelper" />
+
+    <!-- Payroll Date Helpers -->
+    <bean id="timeOffWeeklyDates" class="dtv.pos.payroll.TimeOffWeeklyDates" />
+    <bean id="payrollDateRangeInitializer" class="dtv.pos.payroll.PayrollDateRangeInitializer" />
+    
+    <!--  System Cycle Date Helpers -->
+    <bean id="changeBusinessDateVisibilityRule" class="dtv.pos.systemcycle.access.ChangeBusinessDateVisibilityRule" />
+    
+    <!-- Unfortunately, following helpers will need to have a 'getInstance' method to make sure the existing functions are supported. -->
+    <bean id="logBuilder" class="dtv.logbuilder.LogBuilder" factory-method="getInstance" depends-on="formatterFactory" />
+    <bean id="authFactory" class="dtv.tenderauth.AuthFactory" factory-method="getInstance" depends-on="dataFactoryAssistant" />
+    <bean id="transDateProvider" class="dtv.pos.framework.systemcycle.TransDateProvider" scope="prototype">
+      <property name="useSystemDate" value="#{T(dtv.pos.common.ConfigurationMgr).useSystemDate()}" />
+    </bean>
+    <bean id="storeCalendar" class="dtv.pos.storecalendar.BasicStoreCalendar" />
+    <!-- the following are the alternatives to the BasicStoreCalendar
+    <bean id="storeCalendar" class="dtv.pos.storecalendar.fiscal.FiscalCalendar" />
+    <bean id="storeCalendar" class="dtv.pos.storecalendar.fourfivefour.FourFiveFourCalendar" />
+    <bean id="storeCalendar" class="dtv.pos.storecalendar.SystemClockStoreCalendar" />
+     -->
+    <bean id="priceProvider" class="dtv.pos.pricing.PriceProvider" factory-method="getImpl" />
+    <bean id="hardwareMgr" class="dtv.hardware.HardwareMgr" factory-method="getCurrentHardwareMgr" />
+    <bean id="itemLocator" class="dtv.pos.register.ItemLocator" factory-method="getLocator" />
+    <bean id="daoHelper" class="dtv.pos.common.DaoHelper" lazy-init="true" />
+
+    <bean id="securityMgr" class="dtv.pos.framework.security.SecurityMgr">
+      <constructor-arg>
+        <ref bean="authenticationModuleFactory" />
+      </constructor-arg>
+    </bean>
+
+    <bean id="authenticationModuleFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.pos.iframework.security.IAuthenticationModuleFactory" />
+      <property name="serviceMappings">
+        <props>
+          <prop key="STANDARD">authenticationModules</prop>
+        </props>
+      </property>
+    </bean>
+
+    <bean id="authenticationModules" class="org.springframework.beans.factory.config.ListFactoryBean" scope="prototype">
+      <property name="sourceList">
+        <list value-type="dtv.pos.iframework.security.IAuthenticationModule">
+          <bean class="dtv.pos.security.DatabaseAuthenticationModule" />
+        </list>
+      </property>
+    </bean>
+
+    <!-- Dozer mapping configurations -->
+    <bean id="dozerMapper" class="dtv.pos.common.DozerFactoryWrapperBean">
+      <property name="mappingFiles">
+        <list>
+          <value>DozerConfigurations.xml</value>
+        </list>
+      </property>
+    </bean>
+
+    <bean id="lockedUserMessenger" class="dtv.pos.security.LockedUserMessenger" scope="prototype" />
+
+    <bean id="eftLinkMessageHandlerFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.pos.tender.IEftLinkMessageHandlerFactory" />
+      <property name="serviceMappings">
+        <props>
+          <prop key="XPAY_GIFT_CARD">eftLinkGiftCardHandler</prop>
+          <prop key="LOGIN">eftLinkLoginAuthHandler</prop>
+          <prop key="LOGOFF">eftLinkLogoutAuthHandler</prop>
+          <prop key="LINE_DISPLAY">eftLinkDeviceReqHandler</prop>
+          <prop key="ADMINISTRATION">eftLinkAdminReqHandler</prop>
+          <prop key="CUSTOMER_DISPLAY">eftLinkSaleReqHandler</prop>
+          <prop key="LOYALTY_CARD">eftLinkLoyaltyCardHandler</prop>
+        </props>
+      </property>
+    </bean>
+
+	<bean id="eftLinkLoyaltyCardHandler" class="dtv.tenderauth.impl.eftlink.EftLinkLoyaltyCardHandler" scope="prototype">
+      <property name="TenderId" value="CREDIT_CARD" />
+    </bean>
+
+    <bean id="eftLinkGiftCardHandler" class="dtv.tenderauth.impl.eftlink.EftLinkGiftCardHandler" scope="prototype">
+      <property name="TenderId" value="CREDIT_CARD" />
+    </bean>
+
+    <bean id="eftLinkLoginAuthHandler" class="dtv.tenderauth.impl.eftlink.EftLinkAdminMessageHandler" scope="prototype">
+      <property name="TenderId" value="CREDIT_CARD" />
+      <property name="RequestType">
+        <util:constant static-field="manito.eft.opi.messages.OPIServiceSession.LOGIN" />
+      </property>
+    </bean>
+
+    <bean id="eftLinkLogoutAuthHandler" class="dtv.tenderauth.impl.eftlink.EftLinkAdminMessageHandler" scope="prototype">
+      <property name="TenderId" value="CREDIT_CARD" />
+      <property name="RequestType">
+        <util:constant static-field="manito.eft.opi.messages.OPIServiceSession.LOGOFF" />
+      </property>
+    </bean>
+
+    <bean id="eftLinkDeviceReqHandler" class="dtv.tenderauth.impl.eftlink.EftLinkDeviceRequestHandler" scope="prototype">
+      <property name="TenderId" value="CREDIT_CARD" />
+    </bean>
+
+    <bean id="eftLinkAdminReqHandler" class="dtv.tenderauth.impl.eftlink.EftLinkAdminMessageHandler" scope="prototype">
+      <property name="TenderId" value="CREDIT_CARD" />
+      <property name="RequestType">
+        <util:constant static-field="manito.eft.opi.messages.OPIServiceSession.ADMINISTRATION" />
+      </property>
+    </bean>
+
+    <bean id="eftLinkSaleReqHandler" class="dtv.tenderauth.impl.eftlink.EftLinkSaleRequestMessageHandler" scope="prototype">
+      <!-- TenderId is use within the message hander to find the url and port number of the EFTLink -->
+      <property name="TenderId" value="CREDIT_CARD" />
+    </bean>
+
+    <bean id="eftLinkMessageHandler" class="dtv.tenderauth.impl.eftlink.EftLinkMessageListener" scope="prototype" /> 
+
+    <bean id="eftLinkDeviceEventHandler" class="dtv.tenderauth.impl.eftlink.EftLinkDeviceRequestEventHandler" /> 
+    <bean id="eftLinkCustDispEventHandler" class="dtv.tenderauth.impl.eftlink.EftLinkSaleRequestEventHandler" />    
+
+    <bean id="passwordHash" class="oracle.retail.xstore.passwd.impl.DefaultPasswordHashSet">
+      <property name="hashers">
+        <list value-type="oracle.retail.xstore.passwd.IPasswordHasher">
+          <ref bean="cryptHasher" />
+          <ref bean="shaHasher" />
+          <ref bean="sshaHasher" />
+          <ref bean="ssha2Hasher" />
+        </list>
+      </property>
+      <property name="defaultHasher" ref="ssha2Hasher" />
+    </bean>
+    
+    <bean id="cryptHasher" class="oracle.retail.xstore.passwd.impl.JcryptHasher" />
+    <bean id="shaHasher" class="oracle.retail.xstore.passwd.impl.ShaHasher" />
+    <bean id="sshaHasher" class="oracle.retail.xstore.passwd.impl.SshaHasher" />
+    <bean id="ssha2Hasher" class="oracle.retail.xstore.passwd.impl.Ssha2Hasher" />
+    <bean id="md5Hasher" class="oracle.retail.xstore.passwd.impl.Md5Hasher" />
+    
+    <bean id="xenvPasswordFileCreationTask" class="dtv.pos.security.CreatePasswordStorageFileTask" />
+    <!-- Attempt to unlock the user after every X time -->
+    <bean id="unlockUserTask" class="dtv.pos.security.UnlockUserTask" />
+    <bean id="autoClockOutTask" class="dtv.pos.timeclock.AutoClockOutTask" />
+    <bean id="autoPostPayrollTask" class="dtv.pos.payroll.AutoPostPayroll" />
+    <bean id="updateLayawayAccountStatusTask" class="dtv.pos.register.layaway.common.UpdateLayawayAccountStatus" />
+
+    <bean id="springTaskScheduler" class="org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler">
+      <property name="poolSize" value="1"/>
+      <property name="threadNamePrefix" value="scheduled-task-" />
+      <property name="threadGroupName" value="scheduled-tasks" />
+      <property name="daemon" value="false" />
+      <property name="threadPriority" value="5" />
+      <property name="waitForTasksToCompleteOnShutdown" value="true" />
+      <property name="awaitTerminationSeconds" value="60" />
+    </bean>
+    <task:scheduled-tasks scheduler="springTaskScheduler">
+      <task:scheduled ref="xenvPasswordFileCreationTask" method="run" fixed-delay="#{xenvPasswordFileCreationTask.getRepeatInterval()}" initial-delay="#{xenvPasswordFileCreationTask.getRepeatInterval()}" />
+      <task:scheduled ref="unlockUserTask" method="run" fixed-delay="#{unlockUserTask.getRepeatInterval()}" initial-delay="#{unlockUserTask.getRepeatInterval()}" />
+      <task:scheduled ref="autoClockOutTask" method="reclockFromMidnight" cron="0 0 0 * * ?" />
+      <task:scheduled ref="autoPostPayrollTask" method="run" cron="0 0 22 ? * 7" />
+      <task:scheduled ref="updateLayawayAccountStatusTask" method="run" cron="0 0 23 * * ?" />
+      <task:scheduled ref="environmentHelper" method="hasUpdateGracePeriodExpired" initial-delay="60000" fixed-delay="20000" />
+    </task:scheduled-tasks>
+    
+
+    <!-- define default implementations of xunit beans -->
+    <bean id="testHarness" class="dtv.xunit.DummyTestHarness" />
+    <bean id="captureHarness" class="dtv.xunit.DummyCaptureHarness" />
+
+    <bean id="activityTracker" class="dtv.pos.framework.systemcycle.ActivityTracker" />
+    <bean id="transactionActivityTracker" class="dtv.pos.framework.systemcycle.TransactionActivityTracker" scope="applicationMode" />
+    <bean id="updateProcessor" class="dtv.pos.framework.systemcycle.UpdateProcessor" />
+  </beans> <!-- End xstore-specific beans definitions. -->
+
+  <!-- general use utility classes -->
+  <beans>
+    <bean id="actionCascader" class="com.micros.xstore.config.impl.ActionCascader" scope="prototype" />
+    <bean id="menuItemCascader" class="com.micros.xstore.config.impl.MenuItemCascader" scope="prototype" />
+    <bean id="fontTypeCascader" class="com.micros.xstore.config.impl.FontTypeCascader" scope="prototype" />
+
+    <!-- Singleton helpers -->
+    <bean id="eventManager" class="dtv.event.EventManager" />
+    <bean id="loyaltyUtils" class="dtv.pos.customer.loyalty.LoyaltyUtils" />
+    <bean id="discountHelper" class="dtv.pos.pricing.discount.DiscountHelper" />       
+    <bean id="taxHelper" class="dtv.pos.register.tax.TaxHelper" />
+    <bean id="taxLocationLookup" class="dtv.pos.register.tax.TaxLocationLookup" />
+    <bean id="taxGroupRuleLookup" class="dtv.pos.register.tax.TaxGroupRuleLookup" />
+    <bean id="taxRateRuleLookup" class="dtv.pos.register.tax.TaxRateRuleLookup" />
+    <bean id="taxBracketLookup" class="dtv.pos.register.tax.TaxBracketLookup" />
+    
+    <bean id="commonHelper" class="dtv.pos.common.CommonHelper" />
+    <bean id="eventLogWriter" class="dtv.xst.log4j.DtxAppender">
+      <constructor-arg value="SPRING" />
+      <constructor-arg><null/></constructor-arg>
+      <constructor-arg value="false" />
+    </bean>
+    <bean id="transactionSearchHelper" class="dtv.pos.ejournal.TransactionSearchHelper" />   
+    <bean id="stateJournalHelper" class="dtv.pos.framework.systemcycle.StateJournalHelper" />
+    
+    <!-- Unfortunately, following helpers will need to have a 'getInstance' method to make sure the existing functions are supported. -->
+    <bean id="locationFactory" class="dtv.pos.common.LocationFactory" factory-method="getInstance" />
+
+    <bean id="taxStrategyFactory" class="dtv.pos.register.tax.PosTaxStrategyFactory" >
+      <property name="serviceMappings">
+        <props>
+          <prop key="SALES">salesTaxStrategy</prop>
+          <prop key="VAT">vatTaxStrategy</prop>
+          <prop key="GST">salesTaxStrategy</prop>
+          <prop key="PST">salesTaxStrategy</prop>
+        </props>
+      </property>
+    </bean>
+    
+    <bean id="salesTaxStrategy" class="dtv.pos.register.tax.SalesTaxStrategy" />
+    <bean id="vatTaxStrategy" class="dtv.pos.register.tax.VatTaxStrategy" />
+
+    <bean id="ipcSecretHolder" class="dtv.data2.security.ipc.IpcSecretHolder">
+      <property name="TimeIntervalSeconds" value="60" />
+      <property name="ValueDigits" value="8" />
+    </bean>
+    <bean id="ipcServer" class="dtv.ipc.server.Server" lazy-init="true"  />
+    <bean id="ipcClient" class="dtv.ipc.client.Client" scope="prototype" />
+    
+    <bean id="executorService" class="dtv.pos.util.executor.LoggingScheduledThreadPoolExecutor" destroy-method="shutdownNow">
+      <constructor-arg value="4" />
+      <constructor-arg value="ExecutorPool" />
+    </bean>
+
+  </beans>
+</beans>

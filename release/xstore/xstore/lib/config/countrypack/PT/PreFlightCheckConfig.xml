@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreFlightChecks dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PreFlightCheckConfig.xsd">
+
+  <PreFlightCheck name="COUNTRYPACK.PT.FS_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.FATURASIMPLICADA" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.InvoiceSequencePreflightCheck.FaturaSimplicada</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.PT.FT_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.FATURA" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.InvoiceSequencePreflightCheck.Fatura</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.PT.CB_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.CREDIT_NOTE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.InvoiceSequencePreflightCheck.CreditNote</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.PT.RFS_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.RECOVERY.FATURASIMPLICADA" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.InvoiceSequencePreflightCheck.FaturaSimplicada</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.PT.RFT_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.RECOVERY.FATURA" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.InvoiceSequencePreflightCheck.Fatura</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.PT.RCB_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.RECOVERY.CREDIT_NOTE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.InvoiceSequencePreflightCheck.CreditNote</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.PT.MFS_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.MANUAL.FATURASIMPLICADA" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.InvoiceSequencePreflightCheck.FaturaSimplicada</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.PT.MFT_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.MANUAL.FATURA" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.InvoiceSequencePreflightCheck.Fatura</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.PT.MCB_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.MANUAL.CREDIT_NOTE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.InvoiceSequencePreflightCheck.CreditNote</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <!-- Note that the following should be done for each different sequence type defined for a Shipping document -->
+  <PreFlightCheck name="COUNTRYPACK.PT.SHIPPING_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.PT.GR_SHIPPING" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.DocumentSequencePreflightCheck.Shipping</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+ <!-- BEGIN: Signature file pre-flight check -->
+  <PreFlightCheck name="COUNTRYPACK.PT.SALES_SIGNATURE" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.pt.preflight.PtSignatureFilePreFlightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.pt.signatureFilePreflightFail</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- END: Signature file pre-flight check -->
+
+</PreFlightChecks>

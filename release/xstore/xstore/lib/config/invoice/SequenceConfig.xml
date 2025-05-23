@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SequenceSet xmlns:dtv="http://www.datavantagecorp.com/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="SequenceConfig.xsd">
+
+  <Sequence name="COUNTRYPACK.INVOICE_STORE_SEQUENCE">
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">true</RetailLocationLevel>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  
+  <Sequence name="COUNTRYPACK.CREDIT_NOTE_STORE_SEQUENCE">
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">true</RetailLocationLevel>    
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence> 
+
+  <Sequence name="COUNTRYPACK.TAXFREE_INVOICE_STORE_SEQUENCE">
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">true</RetailLocationLevel>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.TAXFREE_CREDIT_NOTE_STORE_SEQUENCE">
+    <SequenceType dtype="String">NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">true</RetailLocationLevel>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  
+<!--   PREFIX SEQUENCES: PLEASE NOTE THAT WILL BE REMOVED THE LAST RESULTING CHARACTER -->
+  <Sequence name="COUNTRYPACK.INVOICE_PREFIX">
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">false</RetailLocationLevel>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <FileName dtype="String">ivciprefix.seq</FileName>
+    <!--     2 chars BusinessYear -->
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+  <SequencePart>
+      <Text dtype="String"><![CDATA[I]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" >
+      <InitialValue dtype="Long">0</InitialValue> 
+      <MaximumValue dtype="Long">9</MaximumValue>
+      <ValueIncrement dtype="Integer">0</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="COUNTRYPACK.CREDIT_NOTE_PREFIX">
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">false</RetailLocationLevel>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <FileName dtype="String">ivccprefix.seq</FileName>
+    <!--     2 chars BusinessYear -->
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+  <SequencePart>
+      <Text dtype="String"><![CDATA[C]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" >
+      <InitialValue dtype="Long">0</InitialValue> 
+      <MaximumValue dtype="Long">9</MaximumValue>
+      <ValueIncrement dtype="Integer">0</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="COUNTRYPACK.TAXFREE_INVOICE_PREFIX">
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">false</RetailLocationLevel>  
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <FileName dtype="String">ivctiprefix.seq</FileName>
+    <!--     2 chars BusinessYear -->
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+  <SequencePart>
+      <Text dtype="String"><![CDATA[TI]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" >
+      <InitialValue dtype="Long">0</InitialValue> 
+      <MaximumValue dtype="Long">9</MaximumValue>
+      <ValueIncrement dtype="Integer">0</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="COUNTRYPACK.TAXFREE_CREDIT_NOTE_PREFIX">
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">false</RetailLocationLevel>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <FileName dtype="String">ivctcprefix.seq</FileName>
+    <!--     2 chars BusinessYear -->
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+  <SequencePart>
+      <Text dtype="String"><![CDATA[TC]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" >
+      <InitialValue dtype="Long">0</InitialValue> 
+      <MaximumValue dtype="Long">9</MaximumValue>
+      <ValueIncrement dtype="Integer">0</ValueIncrement>
+    </SequencePart>
+  </Sequence>  
+
+</SequenceSet>

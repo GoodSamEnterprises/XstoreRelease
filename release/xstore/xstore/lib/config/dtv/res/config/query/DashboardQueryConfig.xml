@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+
+  <Query name="DASHBOARD.NETSALES" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="net_sales" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT 
+            COALESCE(SUM(line_amt), 0) AS net_sales
+          FROM rpt_flash_sales
+          WHERE organization_id = ?
+          AND line_enum = /*UPPER*/ 'NetSales'
+          AND rtl_loc_id = ?
+          AND business_date = ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argTransDate" />
+    </SQL>
+  </Query>
+  <Query name="DASHBOARD.TOP_5_MERCHLVL1" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="merch_level_1" type="String" />
+    <ResultField name="merch_level_1_desc" type="String" />
+    <ResultField name="line_amt" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT merch_level_1,
+                 COALESCE(merch_level_1_desc, '_rptMerchLvl1Unassigned'),
+                 line_amt
+          FROM(
+            SELECT  
+              rmls.merch_level_1 AS merch_level_1,
+              imh.description AS merch_level_1_desc,
+              SUM(NVL(line_amt, 0)) AS line_amt
+            FROM rpt_merchlvl1_sales rmls
+              LEFT OUTER JOIN itm_merch_hierarchy imh
+                ON rmls.organization_id = imh.organization_id
+                AND rmls.merch_level_1 = imh.hierarchy_id
+                AND /*UPPER*/ imh.level_code = ?
+            WHERE rmls.organization_id = ?
+            AND rmls.rtl_loc_id = ?
+            AND rmls.business_date = ?
+            GROUP BY rmls.merch_level_1, imh.description
+            ORDER BY 3 DESC, 1 ASC
+            ) WHERE rownum <= 5
+      ]]></Statement>
+      <Parameter name="merchLevel1Code" />
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+    </SQL>
+  </Query>
+  <Query name="DASHBOARD.SALES_PERFORMANCE" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="row_number" type="String" />
+    <ResultField name="row_description" type="String" />
+    <ResultField name="gross_sales" type="BigDecimal" />
+    <ResultField name="return_amt" type="BigDecimal" />
+    <ResultField name="net_sales" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT '1' as row_number,
+            '_dashboardToday' as row_description,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'GrossSales' THEN line_amt ELSE 0 END), 0) AS gross_sales,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'Returns' THEN line_amt ELSE 0 END), 0) AS return_amt,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'NetSales' THEN line_amt ELSE 0 END), 0) AS net_sales
+          FROM rpt_flash_sales
+          WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND business_date BETWEEN ? AND ?
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+    </SQL>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+          SELECT '2' as row_number,
+            '_dashboardLastYearSameDay' as row_description,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'GrossSales' THEN line_amt ELSE 0 END), 0) AS gross_sales,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'Returns' THEN line_amt ELSE 0 END), 0) AS return_amt,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'NetSales' THEN line_amt ELSE 0 END), 0) AS net_sales
+          FROM rpt_flash_sales
+          WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND business_date BETWEEN dateadd('year', -1, ? ) AND dateadd('year', -1, ? )
+        
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+    </SQL>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+          SELECT '3' as row_number,
+            '_dashboardWeekToDate' as row_description,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'GrossSales' THEN line_amt ELSE 0 END), 0) AS gross_sales,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'Returns' THEN line_amt ELSE 0 END), 0) AS return_amt,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'NetSales' THEN line_amt ELSE 0 END), 0) AS net_sales
+          FROM rpt_flash_sales
+          WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND business_date BETWEEN dateadd('day', ((datepart('dw', ? ) -1) * -1), ? ) AND ( ? )
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+    </SQL>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+          SELECT '4' as row_number,
+            '_dashboardMonthToDate' as row_description,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'GrossSales' THEN line_amt ELSE 0 END), 0) AS gross_sales,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'Returns' THEN line_amt ELSE 0 END), 0) AS return_amt,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'NetSales' THEN line_amt ELSE 0 END), 0) AS net_sales
+          FROM rpt_flash_sales
+          WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND business_date BETWEEN dateadd('day', ((datepart('dd', ? ) -1) * -1), ? ) AND ( ? )
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+    </SQL>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+          SELECT '5' as row_number,
+            '_dashboardYearToDate' as row_description,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'GrossSales' THEN line_amt ELSE 0 END), 0) AS gross_sales,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'Returns' THEN line_amt ELSE 0 END), 0) AS return_amt,
+            COALESCE(SUM(CASE WHEN line_enum = /*UPPER*/ 'NetSales' THEN line_amt ELSE 0 END), 0) AS net_sales
+          FROM rpt_flash_sales
+          WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND business_date BETWEEN dateadd('day', ((datepart('dy', ? ) -1) * -1), ? ) AND ( ? ) 
+          ORDER BY 1 ASC
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+    </SQL>
+  </Query>
+  <Query name="DASHBOARD.STORE_GOALS_PERFORMANCE" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="description" type="String" />
+    <ResultField name="effective_date" type="Date" />
+    <ResultField name="end_date" type="Date" />
+    <ResultField name="sales" type="BigDecimal" />
+    <ResultField name="goal" type="BigDecimal" />
+    <ResultField name="to_date_pct" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT description, 
+              effective_date, 
+              end_date, 
+              to_date as sales,
+              sales_goal_value as goal, 
+              to_date_pct * 100
+        FROM (
+          SELECT description,
+                 effective_date,
+                 end_date,
+                 to_date,
+                 sales_goal_value,
+                 (to_date/sales_goal_value) as to_date_pct
+          FROM (SELECT description,
+                       effective_date,
+                       end_date,
+                       sales_goal_value,
+                      (SELECT COALESCE(SUM(tsl.net_amt),0)
+                       FROM rpt_sale_line tsl
+                       WHERE ssg.effective_date <= tsl.trans_timestamp
+                             AND ssg.end_date >= tsl.trans_timestamp
+                             AND /*UPPER*/ tsl.trans_statcode = 'COMPLETE' 
+                       ) to_date
+                FROM sls_sales_goal ssg 
+                WHERE ssg.organization_id = ?
+                      AND ? >= ssg.effective_date 
+                      AND ? <= ssg.end_date 
+                ) subssg
+          WHERE sales_goal_value <> 0
+                AND effective_date <> end_date
+          ORDER BY end_date ASC, effective_date ASC, description ASC
+        ) WHERE ROWNUM <= 5
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+    </SQL>
+  </Query>
+  <Query name="DASHBOARD.TOP_5_ITEMS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="item_id" type="String" />
+    <ResultField name="description" type="String" />
+    <ResultField name="qty" type="BigDecimal" />
+    <ResultField name="amt" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT item_id, description, qty, amt
+        FROM (
+          SELECT
+            iia.item_id AS item_id,
+            iia.description AS description,
+            SUM(CASE rpt.return_flag WHEN 0 THEN rpt.quantity ELSE rpt.quantity * -1 END) AS qty,
+            SUM(rpt.net_amt) AS amt,
+            rpt.sale_lineitm_typcode AS TYPECODE
+          FROM trl_sale_lineitm tsl
+            LEFT OUTER JOIN itm_item iia
+              ON /*UPPER*/ tsl.item_id = iia.item_id
+              AND tsl.organization_id = iia.organization_id
+            INNER JOIN trn_trans t
+              ON tsl.organization_id = t.organization_id
+              AND tsl.rtl_loc_id = t.rtl_loc_id
+              AND tsl.wkstn_id = t.wkstn_id
+              AND tsl.business_date = t.business_date
+              AND tsl.trans_seq = t.trans_seq
+            INNER JOIN trl_rtrans_lineitm l
+              ON tsl.organization_id = l.organization_id
+              AND tsl.rtl_loc_id = l.rtl_loc_id
+              AND tsl.wkstn_id = l.wkstn_id
+              AND tsl.business_date = l.business_date
+              AND tsl.trans_seq = l.trans_seq
+              AND tsl.rtrans_lineitm_seq = l.rtrans_lineitm_seq
+            INNER JOIN rpt_sale_line rpt
+              ON l.organization_id = rpt.organization_id
+              AND l.rtl_loc_id  = rpt.rtl_loc_id
+              AND l.business_date = rpt.business_date
+              AND l.wkstn_id = rpt.wkstn_id
+              AND l.trans_seq = rpt.trans_seq
+              AND l.rtrans_lineitm_seq = rpt.rtrans_lineitm_seq
+              
+          WHERE COALESCE(/*UPPER*/ iia.item_lvlcode, '') = 'ITEM'
+          AND /*UPPER*/ t.trans_statcode = 'COMPLETE'
+          AND t.post_void_flag = '0'
+          AND tsl.return_flag = '0'
+          AND (iia.item_id NOT IN (SELECT item_id FROM itm_non_phys_item WHERE 1 = 1)) 
+          AND l.void_flag = '0'
+          AND tsl.organization_id = ?
+          AND tsl.rtl_loc_id = ?
+          AND t.trans_date = ?
+          GROUP BY iia.item_id,
+            iia.description,
+            rpt.sale_lineitm_typcode
+          ORDER BY 4 DESC
+        ) SAA WHERE ((?='OPEN' OR TYPECODE<>'LAYAWAY') AND ROWNUM <= 5)
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="saleLayaway" />
+    </SQL>
+  </Query>
+  <Query name="DASHBOARD.TOP_5_PERFORMERS" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="emp_name" type="String" />
+    <ResultField name="units_per_trans" type="BigDecimal" />
+    <ResultField name="avg_sales" type="BigDecimal" />
+    <ResultField name="total_sales" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT emp_name, units_per_trans, avg_sales, total_sales
+          FROM (
+          SELECT 
+            RTRIM(LTRIM(NVL(p.first_name, '') || ' ' || NVL(p.last_name, ''))) as emp_name,
+            (SUM(tsl.quantity) / count(distinct tsl.trans_seq)) as units_per_trans,
+            (SUM(tsl.net_amt * tcm.percentage_of_item) / COUNT(distinct tsl.trans_seq)) as avg_sales,
+            SUM((tsl.net_amt) * tcm.percentage_of_item) AS total_sales,
+            tsl.sale_lineitm_typcode AS TYPECODE 
+          FROM rpt_sale_line tsl
+            INNER JOIN trl_commission_mod tcm
+              ON tcm.organization_id = tsl.organization_id
+              AND tcm.wkstn_id = tsl.wkstn_id
+              AND tcm.trans_seq = tsl.trans_seq
+              AND tcm.business_date = tsl.business_date
+              AND tcm.rtl_loc_id = tsl.rtl_loc_id
+              AND tcm.rtrans_lineitm_seq = tsl.rtrans_lineitm_seq
+              AND tcm.employee_party_id IS NOT NULL
+            LEFT OUTER JOIN crm_party p
+              ON p.party_id = tcm.employee_party_id
+              AND p.organization_id = tcm.organization_id
+        WHERE tsl.organization_id = ?
+        AND tsl.rtl_loc_id = ?
+        AND tsl.trans_date = ?
+        AND /*UPPER*/ tsl.trans_statcode = 'COMPLETE'
+        
+        GROUP BY RTRIM(LTRIM(NVL(p.first_name, '') || ' ' || NVL(p.last_name, ''))), tsl.sale_lineitm_typcode
+        ORDER BY 4 DESC
+        ) SAA WHERE ((?='OPEN' OR TYPECODE<>'LAYAWAY')AND ROWNUM <= 5)
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="saleLayaway" />
+    </SQL>
+  </Query>
+  <Query name="DASHBOARD.TO_DO_LIST" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="row_number" type="String" />
+    <ResultField name="row_description" type="String" />
+    <ResultField name="total_count" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          SELECT '1' AS row_number,
+            '_dashboardReceivingDocs' AS row_description,
+            COUNT(*) AS total_count
+          FROM inv_invctl_document
+          WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND document_typcode = 'RECEIVING'
+          AND (/*UPPER*/ status_code <> 'CLOSED' OR status_code IS NULL)        
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+    </SQL>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          UNION
+          SELECT '2',
+            '_dashboardShippingDocs',
+            COUNT(*)
+          FROM inv_invctl_document
+          WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND document_typcode = 'SHIPPING'
+          AND (/*UPPER*/ status_code <> 'CLOSED' OR status_code IS NULL)
+          ORDER BY 1 ASC        
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+    </SQL>
+  </Query>
+</QuerySet>

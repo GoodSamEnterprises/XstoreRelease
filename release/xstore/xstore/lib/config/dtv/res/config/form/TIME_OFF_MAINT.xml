@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Thu Apr 28 15:41:21 EDT 2005 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">TIME_OFF_MAINT</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <Touch ref="CANCEL_BACK" paintTouch="true" />
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCustomerMaintHeaderPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter>
+        <param_name dtype="String">setOpaque</param_name>
+        <param_value dtype="Boolean">true</param_value>
+      </ComponentParameter>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+0,0,1,0</param_value>
+      </ComponentParameter>
+      <ColorGroup bgColorRef="_colorTransactionInformationPanel"/>
+      <FormViewCell>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_empTimeSched</TextKey>
+        <Font fontSize="+4"/>
+      </FormViewCell>
+      <FormViewCell>
+        <Type dtype="String">FormLabel</Type>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <ComponentParameter name="setIcon">
+          <param_value dtype="IconRef">_imageTransactionHeaderDividerIcon</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">-1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">beginDate</Resource>
+          <FormatterType dtype="String">DateMedium</FormatterType>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">endDate</Resource>
+          <FormatterType dtype="String">DateMedium</FormatterType>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+      </FormViewPanel>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">TIME_OFF_DETAIL</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">1.0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+          <Parameter name="setMargins">
+            <param_value dtype="IntegerArray">10, 10, 10, 10</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">ScrollEventFormList</Type>
+          <Resource dtype="String">viewList</Resource>
+          <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+          <Renderer>
+            <Role dtype="String">Cell</Role>
+            <Type dtype="String">TIME_OFF</Type>
+          </Renderer>
+          <Renderer>
+            <Role dtype="String">ColumnHeader</Role>
+            <Type dtype="String">TIME_OFF</Type>
+          </Renderer>
+        </FormViewCell>
+      </FormViewPanel>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action chainKey="TIME_OFF_CHANGE_WEEK" text="_toFormChangeWeek" keyStroke="F2" chainType="STACK" />
+      <Action chainKey="PRINT_TIMEOFF" text="_toFormPrintSched" keyStroke="F4" chainType="STACK" />
+      <Action chainKey="TIME_OFF_ADD" text="_toFormAddTimeOff" keyStroke="F5" chainType="STACK" />
+      <Action dataKey="TIME_OFF_EDIT" text="_toFormEditTimeOff" keyStroke="F6" />
+      <Action dataKey="TIME_OFF_REMOVE" text="_toFormRemoveTimeOff" keyStroke="F7" />
+      <Action chainKey="TIME_OFF_PREV_WEEK" text="_toFormPrevWeek" keyStroke="F10" chainType="STACK" />
+      <Action chainKey="TIME_OFF_NEXT_WEEK" text="_toFormNextWeek" keyStroke="F11" chainType="STACK" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

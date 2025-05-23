@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OpChainConfig.xsd">
+
+  <!-- Disabled on request from GB -->
+  <OpChain name="COUNTRYPACK.TAXFREE_CHECK_PROVIDER_STATUS_IMPL" />
+
+  <OpChain name="COUNTRYPACK.TAXFREE_ISSUE_FORM_PROVIDER_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueIssueFormAuthorizeOp" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_REISSUE_FORM_PROVIDER_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueReIssueFormAuthorizeOp" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_VOID_FORM_PROVIDER_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueVoidFormAuthorizeOp" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_VOID_FORM_ON_SALE_PROVIDER_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueVoidFormAuthorizeOp" >
+      <Parameter name="IsSale" value="true" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_GB_UPDATE_CONFIG">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.op.TaxFreeCommErrorCleanOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueDeskConfigAuthorizeOp" >
+      <Parameter name="ForceUpdate" value="true" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueGlobalConfigAuthorizeOp" >
+      <Parameter name="ForceUpdate" value="true" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueBlockedCountriesAuthorizeOp" >
+      <Parameter name="ForceUpdate" value="true" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueCondensedTredAuthorizeOp" >
+      <Parameter name="ForceUpdate" value="true" />
+    </Op>
+  </OpChain>
+
+ <OpChain name="COUNTRYPACK.TAXFREE_PROVIDER_CHECK_CARD_ELIGIBLE" >
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueCheckCardForTaxFreeOp" />
+ </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_GET_CUSTOMER_BY_PROVIDER_TOKEN">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueTravellerAuthorizeOp" />
+  </OpChain>
+
+  <OpChain name="WORKSTATION_OPEN_EXT.local.3">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.op.TaxFreeCommErrorCleanOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueDeskConfigAuthorizeOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueGlobalConfigAuthorizeOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueBlockedCountriesAuthorizeOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.op.GlobalBlueCondensedTredAuthorizeOp" />
+  </OpChain>
+</OpChainSet>

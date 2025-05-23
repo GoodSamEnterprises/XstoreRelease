@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/query/QueryConfig.xsd">
+  <Query name="ORDER_STATUS_REPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.xom.OrderId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+                   AND /*UPPER*/ t.status_code <> 'SUSPENDED'
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Expression parameters="argBusinessDateStart, argBusinessDateEnd" trigger="argBusinessDateStart"><![CDATA[t.order_date between ? AND ?]]></Expression>
+      <Expression trigger="orderStatusParam"><![CDATA[/*UPPER*/ t.status_code = ?]]></Expression>
+      <Expression trigger="orderTypeParam"><![CDATA[/*UPPER*/ t.order_type = ?]]></Expression>
+      <Expression trigger="@argStatusCodes"><![CDATA[/*UPPER*/ t.status_code IN ?]]></Expression>
+      <Expression trigger="@argOrderTypes"><![CDATA[/*UPPER*/ t.order_type IN ?]]></Expression>
+      <Expression parameters="argShippingNecessary, argShippingNecessary" trigger="argShippingNecessary"><![CDATA[
+          (EXISTS (SELECT line.order_id 
+               FROM xom_order_line line 
+               LEFT JOIN xom_source_mod src
+                 ON src.order_id = line.order_id
+                AND src.organization_id = line.organization_id
+                AND src.detail_seq = line.detail_seq
+               LEFT JOIN xom_fulfillment_mod ful
+                 ON ful.order_id = line.order_id
+                AND ful.organization_id = line.organization_id
+                AND ful.detail_seq = line.detail_seq
+              WHERE line.order_id = t.order_id
+                AND line.void_flag = 0
+                AND (ful.LOC_ID is null OR /*UPPER*/ ful.LOC_ID <> /*UPPER*/ src.LOC_ID))
+           AND '1' = ?   
+           OR 
+           NOT EXISTS (SELECT line.order_id 
+               FROM xom_order_line line 
+               LEFT JOIN xom_source_mod src
+                 ON src.order_id = line.order_id
+                AND src.organization_id = line.organization_id
+                AND src.detail_seq = line.detail_seq
+               LEFT JOIN xom_fulfillment_mod ful
+                 ON ful.order_id = line.order_id
+                AND ful.organization_id = line.organization_id
+                AND ful.detail_seq = line.detail_seq
+               WHERE line.order_id = t.order_id
+                 AND line.void_flag = 0
+                 AND (ful.LOC_ID is null OR /*UPPER*/ ful.LOC_ID <> /*UPPER*/ src.LOC_ID))  
+           AND '0' = ?)           
+      ]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="UNFULFILLABLE_ORDER_STATUS_REPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.xom.OrderId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+            AND /*UPPER*/ t.status_code NOT IN ('SUSPENDED','CANCELLED', 'COMPLETE')
+      		  AND EXISTS (SELECT order_id
+                    FROM xom_order_line
+                    WHERE xom_order_line.organization_id = t.organization_id
+                          AND xom_order_line.order_id = t.order_id
+                          AND xom_order_line.void_flag = 0
+                          AND /*UPPER*/ xom_order_line.status_code = 'UNFULFILLABLE')
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Expression parameters="argBusinessDateStart, argBusinessDateEnd" trigger="argBusinessDateStart"><![CDATA[t.order_date between ? AND ?]]></Expression>
+    </SQL>
+  </Query>
+
+
+  <!-- XSTORE-1334 print pick slip -->
+  <Query name="PICK_SLIP_REPORT_QUERY" pmType="ORDER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.xom.impl.order.lookup.OrderPickSlipQueryResult</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="OrderType" type="String" />
+    <ResultField name="ShippingMethod" type="String" />
+    <ResultField name="Priority" type="Integer" />
+    <ResultField name="ItemId" type="String" />
+    <ResultField name="ParentItemId" type="String" />
+    <ResultField name="ItemLevelCode" type="String" />
+    <ResultField name="ItemDescription" type="String" />
+    <ResultField name="ItemMerchLevel1" type="String" />
+    <ResultField name="ItemDimensionSystem" type="String" />
+    <ResultField name="ItemDimension1" type="String" />
+    <ResultField name="ItemDimension2" type="String" />
+    <ResultField name="ItemDimension3" type="String" />
+    <ResultField name="ItemQuantity" type="BigDecimal" />
+    <ResultField name="OrderDate" type="Date" />
+    <ResultField name="OrderId" type="String" />
+    <ResultField name="ShippingNecessary" type="Boolean" />
+
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT xom_order.organization_id, 
+        xom_order.order_type as OrderType, 
+        COALESCE(inv_shipper_method.shipper_method_desc, 'NA') as ShippingMethod, 
+        inv_shipper_method.priority as Priority, 
+        itm_item.ITEM_ID as ItemId, 
+        itm_item.PARENT_ITEM_ID as ParentItemId, 
+        itm_item.ITEM_LVLCODE as ItemLevelCode, itm_item.DESCRIPTION as ItemDescription, 
+        itm_item.merch_level_1 as ItemMerchLevel1, 
+        itm_item.DIMENSION_SYSTEM as ItemDimensionSystem, 
+        itm_item.dimension1 as ItemDimension1, 
+        itm_item.dimension2 as ItemDimension2, 
+        itm_item.dimension3 as ItemDimension3, xom_order_line.quantity as ItemQuantity,
+        xom_order.order_date as OrderDate, 
+        xom_order.order_id as OrderId,
+        CASE WHEN ship_order.order_id is null 
+             THEN 'FALSE' 
+             ELSE 'TRUE' 
+        END as ShippingNecessary
+        
+        FROM xom_order_line
+
+        LEFT JOIN xom_order
+          ON xom_order_line.order_id = xom_order.order_id
+              AND xom_order_line.organization_id = xom_order.organization_id
+              
+        LEFT JOIN itm_item
+          ON xom_order_line.organization_id = itm_item.organization_id
+             AND /*UPPER*/ xom_order_line.item_id =  itm_item.item_id
+        
+        LEFT  JOIN inv_shipper_method 
+          ON xom_order_line.organization_id = inv_shipper_method.organization_id
+             AND /*UPPER*/ xom_order_line.SELECTED_SHIP_METHOD = inv_shipper_method.shipper_method_id
+             
+        LEFT JOIN (SELECT line.organization_id, line.order_id 
+                     FROM xom_order_line line 
+                     LEFT JOIN xom_source_mod src
+                       ON src.order_id = line.order_id
+                      AND src.organization_id = line.organization_id
+                      AND src.detail_seq = line.detail_seq
+                     LEFT JOIN xom_fulfillment_mod ful
+                       ON ful.order_id = line.order_id
+                      AND ful.organization_id = line.organization_id
+                      AND ful.detail_seq = line.detail_seq
+                    WHERE line.void_flag = 0
+                      AND (ful.LOC_ID is null OR /*UPPER*/ ful.LOC_ID <> /*UPPER*/ src.LOC_ID)
+                    GROUP BY line.organization_id, line.order_id) ship_order
+          ON xom_order_line.organization_id = ship_order.organization_id 
+             AND xom_order_line.order_id = ship_order.order_id
+
+        WHERE xom_order_line.organization_id = ?
+             
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argStatusCode"><![CDATA[/*UPPER*/ xom_order_line.status_code = ?]]></Expression>
+      <Expression trigger="argSourceLocationId"><![CDATA[
+          EXISTS (SELECT order_id 
+          FROM xom_source_mod 
+          WHERE xom_source_mod.organization_id = xom_order.organization_id
+             AND xom_source_mod.order_id = xom_order.order_id
+             AND /*UPPER*/ xom_source_mod.loc_id = ?)
+      ]]></Expression>
+    </SQL>
+  </Query>
+</QuerySet>

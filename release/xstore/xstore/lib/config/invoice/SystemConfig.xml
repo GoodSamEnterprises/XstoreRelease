@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <SystemConfig dtype="Default">
+    <InvoiceConfig dtype="Default">
+      <Sequence dtype="Default">
+        <Invoice dtype="Default">
+<!--           <SequencePrefix dtype="String">COUNTRYPACK.INVOICE_PREFIX</SequencePrefix> -->
+          <SequenceName dtype="String">COUNTRYPACK.INVOICE_STORE_SEQUENCE</SequenceName>
+          <ResetDay dtype="PositiveInteger">1</ResetDay>
+          <ResetMonth dtype="PositiveInteger">1</ResetMonth>
+        </Invoice>
+        <CreditNote dtype="Default">
+<!--           <SequencePrefix dtype="String">COUNTRYPACK.CREDIT_NOTE_PREFIX</SequencePrefix> -->
+          <SequenceName dtype="String">COUNTRYPACK.CREDIT_NOTE_STORE_SEQUENCE</SequenceName>
+          <ResetDay dtype="PositiveInteger">1</ResetDay>
+          <ResetMonth dtype="PositiveInteger">1</ResetMonth>
+        </CreditNote>
+      </Sequence>
+      <EnableInvoicing dtype="Boolean">true</EnableInvoicing>
+      <AllowMixRefundItems dtype="Boolean">false</AllowMixRefundItems>
+      <AllowCreditNoteOnNonInvoicedItems dtype="Boolean">false</AllowCreditNoteOnNonInvoicedItems>
+      <ForceCreditNoteIssue dtype="Boolean">true</ForceCreditNoteIssue>
+      <PrintTicketWithInvoice dtype="Boolean">true</PrintTicketWithInvoice>
+      <PrintReprintWatermark dtype="Boolean">false</PrintReprintWatermark>
+      <PrintInvoiceWithinDayMax dtype="PositiveInteger">0</PrintInvoiceWithinDayMax>
+      <PrintInvoiceOnPostVoid dtype="Boolean">true</PrintInvoiceOnPostVoid>
+      <PrintTenderSectionOnInvoice dtype="Boolean">true</PrintTenderSectionOnInvoice>
+    </InvoiceConfig>
+    <TaxFreeConfig dtype="Default">      
+      <PdfPrintAsReport dtype="Boolean">false</PdfPrintAsReport>
+      <PdfReportPrintBackground dtype="Boolean">true</PdfReportPrintBackground>
+      <PdfImageDPI dtype="PositiveInteger">300</PdfImageDPI>
+      <Sequence dtype="Default">
+        <Invoice dtype="Default">
+          <SequencePrefix dtype="String">COUNTRYPACK.TAXFREE_INVOICE_PREFIX</SequencePrefix>
+          <SequenceName dtype="String">COUNTRYPACK.TAXFREE_INVOICE_STORE_SEQUENCE</SequenceName>
+          <ResetDay dtype="PositiveInteger">1</ResetDay>
+          <ResetMonth dtype="PositiveInteger">1</ResetMonth>
+        </Invoice>
+        <CreditNote dtype="Default">
+          <SequencePrefix dtype="String">COUNTRYPACK.TAXFREE_CREDIT_NOTE_PREFIX</SequencePrefix>
+          <SequenceName dtype="String">COUNTRYPACK.TAXFREE_CREDIT_NOTE_STORE_SEQUENCE</SequenceName>
+          <ResetDay dtype="PositiveInteger">1</ResetDay>
+          <ResetMonth dtype="PositiveInteger">1</ResetMonth>
+        </CreditNote>
+      </Sequence>
+      <IdentificationDocumentTypeMap dtype="Map">
+	    <MapEntry key="Passport" >
+	      <value dtype="Translatable">_countrypack.taxfree.doctype.passport</value>
+	    </MapEntry>
+	    <MapEntry key="IdentityCard" >
+	      <value dtype="Translatable">_countrypack.taxfree.doctype.identityCard</value>
+	    </MapEntry>
+	    <MapEntry key="DriverLicense" >
+	      <value dtype="Translatable">_countrypack.taxfree.doctype.driverLicense</value>
+	    </MapEntry>
+	    <MapEntry key="Other" >
+	      <value dtype="Translatable">_countrypack.taxfree.doctype.other</value>
+	    </MapEntry>                
+	  </IdentificationDocumentTypeMap>
+    </TaxFreeConfig>
+  </SystemConfig>
+</Store>

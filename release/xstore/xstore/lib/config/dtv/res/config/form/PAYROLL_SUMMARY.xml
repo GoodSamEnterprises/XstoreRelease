@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed Dec 01 16:36:27 EST 2004 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">PAYROLL_SUMMARY</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Touch ref="CANCEL_BACK" paintTouch="true" />
+      <ColorGroup bgColorRef="_colorTransactionInformationPanel"/>
+      <ComponentParameter>
+        <param_name dtype="String">setOpaque</param_name>
+        <param_value dtype="Boolean">true</param_value>
+      </ComponentParameter>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+0,0,1,0</param_value>
+      </ComponentParameter>
+      <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCustomerMaintHeaderPanel</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsCustomerMaintHeaderPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_empPayrollMaintenance</TextKey>
+        <Font fontSize="+4"/>
+      </FormViewCell>
+      <FormViewCell>
+        <Type dtype="String">FormLabel</Type>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <ComponentParameter name="setIcon">
+          <param_value dtype="IconRef">_imageTransactionHeaderDividerIcon</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_payrollstore</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">storeInfo</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <ComponentParameter name="setIcon">
+          <param_value dtype="IconRef">_imageLineDividerIcon</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <!--PREFERRED, PREFERRED, FILL-->
+            <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <!--FILL, FILL-->
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_payrollstartdate</TextKey>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">startDate</Resource>
+          <FormatterType dtype="String">DateShort</FormatterType>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_payrollenddate</TextKey>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">endDate</Resource>
+          <FormatterType dtype="String">DateShort</FormatterType>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewCell>
+        <Type dtype="String">FormLabel</Type>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <ComponentParameter name="setIcon">
+          <param_value dtype="IconRef">_imageLineDividerIcon</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <!--PREFERRED, PREFERRED, FILL-->
+            <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <!--FILL, FILL-->
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_payrollReviewedDate</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">reviewedDate</Resource>
+          <FormatterType dtype="String">DateShort</FormatterType>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_payrollpostdate</TextKey>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">postDate</Resource>
+          <FormatterType dtype="String">DateShort</FormatterType>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+      </FormViewPanel>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">PAYROLL_MAINTENANCE</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <TextKey dtype="Translatable">_payrollMenu6</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL, FILL, FILL, FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0, -1.0, -1.0, -1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--MINIMUM, 8.0, PREFERRED, 8.0, MINIMUM, FILL, FILL, FILL, FILL, FILL, FILL, FILL, FILL, MINIMUM-->
+          <param_value dtype="DoubleArray">-3.0, 8.0, -2.0, 8.0, -3.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardEmployeeId</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">employeeId</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardEmployeeName</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 2, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">employeeName</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_department</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">5, 2, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">department</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 5, 6, 8, F, F</LayoutLocation>
+        <Type dtype="String">FormTable</Type>
+        <Resource dtype="String">detailModel</Resource>
+        <VerticalScrollPolicy dtype="String">AS_NEEDED</VerticalScrollPolicy>
+        <SelectionMode dtype="String">SINGLE_INTERVAL_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">PAYROLL_TABLE_CELL</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">AlternateCell</Role>
+          <Type dtype="String">PAYROLL_TABLE_ALTERNATE_CELL</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">RowHeader</Role>
+          <Type dtype="String">TWO_LINES</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">TWO_LINES</Type>
+        </Renderer>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 13, 6, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTable</Type>
+        <Resource dtype="String">totalModel</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <VerticalScrollPolicy dtype="String">NEVER</VerticalScrollPolicy>
+        <SelectionMode dtype="String">MULTIPLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">PAYROLL_TABLE_CELL</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">AlternateCell</Role>
+          <Type dtype="String">PAYROLL_TABLE_CELL</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">RowHeader</Role>
+          <Type dtype="String">PAYROLL_TABLE_TOTALS_ROW_HEADER</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">TIMECARD_MAINTENANCE</FormTabKey>
+      <TabOrder dtype="Integer">20</TabOrder>
+      <ActionSubGroupKey dtype="String">TIMECARD</ActionSubGroupKey>
+      <TextKey dtype="Translatable">_payrollMenu3</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL, FILL, FILL, FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0, -1.0, -1.0, -1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--MINIMUM, 8.0, PREFERRED, 8.0, MINIMUM, FILL, FILL, FILL, FILL, FILL, FILL, FILL, FILL, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM, MINIMUM-->
+          <param_value dtype="DoubleArray">-3.0, 8.0, -2.0, 8.0, -3.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -3.0, -3.0, -3.0, -3.0, -3.0, -3.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardEmployeeId</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">employeeId</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardEmployeeName</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 2, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">employeeName</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_department</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">5, 2, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">department</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <!-- <LayoutLocation dtype="String">0, 0, 3, 2, F, F</LayoutLocation> -->
+        <LayoutLocation dtype="String">0, 4, 6, 8, F, F</LayoutLocation>
+        <Type dtype="String">FormTable</Type>
+        <Resource dtype="String">timecardDetailModel</Resource>
+        <VerticalScrollPolicy dtype="String">AS_NEEDED</VerticalScrollPolicy>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">TIMECARD_ENTRY</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">TWO_LINES</Type>
+        </Renderer>
+      </FormViewCell>
+      <FormViewCell>
+        <!-- <LayoutLocation dtype="String">0, 2, 3, 1, F, F</LayoutLocation> -->
+        <LayoutLocation dtype="String">0, 13, 6, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardScheduled</TextKey>
+        <Required dtype="Boolean">true</Required>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <!-- <LayoutLocation dtype="String">0, 3, 3, 1, F, F</LayoutLocation> -->
+        <LayoutLocation dtype="String">0, 14, 6, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTable</Type>
+        <Resource dtype="String">timecardScheduleModel</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <VerticalScrollPolicy dtype="String">NEVER</VerticalScrollPolicy>
+        <SelectionMode dtype="String">MULTIPLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Simple dtype="Boolean">true</Simple>
+        </Renderer>
+      </FormViewCell>
+      <FormViewCell>
+        <!-- <LayoutLocation dtype="String">0, 4, 3, 1, F, F</LayoutLocation> -->
+        <LayoutLocation dtype="String">0, 15, 6, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardActual</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <!-- <LayoutLocation dtype="String">0, 5, 3, 1, F, F</LayoutLocation> -->
+        <LayoutLocation dtype="String">0, 16, 6, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTable</Type>
+        <Resource dtype="String">timecardSummaryModel</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <VerticalScrollPolicy dtype="String">NEVER</VerticalScrollPolicy>
+        <SelectionMode dtype="String">MULTIPLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Simple dtype="Boolean">true</Simple>
+        </Renderer>
+      </FormViewCell>
+      <FormViewCell>
+        <!-- <LayoutLocation dtype="String">0, 6, 1, 1, F, F</LayoutLocation> -->
+        <LayoutLocation dtype="String">0, 17, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">seeComment</Resource>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 17, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormIcon</Type>
+        <Resource dtype="String">gifFile</Resource>
+      </FormViewCell>
+      <FormViewCell>
+        <!-- <LayoutLocation dtype="String">1, 7, 1, 1, R, F</LayoutLocation> -->
+        <LayoutLocation dtype="String">1, 18, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_timecardTotalHours</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <!-- <LayoutLocation dtype="String">2, 7, 1, 1, L, F</LayoutLocation> -->
+        <LayoutLocation dtype="String">2, 18, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">totalHours</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Required dtype="Boolean">true</Required>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">PAYROLL_COMMENT</FormTabKey>
+      <TabOrder dtype="Integer">30</TabOrder>
+      <ActionSubGroupKey dtype="String">PAYROLL_COMMENT</ActionSubGroupKey>
+      <TextKey dtype="Translatable">_payrollMenu7</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 2, 2, F, F</LayoutLocation>
+        <Type dtype="String">FormList</Type>
+        <Resource dtype="String">payrollCommentModel</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">PAYROLL_COMMENT_LIST</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">TIMECARD_COMMENT</FormTabKey>
+      <TabOrder dtype="Integer">40</TabOrder>
+      <ActionSubGroupKey dtype="String">TIMECARD_COMMENT</ActionSubGroupKey>
+      <TextKey dtype="Translatable">_timecardCommentMenuText</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 2, 2, F, F</LayoutLocation>
+        <Type dtype="String">FormList</Type>
+        <Resource dtype="String">timecardCommentModel</Resource>
+        <TextKey dtype="Translatable">_formDesignerNewComponent</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Font fontStyle="BOLD" />
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">TIMECARD_COMMENT</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action dataKey="ACTIVE_TIMECARD_EMPLOYEE" text="_timecardMenu3" keyStroke="F2" />
+      <Action dataKey="EDIT_PAYROLL_AND_TIMECARD" text="_payrollMenu8" keyStroke="F3" />
+      <Action dataKey="REVIEW_PAYROLL" text="_payrollMenu11" keyStroke="F4" />
+      <Action dataKey="PREVIOUS_ACTIVE_TIMECARD_EMPLOYEE" text="_payrollMenu10" keyStroke="F5" />
+      <Action dataKey="NEXT_ACTIVE_TIMECARD_EMPLOYEE" text="_payrollMenu9" keyStroke="F6" />
+      <Action dataKey="POST_PAYROLL_PER_EMPLOYEE" text="_payrollMenu12" keyStroke="F8">
+        <VisibilityRule class="dtv.pos.payroll.PostPayrollPerEmployeeVisibilityRule" />
+      </Action>
+      <Action dataKey="POST_PAYROLL" text="_payrollMenu4" keyStroke="F9" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="DEFAULT" subKey="TIMECARD">
+      <Action dataKey="NEW_TIMECARD_PAYROLL_DATE" text="_timecardMenu2" keyStroke="F2" />
+      <Action dataKey="ACTIVE_TIMECARD_EMPLOYEE" text="_timecardMenu3" keyStroke="F3" />
+      <Action dataKey="EDIT_PAYROLL_AND_TIMECARD" text="_timecardMenu4" keyStroke="F4" />
+      <Action dataKey="VIEW_TIMECARD_RECORD_HISTORY" text="_timecardMenu9" keyStroke="F5" />
+      <Action dataKey="PREVIOUS_ACTIVE_TIMECARD_EMPLOYEE" text="_payrollMenu10" keyStroke="F6" />
+      <Action dataKey="NEXT_ACTIVE_TIMECARD_EMPLOYEE" text="_payrollMenu9" keyStroke="F7" />
+      <Action dataKey="EXCEPTION_TIMECARD_LIST" text="_timecardMenu1" keyStroke="F9" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!--PAYROLL_COMMENT-->
+    <ActionGroup key="DEFAULT" subKey="PAYROLL_COMMENT">
+      <Action dataKey="ADD_PAYROLL_COMMENT" text="_timecardMenu5" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!-- TIMECARD_COMMENT -->
+    <ActionGroup key="DEFAULT" subKey="TIMECARD_COMMENT">
+      <Action dataKey="ADD_TIMECARD_RECORD_COMMENT" text="_timecardMenu5" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!--**********************************-->
+    <!--** EDIT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="EDIT">
+      <Action dataKey="ABORT_PAYROLL_CHANGES" text="_back" keyStroke="Escape" />
+      <Action dataKey="SAVE_ALL_PAYROLL_CHANGES" text="_payrollMenu1" />
+    </ActionGroup>
+    <ActionGroup key="EDIT" subKey="TIMECARD">
+      <Action dataKey="BACK_TO_SUMMARY" text="_back" keyStroke="Escape" />
+      <Action dataKey="NEW_TIMECARD_PAYROLL_DATE" text="_timecardMenu2" keyStroke="F2" />
+      <Action dataKey="ACTIVE_TIMECARD_EMPLOYEE" text="_timecardMenu3" keyStroke="F3" />
+      <Action dataKey="CHANGE_TIMECARD_RECORD" text="_timecardMenu6" />
+      <Action dataKey="ADD_TIMECARD_RECORD" text="_timecardMenu7" />
+      <Action dataKey="DELETE_TIMECARD_ENTRY" text="_timecardMenu8" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

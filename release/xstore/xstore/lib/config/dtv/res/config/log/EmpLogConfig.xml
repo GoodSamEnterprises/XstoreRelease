@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <!-- ***************************************************** -->
+  <!-- ** ROUTING RULES -->
+  <!-- ***************************************************** -->
+  <RoutingRules>
+    <RoutingRule name="EMPLOYEE" document="EMPLOYEE_EDIT" file="WORKER">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.pos.employee.log.IEmployeeLogModel" />
+    </RoutingRule>
+    <RoutingRule name="EMPLOYEE_NOTE" document="EMPLOYEE_NOTE" file="WORKER">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.hrs.IEmployeeNote" />
+    </RoutingRule>
+  </RoutingRules>
+  
+  <!-- ***************************************************** -->
+  <!-- ** LOG DOCUMENT TYPES -->
+  <!-- ***************************************************** -->
+  <LogTypes>
+    <LogType document="EMPLOYEE_EDIT" sectionref="EMPLOYEE_EDIT" />
+    <LogType document="EMPLOYEE_NOTE" sectionref="EMPLOYEE_NOTE" />
+  </LogTypes>
+  
+  <!-- ***************************************************** -->
+  <!-- ** SECTIONS -->
+  <!-- ***************************************************** -->
+  <sections>
+    <section name="EMPLOYEE_EDIT">
+      <xml><![CDATA[
+        <Worker Version="1.0" 
+            Action="!{dtv.logbuilder.ActionTypeDocBuilderField}" 
+            WorkerStatus="#{getEmployee.getEmployeeStatusCode}[employeeStatus]"
+            WorkerStatusReason="!{dtv.pos.employee.log.WorkerStatusReasonDocBuilderField}">
+            
+          <?call method="getEmployee"?>
+          <WorkerID>#{getEmployeeId}</WorkerID>
+          
+          <?call method="getParty"?>
+          <LegalName>
+            <?sectionref name="party_name"?>
+          </LegalName>          
+          <?_call?>
+          
+          <WorkerTitle>#{getJobTitle}</WorkerTitle>
+          <PersonalInformation>
+            <?call method="getParty"?>
+            <SocialSecurityNumber>#{getSocialSecurityNbrEncrypted}</SocialSecurityNumber>
+            <Birthdate>#{getBirthDate}[date]</Birthdate>
+            <Gender>#{getGender}</Gender>
+            
+            <?iterator method="getEmailInformation"?>
+            <?sectionref name="party_email"?>
+            <?_iterator?>
+            
+            <?call method="getPrimaryLocaleInformation"?>
+            <?sectionref name="party_address"?>
+            <?_call?>
+            
+            <?iterator method="getTelephoneInformation"?>
+            <?sectionref name="party_telephone"?>
+            <?_iterator?>
+            
+            <?_call?>
+          </PersonalInformation>
+          
+          <SecurityIdentifier TypeCode="Password">#{getPasswordId{SECURITY}.getPassword}</SecurityIdentifier>
+          
+          <?iterator class="dtv.pos.employee.log.FingerprintIterator"?>
+          <SecurityIdentifier TypeCode="Fingerprint" dtv:Sequence="#{getSequence}">#{getBiometricStorage}</SecurityIdentifier>
+          <?_iterator?>
+          
+          <EmergencyContact>
+            <ContactName>
+              <Name>#{getEmergencyContactName}</Name>
+              <FullName>#{getEmergencyContactName}</FullName>
+            </ContactName>
+            <Telephone>
+              <PhoneNumber>#{getEmergencyContactPhone}</PhoneNumber>
+            </Telephone>
+          </EmergencyContact>
+          
+          <PayRate PayType="Regular">
+            <PayRate>#{getBasePay}[money]</PayRate>
+            <Position>#{getEmployeeRoleCode}</Position>
+          </PayRate>
+          <Classification SalaryFlag="#{getEmployeePayStatus}[isSalaried]" />
+          
+          <?sectionref name="employee_accrual" argType="SickTime" argMethod="getSickDays"?>
+          <?sectionref name="employee_accrual" argType="dtv:SickTimeUsed" argMethod="getSickDaysUsed"?>
+          <?sectionref name="employee_accrual" argType="dtv:Personal" argMethod="getPersonalDays"?>
+          <?sectionref name="employee_accrual" argType="dtv:PersonalUsed" argMethod="getPersonalDaysUsed"?>
+          <?sectionref name="employee_accrual" argType="Vacation" argMethod="getVacationDays"?>
+          <?sectionref name="employee_accrual" argType="dtv:VacationUsed" argMethod="getVacationDaysUsed"?>
+          
+          <?condition method="getDepartmentId" comparison="NOT_NULL"?>
+          <WorkLocation>
+            <HomeDepartment>#{getDepartmentId}</HomeDepartment>
+          </WorkLocation>
+          <?_condition?>
+          
+          <dtv:PreferredLocale>#{getPreferredLocale}</dtv:PreferredLocale>
+          <dtv:MaritalStatusCode>#{getMaritalStatus}</dtv:MaritalStatusCode>
+          <dtv:SpouseName>#{getSpouseName}</dtv:SpouseName>
+          <dtv:HireDate>#{getHireDate}[date]</dtv:HireDate>
+          <dtv:ActiveDate>#{getActiveDate}[date]</dtv:ActiveDate>
+          <dtv:TerminatedDate>#{getTerminatedDate}[date]</dtv:TerminatedDate>
+          <dtv:EmployeeGroup>#{getEmployeeGroup}</dtv:EmployeeGroup>
+          <dtv:EmployeeTypeCode>#{getEmployeeTypeCode}</dtv:EmployeeTypeCode>
+          <dtv:AdditionalWithholdings>#{getAdditionalWithholdings}[money]</dtv:AdditionalWithholdings>
+          <dtv:ClockInNotRequired>#{getClockInNotRequired}[boolean]</dtv:ClockInNotRequired>
+          <dtv:OvertimeEligibleFlag>#{getOvertimeEligible}[boolean]</dtv:OvertimeEligibleFlag>
+          <dtv:LastReviewDate>#{getLastReviewDate}[date]</dtv:LastReviewDate>
+          <dtv:NextReviewDate>#{getNextReviewDate}[date]</dtv:NextReviewDate>
+          <dtv:TrainingStatus>#{getTrainingStatusEnum}</dtv:TrainingStatus>
+          <dtv:PrimaryGroup>#{getPrimaryGroup.getGroupId}</dtv:PrimaryGroup>
+          
+          <dtv:SecurityGroups>
+            <?iterator class="dtv.pos.employee.log.SecurityGroupIterator"?>
+            <dtv:SecurityGroup>#{getGroupId}</dtv:SecurityGroup>
+            <?_iterator?>
+          </dtv:SecurityGroups>
+          
+          <?iterator class="dtv.pos.employee.log.EmployeeStoreIterator"?>
+          <dtv:StoreAssignment Sequence="#{getEmployeeStoreSequence}" Temporary="#{getTemporaryAssignment}[boolean]">
+            <dtv:RetailLocationId>#{getRetailLocationId}</dtv:RetailLocationId>
+            <dtv:BeginDate>#{getBeginDate}[date]</dtv:BeginDate>
+            <dtv:EndDate>#{getEndDate}[date]</dtv:EndDate>
+          </dtv:StoreAssignment>
+          <?_iterator?>
+          
+          <?_call?>
+          
+          <dtv:EditInfo>
+            <?sectionref name="loggable_model_common"?>
+          </dtv:EditInfo>
+        </Worker>
+      ]]></xml>
+    </section>
+    
+    <section name="employee_accrual">
+      <xml><![CDATA[
+        <?condition method="@argMethod" comparison="NOT_NULL"?>
+        <Accruals TypeCode="@argType">
+          <Quantity>#{@argMethod}</Quantity>
+        </Accruals>
+        <?_condition?>
+      ]]></xml>
+    </section>
+    
+    <section name="EMPLOYEE_NOTE">
+      <xml><![CDATA[
+        <Worker Version="1.0" Action="Update">
+          <WorkerID>#{getEmployeeId}</WorkerID>
+          <dtv:WorkerNote>
+            <dtv:NoteSequence>#{getNoteSequence}</dtv:NoteSequence>
+            <dtv:NoteTimeStamp>#{getNoteTimeStamp}[datetime]</dtv:NoteTimeStamp>
+            
+            <?sectionref name="dao_creation_fields"?>
+            <?sectionref name="dao_update_fields"?>
+            
+            <dtv:Note>#{getNote}</dtv:Note>
+          </dtv:WorkerNote>
+        </Worker>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>

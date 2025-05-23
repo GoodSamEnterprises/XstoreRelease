@@ -1,0 +1,66 @@
+<dataTemplate name="LoyaltyAccountActivity" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="Title" value="_rptCustomerLoyaltyAccountActivityTitle"/>
+    <label name="Date" value="_rptDate"/>
+    <label name="Account" value="_rptAccount"/>
+    <label name="Activity" value="_rptActivityType"/>
+    <label name="Effect" value="_rptEffect"/>
+    <label name="Pending" value="_rptPending"/>
+    <label name="Store" value="_rptStoreNo"/>
+    <label name="Transaction" value="_rptTransNo"/>
+    <label name="PendingY" value="_rptPendingY" />
+    
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="firstName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="lastName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+   </parameters>
+  
+  <dataSource>
+    <dataReference name="O_LOYALTY_ACCT">
+        <ResultFields>
+          <ResultField>ActivityDate</ResultField>
+          <ResultField>AccountName</ResultField>
+          <ResultField>ActivityType</ResultField>
+          <ResultField>Effect</ResultField>
+          <ResultField>PendingFlag</ResultField>
+          <ResultField>LocationId</ResultField>
+          <ResultField>TransId</ResultField>
+          <ResultField>VoidFlag</ResultField>
+        </ResultFields>
+    </dataReference>
+  </dataSource>
+  
+  <dataStructure>
+    <group name="G_LOYALTY_ACCT" source="O_LOYALTY_ACCT">
+     <element name="DATE" value="ActivityDate" formatter="DateMedium"/>
+     <element name="ACCT" value="AccountName"/>
+     <element name="ACTIVITY" value="ActivityType"/>
+     <element name="EFFECT" value="Effect"/>
+     <element name="PENDING" value="PendingFlag"/>
+     <element name="LOC_ID" value="LocationId"/>
+     <element name="TRANS_ID" value="TransId"/>
+     <element name="VOID" value="VoidFlag" />
+    </group>
+    
+  </dataStructure>
+  
+</dataTemplate>

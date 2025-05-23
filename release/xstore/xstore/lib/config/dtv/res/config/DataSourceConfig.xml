@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSourceSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DataSourceConfig.xsd">
+
+  <!-- This data source is included here and enabled because:
+  (a) It is not platform- or environment-specific.
+  (b) Its absence will result in an HDE when ringing transactions or reproducing certain offline scenarios, 
+  especially in the Till Accounting domain.
+  It does, however, assume the existence of data sources named "Local" and "StorePrimary", which should be 
+  safe assumptions to make. -->
+  <DataSource name="ConcurrentStoreLocal" networkScope="LAN">
+    <Strategy dtype="String">concurrentWritePersistenceStrategy</Strategy>
+    <Property key="DataSource1" value="StorePrimary" />
+    <Property key="DataSource2" value="Local" />
+  </DataSource>
+  
+  <!-- This data source is included here and enabled because:
+  (a) It is not platform- or environment-specific.
+  (b) Its usage prevents HDEs involving PK violations resulting from a latency between replication to Xcenter 
+  and retrievals from that data source.  Specifically, any data which bases sequences assigned to new rows can
+  fail when those sequences are based on not-yet-updated data in Xcenter.
+  It does, however, assume the existence of data sources named "Xcenter" and "StorePrimary", which should be 
+  safe assumptions to make. -->
+  <DataSource name="ConcurrentStoreXcenter" networkScope="LAN">
+    <Strategy dtype="String">concurrentWritePersistenceStrategy</Strategy>
+    <Property key="DataSource1" value="Xcenter" />
+    <Property key="DataSource2" value="StorePrimary" />
+  </DataSource>
+
+<!-- This file is a template for customer-specific data source configurations. 
+     Using it directly will result in erroneous encryption errors and is not 
+     generally useful in any case.  Copy this template to a customer 
+     configuration tier and make the changes appropriate for that customer's 
+     data sources, including proper customer-specific identification of encrypted 
+     database login information. -->
+  
+<!--
+  <DataSource name="Xcenter">
+    <Enabled dtype="Boolean">false</Enabled>
+    <NetworkScope dtype="String">WAN</NetworkScope>
+    <Strategy dtype="String">servletPersistenceStrategy</Strategy>
+    <Property key="ConnectionURL" value="https://127.0.0.1:8443" />
+    <Property key="GetObjectByIdPath" value="/xcenter/dtx/GetById" />
+    <Property key="GetObjectByQueryPath" value="/xcenter/dtx/GetByQuery" />
+    <Property key="MakePersistentPath" value="/xcenter/dtx/MakePersistent" />
+    <Property key="Timeout" value="30000" />
+    <Property key="ConnectionUserName" value="Pj4+MAAAAACq2NtCMer/nXqrnVnCCAkb"/>
+    <Property key="ConnectionPassword" value="Pj4+MAAAAACq2NtCMer/nXqrnVnCCAkb"/>
+    <Property key="keystore" value="${javax.net.ssl.keyStore}" />
+    <Property key="keystorePassword" value="Pj4+MAAAAADetYYsih3QujIgrdUp8blv"/>
+    <Property key="keyalias" value="xstore" />
+    <Property key="truststore" value="${javax.net.ssl.trustStore}" />
+    <Property key="truststorePassword" value="Pj4+MAAAAADetYYsih3QujIgrdUp8blv"/>
+    <Ping>
+      <ClassName dtype="Class">dtv.data2.access.impl.SocketPing</ClassName>
+      <Property key="Host" value="127.0.0.1"/>
+      <Property key="Port" value="8443"/>
+      <Property key="Timeout" value="1000"/>
+    </Ping>
+  </DataSource>
+
+-->
+</DataSourceSet>

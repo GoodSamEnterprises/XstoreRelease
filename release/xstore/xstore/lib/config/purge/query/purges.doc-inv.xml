@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <!-- ***************************************************************** -->
+  <!-- ROOTS -->
+  <!-- ***************************************************************** -->
+  <Query name="doc_document">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM doc_document
+          WHERE organization_id = ?
+            AND expiration_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="inv_invctl_document">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM inv_invctl_document
+          WHERE organization_id = ?
+            AND complete_date_timestamp < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <Query name="inv_count">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM inv_count 
+          WHERE organization_id = ?
+            AND end_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- doc_document <<< * -->
+  <!-- ************************************************ -->
+  <Query name="doc_document_lineitm">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM doc_document_lineitm c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From doc_document p 
+                    Where p.organization_id = c.organization_id
+                      And p.document_type = /*UPPER*/ c.document_type
+                      And p.series_id = /*UPPER*/ c.series_id
+                      And p.document_id = /*UPPER*/ c.document_id)
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <Query name="doc_document_p">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM doc_document_p c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From doc_document p 
+                    Where p.organization_id = c.organization_id
+                      And p.document_id = c.document_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <!-- ************************************************ -->
+  <!-- inv_invctl_document <<< * -->
+  <!-- ************************************************ -->
+  <Query name="inv_invctl_document.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From inv_invctl_document p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.rtl_loc_id
+                      And p.document_typcode = c.document_typcode
+                      And p.invctl_document_id = c.invctl_document_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <Query name="inv_invctl_document.child2">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From inv_invctl_document p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.rtl_loc_id
+                      And p.document_typcode = c.document_typcode
+                      And p.invctl_document_id = c.document_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <Query name="inv_count.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From inv_count p
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.rtl_loc_id
+                      And p.inv_count_id = c.inv_count_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+</QuerySet>

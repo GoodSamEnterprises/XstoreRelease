@@ -1,0 +1,66 @@
+<dataTemplate name="OpenTimeCard" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+    <label name="ID" value="_rptEmpID"/>
+    <label name="NAME" value="_rptEmployeeName"/>
+    <label name="CLOCK_IN" value="_rptClockIn"/>
+    <label name="REGISTER" value="_rptRegister"/>
+    <label name="CODE" value="_rptWorkCode"/>
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>    
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>    
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_OPEN_TIMECARD" key="OPEN_TIMECARD_REPORT">
+      <Parameters>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>organizationId</Parameter>
+      </Parameters>
+      <ResultFields>
+      <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+        <ResultField>employee_id</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>clock_in_timestamp</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>employee_name</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_DATA" source="Q_OPEN_TIMECARD">
+      <element name="EMP" value="employee_id"/>    
+      <element name="NAME" value="employee_name" formatter="LastFirstNameFromString"/>
+      <element name="TIME" value="clock_in_timestamp" formatter="DateTimeMedium"/>
+      <element name="REG" value="wkstn_id"/>
+      <element name="CODE" value="description"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

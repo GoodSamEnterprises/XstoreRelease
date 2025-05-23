@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd 
+                      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+                      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <bean id="moneyInWordsParser" class="oracle.retail.xstore.countrypack.mx.MXMoneyInWordsParser" /> 
+
+  <!-- Invoice Report -->
+  <bean id="COUNTRYPACK.INVOICE" class="dtv.pos.framework.reporting.ReportDefinition">
+    <property name="title" value="_countrypack.invoice.layoutRegularTitle" />
+    <property name="parameterPromptMessage" value="_rptEnterParamMessage" />
+    <property name="dataTemplate" value="countrypack/MX/report/CFDI/cfdi.xdt" />
+    <property name="layoutTemplate" value="countrypack/MX/report/CFDI/CFDIReport.rtf" />
+  </bean> 
+  <!-- Invoice Report -->
+
+  <bean id="saveXMLCFDI" class="oracle.retail.xstore.countrypack.mx.register.workers.GenerateCFDIXMLFileWorker"
+    scope="prototype" />
+  <bean id="sendCFDIMail" class="oracle.retail.xstore.countrypack.mx.register.workers.SendCFDIWorker"
+    scope="prototype" />
+
+  <bean id="CFDIWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="saveXMLCFDI" />
+        <ref bean="sendCFDIMail" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="setTransactionPropertiesWorker" class="oracle.retail.xstore.countrypack.mx.register.tax.workers.SetTransactionPropertiesWorker"
+    scope="prototype" />
+  <bean id="changeTaxWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="setTransactionPropertiesWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="cfdiHelper" class="oracle.retail.xstore.countrypack.mx.cfdi.CFDIHelper" scope="prototype">
+    <property name="customerTruststorePath" value="#{systemProperties['countrypack.mx.cfdi.customerTruststorePath']}" />
+    <property name="customerKeyFilePath" value="#{systemProperties['countrypack.mx.cfdi.customerKeyFilePath']}" />
+    <property name="keyStorePassword" value="#{systemProperties['countrypack.mx.cfdi.keyStorePassword']}" />
+    <property name="certificateAlias" value="#{systemProperties['countrypack.mx.cfdi.certificateAlias']}" />
+    <property name="originalStringTransformerLocation" value="#{systemProperties['countrypack.mx.cfdi.originalStringTransformerLocation']}" />
+    <property name="originalStringTFDTransformerLocation" value="#{systemProperties['countrypack.mx.cfdi.tfd.originalStringTransformerLocation']}" />
+  </bean>
+
+<!-- 
+**************************************************************
+          Services Related beans
+          Keep this section at the end of this file  
+**************************************************************
+-->
+
+  <!-- Service Impl -->
+  <bean id="mxCFDIService" class="oracle.retail.xstore.countrypack.mx.services.impl.CFDIServiceImpl"
+    scope="maybeTrainingMode" primary="true">
+    <property name="currentImplementation" value="KONESH_GENERATE_CFDI" />
+    <property name="globalInvImplementation" value="KONESH_GENERATE_CFDI_GLOBAL_INV" />
+  </bean>
+
+  <bean id="mxCFDIResponseException" class="oracle.retail.xstore.countrypack.mx.services.exception.CFDIResponseException" />
+
+  <bean id="standardMXCFDIWSErrorHandler" parent="standardServiceErrorHandler">
+    <property name="errorCases">
+      <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="code" value="VALIDATION_ERROR" />
+          <property name="throws"
+            value="oracle.retail.xstore.countrypack.mx.services.exception.ValidationErrorException" />
+        </bean>
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="code" value="INTERNAL_ERROR" />
+          <property name="throws"
+            value="oracle.retail.xstore.countrypack.mx.services.exception.CriticalErrorException" />
+        </bean>
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="exception" value="javax.xml.ws.soap.SoapFaultException" />
+          <property name="throws"
+            value="oracle.retail.xstore.countrypack.mx.services.exception.CriticalErrorException" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="mxCFDIWSExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="mxCFDIResponseException" />
+    <property name="errorHandler" ref="standardMXCFDIWSErrorHandler" />
+  </bean>
+
+  <bean id="KONESH_GENERATE_CFDI"
+    class="oracle.retail.xstore.countrypack.mx.services.client.konesh.KoneshTimbradorIntegradoresHandler">
+    <property name="serviceId" value="MX_CFDI_KONESH_WS" />
+    <property name="servicePort" ref="CP.MX.WSJaxWsServicePort" />
+    <property name="exceptionHandler" ref="mxCFDIWSExceptionHandler" />
+    <!-- REQUEST -->
+    <property name="requestPreparer">
+      <bean class="oracle.retail.xstore.countrypack.mx.services.request.CFDIRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="oracle.retail.xstore.countrypack.mx.services.request.adapters.CFDIHeaderAdapter">
+          <property name="certNumber" value="#{systemProperties['countrypack.mx.cfdi.certificateNumber']}" />
+        </bean>
+        <bean class="oracle.retail.xstore.countrypack.mx.services.request.adapters.CFDIEmisorAdapter" />
+        <bean class="oracle.retail.xstore.countrypack.mx.services.request.adapters.CFDIReceptorAdapter" />
+        <bean class="oracle.retail.xstore.countrypack.mx.services.request.adapters.CFDIConceptosAdapter" />
+      </list>
+    </property>
+    <property name="requestTransformer">
+      <bean class="oracle.retail.xstore.countrypack.mx.services.request.CFDIRequestTransformer" />
+    </property>
+    
+   <!-- RESPONSE -->
+    <property name="responsePreparer">
+      <bean class="oracle.retail.xstore.countrypack.mx.services.client.konesh.response.KoneshResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean
+          class="oracle.retail.xstore.countrypack.mx.services.client.konesh.response.adapters.KoneshResponseAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="KONESH_GENERATE_CFDI_GLOBAL_INV" parent="KONESH_GENERATE_CFDI">
+    <!-- REQUEST -->
+    <property name="requestPreparer">
+      <bean class="oracle.retail.xstore.countrypack.mx.services.request.CFDIRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="oracle.retail.xstore.countrypack.mx.services.request.adapters.globalInvoice.GlobalCFDIHeaderAdapter">
+          <property name="certNumber" value="#{systemProperties['countrypack.mx.cfdi.certificateNumber']}" />
+        </bean>
+        <bean class="oracle.retail.xstore.countrypack.mx.services.request.adapters.CFDIEmisorAdapter" />
+        <bean class="oracle.retail.xstore.countrypack.mx.services.request.adapters.globalInvoice.GlobalCFDIReceptorAdapter" />
+        <bean class="oracle.retail.xstore.countrypack.mx.services.request.adapters.globalInvoice.GlobalCFDIConceptosAdapter_PerTrans" />
+      </list>
+    </property>
+    <property name="requestTransformer">
+      <bean class="oracle.retail.xstore.countrypack.mx.services.request.CFDIRequestTransformer" />
+    </property>
+  </bean>
+
+  <!-- Service port definition -->
+  <bean id="CP.MX.WSJaxWsServicePort" class="dtv.servicex.impl.XstoreJaxWsPortFactoryBean">
+    <property name="serviceId" value="MX_CFDI_KONESH_WS" />
+    <property name="serviceInterface"
+      value="oracle.retail.xstore.countrypack.mx.ws.client.konesh.TimbradorIntegradoresPortType" />
+    <property name="namespaceUri" value="http://integradores.cfdi.mx.konesh.com" />
+    <property name="lookupServiceOnStartup" value="false" />
+    <property name="serviceName" value="TimbradorIntegradores" />
+    <property name="portName" value="TimbradorIntegradoresHttpsSoap11Endpoint" />
+    <property name="handlerResolver" ref="wsLoggingHandlerResolver" />
+    <property name="serviceConfigHelper" ref="serviceConfigHelper" />
+    <property name="customProperties">
+      <map>
+        <entry key="javax.xml.ws.service.endpoint.address" value="#{systemProperties['countrypack.mx.cfdi.endpoint']}" />
+      </map>
+    </property>
+  </bean>   
+   
+  <!-- Validations beans -->
+  <bean id="retailSaleOrDeferedInvoiceTypeValidationRule"
+    class="oracle.retail.xstore.countrypack.common.invoice.validation.RetailSaleOrDeferedInvoiceTypeValidationRule"
+    scope="prototype" />
+
+  <bean id="cfdiConfirmationNumberRule" class="oracle.retail.xstore.countrypack.mx.invoice.rules.CFDIConfirmationNumberValidateLengthRule" scope="prototype">
+     <property name="length" value="5" />
+  </bean>
+  
+  <bean id="countryPack.validateReprintInvoiceFromEj" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="transactionStatusValidationRule" />
+        <ref bean="retailSaleOrDeferedInvoiceTypeValidationRule" />
+        <ref bean="countryPack.invoiceTransRuleReprintEj" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="cfdiConfirmationNumberRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="cfdiConfirmationNumberRule" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SequenceSet xmlns:dtv="http://www.datavantagecorp.com/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="SequenceConfig.xsd">
+  <!-- ********************************** -->
+  <!-- entries for fiscal printer integration -->
+  <!-- ********************************** -->
+  <Sequence name="COUNTRYPACK.FISCAL_FILE_CREDIT_NOTE_NUMBER">
+    <FileName dtype="String">creditNoteFiscalRcpt.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>    
+    <SequencePart partType="NEXT_NUMBER" padLength="8">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">99999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+  <Sequence name="COUNTRYPACK.FISCAL_DB_CREDIT_NOTE_NUMBER">
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <RetailLocationLevel dtype="Boolean">true</RetailLocationLevel>    
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>  
+</SequenceSet>

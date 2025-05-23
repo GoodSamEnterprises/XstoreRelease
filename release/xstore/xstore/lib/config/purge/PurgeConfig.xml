@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PurgeConfig.xsd">
+  <Parameter name="DataSource" value="${dtv.data2.purge.dataSource}" />
+  <Parameter name="SuppressTableAlias" value="false" />
+  
+  <Group name="Transaction" order="10" age="365">
+    <!-- This group is assigned a higher order so that a restriction may be enforced that 
+         transactions are not purged if they correspond to customer account activities for accounts
+         which themselves are not eligible for purging.  This requires the CAT and CIVC group purge to run first. -->
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="trn_trans" order="0" />
+    <!-- ************************************************ -->
+    <!-- trn_trans <<< *                                  -->
+    <!-- ************************************************ -->
+    <Query name="cat_authorizations" key="trn_trans.child" order="10" />
+    <Query name="cwo_work_order_line_item" key="trn_trans.child" order="10" />
+    <Query name="inv_invctl_trans" key="trn_trans.child" order="10" />
+    <Query name="inv_invctl_trans_detail" key="trn_trans.child" order="10" />
+    <Query name="inv_inventory_journal" key="trn_trans.child" order="10" />
+    <Query name="inv_movement_pending" key="trn_trans.child" order="10" />
+    <Query name="inv_movement_pending_detail" key="trn_trans.child" order="10" />
+    <Query name="inv_mptrans_lineitm" key="trn_trans.child" order="10" />
+    <Query name="inv_sum_count_trans_dtl" key="trn_trans.child" order="10" />
+    <Query name="itm_warranty_journal" order="10" />
+    <Query name="rpt_sale_line" key="trn_trans.child" order="10" />
+    <Query name="thr_timeclk_trans" key="trn_trans.child" order="10" />
+    <Query name="trl_ar_sale_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_commission_mod" key="trn_trans.child" order="10" />
+    <Query name="trl_correction_mod" key="trn_trans.child" order="10" />
+    <Query name="trl_coupon_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_cust_item_acct_mod" key="trn_trans.child" order="10" />
+    <Query name="trl_deal_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_dimension_mod" key="trn_trans.child" order="10" />
+    <Query name="trl_discount_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_escrow_trans" key="trn_trans.child" order="10" />
+    <Query name="trl_invctl_document_mod" key="trn_trans.child" order="10" />
+    <Query name="trl_inventory_loc_mod" key="trn_trans.child" order="10" />
+    <Query name="trl_lineitm_assoc_mod" order="10" />
+    <Query name="trl_lineitm_notes" key="trn_trans.child" order="10" />
+    <Query name="trl_rtrans_lineitm_p" key="trn_trans.child" order="10" />
+    <Query name="trl_returned_item_count" key="trn_trans.child" order="10" />
+    <Query name="trl_returned_item_journal" key="trn_trans.child" order="10" />
+    <Query name="trl_rtl_price_mod" key="trn_trans.child" order="10" />
+    <Query name="trl_rtrans" key="trn_trans.child" order="10" />
+    <Query name="trl_rtrans_flight_info" key="trn_trans.child" order="10" />    
+    <Query name="trl_rtrans_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_sale_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_sale_tax_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_tax_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_voucher_discount_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_voucher_sale_lineitm" key="trn_trans.child" order="10" />
+    <Query name="trl_warranty_modifier" key="trn_trans.child" order="10" />
+    <Query name="trn_generic_lineitm_storage" key="trn_trans.child" order="10" />
+    <Query name="trn_no_sale_trans" key="trn_trans.child" order="10" />
+    <Query name="trn_poslog_data" key="trn_trans.child" order="10" />
+    <Query name="trn_post_void_trans" key="trn_trans.child" order="10" />
+    <Query name="trn_raincheck_trans" key="trn_trans.child" order="10" />    
+    <Query name="trn_receipt_data" key="trn_trans.child" order="10" />
+    <Query name="trn_receipt_lookup" key="trn_trans.child" order="10" />
+    <Query name="trn_trans_link" key="trn_trans.child" order="10" />
+    <Query name="trn_trans_notes" key="trn_trans.child" order="10" />
+    <Query name="trn_trans_p" key="trn_trans.child" order="10" />
+    <Query name="tsn_serialized_tndr_count" key="trn_trans.child" order="10" />
+    <Query name="tsn_session_control_trans" key="trn_trans.child" order="10" />
+    <Query name="tsn_till_control_trans" key="trn_trans.child" order="10" />
+    <Query name="tsn_till_ctrl_trans_detail" key="trn_trans.child" order="10" />
+    <Query name="tsn_tndr_control_trans" key="trn_trans.child" order="10" />
+    <Query name="tsn_tndr_denomination_count" key="trn_trans.child" order="10" />
+    <Query name="tsn_tndr_tndr_count" key="trn_trans.child" order="10" />
+    <Query name="tsn_tndr_typcode_count" key="trn_trans.child" order="10" />
+    <Query name="tsn_xrtrans_lineitm" key="trn_trans.child" order="10" />
+    <Query name="ttr_acct_credit_tndr_lineitm" key="trn_trans.child" order="10" />
+    <Query name="ttr_ar_tndr_lineitm" key="trn_trans.child" order="10" />
+    <Query name="ttr_check_tndr_lineitm" key="trn_trans.child" order="10" />
+    <Query name="ttr_coupon_tndr_lineitm" key="trn_trans.child" order="10" />
+    <Query name="ttr_credit_debit_tndr_lineitm" key="trn_trans.child" order="10" />
+    <Query name="ttr_identity_verification" key="trn_trans.child" order="10" />
+    <Query name="ttr_send_check_tndr_lineitm" key="trn_trans.child" order="10" />
+    <Query name="ttr_signature" key="trn_trans.child" order="10" />
+    <Query name="ttr_tndr_auth_log" key="trn_trans.child" order="10" />
+    <Query name="ttr_tndr_lineitm" key="trn_trans.child" order="10" />
+    <Query name="ttr_voucher_tndr_lineitm" key="trn_trans.child" order="10" />
+    <Query name="xom_order_mod" key="trn_trans.child" order="10" />
+  </Group>
+  
+  <Group name="CAT" order="0" age="365" status="CLOSED">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="cat_cust_acct" order="0" />
+    <Query name="cat_cust_acct_card" order="0" />
+    <Query name="cat_cust_loyalty_acct" order="0" />
+    <Query name="cat_cust_acct_plan" order="0" />
+    <Query name="cat_escrow_acct" order="0" />
+    <!-- ************************************************ -->
+    <!-- cat_cust_acct <<< *                              -->
+    <!-- ************************************************ -->
+    <Query name="cat_acct_note" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_charge_acct_history" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_charge_acct_invoice" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_charge_acct_users" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_cust_acct_journal" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_cust_acct_p" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_cust_consumer_charge_acct" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_cust_item_acct" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_cust_item_acct_activity" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_cust_item_acct_detail" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_cust_item_acct_journal" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_delivery_modifier" key="cat_cust_acct.child" order="10" />
+    <Query name="cat_payment_schedule" key="cat_cust_acct.child" order="10" />
+    <Query name="cwo_work_item" key="cat_cust_acct.child" order="10" />
+    <Query name="cwo_work_order_acct" key="cat_cust_acct.child" order="10" />
+    <Query name="cwo_work_order_acct_journal" key="cat_cust_acct.child" order="10" />
+    <!-- ************************************************ -->
+    <!-- cat_cust_acct <<< cwo_work_order_acct <<< *      -->
+    <!-- ************************************************ -->
+    <!-- cat_cust_acct <<< cwo_work_order_acct <<< *  -->
+    <Query name="cwo_invoice" key="cwo_work_order_acct.child" order="20" />
+    <Query name="cwo_invoice_lineitm" key="cwo_work_order_acct.child" order="20" />   
+    <!-- ************************************************ -->
+    <!-- cat_cust_acct_card <<< *                         -->
+    <!-- ************************************************ -->
+    <Query name="cat_award_acct" key="cat_cust_acct_card.child" order="10" />
+    <Query name="cat_award_acct_coupon" key="cat_cust_acct_card.child" order="10" />
+    <Query name="cat_cust_loyalty_acct" key="cat_cust_acct_card.child" order="10" />    
+    <!-- ************************************************ -->
+    <!-- cat_escrow_acct <<< *                            -->
+    <!-- ************************************************ -->
+    <Query name="cat_escrow_acct_activity" key="cat_escrow_acct.child" order="10" />
+  </Group>
+  
+  <Group name="CIVC" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="civc_invoice" order="0" />
+    <!-- ************************************************ -->
+    <!-- civc_invoice <<< *                            -->
+    <!-- ************************************************ -->
+    <Query name="civc_invoice_p" key="civc_invoice.child" order="10" />
+    <Query name="civc_invoice_report" key="civc_invoice.child" order="10" />
+    <Query name="civc_invoice_xref" key="civc_invoice.child" order="10" />
+  </Group>
+  
+  <Group name="CRPT" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="crpt_daily_header" order="0" />
+    <!-- ************************************************ -->
+    <!-- civc_invoice <<< *                            -->
+    <!-- ************************************************ -->
+    <Query name="crpt_daily_header_p" key="crpt_daily_header.child" order="10" />
+    <Query name="crpt_daily_detail" key="crpt_daily_header.child" order="10" />
+    <Query name="crpt_daily_detail_p" key="crpt_daily_header.child" order="10" />
+  </Group>
+  
+  <Group name="COM" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->    
+    <Query name="com_receipt_text" order="0" />
+    <Query name="com_report_data" order="0" />
+    <Query name="com_report_lookup" order="0" />
+    <Query name="com_trans_prompt_properties" order="0" />
+    <!-- ************************************************ -->
+    <!-- com_report_data <<< *                            -->
+    <!-- ************************************************ -->
+    <Query name="com_report_lookup" key="com_report_data.child" order="10" />
+  </Group>
+  
+  <Group name="CRM" order="10" enabled="false">
+    <!-- This group is assigned a higher order so that a restriction may be enforced that customers
+         are not purged if they correspond to customer accounts which themselves are not eligible 
+         for purging.  This requires the CAT group purge to run first. -->
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="crm_party" order="0" />
+    <!-- ************************************************ -->
+    <!-- crm_party <<< *                                  -->
+    <!-- ************************************************ -->
+    <Query name="crm_customer_affiliation" key="crm_party.child" order="10" />
+    <Query name="crm_customer_notes" key="crm_party.child" order="10" />
+    <Query name="crm_party_cross_reference" order="10" />
+    <Query name="crm_party_id_xref" key="crm_party.child" order="10" />
+    <Query name="crm_party_locale_information" key="crm_party.child" order="10" />
+    <Query name="crm_party_p" key="crm_party.child" order="10" />
+    <Query name="crm_party_telephone" key="crm_party.child" order="10" />
+    <Query name="crm_party_email" key="crm_party.child" order="10" />
+  </Group>
+  
+  <Group name="CTL" order="0" age="30">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="ctl_device_registration" order="0" />
+    <Query name="ctl_event_log" order="0" />
+    <Query name="ctl_log_trickle" order="0" />
+  </Group>
+  
+  <Group name="DOC" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="doc_document" order="0" />
+    <!-- ************************************************ -->
+    <!-- doc_document <<< *                               -->
+    <!-- ************************************************ -->
+    <Query name="doc_document_lineitm" order="10" />
+    <Query name="doc_document_p" order="10" />
+  </Group>
+  
+  <Group name="DSC" order="0" age="365" enabled="false">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="dsc_discount" order="0" />
+    <!-- ************************************************ -->
+    <!-- dsc_discount <<< *                               -->
+    <!-- ************************************************ -->
+    <Query name="dsc_discount_compatibility" order="10" />
+    <Query name="dsc_discount_group_mapping" key="dsc_discount.child" order="10" />
+    <Query name="dsc_discount_item_exclusions" key="dsc_discount.child" order="10" />
+    <Query name="dsc_discount_item_inclusions" key="dsc_discount.child" order="10" />
+    <Query name="dsc_disc_type_eligibility" key="dsc_discount.child" order="10" />
+  </Group>
+  
+  <Group name="HRS" order="0" age="365" enabled="false">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="hrs_employee" order="0" />
+    <Query name="hrs_employee_message" order="0" />
+    <Query name="hrs_employee_task" order="0" />
+    <!-- ************************************************ -->
+    <!-- hrs_employee <<< *                               -->
+    <!-- ************************************************ -->
+    <Query name="hrs_employee_fingerprint" key="hrs_employee.child" order="10" />
+    <Query name="hrs_employee_notes" key="hrs_employee.child" order="10" />
+    <Query name="hrs_employee_password" key="hrs_employee.child" order="10" />
+    <Query name="hrs_employee_store" key="hrs_employee.child" order="10" />
+    <!-- ************************************************ -->
+    <!-- hrs_employee_task <<< *                               -->
+    <!-- ************************************************ -->
+    <Query name="hrs_employee_task_notes" key="hrs_employee_task.child" order="10" />    
+  </Group>
+  
+  <Group name="INV" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="inv_invctl_document" order="0" />
+    <Query name="inv_count" order="0" />
+    <!-- ************************************************ -->
+    <!-- inv_invctl_document <<< *                        -->
+    <!-- ************************************************ -->
+    <Query name="inv_carton" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_document_notes" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_invctl_doc_lineserial" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_invctl_document_lineitm" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_invctl_document_p" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_inventory_loc_mod" key="inv_invctl_document.child2" order="10" />
+    <Query name="inv_item_acct_mod" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_shipment" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_shipment_address" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_shipment_lines" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_invctl_trans" key="inv_invctl_document.child" order="10" />
+    <Query name="inv_invctl_trans_detail" key="inv_invctl_document.child" order="10" />
+    <!-- ************************************************ -->
+    <!-- inv_count <<< *                                  -->
+    <!-- ************************************************ -->
+    <Query name="inv_count_bucket" key="inv_count.child" order="10" />
+    <Query name="inv_count_sheet" key="inv_count.child" order="10" />
+    <Query name="inv_count_sheet_lineitm" key="inv_count.child" order="10" />
+  </Group>
+  
+  <Group name="ITM" order="0" age="365" enabled="false">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="itm_attached_items" order="0" />
+    <Query name="itm_item_msg" order="0" />
+    <Query name="itm_item_prices" order="0" />
+    <Query name="itm_item_deal_prop" order="0" />
+    <Query name="itm_item_restriction" order="0" />
+    <Query name="itm_item_restrict_calendar" order="0" />
+    <Query name="itm_refund_schedule" order="0" />
+    <Query name="itm_warranty" order="0" status="CLOSED" />
+    <!-- ************************************************ -->
+    <!-- itm_item_restriction <<< *                       -->
+    <!-- ************************************************ -->
+    <Query name="itm_item_restrict_calendar" key="itm_item_restriction.child" order="10" />
+    <!-- ************************************************ -->
+    <!-- itm_warranty <<< *                               -->
+    <!-- ************************************************ -->
+    <Query name="itm_warranty_journal" key="itm_warranty.child" order="10" />
+  </Group>
+  
+  <Group name="LOC" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="loc_cycle_question_answers" order="0" />
+    <Query name="loc_cycle_questions" order="0" />
+    <Query name="loc_state_journal" order="0" />
+    <!-- ************************************************ -->
+    <!-- loc_cycle_questions <<< *                        -->
+    <!-- ************************************************ -->
+    <Query name="loc_cycle_question_choices" key="loc_cycle_questions.child" order="10" />
+  </Group>
+  
+  <Group name="PRC" order="0" age="365" enabled="false">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="prc_deal" order="0" />
+    <!-- ************************************************ -->
+    <!-- prc_deal <<< *                                   -->
+    <!-- ************************************************ -->
+    <Query name="prc_deal_cust_groups" key="prc_deal.child" order="10" />
+    <Query name="prc_deal_document_xref" key="prc_deal.child" order="10" />
+    <Query name="prc_deal_field_test" key="prc_deal.child" order="10" />
+    <Query name="prc_deal_item" key="prc_deal.child" order="10" />
+    <Query name="prc_deal_trig" key="prc_deal.child" order="10" />
+    <Query name="prc_deal_week" key="prc_deal.child" order="10" />
+  </Group>
+  
+  <Group name="RPT" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="rpt_merchlvl1_sales" key="rpt.general" order="0" />
+    <Query name="rpt_flash_sales" key="rpt.general" order="0" />
+    <Query name="rpt_flash_sales_goal" key="rpt.general" order="0" />
+    <Query name="rpt_sales_by_hour" key="rpt.general" order="0" />
+  </Group>
+  
+  <Group name="SCH" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="sch_emp_time_off" order="0" />
+    <Query name="sch_schedule" order="0" />
+  </Group>
+  
+  <Group name="TAX" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="tax_tax_exemption" order="0" />
+    <Query name="tax_tax_rate_rule" order="0" />
+    <Query name="tax_tax_rate_rule_override" order="0" />
+  </Group>
+  
+  <Group name="THR" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="thr_payroll" order="0" />
+    <Query name="thr_payroll_header" order="0" />
+    <Query name="thr_payroll_notes" order="0" />
+    <Query name="thr_timecard_entry" order="0" />
+    <Query name="thr_timecard_entry_comment" order="0" />
+    <Query name="thr_timecard_journal" order="0" />
+  </Group>
+  
+  <Group name="TND" order="0" age="365" enabled="false">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="tnd_tndr" order="0" />
+    <!-- ************************************************ -->
+    <!-- tnd_tndr <<< *                                   -->
+    <!-- ************************************************ -->
+    <Query name="tnd_tndr_availability" key="tnd_tndr.child" order="10" />
+    <Query name="tnd_tndr_denomination" key="tnd_tndr.child" order="10" />
+    <Query name="tnd_tndr_user_settings" key="tnd_tndr.child" order="10" />
+    <Query name="tnd_tndr_options" key="tnd_tndr.child" order="10" />
+  </Group>
+  
+  <Group name="TSN" order="0" age="365" enabled="false">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="tsn_session" order="0" />
+    <!-- ************************************************ -->
+    <!-- tsn_session <<< *                                -->
+    <!-- ************************************************ -->
+    <Query name="tsn_session_tndr" key="tsn_session.child" order="10" />
+    <Query name="tsn_session_wkstn" key="tsn_session.child" order="10" />
+  </Group>
+  
+  <Group name="TTR" order="0" age="365">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="ttr_voucher" order="0" />
+    <!-- ************************************************ -->
+    <!-- ttr_voucher <<< *                                -->
+    <!-- ************************************************ -->
+    <Query name="ttr_voucher_history" key="ttr_voucher.child" order="10" />
+  </Group>
+  
+  <Group name="XOM" order="0" age="365" status1="COMPLETE" status2="CANCELLED">
+    <!-- ***************************************************************** -->
+    <!-- ROOTS                                                             -->
+    <!-- ***************************************************************** -->
+    <Query name="xom_order" order="0" />
+    <!-- ************************************************ -->
+    <!-- xom_order <<< *                                  -->
+    <!-- ************************************************ -->
+    <Query name="xom_order_line" key="xom_order.child" order="10" />
+    <Query name="xom_customer_mod" key="xom_order.child" order="10" />
+    <Query name="xom_address_mod" key="xom_order.child" order="10" />
+    <Query name="xom_fulfillment_mod" key="xom_order.child" order="10" />
+    <Query name="xom_source_mod" key="xom_order.child" order="10" />
+    <Query name="xom_item_mod" key="xom_order.child" order="10" />
+    <Query name="xom_order_payment" key="xom_order.child" order="10" />
+    <Query name="xom_order_fee" key="xom_order.child" order="10" />
+    <Query name="xom_balance_mod" key="xom_order.child" order="10" />
+    <Query name="xom_fee_mod" key="xom_order.child" order="10" />
+    <Query name="xom_order_mod" key="xom_order.child" order="10" />
+    <Query name="xom_customization_mod" key="xom_order.child" order="10" />
+  </Group>
+  
+  <Group name="Email" order="0" age="30">
+    <Query name="trn_trans_properties_email" key="trn_trans_properties_email" order="0" />
+  </Group>
+  
+  <Group name="TableProperties" order="40" enabled="false">
+    <Query name="itm_attached_items_p" key="itm_attached_items_prop.child" order="10" />
+    <Query name="itm_item_p" key="itm_item_prop.child" order="10" />
+    <Query name="itm_item_cross_reference_p" key="itm_item_cross_reference_prop.child" order="10" />
+    <Query name="itm_item_deal_prop_p" key="itm_item_deal_prop_prop.child" order="10" />
+    <Query name="itm_item_dimension_type_p" key="itm_item_dimension_type_prop.child" order="10" />
+    <Query name="itm_item_dimension_value_p" key="itm_item_dimension_value_prop.child" order="10" />
+    <Query name="itm_item_images_p" key="itm_item_images_prop.child" order="10" />
+    <Query name="itm_item_label_batch_p" key="itm_item_label_batch_prop.child" order="10" />
+    <Query name="itm_item_label_properties_p" key="itm_item_label_properties_prop.child" order="10" />
+    <Query name="itm_item_msg_p" key="itm_item_msg_prop.child" order="10" />
+    <Query name="itm_item_msg_cross_reference_p" key="itm_item_msg_cross_reference_prop.child" order="10" />
+    <Query name="itm_item_msg_types_p" key="itm_item_msg_types_prop.child" order="10" />
+    <Query name="itm_item_options_p" key="itm_item_options_prop.child" order="10" />
+    <Query name="itm_item_prices_p" key="itm_item_prices_prop.child" order="10" />
+    <Query name="itm_item_prompt_properties_p" key="itm_item_prompt_properties_prop.child" order="10" />
+    <Query name="itm_restrict_gs1_p" key="itm_restrict_gs1_prop.child" order="10" />
+    <Query name="itm_item_restriction_p" key="itm_item_restriction_prop.child" order="10" />
+    <Query name="itm_item_restrict_calendar_p" key="itm_item_restrict_calendar_prop.child" order="10" />
+    <Query name="itm_kit_component_p" key="itm_kit_component_prop.child" order="10" />
+    <Query name="itm_matrix_sort_order_p" key="itm_matrix_sort_order_prop.child" order="10" />
+    <Query name="itm_merch_hierarchy_p" key="itm_merch_hierarchy_prop.child" order="10" />
+    <Query name="itm_quick_items_p" key="itm_quick_items_prop.child" order="10" />
+    <Query name="itm_refund_schedule_p" key="itm_refund_schedule_prop.child" order="10" />
+    <Query name="itm_substitute_items_p" key="itm_substitute_items_prop.child" order="10" />
+    <Query name="itm_vendor_p" key="itm_vendor_prop.child" order="10" />
+    <Query name="itm_warranty_p" key="itm_warranty_prop.child" order="10" />
+    <Query name="itm_warranty_item_xref_p" key="itm_warranty_item_xref_prop.child" order="10" />
+    <Query name="itm_warranty_item_price_p" key="itm_warranty_item_price_prop.child" order="10" />
+    <Query name="itm_warranty_journal_p" key="itm_warranty_journal_prop.child" order="10" />
+    <Query name="trl_commission_mod_p" key="trl_commission_mod_prop.child" order="10" />
+    <Query name="trl_correction_mod_p" key="trl_correction_mod_prop.child" order="10" />
+    <Query name="trl_cust_item_acct_mod_p" key="trl_cust_item_acct_mod_prop.child" order="10" />
+    <Query name="trl_dimension_mod_p" key="trl_dimension_mod_prop.child" order="10" />
+    <Query name="trl_invctl_document_mod_p" key="trl_invctl_document_mod_prop.child" order="10" />
+    <Query name="trl_kit_component_mod_p" key="trl_kit_component_mod_prop.child" order="10" />
+    <Query name="trl_lineitm_assoc_mod_p" key="trl_lineitm_assoc_mod_prop.child" order="10" />
+    <Query name="trl_lineitm_assoc_typcode_p" key="trl_lineitm_assoc_typcode_prop.child" order="10" />
+    <Query name="trl_inventory_loc_mod_p" key="trl_inventory_loc_mod_prop.child" order="10" />
+    <Query name="trl_rtl_price_mod_p" key="trl_rtl_price_mod_prop.child" order="10" />
+    <Query name="trl_rtrans_flight_info_p" key="trl_rtrans_flight_info_prop.child" order="10" />
+    <Query name="trl_rtrans_lineitm_p" key="trl_rtrans_lineitm_prop.child" order="10" />
+    <Query name="trl_lineitm_notes_p" key="trl_lineitm_notes_prop.child" order="10" />
+    <Query name="trl_returned_item_count_p" key="trl_returned_item_count_prop.child" order="10" />
+    <Query name="trl_returned_item_journal_p" key="trl_returned_item_journal_prop.child" order="10" />
+    <Query name="trl_sale_tax_lineitm_p" key="trl_sale_tax_lineitm_prop.child" order="10" />
+    <Query name="trl_warranty_modifier_p" key="trl_warranty_modifier_prop.child" order="10" />
+    <Query name="trn_generic_lineitm_storage_p" key="trn_generic_lineitm_storage_prop.child" order="10" />
+    <Query name="trn_poslog_data_p" key="trn_poslog_data_prop.child" order="10" />
+    <Query name="trn_trans_p" key="trn_trans_prop.child" order="10" />
+    <Query name="trn_trans_link_p" key="trn_trans_link_prop.child" order="10" />
+    <Query name="trn_raincheck_p" key="trn_raincheck_prop.child" order="10" />
+    <Query name="trn_receipt_data_p" key="trn_receipt_data_prop.child" order="10" />
+    <Query name="trn_receipt_lookup_p" key="trn_receipt_lookup_prop.child" order="10" />
+    <Query name="trn_trans_notes_p" key="trn_trans_notes_prop.child" order="10" />
+    <Query name="trn_trans_version_p" key="trn_trans_version_prop.child" order="10" />
+    <Query name="tsn_xrtrans_lineitm_p" key="tsn_xrtrans_lineitm_prop.child" order="10" />
+    <Query name="tsn_session_p" key="tsn_session_prop.child" order="10" />
+    <Query name="tsn_session_tndr_p" key="tsn_session_tndr_prop.child" order="10" />
+    <Query name="tsn_session_wkstn_p" key="tsn_session_wkstn_prop.child" order="10" />
+    <Query name="tsn_tndr_tndr_count_p" key="tsn_tndr_tndr_count_prop.child" order="10" />
+    <Query name="tsn_tndr_denomination_count_p" key="tsn_tndr_denomination_count_prop.child" order="10" />
+    <Query name="tsn_tndr_repository_p" key="tsn_tndr_repository_prop.child" order="10" />
+    <Query name="tsn_tndr_repository_float_p" key="tsn_tndr_repository_float_prop.child" order="10" />
+    <Query name="tsn_tndr_repository_status_p" key="tsn_tndr_repository_status_prop.child" order="10" />
+    <Query name="tsn_serialized_tndr_count_p" key="tsn_serialized_tndr_count_prop.child" order="10" />
+    <Query name="tsn_tndr_typcode_count_p" key="tsn_tndr_typcode_count_prop.child" order="10" />
+    <Query name="tsn_till_ctrl_trans_detail_p" key="tsn_till_ctrl_trans_detail_prop.child" order="10" />
+    <Query name="ttr_identity_verification_p" key="ttr_identity_verification_prop.child" order="10" />
+    <Query name="ttr_tndr_auth_log_p" key="ttr_tndr_auth_log_prop.child" order="10" />
+    <Query name="ttr_signature_p" key="ttr_signature_prop.child" order="10" />
+    <Query name="ttr_voucher_p" key="ttr_voucher_prop.child" order="10" />
+    <Query name="ttr_voucher_history_p" key="ttr_voucher_history_prop.child" order="10" />
+    <Query name="cat_award_acct_p" key="cat_award_acct_prop.child" order="10" />
+    <Query name="cat_award_acct_coupon_p" key="cat_award_acct_coupon_prop.child" order="10" />
+    <Query name="cat_charge_acct_history_p" key="cat_charge_acct_history_prop.child" order="10" />
+    <Query name="cat_charge_acct_invoice_p" key="cat_charge_acct_invoice_prop.child" order="10" />
+    <Query name="cat_charge_acct_users_p" key="cat_charge_acct_users_prop.child" order="10" />
+    <Query name="cat_cust_acct_p" key="cat_cust_acct_prop.child" order="10" />
+    <Query name="cat_authorizations_p" key="cat_authorizations_prop.child" order="10" />
+    <Query name="cat_cust_acct_journal_p" key="cat_cust_acct_journal_prop.child" order="10" />
+    <Query name="cat_acct_note_p" key="cat_acct_note_prop.child" order="10" />
+    <Query name="cat_cust_acct_plan_p" key="cat_cust_acct_plan_prop.child" order="10" />
+    <Query name="cat_cust_item_acct_activity_p" key="cat_cust_item_acct_activity_prop.child" order="10" />
+    <Query name="cat_cust_item_acct_detail_p" key="cat_cust_item_acct_detail_prop.child" order="10" />
+    <Query name="cat_cust_loyalty_acct_p" key="cat_cust_loyalty_acct_prop.child" order="10" />
+    <Query name="cat_cust_acct_card_p" key="cat_cust_acct_card_prop.child" order="10" />
+    <Query name="cat_delivery_modifier_p" key="cat_delivery_modifier_prop.child" order="10" />
+    <Query name="cat_escrow_acct_p" key="cat_escrow_acct_prop.child" order="10" />
+    <Query name="cat_escrow_acct_activity_p" key="cat_escrow_acct_activity_prop.child" order="10" />
+    <Query name="cat_payment_schedule_p" key="cat_payment_schedule_prop.child" order="10" />
+    <Query name="com_address_p" key="com_address_prop.child" order="10" />
+    <Query name="com_address_country_p" key="com_address_country_prop.child" order="10" />
+    <Query name="com_address_postalcode_p" key="com_address_postalcode_prop.child" order="10" />
+    <Query name="com_address_state_p" key="com_address_state_prop.child" order="10" />
+    <Query name="com_airport_zone_p" key="com_airport_zone_prop.child" order="10" />
+    <Query name="com_airport_zone_detail_p" key="com_airport_zone_detail_prop.child" order="10" />
+    <!--     <Query name="com_button_grid_p" key="com_button_grid_prop.child" order="10" /> -->
+    <Query name="com_code_value_p" key="com_code_value_prop.child" order="10" />
+    <Query name="com_country_return_map_p" key="com_country_return_map_prop.child" order="10" />
+    <Query name="com_translations_p" key="com_translations_prop.child" order="10" />
+    <Query name="com_flight_info_p" key="com_flight_info_prop.child" order="10" />
+    <Query name="com_reason_code_p" key="com_reason_code_prop.child" order="10" />
+    <Query name="com_receipt_text_p" key="com_receipt_text_prop.child" order="10" />
+    <Query name="com_report_data_p" key="com_report_data_prop.child" order="10" />
+    <Query name="com_report_lookup_p" key="com_report_lookup_prop.child" order="10" />
+    <Query name="com_sequence_p" key="com_sequence_prop.child" order="10" />
+    <Query name="com_sequence_part_p" key="com_sequence_part_prop.child" order="10" />
+    <Query name="com_shipping_cost_p" key="com_shipping_cost_prop.child" order="10" />
+    <Query name="com_shipping_fee_p" key="com_shipping_fee_prop.child" order="10" />
+    <Query name="com_shipping_fee_tier_p" key="com_shipping_fee_tier_prop.child" order="10" />
+    <Query name="com_trans_prompt_properties_p" key="com_trans_prompt_properties_prop.child" order="10" />
+    <Query name="crm_customer_affiliation_p" key="crm_customer_affiliation_prop.child" order="10" />
+    <Query name="crm_customer_notes_p" key="crm_customer_notes_prop.child" order="10" />
+    <Query name="crm_gift_registry_journal_p" key="crm_gift_registry_journal_prop.child" order="10" />
+    <Query name="crm_party_p" key="crm_party_prop.child" order="10" />
+    <Query name="crm_party_cross_reference_p" key="crm_party_cross_reference_prop.child" order="10" />
+    <Query name="crm_party_email_p" key="crm_party_email_prop.child" order="10" />
+    <Query name="crm_party_id_xref_p" key="crm_party_id_xref_prop.child" order="10" />
+    <Query name="crm_party_locale_information_p" key="crm_party_locale_information_prop.child" order="10" />
+    <Query name="crm_party_telephone_p" key="crm_party_telephone_prop.child" order="10" />
+    <!--     <Query name="ctl_cheetah_device_access_p" key="ctl_cheetah_device_access_prop.child" order="10" /> -->
+    <!--     <Query name="ctl_dataloader_failure_p" key="ctl_dataloader_failure_prop.child" order="10" /> -->
+    <!--     <Query name="ctl_dataloader_summary_p" key="ctl_dataloader_summary_prop.child" order="10" /> -->
+    <Query name="ctl_device_registration_p" key="ctl_device_registration_prop.child" order="10" />
+    <Query name="ctl_version_history_p" key="ctl_version_history_prop.child" order="10" />
+    <Query name="cwo_category_service_loc_p" key="cwo_category_service_loc_prop.child" order="10" />
+    <Query name="cwo_invoice_p" key="cwo_invoice_prop.child" order="10" />
+    <Query name="cwo_invoice_lineitm_p" key="cwo_invoice_lineitm_prop.child" order="10" />
+    <Query name="cwo_service_loc_p" key="cwo_service_loc_prop.child" order="10" />
+    <Query name="cwo_work_item_p" key="cwo_work_item_prop.child" order="10" />
+    <Query name="cwo_work_order_category_p" key="cwo_work_order_category_prop.child" order="10" />
+    <Query name="cwo_price_code_p" key="cwo_price_code_prop.child" order="10" />
+    <Query name="cwo_work_order_pricing_p" key="cwo_work_order_pricing_prop.child" order="10" />
+    <Query name="doc_document_p" key="doc_document_prop.child" order="10" />
+    <Query name="doc_document_definition_p" key="doc_document_definition_prop.child" order="10" />
+    <Query name="doc_document_def_properties_p" key="doc_document_def_properties_prop.child" order="10" />
+    <Query name="dsc_coupon_xref_p" key="dsc_coupon_xref_prop.child" order="10" />
+    <Query name="dsc_discount_p" key="dsc_discount_prop.child" order="10" />
+    <Query name="dsc_discount_compatibility_p" key="dsc_discount_compatibility_prop.child" order="10" />
+    <Query name="dsc_discount_group_mapping_p" key="dsc_discount_group_mapping_prop.child" order="10" />
+    <Query name="dsc_discount_item_exclusions_p" key="dsc_discount_item_exclusions_prop.child" order="10" />
+    <Query name="dsc_discount_item_inclusions_p" key="dsc_discount_item_inclusions_prop.child" order="10" />
+    <Query name="dsc_disc_type_eligibility_p" key="dsc_disc_type_eligibility_prop.child" order="10" />
+    <Query name="hrs_employee_p" key="hrs_employee_prop.child" order="10" />
+    <Query name="hrs_employee_answers_p" key="hrs_employee_answers_prop.child" order="10" />
+    <Query name="hrs_employee_fingerprint_p" key="hrs_employee_fingerprint_prop.child" order="10" />
+    <Query name="hrs_employee_message_p" key="hrs_employee_message_prop.child" order="10" />
+    <Query name="hrs_employee_notes_p" key="hrs_employee_notes_prop.child" order="10" />
+    <Query name="hrs_employee_password_p" key="hrs_employee_password_prop.child" order="10" />
+    <Query name="hrs_employee_store_p" key="hrs_employee_store_prop.child" order="10" />
+    <Query name="hrs_employee_task_p" key="hrs_employee_task_prop.child" order="10" />
+    <Query name="hrs_employee_task_notes_p" key="hrs_employee_task_notes_prop.child" order="10" />
+    <Query name="hrs_work_codes_p" key="hrs_work_codes_prop.child" order="10" />
+    <Query name="inv_carton_p" key="inv_carton_prop.child" order="10" />
+    <Query name="inv_inventory_loc_mod_p" key="inv_inventory_loc_mod_prop.child" order="10" />
+    <Query name="inv_document_lineitm_note_p" key="inv_document_lineitm_note_prop.child" order="10" />
+    <Query name="inv_document_notes_p" key="inv_document_notes_prop.child" order="10" />
+    <Query name="inv_stock_fiscal_year_p" key="inv_stock_fiscal_year_prop.child" order="10" />
+    <Query name="inv_bucket_p" key="inv_bucket_prop.child" order="10" />
+    <Query name="inv_invctl_document_p" key="inv_invctl_document_prop.child" order="10" />
+    <Query name="inv_invctl_document_xref_p" key="inv_invctl_document_xref_prop.child" order="10" />
+    <Query name="inv_invctl_document_lineitm_p" key="inv_invctl_document_lineitm_prop.child" order="10" />
+    <Query name="inv_invctl_trans_detail_p" key="inv_invctl_trans_detail_prop.child" order="10" />
+    <Query name="inv_cst_item_yearend_p" key="inv_cst_item_yearend_prop.child" order="10" />
+    <Query name="inv_count_p" key="inv_count_prop.child" order="10" />
+    <Query name="inv_count_bucket_p" key="inv_count_bucket_prop.child" order="10" />
+    <Query name="inv_count_section_p" key="inv_count_section_prop.child" order="10" />
+    <Query name="inv_count_section_detail_p" key="inv_count_section_detail_prop.child" order="10" />
+    <Query name="inv_count_sheet_p" key="inv_count_sheet_prop.child" order="10" />
+    <Query name="inv_count_sheet_lineitm_p" key="inv_count_sheet_lineitm_prop.child" order="10" />
+    <Query name="inv_count_snapshot_p" key="inv_count_snapshot_prop.child" order="10" />
+    <Query name="inv_invctl_doc_lineserial_p" key="inv_invctl_doc_lineserial_prop.child" order="10" />
+    <Query name="inv_item_acct_mod_p" key="inv_item_acct_mod_prop.child" order="10" />
+    <Query name="inv_inventory_journal_p" key="inv_inventory_journal_prop.child" order="10" />
+    <Query name="inv_location_p" key="inv_location_prop.child" order="10" />
+    <Query name="inv_location_availability_p" key="inv_location_availability_prop.child" order="10" />
+    <Query name="inv_location_bucket_p" key="inv_location_bucket_prop.child" order="10" />
+    <Query name="inv_movement_pending_p" key="inv_movement_pending_prop.child" order="10" />
+    <Query name="inv_movement_pending_detail_p" key="inv_movement_pending_detail_prop.child" order="10" />
+    <Query name="inv_rep_document_lineitm_p" key="inv_rep_document_lineitm_prop.child" order="10" />
+    <Query name="inv_sum_count_trans_dtl_p" key="inv_sum_count_trans_dtl_prop.child" order="10" />
+    <Query name="inv_valid_destinations_p" key="inv_valid_destinations_prop.child" order="10" />
+    <Query name="inv_mptrans_lineitm_p" key="inv_mptrans_lineitm_prop.child" order="10" />
+    <Query name="inv_serialized_stock_ledger_p" key="inv_serialized_stock_ledger_prop.child" order="10" />
+    <Query name="inv_shipment_p" key="inv_shipment_prop.child" order="10" />
+    <Query name="inv_shipment_address_p" key="inv_shipment_address_prop.child" order="10" />
+    <Query name="inv_shipment_lines_p" key="inv_shipment_lines_prop.child" order="10" />
+    <Query name="inv_shipper_p" key="inv_shipper_prop.child" order="10" />
+    <Query name="inv_shipper_method_p" key="inv_shipper_method_prop.child" order="10" />
+    <Query name="inv_stock_ledger_acct_p" key="inv_stock_ledger_acct_prop.child" order="10" />
+    <Query name="loc_close_dates_p" key="loc_close_dates_prop.child" order="10" />
+    <Query name="loc_closing_message_p" key="loc_closing_message_prop.child" order="10" />
+    <Query name="loc_cycle_questions_p" key="loc_cycle_questions_prop.child" order="10" />
+    <Query name="loc_cycle_question_answers_p" key="loc_cycle_question_answers_prop.child" order="10" />
+    <Query name="loc_cycle_question_choices_p" key="loc_cycle_question_choices_prop.child" order="10" />
+    <Query name="loc_org_hierarchy_p" key="loc_org_hierarchy_prop.child" order="10" />
+    <Query name="loc_pricing_hierarchy_p" key="loc_pricing_hierarchy_prop.child" order="10" />
+    <Query name="loc_rtl_loc_p" key="loc_rtl_loc_prop.child" order="10" />
+    <Query name="loc_state_journal_p" key="loc_state_journal_prop.child" order="10" />
+    <Query name="loc_wkstn_p" key="loc_wkstn_prop.child" order="10" />
+    <Query name="prc_deal_p" key="prc_deal_prop.child" order="10" />
+    <Query name="prc_deal_cust_groups_p" key="prc_deal_cust_groups_prop.child" order="10" />
+    <Query name="prc_deal_document_xref_p" key="prc_deal_document_xref_prop.child" order="10" />
+    <Query name="prc_deal_field_test_p" key="prc_deal_field_test_prop.child" order="10" />
+    <Query name="prc_deal_item_p" key="prc_deal_item_prop.child" order="10" />
+    <Query name="prc_deal_trig_p" key="prc_deal_trig_prop.child" order="10" />
+    <Query name="prc_deal_week_p" key="prc_deal_week_prop.child" order="10" />
+    <Query name="rpt_organizer_p" key="rpt_organizer_prop.child" order="10" />
+    <Query name="sch_emp_time_off_p" key="sch_emp_time_off_prop.child" order="10" />
+    <Query name="sch_schedule_p" key="sch_schedule_prop.child" order="10" />
+    <Query name="sch_shift_p" key="sch_shift_prop.child" order="10" />
+    <Query name="sec_acl_p" key="sec_acl_prop.child" order="10" />
+    <Query name="sec_access_types_p" key="sec_access_types_prop.child" order="10" />
+    <Query name="sec_groups_p" key="sec_groups_prop.child" order="10" />
+    <Query name="sec_privilege_p" key="sec_privilege_prop.child" order="10" />
+    <!--     <Query name="sec_user_password_p" key="sec_user_password_prop.child" order="10" /> -->
+    <!--     <Query name="sec_user_role_p" key="sec_user_role_prop.child" order="10" /> -->
+    <Query name="sls_sales_goal_p" key="sls_sales_goal_prop.child" order="10" />
+    <Query name="tax_postal_code_mapping_p" key="tax_postal_code_mapping_prop.child" order="10" />
+    <Query name="tax_rtl_loc_tax_mapping_p" key="tax_rtl_loc_tax_mapping_prop.child" order="10" />
+    <Query name="tax_tax_authority_p" key="tax_tax_authority_prop.child" order="10" />
+    <Query name="tax_tax_bracket_p" key="tax_tax_bracket_prop.child" order="10" />
+    <Query name="tax_tax_code_p" key="tax_tax_code_prop.child" order="10" />
+    <Query name="tax_tax_exemption_p" key="tax_tax_exemption_prop.child" order="10" />
+    <Query name="tax_tax_group_p" key="tax_tax_group_prop.child" order="10" />
+    <Query name="tax_tax_group_rule_p" key="tax_tax_group_rule_prop.child" order="10" />
+    <Query name="tax_tax_loc_p" key="tax_tax_loc_prop.child" order="10" />
+    <Query name="tax_tax_rate_rule_p" key="tax_tax_rate_rule_prop.child" order="10" />
+    <Query name="tax_tax_rate_rule_override_p" key="tax_tax_rate_rule_override_prop.child" order="10" />
+    <Query name="tax_tax_group_mapping_p" key="tax_tax_group_mapping_prop.child" order="10" />
+    <Query name="thr_payroll_p" key="thr_payroll_prop.child" order="10" />
+    <Query name="thr_payroll_category_p" key="thr_payroll_category_prop.child" order="10" />
+    <Query name="thr_payroll_header_p" key="thr_payroll_header_prop.child" order="10" />
+    <Query name="thr_payroll_notes_p" key="thr_payroll_notes_prop.child" order="10" />
+    <Query name="thr_timecard_entry_p" key="thr_timecard_entry_prop.child" order="10" />
+    <Query name="thr_timecard_entry_comment_p" key="thr_timecard_entry_comment_prop.child" order="10" />
+    <Query name="thr_timecard_journal_p" key="thr_timecard_journal_prop.child" order="10" />
+    <Query name="tnd_tndr_p" key="tnd_tndr_prop.child" order="10" />
+    <Query name="tnd_tndr_availability_p" key="tnd_tndr_availability_prop.child" order="10" />
+    <Query name="tnd_tndr_denomination_p" key="tnd_tndr_denomination_prop.child" order="10" />
+    <Query name="tnd_exchange_rate_p" key="tnd_exchange_rate_prop.child" order="10" />
+    <Query name="tnd_tndr_options_p" key="tnd_tndr_options_prop.child" order="10" />
+    <Query name="tnd_tndr_typcode_p" key="tnd_tndr_typcode_prop.child" order="10" />
+    <Query name="tnd_tndr_user_settings_p" key="tnd_tndr_user_settings_prop.child" order="10" />
+    <Query name="xom_address_mod_p" key="xom_address_mod_prop.child" order="10" />
+    <Query name="xom_balance_mod_p" key="xom_balance_mod_prop.child" order="10" />
+    <Query name="xom_customer_mod_p" key="xom_customer_mod_prop.child" order="10" />
+    <Query name="xom_customization_mod_p" key="xom_customization_mod_prop.child" order="10" />
+    <Query name="xom_fee_mod_p" key="xom_fee_mod_prop.child" order="10" />
+    <Query name="xom_fulfillment_mod_p" key="xom_fulfillment_mod_prop.child" order="10" />
+    <Query name="xom_item_mod_p" key="xom_item_mod_prop.child" order="10" />
+    <Query name="xom_order_p" key="xom_order_prop.child" order="10" />
+    <Query name="xom_order_fee_p" key="xom_order_fee_prop.child" order="10" />
+    <Query name="xom_order_line_p" key="xom_order_line_prop.child" order="10" />
+    <Query name="xom_order_mod_p" key="xom_order_mod_prop.child" order="10" />
+    <Query name="xom_order_payment_p" key="xom_order_payment_prop.child" order="10" />
+    <Query name="xom_source_mod_p" key="xom_source_mod_prop.child" order="10" />
+    <!--     <Query name="xunit_result_p" key="xunit_result_prop.child" order="10" /> -->
+    <!--     <Query name="xunit_result_item_p" key="xunit_result_item_prop.child" order="10" /> -->
+  </Group>
+
+  <Group name="AIR" order="0" age="30">
+    <Query name="com_flight_info" order="0" />
+  </Group>
+  
+</Root>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../res/config/query/QueryConfig.xsd">
+
+  <Query name="ITEM_SALES_WEEKS_HISTORY" pmType="XCENTER_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.pos.inventory.replenishment.lookup.results.ItemSalesHistoryQueryResult</ResultClass>
+    <ResultField name="BeginDate" type="Date"/>
+    <ResultField name="Quantity" type="BigDecimal"/>
+    <ResultField name="NetAmount" type="BigDecimal"/>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT tsl.week_begin_date,
+             SUM((CASE tsl.return_flag WHEN 0 THEN 1 ELSE -1 END)*COALESCE(tsl.quantity,0)) AS quantity,
+             SUM(tsl.net_amt) AS netAmount
+        FROM trn_trans tt
+            INNER JOIN
+                (SELECT (SELECT DATEADD(wk,DATEDIFF(wk,0,rpt.business_date),-1)) as week_begin_date,*
+                  FROM rpt_sale_line rpt) tsl
+               ON tt.trans_seq = tsl.trans_seq
+              AND tt.organization_id = tsl.organization_id
+              AND tt.wkstn_id = tsl.wkstn_id
+              AND tt.rtl_loc_id = tsl.rtl_loc_id
+              AND tt.business_date = tsl.business_date
+              AND tsl.QUANTITY <> 0
+        WHERE tt.organization_id = ?
+          AND tt.rtl_loc_id = ?
+          AND tsl.trans_date >=(SELECT DATEADD(wk,DATEDIFF(wk,0,?)-?,-1))
+          AND tt.trans_statcode = 'COMPLETE'
+          AND tt.post_void_flag = '0']]>
+      </Statement>
+      <Parameter name="argOrganizationId"/>
+      <Parameter name="argRetailLocationId"/>
+      <Parameter name="argTransDate"/>
+      <Parameter name="argWeeks"/>
+      <Expression trigger="argItemId" parameters="argItemId, argItemId"><![CDATA[(tsl.item_id= ? OR tsl.item_id IN (SELECT item.item_id FROM itm_item item WHERE item.parent_item_id = ?))]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY tsl.week_begin_date ORDER BY tsl.week_begin_date DESC]]></Suffix>
+  </Query>
+
+  <Query name="ITEM_SALES_YEARS_HISTORY" pmType="XCENTER_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.pos.inventory.replenishment.lookup.results.ItemSalesHistoryQueryResult</ResultClass>
+    <ResultField name="BeginDate" type="Date"/>
+    <ResultField name="Quantity" type="BigDecimal"/>
+    <ResultField name="NetAmount" type="BigDecimal"/>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT tsl.year_begin_date,
+             SUM((CASE tsl.return_flag WHEN 0 THEN 1 ELSE -1 END)*COALESCE(tsl.quantity,0)) AS quantity,
+             (SELECT (SUM(tsl.net_amt))) AS netAmount
+        FROM trn_trans tt
+            INNER JOIN
+                (SELECT (SELECT DATEADD(yyyy,DATEDIFF(yyyy,0,rpt.trans_date),0)) as year_begin_date,*
+                  FROM rpt_sale_line rpt) tsl
+               ON tt.trans_seq = tsl.trans_seq
+              AND tt.organization_id = tsl.organization_id
+              AND tt.wkstn_id = tsl.wkstn_id
+              AND tt.rtl_loc_id = tsl.rtl_loc_id
+              AND tt.business_date = tsl.business_date
+              AND tsl.QUANTITY <> 0
+        WHERE tt.organization_id = ?
+          AND tt.rtl_loc_id = ?
+          AND tsl.trans_date >=(SELECT DATEADD(yyyy,DATEDIFF(yyyy,0,?)-2,0))
+          AND tt.trans_statcode = 'COMPLETE'
+          AND tt.post_void_flag = '0']]>
+      </Statement>
+      <Parameter name="argOrganizationId"/>
+      <Parameter name="argRetailLocationId"/>
+      <Parameter name="argTransDate"/>
+      <Expression trigger="argItemId" parameters="argItemId, argItemId"><![CDATA[(tsl.item_id= ? OR tsl.item_id IN (SELECT item.item_id FROM itm_item item WHERE item.parent_item_id = ?))]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY tsl.year_begin_date ORDER BY tsl.year_begin_date DESC]]></Suffix>
+  </Query>
+
+  <Query name="SP_FLASH_SALES" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[{call sp_flash (?, ?, ?, ?, ?)}]]></Statement>
+      <Parameter name="@@argOrganizationId" />
+      <Parameter name="@@argRetailLocationId" />
+      <Parameter name="@@argBusinessDate" />
+      <Parameter name="@@argWrkstnId" />
+      <Parameter name="@@argTransSeq" />
+    </SQL>
+    <Property>
+      <Key dtype="String">QueryType</Key>
+      <Value dtype="String"><![CDATA[Procedure]]></Value>
+    </Property>
+  </Query>
+   
+  <Query name="SYNC_ORG_HIERARCHY_BY_LOCATION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.loc.OrgHierarchyId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ? 
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="@argNodeList"><![CDATA[(t.org_code + ':' + t.org_value) IN ?]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="GET_NEXT_SEQUENCE_VALUE" pmType="LOCAL_ONLY">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.SequenceQueryResult</ResultClass>
+    <ResultField name="ReturnValue" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        {? = call sp_next_sequence_value(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}
+      ]]></Statement>
+      <Parameter name="argSequenceValue" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argSequenceId" />
+      <Parameter name="argSequenceMode" />
+      <Parameter name="argIncrement" />
+      <Parameter name="argIncrementalValue" />
+      <Parameter name="argMaximumValue" />
+      <Parameter name="argInitialValue" />
+      <Parameter name="argSequenceValue" />
+    </SQL>
+    <Property>
+      <Key dtype="String">QueryType</Key>
+      <Value dtype="String"><![CDATA[Procedure]]></Value>
+    </Property>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[true]]></Value>
+    </Property>
+  </Query>
+
+  <Query name="GET_NEXT_SEQUENCE_VALUE_STORE_LEVEL" pmType="RESERVED_STORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.SequenceQueryResult</ResultClass>
+    <ResultField name="ReturnValue" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        {? = call sp_next_sequence_value(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}
+      ]]></Statement>
+      <Parameter name="argSequenceValue" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argSequenceId" />
+      <Parameter name="argSequenceMode" />
+      <Parameter name="argIncrement" />
+      <Parameter name="argIncrementalValue" />
+      <Parameter name="argMaximumValue" />
+      <Parameter name="argInitialValue" />
+      <Parameter name="argSequenceValue" />
+    </SQL>
+    <Property>
+      <Key dtype="String">QueryType</Key>
+      <Value dtype="String"><![CDATA[Procedure]]></Value>
+    </Property>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[true]]></Value>
+    </Property>
+  </Query>
+
+  <Query name="LATEST_UPDATE_DATE_PROMOTION" pmType="DEALS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.TimestampQueryResult</ResultClass>
+    <ResultField name="UpdateDate" />
+    <ResultField name="CreateDate" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    select max(update_date), max(create_date)
+      from (
+          select max(update_date) as update_date, max(create_date) as create_date from prc_deal where organization_id = ?
+          union 
+          select max(update_date) as update_date, max(create_date) as create_date from prc_deal_item where organization_id = ?
+          union 
+          select max(update_date) as update_date, max(create_date) as create_date from prc_deal_field_test where organization_id = ?
+      ) as deal    
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>  
+
+<!-- ********************************************************************* -->
+<!-- *                                                                   * -->
+<!-- *                     XFG only queries start here                   * -->
+<!-- *                                                                   * -->
+<!-- ********************************************************************* -->
+
+  <Query name="ITEMS_BY_EXTENDED_INPUT" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.itm.IItem</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+            WHERE ITEM_ID IN 
+              (SELECT DISTINCT i.ITEM_ID
+              FROM itm_item i 
+                LEFT JOIN  com_translations tr ON 
+                i.NAME = tr.translation_key
+                AND i.organization_id = ?
+                LEFT JOIN itm_item_cross_reference cr ON 
+                 cr.item_id = i.ITEM_ID
+                 AND cr.organization_id = i.organization_id
+              WHERE tr.translation LIKE ?
+              AND tr.locale IN ?
+              OR i.item_id LIKE ?
+              OR cr.manufacturer_upc LIKE ?
+              OR i.description LIKE ?)
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="%argItemName%" />
+      <Parameter name="@argLocaleList" />
+      <Parameter name="argItemPlu%" />
+      <Parameter name="argItemManufacturer%" />
+      <Parameter name="%argDescription%" />
+    </SQL>
+    <Property>
+      <Key dtype="String">MaxRows</Key>
+      <Value dtype="String"><![CDATA[50]]></Value>
+    </Property>
+    <Suffix dtype="String"><![CDATA[ORDER BY ITEM_ID ASC]]></Suffix>
+  </Query> 
+  
+<!-- ********************************************************************* -->
+<!-- *                                                                   * -->
+<!-- *                     XFG only queries ends here                   * -->
+<!-- *                                                                   * -->
+<!-- ********************************************************************* -->
+</QuerySet>

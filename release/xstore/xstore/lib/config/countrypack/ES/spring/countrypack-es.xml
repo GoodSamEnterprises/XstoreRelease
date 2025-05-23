@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  default-init-method="init">
+
+  <context:annotation-config />
+
+  <!-- Fiscal types for Spain -->
+  <util:constant id="ES_FISCAL_TYPE_SIMPLE_INVOICE"
+        static-field="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType.ES_FISCAL_TYPE_SIMPLE_INVOICE" />
+
+  <util:constant id="ES_FISCAL_TYPE_SIMPLE_CREDIT_NOTE"
+        static-field="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType.ES_FISCAL_TYPE_SIMPLE_CREDIT_NOTE" />
+
+  <util:constant id="ES_FISCAL_TYPE_INVOICE"
+        static-field="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType.ES_FISCAL_TYPE_INVOICE" />
+
+  <util:constant id="ES_FISCAL_TYPE_CREDIT_NOTE"
+        static-field="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType.ES_FISCAL_TYPE_CREDIT_NOTE" />
+
+  <!-- Fiscal document types -->
+  <bean id="es.fiscal.simple.standard" class="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType">
+    <constructor-arg index="0" value="SIMPLE_INVOICE_STANDARD" />
+    <constructor-arg index="1" value="_countrypack.es.fiscal.simpleinvoice" />
+    <constructor-arg index="2" value="10" />
+    <constructor-arg index="3" ref="ES_FISCAL_TYPE_SIMPLE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.ES.SIMPLE_INVOICE_SEQUENCE" />
+  </bean>
+
+  <bean id="es.fiscal.creditnote.simple.standard" class="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType">
+    <constructor-arg index="0" value="SIMPLE_CREDITNOTE_STANDARD" />
+    <constructor-arg index="1" value="_countrypack.es.fiscal.simplecreditnote" />
+    <constructor-arg index="2" value="15" />
+    <constructor-arg index="3" ref="ES_FISCAL_TYPE_SIMPLE_CREDIT_NOTE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.ES.SIMPLE_INVOICE_SEQUENCE" />
+  </bean>
+
+  <bean id="es.fiscal.invoice.standard" class="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType">
+    <constructor-arg index="0" value="INVOICE_STANDARD" />
+    <constructor-arg index="1" value="_countrypack.es.fiscal.invoice" />
+    <constructor-arg index="2" value="20" />
+    <constructor-arg index="3" ref="ES_FISCAL_TYPE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.ES.INVOICE_SEQUENCE" />
+  </bean>
+
+  <bean id="es.fiscal.creditnote.standard" class="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType">
+    <constructor-arg index="0" value="CREDITNOTE_STANDARD" />
+    <constructor-arg index="1" value="_countrypack.es.fiscal.creditnote" />
+    <constructor-arg index="2" value="30" />
+    <constructor-arg index="3" ref="ES_FISCAL_TYPE_CREDIT_NOTE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.ES.CREDIT_NOTE_SEQUENCE" />
+  </bean>
+
+  <bean id="es.fiscal.simple.manual" class="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType">
+    <constructor-arg index="0" value="SIMPLE_INVOICE_MANUAL" />
+    <constructor-arg index="1" value="_countrypack.es.fiscal.simpleinvoice" />
+    <constructor-arg index="2" value="40" />
+    <constructor-arg index="3" ref="ES_FISCAL_TYPE_SIMPLE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_MANUAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.ES.MANUAL_SIMPLE_INVOICE_SEQUENCE" />
+  </bean>
+
+  <bean id="es.fiscal.creditnote.simple.manual" class="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType">
+    <constructor-arg index="0" value="SIMPLE_CREDITNOTE_MANUAL" />
+    <constructor-arg index="1" value="_countrypack.es.fiscal.simplecreditnote" />
+    <constructor-arg index="2" value="45" />
+    <constructor-arg index="3" ref="ES_FISCAL_TYPE_SIMPLE_CREDIT_NOTE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_MANUAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.ES.MANUAL_SIMPLE_INVOICE_SEQUENCE" />
+  </bean>
+
+  <bean id="es.fiscal.invoice.manual" class="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType">
+    <constructor-arg index="0" value="INVOICE_MANUAL" />
+    <constructor-arg index="1" value="_countrypack.es.fiscal.invoice" />
+    <constructor-arg index="2" value="50" />
+    <constructor-arg index="3" ref="ES_FISCAL_TYPE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_MANUAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.ES.MANUAL_INVOICE_SEQUENCE" />
+  </bean>
+
+  <bean id="es.fiscal.creditnote.manual" class="oracle.retail.xstore.countrypack.es.EsFiscalDocumentType">
+    <constructor-arg index="0" value="CREDITNOTE_MANUAL" />
+    <constructor-arg index="1" value="_countrypack.es.fiscal.creditnote" />
+    <constructor-arg index="2" value="60" />
+    <constructor-arg index="3" ref="ES_FISCAL_TYPE_CREDIT_NOTE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_MANUAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.ES.MANUAL_CREDIT_NOTE_SEQUENCE" />
+  </bean>
+  <!-- End of Fiscal document types -->
+  
+  <bean id="wsWriteHandlerResolver" parent="wsLoggingHandlerResolver">
+    <property name="handlers">
+      <list value-type="java.xml.ws.handler.Handler" merge="true">
+        <bean class="oracle.retail.xstore.countrypack.es.ws.WSWriterHandler" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="CP.ES.WSJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="ES_FISCAL" />
+    <property name="serviceInterface" value="oracle.retail.xstore.countrypack.es.ws.client.fiscal.SiiSOAP" />
+    <property name="namespaceUri" value="https://www2.agenciatributaria.gob.es/static_files/common/internet/dep/aplicaciones/es/aeat/ssii/fact/ws/SuministroFactEmitidas.wsdl" />
+    <property name="serviceName" value="siiService" />
+    <property name="portName" value="SuministroFactEmitidasPruebas" />
+    <property name="handlerResolver" ref="wsWriteHandlerResolver" />
+  </bean>
+  
+  <bean id="INVOICES_ISSUED" class="oracle.retail.xstore.countrypack.es.ws.InvoicesIssuedWSHandler">
+    <property name="serviceId" value="ES_FISCAL" />
+    <property name="servicePort" ref="CP.ES.WSJaxWsServicePort" />
+    
+    <!-- REQUEST -->
+    <property name="requestPreparer">
+      <bean class="oracle.retail.xstore.countrypack.es.ws.request.InvoicesIssuedRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="oracle.retail.xstore.countrypack.es.ws.request.adapter.InvoicesIssuedRequestAdapter" />
+      </list>
+    </property>
+    
+   <!-- RESPONSE -->
+    <property name="responsePreparer">
+      <bean class="oracle.retail.xstore.countrypack.es.ws.response.InvoicesIssuedResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="oracle.retail.xstore.countrypack.es.ws.response.adapter.InvoicesIssuedResponseAdapter" />
+      </list>
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="oracle.retail.xstore.countrypack.es.ws.response.decorator.InvoicesIssuedResponseDecorator" />
+      </list>
+    </property>
+    
+  </bean>
+
+  <bean id="countyVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="false" />
+  </bean>
+  <bean id="neighborhoodVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="false" />
+  </bean>
+  <bean id="fiscalCodeVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+  </bean>
+  <bean id="journalFiscalNumberVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+  </bean>
+
+  <bean id="invoiceSummaryCustMaintModelFieldValidatorFactory" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory">
+    <property name="parameters">
+      <map merge="true">
+        <entry key="fiscalCode" value-ref="fiscalCodeFieldValidator" />
+      </map>
+    </property>
+  </bean>
+  
+  
+  <!-- Workers Start -->
+  
+  <bean id="taxExportWorker" class="oracle.retail.xstore.countrypack.es.register.workers.TaxExportWorker" scope="prototype" />
+  <bean id="taxExportErrorsWorker" class="oracle.retail.xstore.countrypack.es.register.workers.TaxExportErrorsWorker" scope="prototype" />
+  
+  
+  <bean id="taxExportWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="taxExportWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="taxExportErrorsWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="taxExportErrorsWorker" />
+        <ref bean="persistObjectsWorker" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Workers End -->
+
+  <bean id="countryPack.es.validateReturnLines" class="oracle.retail.xstore.countrypack.es.validation.EsValidateReturnLine" scope="prototype" />
+
+  <bean id="countryPack.returnValidations" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.crossStateValidationRule" />
+        <ref bean="countryPack.crossStoreValidationRule" />
+        <ref bean="countryPack.es.validateReturnLines" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.es.blindReturnValidations" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.es.validateReturnLines" />
+      </list>
+    </property>
+  </bean>
+  
+  
+  <bean id="COUNTRYPACK.TAX_EXPORT_ERRORS_REPORT" class="dtv.pos.framework.reporting.ReportDefinition">
+    <property name="title" value="_countrypack.es.taxExport.report.title" />
+    <property name="dataTemplate" value="classpath:countrypack/ES/report/exporterrors/TaxExportErrorLog.xdt" />
+    <property name="layoutTemplate" value="classpath:countrypack/ES/report/exporterrors/TaxExportErrorLog.rtf" />
+  </bean>
+
+</beans>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/SystemConfig.xsd">
+  
+  <SystemConfig dtype="Default">
+    <Order dtype="Default">
+      <SkipSearchFormIfCustomer dtype="Boolean">true</SkipSearchFormIfCustomer>
+      <PromptForItemQuantity dtype="Boolean">false</PromptForItemQuantity>
+      <AgedNotificationDays dtype="Integer">2</AgedNotificationDays>
+      <!-- ITEM, TRANSACTION -->
+      <DepositBasis dtype="String">ITEM</DepositBasis>
+      <!-- PERCENT, AMOUNT -->
+      <DepositCalculation dtype="String">PERCENT</DepositCalculation>
+      <DepositValue dtype="BigDecimal">10</DepositValue>
+      <!-- ITEM, TRANSACTION -->
+      <SetupFeeBasis dtype="String">ITEM</SetupFeeBasis>
+      <!-- PERCENT, AMOUNT -->
+      <SetupFeeCalculation dtype="String">PERCENT</SetupFeeCalculation>
+      <SetupFeeValue dtype="BigDecimal">0</SetupFeeValue>
+      <ShipCalcType dtype="String">PER_ITEM</ShipCalcType>
+      <ShippingFeeOnDelayedPickup dtype="Boolean">false</ShippingFeeOnDelayedPickup>
+      <DisplaySoldItemCount dtype="Boolean">false</DisplaySoldItemCount>
+      <LocateItemOnQuantityChange dtype="Boolean">true</LocateItemOnQuantityChange>
+      <!-- This value is for when the user does not selected a distance (e.g. delivery orders). -->
+      <DefaultLocateItemDistance dtype="BigDecimal">200</DefaultLocateItemDistance>
+      <LocationConfirmationPrompt dtype="String"></LocationConfirmationPrompt>
+      <EnableBorderControl dtype="Boolean">false</EnableBorderControl>
+      <CreateReceivingDocument dtype="Boolean">true</CreateReceivingDocument>
+      <!-- The interval, in minutes, between attempts to download new orders from the service provider -->
+      <DownloadInterval dtype="Integer">15</DownloadInterval>
+      <StatusRequestInterval dtype="Integer">30</StatusRequestInterval>
+      <PromptOrdersOnStoreOpen dtype="Boolean">false</PromptOrdersOnStoreOpen>
+      <PromptOrdersOnStoreClose dtype="Boolean">false</PromptOrdersOnStoreClose>
+      <PromptShowPickedOrderItemWarning dtype="Boolean">true</PromptShowPickedOrderItemWarning>
+      <CancellableOrderLineStatus dtype="String">NEW,POLLED,ACCEPTED,RECEIVED,UNFULFILLABLE</CancellableOrderLineStatus>
+      <PromptShowOrderCancelReasonCode dtype="Boolean">true</PromptShowOrderCancelReasonCode>
+      <PromptShowOrderRejectReasonCode dtype="Boolean">true</PromptShowOrderRejectReasonCode>
+      <ProcessDeliveryOrdersFirst dtype="Boolean">true</ProcessDeliveryOrdersFirst>
+    </Order>
+  </SystemConfig>
+</Store>

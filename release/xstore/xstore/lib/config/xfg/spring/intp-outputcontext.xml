@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="OC_Store" class="com.micros_retail.xfgclient.interpret.i18n.outputcontext.OutputContext">
+    <constructor-arg value="OC_Store" />
+  </bean>
+
+  <bean id="OC_Operator" class="com.micros_retail.xfgclient.interpret.i18n.outputcontext.OutputContext">
+    <constructor-arg value="OC_Operator" />
+  </bean>
+
+  <bean id="OC_Customer" class="com.micros_retail.xfgclient.interpret.i18n.outputcontext.OutputContext">
+    <constructor-arg value="OC_Customer" />
+  </bean>
+
+  <bean id="OC_Keyboard" class="com.micros_retail.xfgclient.hardware.virtualkeyboard.VirtualKeyboardOutputContext">
+    <constructor-arg value="OC_Keyboard" />
+  </bean>
+
+  <bean id="OC_Log" class="com.micros_retail.xfgclient.interpret.i18n.outputcontext.OutputContext">
+    <constructor-arg value="OC_Log" />
+  </bean>
+
+  <bean id="OC_Code" class="com.micros_retail.xfgclient.interpret.i18n.outputcontext.OutputContext">
+    <constructor-arg value="OC_Code" />
+  </bean>
+
+  <bean id="outputContextManager" class="com.micros_retail.xfgclient.interpret.i18n.outputcontext.OutputContextManager" init-method="init">
+    <property name="defaultOutputContext" ref="OC_Store" />
+    <property name="logOutputContext" ref="OC_Log" />
+    <property name="inputContext" ref="OC_Operator" />
+    <property name="operatorContext" ref="OC_Operator" />
+    <property name="customerContext" ref="OC_Customer" />
+    <property name="codeContext" ref="OC_Code" />
+    <property name="virtualKeyboardContext" ref="OC_Keyboard" />
+  </bean>
+
+</beans>

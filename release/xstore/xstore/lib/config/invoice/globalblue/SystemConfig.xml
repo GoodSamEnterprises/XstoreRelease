@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <SystemConfig dtype="Default">
+    <TaxFreeConfig dtype="Default">
+      <Enabled dtype="Boolean">true</Enabled>
+      <GlobalBlueConfig dtype="Default">
+        <CheckNetAmount dtype="Boolean">false</CheckNetAmount>
+        <MinimumAge dtype="PositiveInteger">0</MinimumAge>
+        <MaximumAge dtype="PositiveInteger">0</MaximumAge>
+        <MinimumAgeWarning dtype="PositiveInteger">0</MinimumAgeWarning>
+        <MaximumAgeWarning dtype="PositiveInteger">0</MaximumAgeWarning>
+        <SingleItemMaxQty dtype="PositiveInteger">0</SingleItemMaxQty>
+        <AllowProviderCardSwipe dtype="Boolean">false</AllowProviderCardSwipe>
+        <IsZeroVATItemAllowed dtype="Boolean">false</IsZeroVATItemAllowed>
+        <CheckCustomerEligibility dtype="Boolean">false</CheckCustomerEligibility>
+        <ReprintTimeout dtype="PositiveInteger">3</ReprintTimeout>
+        <Host dtype="String">${oracle.retail.xstore.taxfree.globalblue.host}</Host>
+        <ApiVersion dtype="String">17</ApiVersion>
+        <MessageEncoding dtype="String">UTF-8</MessageEncoding>
+        <SenderId dtype="String">Oracle XStore POS</SenderId>
+        <Username dtype="String">${oracle.retail.xstore.taxfree.globalblue.username}</Username>
+        <Password dtype="String">${oracle.retail.xstore.taxfree.globalblue.password}</Password>
+        <ShopID dtype="String">${oracle.retail.xstore.taxfree.globalblue.shopid}</ShopID>
+        <DeskID dtype="String">${oracle.retail.xstore.taxfree.globalblue.deskid}</DeskID>
+        <UpdateDeskConfigDays dtype="PositiveInteger">1</UpdateDeskConfigDays>
+        <UpdateGlobalConfigDays dtype="PositiveInteger">30</UpdateGlobalConfigDays>
+        <UpdateBlkdCountriesConfigDays dtype="PositiveInteger">7</UpdateBlkdCountriesConfigDays>
+        <UpdateCondTredConfigDays dtype="PositiveInteger">30</UpdateCondTredConfigDays>
+        <TimeValidationsUseBusinessDate dtype="Boolean">true</TimeValidationsUseBusinessDate>
+        <ProviderLogoImgPath dtype="String">res/graphics/taxfree/globalblue/GB_LOGO.bmp</ProviderLogoImgPath>
+        <RefundMethodsDetails dtype="Default">
+          <RefundMethods dtype="String">STANDARD,CREDIT_CARD</RefundMethods>
+          <ForceRefundSelection dtype="Boolean">false</ForceRefundSelection>
+          <Provider_Refund_Code dtype="Map">
+            <Entry dtype="MapEntry" key="Cash" value="CASH" />
+            <Entry dtype="MapEntry" key="Credit card" value="CREDIT_CARD" />
+          </Provider_Refund_Code>
+        </RefundMethodsDetails>
+        <EligibleServices dtype="Default">
+          <NonPhysItemTypcode dtype="String"></NonPhysItemTypcode>
+          <NonPhysItemSubtype dtype="String"></NonPhysItemSubtype>
+        </EligibleServices>
+        <IdentificationDocumentCodeMap dtype="Map">
+          <MapEntry key="Passport" >
+            <value dtype="String">Passport</value>
+          </MapEntry>
+          <MapEntry key="IdentityCard" >
+            <value dtype="String">IdentityCard</value>
+          </MapEntry>
+          <MapEntry key="DriverLicense" >
+            <value dtype="String">DriverLicense</value>
+          </MapEntry>
+          <MapEntry key="Other" >
+            <value dtype="String">Other</value>
+          </MapEntry>                
+        </IdentificationDocumentCodeMap>
+        <AvailableIdentificationDocumentType dtype="String">Passport</AvailableIdentificationDocumentType>
+        <QrCode dtype="Default">
+          <Width dtype="PositiveInteger">400</Width>
+          <Height dtype="PositiveInteger">400</Height>  
+        </QrCode>
+      </GlobalBlueConfig>
+    </TaxFreeConfig>
+  </SystemConfig>
+</Store>

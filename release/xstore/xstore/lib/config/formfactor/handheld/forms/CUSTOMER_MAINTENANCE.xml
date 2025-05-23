@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+    
+  <Form name="CUSTOMER_MAINTENANCE" type="MULTI_PURPOSE_VIEW" formLayoutRef="TOP_TO_BOTTOM_TRANSPARENT">
+    
+    <Page name="custMaintenanceDashboard" text="_customerAccountTabText" displayOrder="5">       
+      <Panel startX="0" width="70" startY="0" height="20" fieldLayoutRef="custMaintNameInfoLayout" />
+      <Panel startX="70" width="30" startY="0" height="20" fieldLayoutRef="custMaintAvatarLayout" />
+      <Panel startX="0" width="100" startY="20" height="80" fieldLayoutRef="custMaintAddressInfo" />
+      
+      <ActionGroups view="VIEW" edit="EDIT" />
+    </Page> 
+    
+    <Page name="CustContactInformation" text="_formCustomerDataTab" displayOrder="10" enabled="false" />
+    <Page name="CustomerDetail" text="_formCustomerDetailTab" conditionRef="viewEditCustGroupsAccCheck" displayOrder="20" enabled="false" />
+    <Page name="CustomerAccount" text="_customerAccountTabText" displayOrder="40" enabled="false" />
+    <Page name="Tasks" text="_customerTaskDetails" displayOrder="50" enabled="false" />
+    <Page name="LolaytyAndAwards" text="_customerLoyaltyAwardsTabText" displayOrder="55" enabled="false" />
+    <Page name="CustomerComments" text="_customerCommentsTabText" displayOrder="60" enabled="false" />
+    <Page name="CustomerAddress" text="_customerAddressesTabText" conditionRef="multipleAddressCheck" displayOrder="70" enabled="false" />
+    <Page name="HouseAccout" text="_customerHouseAccountTabText" conditionRef="customerHasHouseAcct" displayOrder="80" enabled="false" />
+    <Page name="CustomerWishList" text="_customerWishListTabText" conditionRef="customerWishListEnabledRule" displayOrder="90" enabled="false" />
+    
+    <ActionGroup name="EDIT">
+      <Action ref="ADDRESS_LOOKUP" chainType="STACK"/> 
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+      <Action ref="ACCEPT_SAVE" />
+    </ActionGroup>
+    
+    <ActionGroup name="VIEW">
+      <Action ref="CANCEL_EXIT" />
+      <Action dataKey="CONTINUE" text="_addCustomerKey" keyStroke="F2">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AddCustomerToTranVisibilityRule" />
+      </Action>
+      <Action dataKey="EDIT" text="_editCustomer" keyStroke="F3" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+      </Action>
+      <Action chainKey="ADD_LOYALTY_CARD" chainType="STACK" text="_addLoyalty">
+        <VisibilityRule class="dtv.pos.customer.loyalty.AllowLoyaltySignupRule" />
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+      </Action>
+    </ActionGroup>
+    
+  </Form>    
+</FormSet>

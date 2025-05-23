@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery" 
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <!--  Device Mode Configuration -->
+
+  <bean id="DVMDE_Active" class="com.micros_retail.xfgclient.statemachine.context.DeviceMode" abstract="true">
+    <property name="active" value="true" />
+  </bean>
+
+  <bean id="DVMDE_Inactive" class="com.micros_retail.xfgclient.statemachine.context.DeviceMode" abstract="true">
+    <property name="active" value="false" />
+  </bean>
+
+  <bean id="DVMDE_Scanner_Active" parent="DVMDE_Active">
+    <property name="roleType" ref="HWRT_Scanner" />
+  </bean>
+
+  <bean id="DVMDE_Scanner_Inactive" parent="DVMDE_Inactive">
+    <property name="roleType" ref="HWRT_Scanner" />
+  </bean>
+
+  <bean id="DVMDE_Scale_Active" parent="DVMDE_Active">
+    <property name="roleType" ref="HWRT_Scale" />
+  </bean>
+
+  <bean id="DVMDE_Scale_Inactive" parent="DVMDE_Inactive">
+    <property name="roleType" ref="HWRT_Scale" />
+  </bean>
+
+  <bean id="DVMDE_Msr_Active" parent="DVMDE_Active">
+    <property name="roleType" ref="HWRT_MSR" />
+  </bean>
+
+  <bean id="DVMDE_Msr_Inactive" parent="DVMDE_Inactive">
+    <property name="roleType" ref="HWRT_MSR" />
+  </bean>
+
+  <bean id="DVMDE_Keyboard_Active" parent="DVMDE_Active">
+    <property name="roleType" ref="HWRT_Keyboard" />
+  </bean>
+
+  <bean id="DVMDE_Keyboard_Inactive" parent="DVMDE_Inactive">
+    <property name="roleType" ref="HWRT_Keyboard" />
+  </bean>
+
+  <bean id="DVMDE_ErrorNotifier_Active" parent="DVMDE_Active">
+    <property name="roleType" ref="HWRT_AcousticErrorNotifer" />
+  </bean>
+
+  <bean id="DVMDE_ErrorNotifier_Inactive" parent="DVMDE_Inactive">
+    <property name="roleType" ref="HWRT_AcousticErrorNotifer" />
+  </bean>
+
+  <bean id="DVMDE_SuccessNotifier_Active" parent="DVMDE_Active">
+    <property name="roleType" ref="HWRT_AcousticErrorNotifer" />
+  </bean>
+
+  <bean id="DVMDE_SuccessNotifier_Inactive" parent="DVMDE_Inactive">
+    <property name="roleType" ref="HWRT_AcousticSuccessNotifer" />
+  </bean>
+
+  <bean id="DVMDE_VirtualKeyboard_Active" parent="DVMDE_Active">
+    <property name="roleType" ref="HWRT_VirtualKeyboard" />
+  </bean>
+
+  <bean id="DVMDE_VirtualKeyboard_Inactive" parent="DVMDE_Inactive">
+    <property name="roleType" ref="HWRT_VirtualKeyboard" />
+  </bean>
+
+  <!--  Device Mode Configuration End -->
+</beans>

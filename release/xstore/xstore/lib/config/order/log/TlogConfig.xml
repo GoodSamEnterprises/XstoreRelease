@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/log/LogConfig.xsd">
+  <FormatterMap>
+    <Formatter name="PreviousOrderAction" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">CANCELLED</param_value>
+        <param_value dtype="String">Cancelled</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">COMPLETED</param_value>
+        <param_value dtype="String">Completed</param_value>
+      </Parameter>
+    </Formatter>
+  </FormatterMap>
+
+  <RoutingRules>
+    <RoutingRule name="ORDER_STATUS" document="ORDER_STATUS" file="POSLOG" transType="ORDER" />
+  </RoutingRules>
+  
+  <LogTypes>
+    <LogType document="ORDER_STATUS" sectionref="TRANSACTION" />
+  </LogTypes>
+  
+  <sections>
+    <section name="order_line">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.ISaleReturnLineItem" />
+      <condition method="getOrderModifier" comparison="NOT_NULL" />
+      <sectionref>pickup_order_line</sectionref>
+      <sectionref>delivery_order_line</sectionref>
+    </section>
+    
+    <section name="pickup_order_line">
+      <condition method="getCorrectionModifier" comparison="IS_NULL" />
+      <condition class="dtv.pos.order.PickupOrderCondition" />
+      
+      <!-- All order using this section should represent new orders.  Therefore, to save the 
+           annoyance of trying to get to the order status, just put in "New".  If you are
+           curious, non-new orders should utilize the PreviousCustomerOrderForPickup type. -->
+      <xml><![CDATA[
+        <CustomerOrderForPickup ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]" OrderStatus="New">
+          <dtv:OrderType>#{getOrderModifier.getOrderType}</dtv:OrderType>
+          <Pickup />
+          <?sectionref name="common_order_line"?>
+        </CustomerOrderForPickup>
+      ]]></xml>
+    </section>
+    
+    <section name="delivery_order_line">
+      <condition method="getCorrectionModifier" comparison="IS_NULL" />
+      <condition class="dtv.pos.order.PickupOrderCondition" inverted="true" />
+      <!-- All order using this section should represent new orders.  Therefore, to save the 
+           annoyance of trying to get to the order status, just put in "New".  If you are
+           curious, non-new orders should utilize the PreviousCustomerOrderForPickup type. -->
+      <xml><![CDATA[
+        <CustomerOrderForDelivery ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]" OrderStatus="New">
+          <dtv:OrderType>#{getOrderModifier.getOrderType}</dtv:OrderType>
+          <Delivery />
+          <?sectionref name="common_order_line"?>
+          <dtv:VoidReason>#{getVoidLineItemReasonCode}</dtv:VoidReason>
+        </CustomerOrderForDelivery>
+      ]]></xml>
+    </section>
+    
+    <section name="prev_order_line">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.ISaleReturnLineItem" />
+      <condition method="getOrderModifier" comparison="NOT_NULL" />
+      <condition method="getCorrectionModifier" comparison="NOT_NULL" />
+      <xml><![CDATA[
+        <PreviousCustomerOrder Action="#{getCorrectionModifier.getReasonCode}[PreviousOrderAction]" 
+                               ItemType="!{dtv.logbuilder.LogItemTypeDocBuilderField}[lineItemType]">
+          
+          <dtv:OrderType>#{getOrderModifier.getOrderType}</dtv:OrderType>
+          <?sectionref name="common_order_line"?>
+          <?condition method="getCorrectionModifier.getReasonCode" comparison="EQUAL" value="CANCELLED"?>
+             <CancelReasonCode>#{getReturnReasonCode}</CancelReasonCode>
+          <?_condition?> 
+        </PreviousCustomerOrder>
+      ]]></xml>
+    </section>
+    
+    <section name="common_order_line">
+      <sectionref>order_item</sectionref>
+      <sectionref>line_common</sectionref>
+      <sectionref>line_properties</sectionref>
+    </section>    
+    
+    <section name="order_item">
+      <xml><![CDATA[
+        <AccountNumber>#{getOrderModifier.getOrderId}</AccountNumber>
+        <ItemID>#{getItem.getItemId}</ItemID>
+        <Description>#{getItemDescription}</Description>
+        <UnitCostPrice>#{getItem.getUnitCost}[money]</UnitCostPrice>
+        <UnitListPrice>#{getItem.getListPrice}[money]</UnitListPrice>
+        <RegularSalesUnitPrice>#{getRegularBasePrice}[money]</RegularSalesUnitPrice>
+        <ActualSalesUnitPrice>#{getUnitPrice}[money]</ActualSalesUnitPrice>
+        <ExtendedAmount>!{dtv.pos.order.OrderLineExtendedPriceField}[money]</ExtendedAmount>
+        <Quantity>#{getQuantity}[quantity]</Quantity>
+        <dtv:OrderType>#{getCustomerAccountModifier.getCustAccountCode}</dtv:OrderType>
+        <dtv:UnitOfMeasureCode>#{getItem.getUnitOfMeasureCode}</dtv:UnitOfMeasureCode>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>

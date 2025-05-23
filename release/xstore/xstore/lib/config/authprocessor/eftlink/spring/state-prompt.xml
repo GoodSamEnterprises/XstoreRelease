@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <!-- prompt used while eftlink communication is in progress -->
+  <bean id="PROMPT_EFTLINK_AuthInProgress" class="com.micros_retail.xfgclient.statemachine.PromptConfig" >
+    <property name="state" ref="STATE_AuthorizationEntry" />
+    <!-- The tender auth handler class expects the default text to be configured here; it will add the cancelable flag as parameter #2 -->
+    <property name="parameters" value="_xfgclient.tender.authorization" />
+  </bean>
+
+  <!-- prompt for eftlink communication status feedback (communication ongoing) -->
+  <bean id="PROMPT_EFTLINK_Information" class="com.micros_retail.xfgclient.statemachine.PromptConfig" >
+    <property name="state" ref="STATE_AuthorizationEntry" />
+    <!-- The handler class will add message as parameter #1 and cancelable flag as parameter #2 -->
+    <!-- EFTLink: always display message and ignore cancelable -->
+    <property name="keyword" ref="KW_EFTLINK_Authorization" />
+  </bean>
+
+  <!-- prompt for eftlink yes/no choice request -->
+  <bean id="PROMPT_EFTLINK_YesNoEntry" class="com.micros_retail.xfgclient.statemachine.PromptConfig" >
+    <property name="state" ref="STATE_EFTLINK_YesNoEntry" />
+    <property name="keyword" ref="KW_EFTLINK_YesNoEntry" />
+  </bean>
+
+  <!-- prompt for eftlink information which needs to be confirmed -->
+  <bean id="PROMPT_EFTLINK_Notification" class="com.micros_retail.xfgclient.statemachine.PromptConfig" >
+    <property name="state" ref="STATE_EFTLINK_Notification" />
+  </bean>
+
+  <!-- prompt for eftlink list selection -->
+  <bean id="PROMPT_EFTLINK_ListEntry" class="com.micros_retail.xfgclient.statemachine.PromptConfig" >
+    <property name="state" ref="STATE_EFTLINK_ChoiceEntry" />
+    <property name="keyword" ref="KW_SelectListNoCancel" />
+  </bean>
+
+  <!-- prompt for eftlink numeric input request -->
+  <bean id="PROMPT_EFTLINK_BigDecimalEntry" class="com.micros_retail.xfgclient.statemachine.PromptConfig" >
+    <property name="state" ref="STATE_EFTLINK_StringEntry" />
+    <property name="context" ref="CTX_BigDecimalEntry" />
+    <property name="keyword" ref="KW_StringEntry" /> 
+  </bean>
+
+  <!-- prompt for eftlink string input request -->
+  <bean id="PROMPT_EFTLINK_StringEntry" class="com.micros_retail.xfgclient.statemachine.PromptConfig" >
+    <property name="state" ref="STATE_EFTLINK_StringEntry" />
+    <property name="context" ref="CTX_AlphanumericStringEntry" />
+    <property name="keyword" ref="KW_StringEntry" />
+  </bean>
+
+  <bean id="PROMPT_EFTLINK_AdminInProgress" class="com.micros_retail.xfgclient.statemachine.PromptConfig" >
+    <property name="state" ref="STATE_EFTLINK_Admin" />
+    <property name="parameters" value="EftLink..." />
+  </bean>
+</beans>

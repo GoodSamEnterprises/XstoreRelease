@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+  <FormatterMap>
+    <Formatter name="DayAndMonth" class="dtv.pos.i18n.format.DateFormatter" format="MMMM dd" />
+  </FormatterMap>
+  
+  <sections>
+
+  <!-- COPIED FROM BASE 7.0.0 config/config/dtv/res/config/RcptConfig.xml 68278 2014-06-11 18:38:02Z dtvdomain\dberkland $ -->
+    <section name="CustomerCopy">
+      <sectionref>header</sectionref>
+      <sectionref>CUST_COPY_HEADER_DB</sectionref>
+      <sectionref>items</sectionref>
+      <sectionref>totals</sectionref>
+      <sectionref>tenders</sectionref>
+      <sectionref>change</sectionref>
+      <sectionref>YouSavedMessage</sectionref>
+      <sectionref>TaxExemptInfo</sectionref>
+<!--  BEGIN CHANGE FROM BASE -->
+      <sectionref>GROC_VAT_TAX_SUMMARY</sectionref>
+<!--  END CHANGE FROM BASE -->
+      <sectionref>SALE_DISCLAIMER_DB</sectionref>
+      <sectionref>CUST_COPY_FOOTER_DB</sectionref>
+      <sectionref>DONATION_FOOTER_MESSAGE</sectionref>
+      <sectionref>footer_cust_copy</sectionref>
+      <sectionref>system_mode</sectionref>
+      <sectionref>CustomerCopyLabel</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <section name="GROC_VAT_TAX_SUMMARY">
+<!-- BEGIN MRA#00128 -->
+    <condition class="dtv.pos.docbuilding.conditions.PriceTaxInclusiveCondition" inverted="false" />
+    <row />
+    <iterator method="getLineItemsByTypeCode" method_param="TAX">
+      <impl dtype="Class">dtv.pos.docbuilding.TaxLineByGroupIterator</impl>
+      <row>
+        <field method="getName" />
+        <field><text dtype="String"><![CDATA[ : ]]></text></field>
+        <field method="getPercent" formatter="Percent" /><sp/>
+        <field text="_xfgclient.receipt.taxtext" /><sp/>
+        <field method="getNetAmount" formatter="Money" align="R" loc="-15" /><sp/>
+        <field><text dtype="String"><![CDATA[=]]></text></field>
+        <field method="getAmount" formatter="Money" align="R" loc="-3" />
+      </row>
+    </iterator>
+<!-- END MRA#00128 -->
+    </section>
+
+<!-- COPIED FROM BASE 7.0.0 config/config/dtv/res/config/RcptConfig.xml 68278 2014-06-11 18:38:02Z dtvdomain\dberkland $ -->
+     <section name="totals">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransaction" />
+<!-- BEGIN CHANGE FROM BASE -->
+      <sectionref>GROC_SALES_TAX_SUMMARY</sectionref>
+      <horizontal_rule style="-"/>
+      <row>
+        <field text="_total" />
+        <field method="getTotal" formatter="Money" align="R" loc="-3" />
+<!-- END CHANGE FROM BASE -->
+      </row>
+      <sectionref>rounding_info</sectionref>
+      <sectionref>foreign_currency_separator_line</sectionref>
+      <iterator class="dtv.pos.tender.foreigncurrency.ForeignCurrencyTenderIterator">       
+        <sectionref>foreigncurrency_total</sectionref>
+      </iterator>
+    </section>
+
+    <section name="GROC_SALES_TAX_SUMMARY">
+      <condition class="dtv.pos.docbuilding.conditions.PriceTaxInclusiveCondition" inverted="true" />
+      <horizontal_rule style="-"/>
+      <row>
+        <field text="_subtotal" align="R" loc="-20" />
+        <field method="getSubtotal" formatter="Money" align="R" loc="-3" />
+      </row>
+      <!-- LIST EACH TAX ON THE TRANSACTION -->
+      <iterator method="getLineItemsByTypeCode" method_param="TAX">
+        <condition method="getVoid" comparison="FALSE" />
+        <row>
+          <field method="getSaleTaxGroupRule.getDescription" align="R" loc="-20" />
+          <field><text dtype="String"><![CDATA[ : ]]></text></field>
+          <field formatter="Percent"><aggregate class="dtv.pos.register.tax.TaxPercentageListedBuilderField" /></field>
+          <field method="getTaxAmount" formatter="Money" align="R" loc="-3" />
+        </row>
+      </iterator>
+
+<!--       <row>
+        <field formatter="Percent" align="R" loc="-15">
+          <aggregate class="dtv.pos.register.tax.TaxPercentageListedBuilderField" />
+        </field>
+      </row> -->
+
+      <!-- LIST TAX AS A TAX TOTAL -->
+<!--       <row>
+        <field text="_tax" align="R" loc="-22" />
+        <field formatter="Percent" align="R" loc="-15">
+          <aggregate class="dtv.pos.register.tax.TaxPercentageBuilderField" />
+        </field>
+        <field method="getTaxAmount" formatter="Money" align="R" loc="-3" />
+      </row> -->
+    </section>
+
+    <section name="POSTVOID">
+      <sectionref>header</sectionref>
+      <row>
+        <field method="getVoidedTransaction.getCustomerParty" formatter="BasicName" />
+      </row>
+      <row><field text="_voidTransaction" style="BOLD" /></row>
+      <row>
+        <condition method="getPostVoidReasonCode" comparison="NOT_NULL" />
+        <field><aggregate class="dtv.pos.ejournal.postvoid.PostVoidReasonCodeDocBuilderField" /></field>
+      </row>
+      <horizontal_rule />
+      <call method="getVoidedTransaction">
+        <sectionref>items</sectionref>
+        <sectionref>totals</sectionref>
+        <sectionref>tenders</sectionref>
+        <sectionref>change</sectionref>
+        <sectionref>GROC_VAT_TAX_SUMMARY</sectionref>
+      </call>
+      <horizontal_rule />
+      <row>
+        <field text="_originalTranId" style="BOLD" /><sp/>
+        <field method="getVoidedTransaction.getTransactionSequence" />
+      </row>
+      <row>
+        <field text="_originalCashierId" style="BOLD" /><sp/>
+        <field method="getVoidedTransaction.getOperatorParty.getEmployeeId" />
+      </row>
+      <row>
+        <field text="_originalRegisterId" style="BOLD" /><sp/>
+        <field method="getVoidedTransaction.getWorkstationId" />
+      </row>
+      <row align="C" charsize="X2HW"><field text="_voidRcptBottom" style="BOLD" /></row>
+      <sectionref>page_break</sectionref>
+    </section>
+  </sections>
+  
+</ReceiptDefinitions>

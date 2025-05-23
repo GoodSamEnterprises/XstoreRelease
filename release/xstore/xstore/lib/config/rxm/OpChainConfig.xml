@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/OpChainConfig.xsd">
+  
+  <!-- Customer Digital Cart -->
+  <OpChain name="REMOVE_DIGITAL_CART_ITEM">
+    <PromptOp class="dtv.pos.customer.digitalcart.op.PromptDeleteDigitalCartItemOp" validationsBean="custItemListSelectItemsRules" />
+    <PromptOp class="dtv.pos.customer.digitalcart.op.ConfirmDeleteDigitalCartItemOp" />
+  </OpChain>
+  <OpChain name="PURCHASE_DIGITAL_CART_ITEM">
+    <PromptOp class="dtv.pos.customer.digitalcart.op.PromptPurchaseDigitalCartOp" validationsBean="custItemListSelectItemsRules" />
+    <PromptOp class="dtv.pos.customer.digitalcart.op.NotifyRemoveDigitalCartOp" />
+    <OpChainRoute>
+      <Choice chainKey="ORDER_ITEMS_FROM_CART" chainType="START" condition="dtv.pos.customer.custitem.OrderContextCondition" />
+      <Choice chainKey="CUST_ITEM_PURCHASE_FROM_CART" chainType="START" />
+    </OpChainRoute>
+  </OpChain>
+  <OpChain name="SALE_COMPLETE_FINISH.digitalCart.1">
+    <Op class="dtv.pos.customer.digitalcart.op.SellDigitalCartItemsOp" />
+  </OpChain>
+</OpChainSet>

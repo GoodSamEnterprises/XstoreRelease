@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions>
+  <FormatterMap>
+    <Formatter name="Money" class="dtv.pos.i18n.format.MoneyFormatter" ctx="RECEIPT" />
+    <Formatter name="DateMedium" class="dtv.pos.i18n.format.DateFormatter" ctx="RECEIPT" formatterType="DateMedium" />
+    <Formatter name="TimeMedium" class="dtv.pos.i18n.format.DateFormatter" ctx="RECEIPT" formatterType="TimeMedium" />
+  </FormatterMap>
+
+  <ReceiptCopyRules>
+    <ReceiptCopyRule name="XREPORT" document="X_REPORT">
+      <Rule class="oracle.retail.xstore.countrypack.se.copyrules.ValidateWorkStationXReportCopyRule" />
+    </ReceiptCopyRule>
+    <ReceiptCopyRule name="ZREPORT" document="Z_REPORT">
+      <Rule class="oracle.retail.xstore.countrypack.se.copyrules.ValidateWorkStationZReportCopyRule" />
+    </ReceiptCopyRule>
+  </ReceiptCopyRules>
+
+  <receipts>
+    <receipt document="X_REPORT" sectionref="XReportBody"/>
+    <receipt document="Z_REPORT" sectionref="ZReportBody"/>
+  </receipts>
+
+  <sections>
+
+    <!--  - - - - - - - fiscal info section - - - - - - -->
+    <section name="LOCAL.HEADER_TOP">
+      <row align="C">
+        <field text="_countrypack.se.organizationCode" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.se.docbuilding.SeOrgCodeDocBuilderField" />
+        </field>
+	  </row>
+      <sectionref>SE.FISCAL_INFO</sectionref>
+    </section>
+
+	<section name="SE.FISCAL_INFO" >
+      <condition class="oracle.retail.xstore.countrypack.se.docbuilding.SeReceiptSignedCondition" />
+      <row>
+        <field text="_countrypack.se.ticket" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.se.docbuilding.SeFiscalReceiptNumDocBuilderField" />
+        </field>
+	  </row>
+      <region>
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.se.docbuilding.SeDigitalSignDocBuilderField" />
+        </field>
+	  </region>
+      <row>
+        <field text="_countrypack.se.manufacturingId" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.se.docbuilding.SeSigningDeviceIdDocBuilderField" />
+        </field>
+	  </row>
+      <horizontal_rule />
+	</section>
+
+    <!--  - - - - - - - reprint section - - - - - - -->
+    <section name="reprint">
+      <row>
+        <field text="%REPRINT%" />
+      </row>
+
+      <row><field text="%IF_REPRINT%" /></row>
+      <row align="C" charsize="X2HW" >
+        <field text="_countrypack.se.reprintReceipt.rcptCustomerCopy" style="BOLD" />
+      </row>
+      <row><field text="%END_IF%" /></row>
+    </section>
+
+    <!--  - - - - - - - headers section - - - - - - -->
+    <section name="transaction_header_info_X_report">
+       <row>
+        <field text="_date" />
+        <sp />
+        <field method="getBeginDatetimestamp" formatter="DateMedium" />
+        <field text="_trantime" loc="22" />
+        <sp />
+        <field method="getBeginDatetimestamp" formatter="TimeMedium" />
+      </row>
+      <row align="C">
+        <field text="_countrypack.se.XZReport.XReportTitle" style="BOLD"/>
+      </row>
+      <row>
+        <field text="_store" />
+        <sp />
+        <field method="getRetailLocationId" />
+        <field text="_register" loc="22" />
+        <sp />
+        <field method="getWorkstationId" />
+      </row>
+    </section>
+
+    <section name="XRheader">
+      <sectionref>transaction_store_location_se</sectionref>
+      <sectionref>transaction_header_info_X_report</sectionref>
+      <row />
+    </section>
+
+    <section name="XReportBody">
+      <sectionref>XRheader</sectionref>
+      <sectionref>XRDetails</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <section name="transaction_store_location_se">
+      <row align="C">
+         <field method="getStoreName" />
+      </row>
+      <region left_margin="1" alignment="C">
+        <field method="getRetailLocation" formatter="BasicAddress" />
+      </region>
+      <row />
+    </section>
+
+    <section name="XRDetails">
+      <iterator method="getDetail">
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenHeadersCondition" VALUE="HEADER" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenHeadersCondition" VALUE="SKIP_ROW" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenHeadersCondition" VALUE="_countrypack.se.XZReport.VatRate" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenHeadersCondition" VALUE="HEADER" />
+          <field method="getTypeOfMeasure" loc="2" style="BOLD" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenDetailsCondition" />
+          <field method="getSectionId" loc="0" />
+          <sp />
+          <field method="getTypeOfMeasure" />
+          <sp />
+          <field method="getValue" formatter="Money" align="R" loc="36" />
+          <sp />
+          <field method="getUnitOfMeasure" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenDetailsCondition2" />
+          <field method="getSectionId" loc="0" />
+          <sp />
+          <field method="getTypeOfMeasure" />
+          <sp />
+          <field method="getValue" formatter="Quantity" align="R" loc="36" />
+          <sp />
+          <field method="getUnitOfMeasure" />
+        </row>
+      </iterator>
+    </section>
+
+    <!--  - - - - - - - headers section - - - - - - -->
+    <section name="transaction_header_info_Z_report">
+       <row>
+        <field text="_date" />
+        <sp />
+        <field method="getBeginDatetimestamp" formatter="DateMedium" />
+        <field text="_trantime" loc="22" />
+        <sp />
+        <field method="getBeginDatetimestamp" formatter="TimeMedium" />
+      </row>
+      <row align="C">
+        <field text="_countrypack.se.XZReport.ZReportTitle" style="BOLD"/>
+      </row>
+      <row>
+        <field text="_store" />
+        <sp />
+        <field method="getRetailLocationId" />
+        <field text="_register" loc="22" />
+        <sp />
+        <field method="getWorkstationId" />
+      </row>
+      <row>
+        <field text="_countrypack.se.XZReport.ZReportSequenceNumber" />
+        <sp />
+        <field method="getSequenceNumber" />
+      </row>
+    </section>
+
+    <section name="ZRheader">
+      <sectionref>transaction_store_location_se</sectionref>
+      <sectionref>transaction_header_info_Z_report</sectionref>
+      <row />
+    </section>
+
+    <section name="ZReportBody">
+      <sectionref>ZRheader</sectionref>
+      <sectionref>ZRDetails</sectionref>
+      <sectionref>countrypack.se.managerSignatureLine</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <section name="countrypack.se.managerSignatureLine">
+      <row />
+      <row>
+        <field text="_countrypack.se.ZReport.managerSignatureLabel" />
+      </row>
+      <row />
+      <row />
+      <row />
+      <row>
+        <field text="x_______________________________________" />
+      </row>
+    </section>
+
+    <section name="ZRDetails">
+      <iterator method="getDetail">
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenHeadersCondition" VALUE="HEADER" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenHeadersCondition" VALUE="SKIP_ROW" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenHeadersCondition" VALUE="_countrypack.se.XZReport.VatRate" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenHeadersCondition" VALUE="HEADER" />
+          <field method="getTypeOfMeasure" loc="2" style="BOLD" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenDetailsCondition" />
+          <field method="getSectionId" loc="0" />
+          <sp />
+          <field method="getTypeOfMeasure" />
+          <sp />
+          <field method="getValue" formatter="Money" align="R" loc="36" />
+          <sp />
+          <field method="getUnitOfMeasure" />
+        </row>
+        <row>
+          <condition class="oracle.retail.xstore.countrypack.se.conditions.SwedenDetailsCondition2" />
+          <field method="getSectionId" loc="0" />
+          <sp />
+          <field method="getTypeOfMeasure" />
+          <sp />
+          <field method="getValue" formatter="Quantity" align="R" loc="36" />
+          <sp />
+          <field method="getUnitOfMeasure" />
+        </row>
+      </iterator>
+    </section>
+
+  </sections>
+</ReceiptDefinitions>

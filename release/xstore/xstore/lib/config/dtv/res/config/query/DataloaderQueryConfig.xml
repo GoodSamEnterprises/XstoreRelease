@@ -1,0 +1,1063 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <Query name="DELETE_EXTERNAL_ITEM_PRICE_EVENT" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       DELETE FROM itm_item_prices 
+       WHERE organization_id = ? 
+       AND /*UPPER*/ external_id = ?
+       AND /*UPPER*/ external_system = ?
+       AND item_id = ? 
+       AND level_code = ?
+       AND level_value = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argExternalId" />
+      <Parameter name="argExternalSystem" />
+      <Parameter name="argItemId" />
+      <Parameter name="argLevelCode" />
+      <Parameter name="argLevelValue" />
+    </SQL>
+  </Query>
+  <Query name="CLEARANCE_RESET_ITEM_PRICE_EVENT" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        UPDATE itm_item_prices
+        SET expiration_date = ?
+        WHERE itm_price_property_code ='CLEARANCE_PRICE'
+        AND effective_date <= ?
+        AND level_code = ?
+        AND level_value= ?
+        AND item_id = ?
+        AND organization_id = ?
+        ]]></Statement>
+      <Parameter name="argExpirationDate" />
+      <Parameter name="argEffectiveDate" />
+      <Parameter name="argLevelCode" />
+      <Parameter name="argLevelValue" />
+      <Parameter name="argItemId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_ALL_STORE_ADDRESS_TO_NULL" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       UPDATE loc_rtl_loc
+          SET address1 = null,
+              address2 = null,
+              address3 = null,
+              city = null,
+              state = null,
+              country = null,
+              postal_code = null,
+              update_date = ?,
+              update_user_id = ?
+          WHERE organization_id = ?]]></Statement>
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_STORE_ADDRESS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[UPDATE loc_rtl_loc  
+      SET address1= ?,
+      address2= ?,
+      address3= ?,
+      city= ?,
+      state= ?,
+      country=?,
+      postal_code= ?,
+      update_date=?,
+      update_user_id=?
+      WHERE 
+      organization_id=? and  
+      rtl_loc_ID=?
+      ]]></Statement>
+      <Parameter name="argAddress1" />
+      <Parameter name="argAddress2" />
+      <Parameter name="argAddress3" />
+      <Parameter name="argCity" />
+      <Parameter name="argState" />
+      <Parameter name="argCountry" />
+      <Parameter name="argPostalCode" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_STORE" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[  
+      UPDATE loc_rtl_loc  SET 
+        STORE_NBR= ?,
+        DESCRIPTION= ?,
+        STORE_NAME= ?,
+        STORE_MANAGER= ?,
+        LOCATION_TYPE = ?,
+        TELEPHONE1= ?,
+        TELEPHONE2=?,
+        EMAIL_ADDR= ?,
+        CURRENCY_ID=?,
+        LOCALE=?,
+        UPDATE_DATE=?,
+        USE_TILL_ACCOUNTABILITY_FLAG=?,
+        UPDATE_USER_ID = ?
+      WHERE 
+        ORGANIZATION_ID=?
+        AND RTL_LOC_ID=? ]]></Statement>
+      <Parameter name="argStoreNbr" />
+      <Parameter name="argDescription" />
+      <Parameter name="argStoreName" />
+      <Parameter name="argStoreManager" />
+      <Parameter name="argLocationType" />
+      <Parameter name="argTelephone1" />
+      <Parameter name="argTelephone2" />
+      <Parameter name="argEmailAddress" />
+      <Parameter name="argCurrencyId" />
+      <Parameter name="argLocale" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUseTillAccountability" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_FIELD_TESTS_BY_DEALID" pmType="DEALS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       DELETE FROM prc_deal_field_test
+        WHERE (/*UPPER*/ deal_id = ? OR /*UPPER*/ deal_id LIKE ?)]]></Statement>
+      <Parameter name="argDealId" />
+      <Parameter name="argLikeDealId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DEAL_ITEMS_BY_DEALID" pmType="DEALS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       DELETE FROM prc_deal_item
+        WHERE (/*UPPER*/ deal_id = ? OR /*UPPER*/ deal_id LIKE ?)]]></Statement>
+      <Parameter name="argDealId" />
+      <Parameter name="argLikeDealId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DEALS_BY_DEALID" pmType="DEALS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       DELETE FROM prc_deal
+        WHERE (/*UPPER*/ deal_id = ? OR /*UPPER*/ deal_id LIKE ?)]]></Statement>
+      <Parameter name="argDealId" />
+      <Parameter name="argLikeDealId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_FIELD_TESTS_BY_PROMOTION" pmType="DEALS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       DELETE FROM prc_deal_field_test
+        WHERE deal_id IN (SELECT deal_id from prc_deal where /*UPPER*/ promotion_id = ?)]]></Statement>
+      <Parameter name="argPromotionId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DEAL_ITEMS_BY_PROMOTION" pmType="DEALS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       DELETE FROM prc_deal_item
+        WHERE deal_id IN (SELECT deal_id from prc_deal where /*UPPER*/ promotion_id = ?)]]></Statement>
+      <Parameter name="argPromotionId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DEALS_BY_PROMOTION" pmType="DEALS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       DELETE FROM prc_deal
+        WHERE /*UPPER*/ promotion_id = ?]]></Statement>
+      <Parameter name="argPromotionId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_ALL_FROM_ORGANIZATION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+        DELETE FROM {$argTableName} WHERE organization_id = ?
+      ]]></Statement>
+      <Parameter name="$argTableName" />
+      <Parameter name="argDeleteOrgId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_ALL_FROM_ORGANIZATION_BY_EXTERNAL_SYSTEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM {$argTableName}
+               WHERE organization_id = ?
+               AND /*UPPER*/ external_system = ?
+      ]]></Statement>
+      <Parameter name="$argTableName" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argExternalSystem" />
+      <Expression trigger="argLevelCode"><![CDATA[/*UPPER*/ level_code=?]]></Expression>
+      <Expression trigger="argLevelValue"><![CDATA[/*UPPER*/ level_value=?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="TRUNCATE_TABLE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          {call sp_truncate_table(?)}        
+      ]]></Statement>
+      <Parameter name="argTableName" />
+    </SQL>
+    <Property>
+      <Key dtype="String">QueryType</Key>
+      <Value dtype="String"><![CDATA[Procedure]]></Value>
+    </Property>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[false]]></Value>
+    </Property>
+  </Query>
+  <Query name="INSERT_DIFF_GROUP_HEAD" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        INSERT INTO rms_diff_group_head (
+            organization_id,
+            diff_group_id,
+            diff_group_desc,
+            diff_type,
+            create_date)
+          VALUES (?,?,?,?,?)]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDiffGroupId" />
+      <Parameter name="argDiffGroupDesc" />
+      <Parameter name="argDiffGroupType" />
+      <Parameter name="argCreateDate" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_DIFF_GROUP_HEAD" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        UPDATE rms_diff_group_head
+        SET diff_type         = ?,
+            diff_group_desc   = ?,
+            update_date       = ?
+        WHERE diff_group_id   = ? 
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argDiffGroupType" />
+      <Parameter name="argDiffGroupDesc" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argDiffGroupId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DIFF_GROUP_HEAD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM rms_diff_group_head 
+              WHERE diff_group_id   = ? 
+                AND organization_id = ?]]></Statement>
+      <Parameter name="argDiffGroupId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="INSERT_DIFF_GROUP_DETAIL" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        INSERT INTO rms_diff_group_detail (
+            organization_id,
+            diff_group_id,
+            diff_id,
+            display_seq,
+            create_date)
+          VALUES (?,?,?,?,?)]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDiffGroupId" />
+      <Parameter name="argDiffId" />
+      <Parameter name="argDisplaySequence" />
+      <Parameter name="argCreateDate" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_DIFF_GROUP_DETAIL" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        UPDATE rms_diff_group_detail
+        SET display_seq       = ?,
+            update_date       = ?
+        WHERE diff_id         = ?
+          AND diff_group_id   = ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argDisplaySequence" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argDiffId" />
+      <Parameter name="argDiffGroupId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DIFF_GROUP_DETAIL">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM rms_diff_group_detail 
+        WHERE diff_id         = ?
+          AND diff_group_id   = ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argDiffId" />
+      <Parameter name="argDiffGroupId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="INSERT_DIFF_IDS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        INSERT INTO rms_diff_ids (
+            organization_id,
+            diff_id,
+            diff_desc,
+            diff_type,
+            diff_type_desc,
+            create_date)
+          VALUES (?,?,?,?,?,?)]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDiffId" />
+      <Parameter name="argDiffDescription" />
+      <Parameter name="argDiffType" />
+      <Parameter name="argDiffTypeDescription" />
+      <Parameter name="argCreateDate" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_DIFF_IDS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        UPDATE rms_diff_ids
+        SET diff_desc      = ?,
+            diff_type      = ?,
+            diff_type_desc = ?,
+            update_date    = ?
+        WHERE diff_id      = ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argDiffDescription" />
+      <Parameter name="argDiffType" />
+      <Parameter name="argDiffTypeDescription" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argDiffId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DIFF_IDS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM rms_diff_ids 
+        WHERE diff_id         = ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argDiffId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_DIMENSION_VALUE_SORT_ORDER" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      UPDATE itm_item_dimension_value
+        SET sort_order     = ?,
+            update_date    = ?,
+            update_user_id = ?
+        WHERE value= ? 
+          AND dimension=(
+              SELECT dgh.diff_type
+              FROM rms_diff_group_detail dgd 
+              JOIN rms_diff_group_head dgh
+                ON (dgh.diff_group_id = dgd.diff_group_id 
+                AND dgh.organization_id = dgd.organization_id)
+              WHERE dgd.organization_id = ?
+                   AND dgd.diff_id = ?
+                   AND dgd.diff_group_id = ?)]]></Statement>
+      <Parameter name="argSortOrder" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argDimensionValue" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDiffId" />
+      <Parameter name="argDiffGroupId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DIFFGROUP_MEMBER_FROM_DIMENSION_VALUE" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      DELETE itm_item_dimension_value
+        WHERE value = ? 
+          AND dimension=(
+              SELECT dgh.diff_type
+              FROM rms_diff_group_detail dgd 
+              JOIN rms_diff_group_head dgh
+                ON (dgh.diff_group_id = dgd.diff_group_id 
+                AND dgh.organization_id = dgd.organization_id)
+              WHERE dgd.organization_id = ?
+                   AND dgd.diff_id = ?
+                   AND dgd.diff_group_id = ?)]]></Statement>
+      <Parameter name="argDimensionValue" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDiffId" />
+      <Parameter name="argDiffGroupId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_DIMENSION_VALUE_DESCRIPTION" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      UPDATE itm_item_dimension_value
+         SET description = ?,
+             update_date = ?,
+             update_user_id = ?
+        WHERE dimension= ?
+          AND value = ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argDescription" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argDimension" />
+      <Parameter name="argDimensionValue" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_DIMENSION_TYPE_DESCRIPTION" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      UPDATE itm_item_dimension_type
+         SET description = ?,
+             update_date = ?,
+             update_user_id = ?
+        WHERE dimension= ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argDescription" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argDimension" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DIFF_ID_FROM_DIMENSION_VALUE" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      DELETE FROM itm_item_dimension_value
+         WHERE dimension= ?
+          AND value = ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argDimension" />
+      <Parameter name="argDimensionValue" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="SELECT_DIFF_TYPES" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="diffType" type="String" />
+    <ResultField name="diffTypeDesc" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT diff_type, diff_type_desc 
+          FROM rms_diff_ids 
+          WHERE organization_id = ? 
+          GROUP BY diff_type, diff_type_desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="SELECT_DEFAULT_DIFF_GROUPS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="diffGroupId" type="String" />
+    <ResultField name="diffGroupDesc" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT diff_group_id, diff_group_desc
+          FROM rms_diff_group_head 
+          WHERE organization_id = ?
+            AND diff_group_id like ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDefaultDiffGroupIdPrefix" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DEFAULT_DIFF_GROUPS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM rms_diff_group_head 
+        WHERE organization_id = ? 
+        AND diff_group_id LIKE ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDefaultDiffGroupIdPrefix" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DEFAULT_DIFF_GROUP_BY_DIFF_TYPE" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM rms_diff_group_head 
+        WHERE diff_group_id=?
+        AND (SELECT COUNT(*) 
+        FROM rms_diff_ids 
+        WHERE organization_id = ?
+          AND diff_type=?) = 0]]></Statement>
+      <Parameter name="argDiffGroupId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDiffType" />
+    </SQL>
+  </Query>
+  <Query name="SELECT_ITEM_DIFF_GROUP_DESCRIPTIONS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="diffGroupId" type="String" />
+    <ResultField name="diffGroupDesc" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT diff_group_id diffGroupId, 
+               diff_group_desc diffGroupDesc
+        FROM rms_diff_group_head
+        WHERE organization_id = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="SELECT_ITEM_DIFF_DESCRIPTION" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="diffDesc" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT diff_desc
+        FROM rms_diff_ids
+        WHERE organization_id = ?
+        AND diff_id = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDiffId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DIMENSION_TYPES" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      DELETE FROM itm_item_dimension_type
+         WHERE organization_id = ?
+          AND /*UPPER*/ org_code = ?
+          AND /*UPPER*/ org_value = ?
+          AND dimension_system = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrgCode" />
+      <Parameter name="argOrgValue" />
+      <Parameter name="argDimensionSystem" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DIMENSION_VALUES" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      DELETE FROM itm_item_dimension_value
+         WHERE organization_id = ?
+          AND /*UPPER*/ org_code = ?
+          AND /*UPPER*/ org_value = ?
+          AND dimension_system = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrgCode" />
+      <Parameter name="argOrgValue" />
+      <Parameter name="argDimensionSystem" />
+    </SQL>
+  </Query>
+  <Query name="INSERT_RELATED_ITEM_HEAD" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        INSERT INTO rms_related_item_head(
+            organization_id,
+            relationship_id,
+            item,
+            location,
+            relationship_name,
+            relationship_type,
+            mandatory_ind,
+            create_date)
+          VALUES(?,?,?,?,?,?,?,?)]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRelationshipId" />
+      <Parameter name="argItem" />
+      <Parameter name="argLocation" />
+      <Parameter name="argRelationshipName" />
+      <Parameter name="argRelationshipType" />
+      <Parameter name="argMandatoryInd" />
+      <Parameter name="argCreateDate" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_RELATED_ITEM_HEAD" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       UPDATE rms_related_item_head
+        SET item = ?, 
+            relationship_name = ?, 
+            relationship_type = ?, 
+            mandatory_ind = ?, 
+            update_date = ?
+        WHERE relationship_id = ?
+          AND location = ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argItem" />
+      <Parameter name="argRelationshipName" />
+      <Parameter name="argRelationshipType" />
+      <Parameter name="argMandatoryInd" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argRelationshipId" />
+      <Parameter name="argLocation" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_RELATED_ITEM_HEAD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM rms_related_item_head 
+              WHERE relationship_id = ?
+                AND location = ? 
+                AND organization_id = ?]]></Statement>
+      <Parameter name="argRelationshipId" />
+      <Parameter name="argLocation" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_ALL_RELATED_ITEM_HEAD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM rms_related_item_head 
+              WHERE location = ? 
+                AND organization_id = ?]]></Statement>
+      <Parameter name="argLocation" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="SELECT_RELATED_ITEM_HEAD" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="item" type="String" />
+    <ResultField name="relationshipName" type="String" />
+    <ResultField name="relationshipType" type="String" />
+    <ResultField name="mandatoryInd" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT item,
+               relationship_name,
+               relationship_type,
+               mandatory_ind
+        FROM rms_related_item_head
+        WHERE relationship_id = ?
+          AND location = ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argRelationshipId" />
+      <Parameter name="argLocation" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_ITEM_OPTIONS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UPDATE itm_item_options SET
+              unit_of_measure_code = ?,
+           	  prompt_for_quantity_flag= ?,
+              force_quantity_of_one_flag = ?,
+              prompt_for_price_flag = ?,
+              foodstamp_eligible_flag = ?,
+              not_returnable_flag = ?,
+              item_availability_code = ?,
+              stock_status = ?,
+              tare_value = ?,
+              tare_unit_of_measure_code = ?,
+              update_date = ?,
+              update_user_id = ?
+          WHERE organization_id = ?
+            AND item_id = ?
+            AND level_code = ?
+            AND level_value= ? 
+            AND /*UPPER*/ external_system = ?]]></Statement>
+      <Parameter name="argUnitOfMeasureCode" />
+      <Parameter name="argPromptForQuantity" />
+      <Parameter name="argForceQuantityOfOne" />
+      <Parameter name="argPromptForPrice" />
+      <Parameter name="argFoodStampEligible" />
+      <Parameter name="argNotReturnable" />
+      <Parameter name="argItemAvailabilityCode" />
+      <Parameter name="argStockStatus" />
+      <Parameter name="argTareValue" />
+      <Parameter name="argTareUnitOfMeasureCode" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argItemId" />
+      <Parameter name="argLevelCode" />
+      <Parameter name="argLevelValue" />
+      <Parameter name="argExternalSystem" />
+    </SQL>
+  </Query>
+  <Query name="CLEAR_ALL_RELATED_ITEM_FLAGS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UPDATE itm_item_options
+        SET attached_items_flag = 0,
+            substitute_available_flag = 0
+        WHERE organization_id = ?
+        AND level_code        = ?
+        AND level_value       = ?
+        AND /*UPPER*/ external_system   = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argLevelCode" />
+      <Parameter name="argLevelValue" />
+      <Parameter name="argExternalSystem" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_RELATED_ITEM_FLAGS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UPDATE itm_item_options
+        SET attached_items_flag= (
+          CASE
+            WHEN (SELECT COUNT(*)
+              FROM rms_related_item_head
+              WHERE item = ?
+              AND relationship_type IN ('CRSL','UPSL')
+              AND organization_id = ?) > 0
+            THEN 1
+            ELSE 0
+          END) ,
+          substitute_available_flag = (
+          CASE
+            WHEN (SELECT COUNT(*)
+              FROM rms_related_item_head
+              WHERE item = ?
+              AND relationship_type = 'SUBS'
+              AND organization_id = ?) > 0
+            THEN 1
+            ELSE 0
+          END),
+          update_date       = ?,
+          update_user_id    = ?
+        WHERE item_id       = ?
+        AND organization_id = ?
+        AND level_code      = ?
+        AND level_value     = ?]]></Statement>
+      <Parameter name="argItemId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argItemId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argItemId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argLevelCode" />
+      <Parameter name="argLevelValue" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_ATTACHED_ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_attached_items 
+              WHERE attached_item_id = ?
+                AND /*UPPER*/ external_id = ?
+                AND level_code = ?
+                AND level_value = ?
+                AND organization_id = ?]]></Statement>
+      <Parameter name="argAttachedItem" />
+      <Parameter name="argExternalId" />
+      <Parameter name="argLevelCode" />
+      <Parameter name="argLevelValue" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_ATTACHED_ITEMS_FLAG" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       UPDATE itm_item_options
+        SET attached_items_flag = ?, 
+            update_date = ?,
+            update_user_id = ?
+        WHERE item_id = ?
+          AND level_code = ?
+          AND level_value = ?
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argFlag" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argItemId" />
+      <Parameter name="argLevelCode" />
+      <Parameter name="argLevelValue" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_SUBSTITUTE_ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM itm_substitute_items 
+              WHERE substitute_item_id = ?
+                AND /*UPPER*/ external_id = ?
+                AND level_code = ?
+                AND level_value = ?
+                AND organization_id = ? ]]></Statement>
+      <Parameter name="argSubstituteItem" />
+      <Parameter name="argExternalId" />
+      <Parameter name="argOrgCode" />
+      <Parameter name="argOrgValue" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_SUBSTITUTE_ITEMS_FLAG" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       UPDATE itm_item_options
+        SET substitute_available_flag = ?, 
+            update_date = ?,
+            update_user_id = ?
+        WHERE item_id = ?
+          AND level_code = ?
+          AND level_value= ? 
+          AND organization_id = ?]]></Statement>
+      <Parameter name="argFlag" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argItemId" />
+      <Parameter name="argLevelCode" />
+      <Parameter name="argLevelValue" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="GET_TAX_RULE_RATES">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.tax.TaxRateRuleId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE organization_id = ?
+            AND tax_loc_id = ?
+            AND tax_group_id = ?
+            AND tax_rule_seq_nbr = ?     
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argLocationId" />
+      <Parameter name="argTaxGroupId" />
+      <Parameter name="argRuleSeq" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_EXTERNAL_SYS_FROM_ORGANIZATION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+        DELETE FROM {$argTableName} 
+        WHERE organization_id = ?
+           AND /*UPPER*/ external_system = ?
+      ]]></Statement>
+      <Parameter name="$argTableName" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argExternalSystem" />
+    </SQL>
+  </Query>
+  <Query name="GET_ATTACHED_ITEMS_BY_EXTERNAL_ID">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.itm.AttachedItemsId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE organization_id = ?
+            AND /*UPPER*/ external_system = ?
+            AND /*UPPER*/ external_id = ?]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argExternalSystem" />
+      <Parameter name="argExternalId" />
+    </SQL>
+  </Query>
+  <Query name="GET_SUBSTITUTE_ITEMS_BY_EXTERNAL_ID">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.itm.SubstituteItemsId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE organization_id = ?
+            AND /*UPPER*/ external_system = ?
+            AND /*UPPER*/ external_id = ?]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argExternalSystem" />
+      <Parameter name="argExternalId" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_ITEM_TAX_GROUP_ID" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       UPDATE itm_item_options
+          SET tax_group_id = ?,
+              update_date = ?,
+              update_user_id = ?
+          WHERE organization_id = ? 
+            AND level_code = ?
+            AND level_value= ? ]]></Statement>
+      <Parameter name="argTaxGroupId" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argLevelCode" />
+      <Parameter name="argLevelValue" />
+      <Expression parameters="argItemId" trigger="argItemId"><![CDATA[item_id = ?]]></Expression>
+      <Expression parameters="argExternalSystem" trigger="argExternalSystem"><![CDATA[/*UPPER*/ external_system = ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="UPDATE_ITEM" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       UPDATE itm_item
+          SET item_typcode = ?,
+              parent_item_id = ?,
+              description = ?,
+              name = ?,
+              merch_level_1 = ?,
+              merch_level_2 = ?,
+              merch_level_3 = ?,
+              merch_level_4 = ?,
+              item_lvlcode = ?,
+              dimension1 = ?,
+              dimension2 = ?,
+              dimension3 = ?,
+              dimension_system = ?,
+              not_inventoried_flag = ?,
+              measure_req_flag = ?,
+              list_price = ?,
+              update_date = ?,
+              update_user_id = ?
+          WHERE organization_id = ?
+            AND item_id = ?
+            AND /*UPPER*/ org_code = ?
+            AND /*UPPER*/ org_value= ?
+            AND /*UPPER*/ external_system = ?]]></Statement>
+      <Parameter name="argItemTypeCode" />
+      <Parameter name="argParentItemId" />
+      <Parameter name="argDescription" />
+      <Parameter name="argName" />
+      <Parameter name="argMerchLevel1Id" />
+      <Parameter name="argMerchLevel2Id" />
+      <Parameter name="argMerchLevel3Id" />
+      <Parameter name="argMerchLevel4Id" />
+      <Parameter name="argItemLevelCode" />
+      <Parameter name="argDimension1" />
+      <Parameter name="argDimension2" />
+      <Parameter name="argDimension3" />
+      <Parameter name="argDimensionSystem" />
+      <Parameter name="argNotInventoried" />
+      <Parameter name="argMeasurementRequired" />
+      <Parameter name="argListPrice" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argItemId" />
+      <Parameter name="argOrgCode" />
+      <Parameter name="argOrgValue" />
+      <Parameter name="argExternalSystem" />
+    </SQL>
+  </Query>
+  <Query name="UPDATE_SERIALIZED_ITEM_FLAG" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       UPDATE itm_item
+          SET serialized_item_flag = ?,
+              update_date = ?,
+              update_user_id = ?
+          WHERE organization_id = ? 
+            AND /*UPPER*/ org_code = ?
+            AND /*UPPER*/ org_value= ? ]]></Statement>
+      <Parameter name="argSerializedItemFlag" />
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrgCode" />
+      <Parameter name="argOrgValue" />
+      <Expression parameters="argItemId" trigger="argItemId"><![CDATA[item_id = ?]]></Expression>
+      <Expression parameters="argExternalSystem" trigger="argExternalSystem"><![CDATA[/*UPPER*/ external_system = ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="CLEAR_ALL_SERIALIZED_ITEM_FLAGS" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        UPDATE itm_item
+	        SET serialized_item_flag = 0,
+	            update_date = ?,
+	            update_user_id = ?
+	        WHERE organization_id = ?
+	          AND /*UPPER*/ org_code = ?
+	          AND /*UPPER*/ org_value = ?
+	          AND /*UPPER*/ external_system = ?
+	          AND serialized_item_flag = 1]]></Statement>
+      <Parameter name="argUpdateDate" />
+      <Parameter name="argUpdateUserId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrgCode" />
+      <Parameter name="argOrgValue" />
+      <Parameter name="argExternalSystem" />
+    </SQL>
+  </Query>
+  <Query name="GET_GROUP_ID" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="groupId" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT parent_id
+        FROM itm_merch_hierarchy 
+        WHERE hierarchy_id = ? 
+            AND  organization_id = ? ]]></Statement>
+      <Parameter name="argDepartmentId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <Query name="BACKUP_DATABASE_TEST" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <ResultField name="ReturnValue" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          {? = call sp_export_database('EXP_DIR', ?, ?, ?)}        
+      ]]></Statement>
+      <Parameter name="argBackupDataFile" />
+      <Parameter name="argBackupDataFile" />
+      <Parameter name="argOutputFile" />
+      <Parameter name="argSourceOwner" />
+    </SQL>
+    <Property>
+      <Key dtype="String">QueryType</Key>
+      <Value dtype="String"><![CDATA[Procedure]]></Value>
+    </Property>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[true]]></Value>
+    </Property>
+  </Query>
+
+</QuerySet>

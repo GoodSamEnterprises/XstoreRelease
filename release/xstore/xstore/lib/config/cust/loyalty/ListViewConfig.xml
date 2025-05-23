@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/ListViewConfig.xsd">
+  <Rule name="LOYALTY_ACCOUNT">
+    <Class>dtv.pos.framework.ui.listview.InstanceOfListViewRule</Class>
+    <Type dtype="String">LOYALTY_ACCOUNT</Type>
+    <Parameter dtype="Class">dtv.xst.dao.cat.ICustomerLoyaltyAccount</Parameter>
+  </Rule>
+  <Rule name="LOYALTY_ACCOUNT_DETAIL_COUPON">
+    <Class>dtv.pos.customer.award.NotExpiringCouponListViewRule</Class>
+    <Type dtype="String">LOYALTY_ACCOUNT_DETAIL_COUPON</Type>
+    <Parameter dtype="Class">dtv.pos.customer.loyalty.LoyaltyAccountDetailsListViewElement</Parameter>
+  </Rule>
+  <Rule name="LOYALTY_ACCOUNT_DETAIL_LOYALTY_ACCOUNT">
+    <Class>dtv.pos.customer.loyalty.LoyaltyAccountListViewRule</Class>
+    <Type dtype="String">LOYALTY_ACCOUNT_DETAIL_LOYALTY_ACCOUNT</Type>
+    <Parameter dtype="Class">dtv.pos.customer.loyalty.LoyaltyAccountDetailsListViewElement</Parameter>
+  </Rule>
+  <Rule name="LOYALTY_ACCOUNT_DETAIL_AWARD_ACCOUNT">
+    <Class>dtv.pos.customer.award.AwardAccountListViewRule</Class>
+    <Type dtype="String">LOYALTY_ACCOUNT_DETAIL_AWARD_ACCOUNT</Type>
+    <Parameter dtype="Class">dtv.pos.customer.loyalty.LoyaltyAccountDetailsListViewElement</Parameter>
+  </Rule>
+  <Rule name="LOYALTY_ACCOUNT_DETAIL_COUPON_NEAR_EXPIRATION">
+    <Class>dtv.pos.customer.award.ExpiringCouponListViewRule</Class>
+    <Type dtype="String">LOYALTY_ACCOUNT_DETAIL_COUPON_NEAR_EXPIRATION</Type>
+    <Parameter dtype="Class">dtv.pos.customer.loyalty.LoyaltyAccountDetailsListViewElement</Parameter>
+  </Rule>
+  <Rule name="AWARD_ACCOUNT">
+    <Class>dtv.pos.framework.ui.listview.InstanceOfListViewRule</Class>
+    <Type dtype="String">LOYALTY_ACCOUNT</Type>
+    <Parameter dtype="Class">dtv.xst.dao.cat.IAwardAccount</Parameter>
+  </Rule>
+  <Rule name="AWARD_COUPON">
+    <Class>dtv.pos.customer.award.NotExpiringCouponListViewRule</Class>
+    <Type dtype="String">AWARD_COUPON</Type>
+    <Parameter dtype="Class">dtv.xst.dao.cat.IAwardAccountCoupon</Parameter>
+  </Rule>
+  <Rule name="AWARD_COUPON_NEAR_EXPIRATION">
+    <Class>dtv.pos.customer.award.ExpiringCouponListViewRule</Class>
+    <Type dtype="String">AWARD_COUPON_NEAR_EXPIRATION</Type>
+    <Parameter dtype="Class">dtv.xst.dao.cat.IAwardAccountCoupon</Parameter>
+  </Rule>
+
+  <Rule name="AVAILABLE_AWARDS">
+    <Class>dtv.pos.framework.ui.listview.InstanceOfListViewRule</Class>
+    <Type dtype="String">AVAILABLE_AWARDS</Type>
+    <Parameter dtype="Class">dtv.xst.dao.cat.IAwardAccountCoupon</Parameter>
+  </Rule>
+  
+  <Rule name="LOYALTY_ACCOUNT_HISTORY">
+    <Class>dtv.pos.customer.loyalty.NotTooManyRecordsListViewRule</Class>
+    <Type dtype="String">LOYALTY_ACCOUNT_HISTORY</Type>
+  </Rule>
+  
+  <Rule name="LOYALTY_ACCOUNT_HISTORY_ERROR">
+    <Class>dtv.pos.customer.loyalty.TooManyRecordsListViewRule</Class>
+    <Type dtype="String">LOYALTY_ACCOUNT_HISTORY_ERROR</Type>
+  </Rule>
+  
+  <Rule name="LOYALTY_CARDS_WITH_EXP_DATE">
+    <Class>dtv.pos.customer.loyalty.CardHasExpDateListViewRule</Class>
+    <Type dtype="String">LOYALTY_CARDS_WITH_DATE</Type>
+  </Rule>
+  
+  <Rule name="LOYALTY_CARDS_WITHOUT_EXP_DATE">
+    <Class>dtv.pos.customer.loyalty.NotCardHasExpDateListViewRule</Class>
+    <Type dtype="String">LOYALTY_CARDS_WITHOUT_DATE</Type>
+  </Rule>
+  
+  <RuleSet name="LOYALTY_CARDS_LIST">
+    <RuleKey dtype="String">LOYALTY_CARDS_WITH_EXP_DATE</RuleKey>
+    <RuleKey dtype="String">LOYALTY_CARDS_WITHOUT_EXP_DATE</RuleKey>
+  </RuleSet>
+  
+  <RuleSet name="LOYALTY">
+    <RuleKey dtype="String">AWARD_ACCOUNT</RuleKey>
+    <RuleKey dtype="String">AWARD_COUPON</RuleKey>
+    <RuleKey dtype="String">AWARD_COUPON_NEAR_EXPIRATION</RuleKey>
+    <RuleKey dtype="String">LOYALTY_ACCOUNT</RuleKey>
+    <RuleKey dtype="String">LOYALTY_ACCOUNT_DETAIL_AWARD_ACCOUNT</RuleKey>
+    <RuleKey dtype="String">LOYALTY_ACCOUNT_DETAIL_LOYALTY_ACCOUNT</RuleKey>
+    <RuleKey dtype="String">LOYALTY_ACCOUNT_DETAIL_COUPON</RuleKey>
+    <RuleKey dtype="String">LOYALTY_ACCOUNT_DETAIL_COUPON_NEAR_EXPIRATION</RuleKey>
+  </RuleSet>
+
+  <RuleSet name="LOYALTY_ACCOUNT_HISTORY">
+    <RuleKey dtype="String">LOYALTY_ACCOUNT_HISTORY</RuleKey>
+    <RuleKey dtype="String">LOYALTY_ACCOUNT_HISTORY_ERROR</RuleKey>
+  </RuleSet>
+  
+  <Header name="AWARD_COUPON">
+    <Row>
+      <Column start="0" width="58" translatable="_awardCouponId" />
+      <Column start="60" width="18" translatable="_loyaltyExpirationDate" alignment="CENTER" />      
+      <Column start="80" width="20" translatable="_loyaltyBalance" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="AWARD_COUPON">
+    <Row>
+      <Column start="0" width="58" method="getCouponId" />
+      <Column start="60" width="18" method="getExpirationDate" alignment="CENTER" formatter="DateMedium" />      
+      <Column start="80" width="20" method="getAmount" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="AWARD_COUPON_NEAR_EXPIRATION">
+    <ColorGroup fgColor="0xFF3333" bgColor="0xFFFFFF" selectionFgColor="0xFFFFFF" selectionBgColor="0xFF3333" />
+    <Row>
+      <Column start="0" width="58" method="getCouponId" />
+      <Column start="60" width="18" method="getExpirationDate" alignment="CENTER" formatter="DateMedium" />
+      <Column start="80" width="20" method="getAmount" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <Header name="LOYALTY_ACCOUNT">
+    <Row>
+      <Column start="0" width="20" translatable="_loyaltyCardNumber" />
+      <Column start="22" width="20" translatable="_loyaltyAccountId" />
+      <Column start="44" width="16" translatable="_loyaltyExpirationDate" alignment="CENTER" />
+      <Column start="62" width="16" translatable="_loyaltyAccountType" alignment="CENTER" />
+      <Column start="78" width="10" translatable="_loyaltyItemValue" alignment="RIGHT" />
+      <Column start="90" width="10" translatable="_loyaltyBalance" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="LOYALTY_ACCOUNT">
+    <Row>
+      <Column start="0" width="20" method="getCardNumber" />
+      <Column start="22" width="20" method="getAccountId" />
+      <Column start="44" width="16" method="getExpirationDate" alignment="CENTER" formatter="DateMedium" />
+      <Column start="62" width="20" method="getType" alignment="CENTER" />
+      <Column start="84" width="16" method="getAccountBalance" alignment="RIGHT" formatter="Integer" />
+    </Row>
+  </Element>
+  <Element name="LOYALTY_ACCOUNT_DETAIL_AWARD_ACCOUNT">
+    <Row>
+      <Column start="0" width="20" method="getCardNumber" />
+      <Column start="22" width="20" method="getAccountId" />
+      <Column start="44" width="16" method="getExpirationDate" alignment="CENTER" formatter="DateMedium" />
+      <Column start="62" width="16" method="getType" alignment="CENTER" />
+      <Column start="90" width="10" method="getBalance" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="LOYALTY_ACCOUNT_DETAIL_COUPON">
+    <Row>
+      <Column start="0" width="20" method="getCardNumber" />
+      <Column start="22" width="20" method="getAccountId" />
+      <Column start="44" width="16" method="getExpirationDate" alignment="CENTER" formatter="DateMedium" />
+      <Column start="62" width="16" method="getType" alignment="CENTER" />
+      <Column start="78" width="10" method="getBalance" alignment="RIGHT" formatter="Money" />
+      <Column start="90" width="10" alignment="RIGHT" literal="--------" />
+    </Row>
+  </Element>  
+  <Element name="LOYALTY_ACCOUNT_DETAIL_COUPON_NEAR_EXPIRATION">
+    <ColorGroup fgColor="0xFF3333" bgColor="0xFFFFFF" selectionFgColor="0xFFFFFF" selectionBgColor="0xFF3333" />
+    <Row>
+      <Column start="0" width="20" method="getCardNumber" />
+      <Column start="22" width="20" method="getAccountId" />
+      <Column start="44" width="16" method="getExpirationDate" alignment="CENTER" formatter="DateMedium" />
+      <Column start="62" width="16" method="getType" alignment="CENTER" />
+      <Column start="78" width="10" method="getBalance" alignment="RIGHT" formatter="Money" />
+      <Column start="90" width="10" alignment="RIGHT" literal="--------" />
+    </Row>
+  </Element>
+  <Element name="LOYALTY_ACCOUNT_DETAIL_LOYALTY_ACCOUNT">
+    <Row>
+      <Column start="0" width="20" method="getCardNumber" />
+      <Column start="22" width="20" method="getAccountId" />
+      <Column start="44" width="16" method="getExpirationDate" alignment="CENTER" formatter="DateMedium" />
+      <Column start="62" width="16" method="getType" alignment="CENTER" />
+      <Column start="90" width="10" method="getBalance" alignment="RIGHT" formatter="Integer" />
+    </Row>
+  </Element>
+  
+  <Header name="AVAILABLE_AWARDS">
+    <Row>
+      <Column start="0" width="25" translatable="_loyaltyCardNumber" />
+      <Column start="25" width="35" translatable="_awardCouponId" />
+      <Column start="60" width="20" translatable="_expires" />
+      <Column start="80" width="20" translatable="_loyaltyItemValue" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="AVAILABLE_AWARDS">
+    <Row>
+      <Column start="0" width="25" method="getCardNumber" />
+      <Column start="25" width="35" method="getCouponId" />
+      <Column start="60" width="20" method="getExpirationDate" formatter="DateMedium" />
+      <Column start="80" width="20" method="getAmount" formatter="Money" alignment="RIGHT" />
+    </Row>
+  </Element>
+  <Header name="LOYALTY_ACCOUNT_HISTORY">
+    <Row>
+      <Column start="0" width="35" translatable="_loyaltyHistoryDate" />
+      <Column start="35" width="35" translatable="_loyaltyHistoryEffect" />
+      <Column start="70" width="15" translatable="_loyaltyHistoryPending" alignment="CENTER" />
+      <Column start="85" width="15" translatable="_loyaltyHistoryStoreNo" alignment="CENTER" />
+    </Row>
+  </Header>
+  <Element name="LOYALTY_ACCOUNT_HISTORY">
+    <RendererClass dtype="Class">dtv.pos.customer.model.AccountHistoryListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="35" method="getActivityDate" formatter="DateTimeMedium" />
+      <Column start="35" width="35" method="getEffect" />
+      <Column start="70" width="15" alignment="CENTER">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.framework.ui.listview.NamedIconColumnDataHandler</CellDataHandlerFactoryClass>
+        <EvaluatedFormattable method="getPendingFlag" />
+        <Parameter name="true">
+          <param_value dtype="IconRef">_imageListCheckMark</param_value>
+        </Parameter>
+      </Column>
+      <Column start="85" width="15" method="getLocationId" alignment="CENTER" />
+    </Row>
+    <Row>
+      <Column start="0" width="35" method="getAccountName" />
+      <Column start="35" width="65" method="getActivityType" />
+    </Row>
+  </Element>
+  <Element name="LOYALTY_ACCOUNT_HISTORY_ERROR">
+    <RendererClass dtype="Class">dtv.pos.customer.model.AccountHistoryListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="100" method="getErrorDescription" alignment="CENTER" />
+    </Row>
+  </Element>
+  <Header name="LOYALTY_CARD_SUMMARY">
+    <Row>
+      <Column start="0" width="27" translatable="_loyaltyCardNumber" />
+      <Column start="28" width="16" translatable="_expires" />
+      <Column start="45" width="27" translatable="_loyaltyAccountId" />
+      <Column start="73" width="27" translatable="_loyaltyAccountPoints" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="LOYALTY_CARD_SUMMARY">
+    <Row>
+      <Column start="0" width="27" method="getCardNumber" />
+      <Column start="28" width="16" method="getExpirationDate" formatter="DateMedium" />
+      <Column start="45" width="27" method="getPrimaryLoyaltyAccount.getAccountId" />
+      <Column start="73" width="27" method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="Decimal" alignment="RIGHT" />
+    </Row>
+  </Element>
+  <Header name="LOYALTY_CARDS">
+    <Row>
+      <Column start="0" width="38" translatable="_loyaltyCardNumber" />
+      <Column start="40" width="60" translatable="_loyaltyCardLoyaltyBalance" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="LOYALTY_CARDS_WITH_DATE">
+    <Row>
+      <Column start="0" width="38" method="getCardNumber" />
+      <Column start="40" width="60" alignment="RIGHT" method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="Decimal" />
+    </Row>
+    <Row>
+      <Column start="3" width="70">
+        <AppendingFormattable separator=":\u00A0">
+          <Translatable>_loyaltyExpiration</Translatable>
+          <EvaluatedFormattable method="getExpirationDate" formatter="DateMedium" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+  </Element>
+  <Element name="LOYALTY_CARDS_WITHOUT_DATE">
+    <Row>
+      <Column start="0" width="38" method="getCardNumber" />
+      <Column start="40" width="60" alignment="RIGHT" method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="Decimal" />
+    </Row>
+  </Element>
+</ListView>

@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery" 
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="DEV_Screen" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="1" />
+    <property name="type" value="SCREEN" />
+    <property name="outputContext" ref="OC_Store" />
+  </bean>
+
+  <bean id="DEV_GSB_RegisterNR" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="70016" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_TransactionNR" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30010" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_SavedAmount" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30011" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustTransactionNR" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="503001" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Customer" />
+  </bean>
+
+  <bean id="DEV_GSB_CustSavedAmount" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="503002" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Customer" />
+  </bean>
+
+  <bean id="DEV_GSB_Operator" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="70017" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_ItemCount" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30012" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustItemCount" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="503007" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Customer" />
+  </bean>
+
+  <bean id="DEV_GSB_DateTime" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="70001" />
+    <property name="type" value="DATETIME" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_StoreName" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="70012" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_EnvironmentMessage" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="70018" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_TillAudit" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30054" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CashierId" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30055" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_TillId" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30056" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_TenderCountHeader" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30060" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_Total" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30305" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustTotal" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="505002" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Customer" />
+  </bean>
+
+  <bean id="DEV_GSB_TransactionDiscountText" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30130" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_TransactionDiscount" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30131" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustTransactionDiscountText" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="504004" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustTransactionDiscount" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="504005" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Customer" />
+  </bean>
+
+  <bean id="DEV_GSB_Tax" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30106" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustTaxInfo" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="504002" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Customer" />
+  </bean>
+
+  <bean id="DEV_GSB_Subtotal" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30107" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustSubTotalInfo" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="504001" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Customer" />
+  </bean>
+
+  <bean id="DEV_GSB_Fees" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="30108" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustFeesInfo" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="504003" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Customer" />
+  </bean>
+
+  <bean id="DEV_GSB_CustomerInfoName" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="102003" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustomerInfoAwards" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="102004" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustomerInfoLoyalty" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="102005" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustCustomerInfo" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="505001" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustCustomerInfoAwards" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="505003" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_CustCustomerInfoLoyalty" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="505004" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_ScaleCert" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="86" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Store" />
+  </bean>
+
+  <bean id="DEV_GSB_CustList" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerListComponent">
+    <property name="idx" value="203" />
+    <property name="outputContext" ref="OC_Store" />
+  </bean>
+
+  <bean id="DEV_TransactionList" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerListComponent">
+    <property name="idx" value="30" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_EDisHeader" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="212" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_EDisButton" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="213" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_IDisHeader" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="222" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_IDisButton" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="223" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_Choice3Header" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="232" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_Choice3Button1" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="233" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_Choice3Button2" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="234" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_Choice3Button3" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="235" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_PlayerResultsList" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerListComponent">
+    <property name="idx" value="272" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_PlayerResultsListHeader" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="271001" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_PlayerResultsListButton1" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="271002" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_PlayerResultsListButton2" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="271003" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_SelectList" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerListComponent">
+    <property name="idx" value="252" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_SelectListHeader" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="255" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_SelectListButton1" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="253" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_SelectListButton2" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="254" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_SelectListScrollUp" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="251002" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_SelectListScrollDown" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="251003" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_YesNoHeader" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="242" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_YesNoButton1" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="243" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_YesNoButton2" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="244" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GridManager" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="1" />
+    <property name="type" value="BUTTONGRID" />
+    <property name="outputContext" ref="OC_Store" />
+  </bean>
+
+  <bean id="DEV_ItemGridButton1" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="1100" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_ItemSearchList" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerListComponent">
+    <property name="idx" value="2704" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_ItemSearchListSelectButton" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="2721" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_ItemSearchListPrompt" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="2724" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerSearchList" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerListComponent">
+    <property name="idx" value="3704" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerSearchListSelectButton" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="3721" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationName" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000601" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationNumber" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000602" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationCompany" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000603" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationAccount" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000604" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationEnrollmentDate" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000605" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationAddress1" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000606" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationAddress2" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000607" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationApt" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000608" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationCity" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000609" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationState" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000610" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationCountry" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000611" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationPhone" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000620" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationEmail" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000621" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationAwards" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000630" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationLoyalty" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000631" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationCardNumber" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000632" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_CustomerInformationExpiration" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="37000633" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_BusyScreenText" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="2900" />
+    <property name="type" value="POPUP" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_ReasonCodeCommentsHeader" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="4605" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_ReasonCodeCommentsTextInputHeader" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="4606" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_Browser" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="2903" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_BrowserHeader" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="2906" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_GSB_TrainingModeText" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="103002" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+</beans>

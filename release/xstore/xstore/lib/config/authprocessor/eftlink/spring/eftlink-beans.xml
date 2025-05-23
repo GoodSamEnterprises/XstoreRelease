@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+  
+  <bean id="hideOnlyInHandHeldCreditCardRule" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="false" />
+  </bean>
+  
+  <beans profile="grocery">
+    <bean id="eftlinkAuthHandler" class="com.micros_retail.xfgclient.auth.EftLinkAuthHandler" >
+      <property name="listInitKeyword" ref="KW_GS_SelectListInit" />
+      <property name="listAddKeyword" ref="KW_GS_SelectListAdd" />
+      <property name="authPrompt" ref="PROMPT_EFTLINK_AuthInProgress" />
+      <property name="informationPrompt" ref="PROMPT_EFTLINK_Information" />
+      <property name="choice2Prompt" ref="PROMPT_EFTLINK_YesNoEntry" />
+      <property name="confirmationPrompt" ref="PROMPT_EFTLINK_Notification" />
+      <property name="listPrompt" ref="PROMPT_EFTLINK_ListEntry" />
+      <property name="numericPrompt" ref="PROMPT_EFTLINK_BigDecimalEntry" />
+      <property name="textPrompt" ref="PROMPT_EFTLINK_StringEntry" />
+    </bean>
+
+    <!-- Override beans previously defined in xstore profile. -->
+    <bean id="eftLinkMessageHandler" class="dtv.tenderauth.impl.eftlink.EftLinkAlternateMessageListener" />
+  </beans> <!-- end grocery -->
+</beans>

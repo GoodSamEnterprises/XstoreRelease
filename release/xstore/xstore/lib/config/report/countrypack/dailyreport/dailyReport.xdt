@@ -1,0 +1,533 @@
+<dataTemplate name="DailyReport" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="TITLE" value="_countrypack.dailyreport.reportHeader"/>
+    <label name="CRITERIA_REPORT_DATE" value="_rptRetailPeriodColon"/>
+    <label name="DOC_NUMBER" value="_countrypack.dailyreport.reportNumber" />
+    <label name="DOC_DATE" value="_countrypack.dailyreport.reportDate" />
+    <label name="CASHIER" value="_countrypack.dailyreport.cashierColon" />
+    <label name="SIGNATURE" value="_countrypack.dailyreport.signature" />
+
+    <label name="TAX_DOCS" value="_countrypack.dailyreport.documentSummary.taxableDocuments" />
+    <label name="NONTAX_DOCS" value="_countrypack.dailyreport.documentSummary.nonTaxableDocuments" />
+
+    <label name="DOC_SUMMARY" value="_countrypack.dailyreport.documentSummary.Title" />
+    <label name="DOC_TYPE" value="_countrypack.dailyreport.documentSummary.documentType" />
+    <label name="DOC_CNT" value="_countrypack.dailyreport.documentSummary.docCount" />
+    <label name="DOC_QTY" value="_countrypack.dailyreport.documentSummary.qty"/>
+    <label name="DOC_NET_AMT" value="_countrypack.dailyreport.documentSummary.netAmount"/>
+    <label name="DOC_GROSS_AMT" value="_countrypack.dailyreport.documentSummary.grossAmount"/>
+    <label name="DOC_TOTAL_NET" value="_countrypack.dailyreport.documentSummary.TotalNetAmount"/>
+
+    <label name="ID" value="_rptID"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="CNT" value="_rptCount"/>
+    <label name="AMT" value="_rptAmount"/>
+    <label name="TRANSACTION" value="_rptTransaction"/>
+    <label name="TOTAL" value="_rptTotal"/>
+    <label name="PCT" value="_rptPercent"/>
+
+    <label name="TAX_SUMMARY" value="_countrypack.dailyreport.taxSummary.Title" />
+    <label name="TAX_TYPE" value="_countrypack.dailyreport.taxSummary.taxType" />
+    <label name="TAX_RATE" value="_countrypack.dailyreport.taxSummary.rate" />
+    <label name="TAX_TAXABLE_AMT" value="_countrypack.dailyreport.taxSummary.taxableAmount" />
+    <label name="TAX_AMT" value="_countrypack.dailyreport.taxSummary.taxAmount" />
+
+    <label name="DISCREPANCY" value="_countrypack.dailyreport.discrepancy" />
+    <label name="CURRENCY" value="_countrypack.dailyreport.currency" />
+    <label name="CURR" value="_countrypack.dailyreport.curr" />
+    <label name="LOCALCURR" value="_countrypack.dailyreport.localCurr" />
+
+    <label name="TNDR_DISC_SUMMARY" value="_countrypack.dailyreport.tenderDiscrepancySummary.Title" />
+    <label name="TNDR_DISC_TYPE" value="_countrypack.dailyreport.tenderDiscrepancySummary.tenderType" />
+    <label name="TNDR_DISC_AVG_EXCHANGE_RATE" value="_countrypack.dailyreport.tenderDiscrepancySummary.avgExchangeRate" />
+    <label name="TNDR_DISC_EXPECTED_VALUES" value="_countrypack.dailyreport.tenderDiscrepancySummary.expectedValues" />
+    <label name="TNDR_DISC_COUNTED_VALUES" value="_countrypack.dailyreport.tenderDiscrepancySummary.countedValues" />
+
+    <label name="TNDR_SUMMARY" value="_countrypack.dailyreport.tenderSummary.Title" />
+    <label name="TNDR_TYPE" value="_countrypack.dailyreport.tenderSummary.tenderType" />
+    <label name="TNDR_AVG_EXCHANGE_RATE" value="_countrypack.dailyreport.tenderSummary.avgExcRate" />
+    <label name="TNDER_EXPECTED_VALUES" value="_countrypack.dailyreport.tenderSummary.expectedValues" />
+
+    <label name="TILL_CASH_SUMMARY" value="_countrypack.dailyreport.tillCashSummary.Title" />
+    <label name="TILL_CASH_OPENING" value="_countrypack.dailyreport.tillCashSummary.dailyOpening" />
+    <label name="TILL_CASH_CASH" value="_countrypack.dailyreport.tillCashSummary.cash" />
+    <label name="TILL_CASH_PAID" value="_countrypack.dailyreport.tillCashSummary.paid" />
+    <label name="TILL_CASH_IN" value="_countrypack.dailyreport.tillCashSummary.in" />
+    <label name="TILL_CASH_OUT" value="_countrypack.dailyreport.tillCashSummary.out" />
+    <label name="TILL_CASH_TENDER_EXCHANGE" value="_countrypack.dailyreport.tillCashSummary.tenderExchange" />
+    <label name="TILL_CASH_PICKUP" value="_countrypack.dailyreport.tillCashSummary.pickup" />
+    <label name="TILL_CASH_TRANSFER" value="_countrypack.dailyreport.tillCashSummary.transfer" />
+    <label name="TILL_CASH_FLOAT" value="_countrypack.dailyreport.tillCashSummary.floatAmount" />
+    <label name="TILL_CASH_DISCREPANCY" value="_countrypack.dailyreport.tillCashSummary.tillDiscrepancy" />
+    <label name="TILL_CASH_SAFE_DEPOSIT" value="_countrypack.dailyreport.tillCashSummary.TilltoSafeDeposit" />
+
+    <label name="SAFE_CASH_SUMMARY" value="_countrypack.dailyreport.safeCashSummary.Title" />
+    <label name="SAFE_SAFE" value="_countrypack.dailyreport.safeCashSummary.safe" />
+    <label name="SAFE_DAILY_DEPOSIT" value="_countrypack.dailyreport.safeCashSummary.dailySafeDeposit" />
+    <label name="SAFE_BALANCE" value="_countrypack.dailyreport.safeCashSummary.safeBalance" />
+    <label name="SAFE_PREVIOUS_BALANCE" value="_countrypack.dailyreport.safeCashSummary.previousSafeBalance" />
+    <label name="SAFE_BANK_TRANSFER" value="_countrypack.dailyreport.safeCashSummary.storeBankCashTransfer" />
+    <label name="SAFE_BANK_DEPOSIT" value="_countrypack.dailyreport.safeCashSummary.bankDeposit" />
+    <label name="SAFE_FLOAT" value="_countrypack.dailyreport.safeCashSummary.floatAmount" />
+    <label name="SAFE_CASH" value="_countrypack.dailyreport.tillCashSummary.cash" />
+    <label name="SAFE_PICKUP" value="_countrypack.dailyreport.tillCashSummary.pickup" />
+    <label name="SAFE_TRANSFER" value="_countrypack.dailyreport.tillCashSummary.transfer" />
+
+    <label name="DISCOUNT_SUMMARY" value="_countrypack.dailyreport.discountSummary.Title" />
+    <label name="DISCOUNT_TYPE" value="_countrypack.dailyreport.discountSummary.discountType" />
+    <label name="DISCOUNT_VALUE" value="_countrypack.dailyreport.discountSummary.discountValue" />
+
+    <label name="CASH_MVMT_SUMMARY" value="_countrypack.dailyreport.cashMovementSummary.Title" />
+    <label name="CASH_MVMT_REG" value="_countrypack.dailyreport.cashMovementSummary.workstation" />
+    <label name="CASH_MVMT_SEQ" value="_countrypack.dailyreport.cashMovementSummary.sequence" />
+    <label name="CASH_MVMT_TYPE" value="_countrypack.dailyreport.cashMovementSummary.type" />
+    <label name="CASH_MVMT_REASON" value="_countrypack.dailyreport.cashMovementSummary.reason" />
+
+    <label name="EXT_TRNS_SUMMARY" value="_countrypack.dailyreport.extendedTranSummary.Title" />
+    <label name="EXT_TRNS_TYPE" value="_countrypack.dailyreport.extendedTranSummary.type" />
+    <label name="EXT_TRNS_ID" value="_countrypack.dailyreport.extendedTranSummary.id" />
+    <label name="EXT_TRNS_REG" value="_countrypack.dailyreport.extendedTranSummary.workstation" />
+    <label name="EXT_TRNS_SEQ" value="_countrypack.dailyreport.extendedTranSummary.sequence" />
+    <label name="EXT_TRNS_STATUS" value="_countrypack.dailyreport.extendedTranSummary.status" />
+    <label name="EXT_TRNS_NAME" value="_countrypack.dailyreport.extendedTranSummary.party" />
+    <label name="EXT_TRNS_VALUE" value="_countrypack.dailyreport.extendedTranSummary.totalValue" />
+    <label name="EXT_TRNS_DEPOSIT" value="_countrypack.dailyreport.extendedTranSummary.todayDeposit" />
+    <label name="EXT_TRNS_BALANCE" value="_countrypack.dailyreport.extendedTranSummary.balanceToDate" />
+
+    <label name="INV_SUMMARY" value="_countrypack.dailyreport.invoiceSummary.Title" />
+    <label name="INV_TYPE" value="_countrypack.dailyreport.invoiceSummary.type" />
+    <label name="INV_NUMBER" value="_countrypack.dailyreport.invoiceSummary.number" />
+    <label name="INV_REG" value="_countrypack.dailyreport.invoiceSummary.workstation" />
+    <label name="INV_SEQ" value="_countrypack.dailyreport.invoiceSummary.sequence" />
+    <label name="INV_NAME" value="_countrypack.dailyreport.invoiceSummary.party" />
+    <label name="INV_VOIDED" value="_countrypack.dailyreport.invoiceSummary.statusVoided" />
+
+    <label name="FISCAL_SUMMARY" value="_countrypack.dailyreport.fiscalPrinterSummary.Title" />
+    <label name="FISCAL_REG" value="_countrypack.dailyreport.fiscalPrinterSummary.workstation" />
+    <label name="FISCAL_DEV" value="_countrypack.dailyreport.fiscalPrinterSummary.device" />
+    <label name="FISCAL_PRINTER" value="_countrypack.dailyreport.fiscalPrinterSummary.printer" />
+    <label name="FISCAL_SESSION" value="Z-R#" />
+    <label name="FISCAL_SYSTEM" value="_countrypack.dailyreport.fiscalPrinterSummary.system" />
+    <label name="FISCAL_INC" value="_countrypack.dailyreport.fiscalPrinterSummary.income" />
+    <label name="FISCAL_RET" value="_countrypack.dailyreport.fiscalPrinterSummary.return" />
+    <label name="FISCAL_MANUAL" value="_countrypack.dailyreport.fiscalPrinterSummary.manual" />
+    <label name="FISCAL_VOID" value="_countrypack.dailyreport.fiscalPrinterSummary.voided" />
+    <label name="FISCAL_DISCREPANCY" value="_countrypack.dailyreport.fiscalPrinterSummary.discrepancy" />
+    <label name="FISCAL_NOTES" value="_countrypack.dailyreport.fiscalPrinterSummary.notes" />
+
+    </labels>
+
+  <parameters>
+
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+  </parameters>
+  <dataSource>
+      <dataReference name="O_HEADER">
+      <ResultFields>
+        <ResultField>CashierId</ResultField>
+        <ResultField>CashierFirstName</ResultField>
+        <ResultField>CashierLastName</ResultField>
+        <ResultField>CashierFirstNameLastName</ResultField>
+        <ResultField>InvoiceEnabled</ResultField>
+        <ResultField>ReportNumber</ResultField>
+        <ResultField>RetailLocation</ResultField>
+        <ResultField>Transaction.getBusinessDate</ResultField>
+      </ResultFields>
+    </dataReference>
+    <queryReference name="Q_SUMMARY" key="DAILYREPORT.REPORT.DOCUMENT_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>docCount</ResultField>
+        <ResultField>docCountTot</ResultField>
+        <ResultField>docType</ResultField>
+        <ResultField>itmDescription</ResultField>
+        <ResultField>qty</ResultField>
+        <ResultField>netAmount</ResultField>
+        <ResultField>grossAmount</ResultField>
+        <ResultField>fiscal</ResultField>
+        <ResultField>skipSum</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TAX" key="DAILYREPORT.REPORT.TAX_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>rate</ResultField>
+        <ResultField>taxableAmount</ResultField>
+        <ResultField>taxAmount</ResultField>
+        <ResultField>totalAmount</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>exemptionReasonCode</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TNDR_DSCRP" key="DAILYREPORT.REPORT.TENDER_DISCREPANCY_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>tenderType</ResultField>
+        <ResultField>currency</ResultField>
+        <ResultField>expectedValueCurr</ResultField>
+        <ResultField>expectedValueLocalCurr</ResultField>
+        <ResultField>expectedCurrRate</ResultField>
+        <ResultField>countedValueCurr</ResultField>
+        <ResultField>diffValueCurr</ResultField>
+        <ResultField>countedValueLocalCurr</ResultField>
+        <ResultField>localCurrRate</ResultField>
+        <ResultField>diffValueLocalCurr</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TNDR_SUMMARY" key="DAILYREPORT.REPORT.TENDER_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>tenderType</ResultField>
+        <ResultField>currency</ResultField>
+        <ResultField>expectedValueCurr</ResultField>
+        <ResultField>expectedValueLocalCurr</ResultField>
+        <ResultField>expectedCurrRate</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TILL_CASH_SUMMARY" key="DAILYREPORT.REPORT.TILL_CASH_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>currency</ResultField>
+        <ResultField>dailyOpening</ResultField>
+        <ResultField>cash</ResultField>
+        <ResultField>paidIn</ResultField>
+        <ResultField>paidOut</ResultField>
+        <ResultField>cashPickup</ResultField>
+        <ResultField>cashTransfer</ResultField>
+        <ResultField>tillDiscrepancy</ResultField>
+        <ResultField>tillToSafeDeposit</ResultField>
+        <ResultField>floatAmount</ResultField>
+        <ResultField>tenderExchangeIn</ResultField>
+        <ResultField>tenderExchangeOut</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_SAFE_CASH_SUMMARY" key="DAILYREPORT.REPORT.SAFE_CASH_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>currency</ResultField>
+        <ResultField>previousSafeBalance</ResultField>
+        <ResultField>dailySafeDeposit</ResultField>
+        <ResultField>cashPickup</ResultField>
+        <ResultField>cashTransfer</ResultField>
+        <ResultField>storeBankCashTransfer</ResultField>
+        <ResultField>bankDeposit</ResultField>
+        <ResultField>safeBalance</ResultField>
+        <ResultField>floatAmount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_DISCOUNT_SUMMARY" key="DAILYREPORT.REPORT.DISCOUNT_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>discountValue</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>discountId</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_CASH_MOVEMENT_SUMMARY" key="DAILYREPORT.REPORT.CASH_MOVEMENT_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>type</ResultField>
+        <ResultField>transactionSequence</ResultField>
+        <ResultField>workstation</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>reasonCode</ResultField>
+        <ResultField>currency</ResultField>
+        <ResultField>amount</ResultField>
+        <ResultField>notes</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_EXTENDED_TRANSACTION_SUMMARY" key="DAILYREPORT.REPORT.EXTENDED_TRANSACTION_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>type</ResultField>
+        <ResultField>id</ResultField>
+        <ResultField>workstation</ResultField>
+        <ResultField>transactionSequence</ResultField>
+        <ResultField>status</ResultField>
+        <ResultField>name</ResultField>
+        <ResultField>balanceToDate</ResultField>
+        <ResultField>todayDeposit</ResultField>
+        <ResultField>totalValue</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_INVOICE_SUMMARY" key="DAILYREPORT.REPORT.INVOICE_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>type</ResultField>
+        <ResultField>invoiceNumber</ResultField>
+        <ResultField>workstation</ResultField>
+        <ResultField>transactionSequence</ResultField>
+        <ResultField>voided</ResultField>
+        <ResultField>total</ResultField>
+        <ResultField>name</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_FISCAL_SUMMARY" key="DAILYREPORT.REPORT.FISCAL_PRINTER_SUMMARY">
+      <Parameters>
+        <Parameter>argOrganizationId</Parameter>
+        <Parameter>argRetailLocationId</Parameter>
+        <Parameter>argWorkstationId</Parameter>
+        <Parameter>argBusinessDate</Parameter>
+        <Parameter>argTransactionSequence</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>workstation</ResultField>
+        <ResultField>device</ResultField>
+        <ResultField>closureNumber</ResultField>
+        <ResultField>income</ResultField>
+        <ResultField>return</ResultField>
+        <ResultField>systemIncome</ResultField>
+        <ResultField>systemReturn</ResultField>
+        <ResultField>manualIncome</ResultField>
+        <ResultField>manualReturn</ResultField>
+        <ResultField>manualVoidedIncome</ResultField>
+        <ResultField>manualVoidedReturn</ResultField>
+        <ResultField>incomeDiscrepancy</ResultField>
+        <ResultField>returnDiscrepancy</ResultField>
+        <ResultField>notes</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_HEADER" source="O_HEADER">
+      <element name="DOC_DATE" value="Transaction.getBusinessDate" formatter="DateMedium"/>
+      <element name="EMP_ID" value="CashierId"/>
+      <element name="EMP_FNAME" value="CashierFirstName"/>
+      <element name="EMP_LNAME" value="CashierLastName"/>
+      <element name="EMP_NAME" value="CashierFirstNameLastName" formatter="LastFirstNameFromString"/>
+      <element name="INV_FLAG" value="InvoiceEnabled"/>
+      <element name="RPT_NUM" value="ReportNumber"/>
+      <element name="RTL_LOC" value="RetailLocation" formatter="BasicAddress"/>
+    </group>
+    <group name="G_SUMMARY" source="Q_SUMMARY">
+      <element name="DOC_CNT" formatter="Integer" value="docCount"/>
+      <element name="DOC_TYP" value="docType" translation-prefix="_countrypack.dailyreport.documentSummary.docType."/>
+      <element name="DESC" value="itmDescription"/>
+      <element name="QTY" value="qty" formatter="Integer"/>
+      <element name="NET" value="netAmount" formatter="Accounting"/>
+      <element name="GROSS" value="grossAmount" formatter="Accounting"/>
+      <element name="FISCAL" value="fiscal" />
+      <element name="SKIP_SUM" value="skipSum" />
+    </group>
+    <group name="G_SUMMARY_TOTAL" source="Q_SUMMARY">
+      <element name="FISCAL" value="fiscal" group-by="true" />
+      <element name="DOC_CNT_TOT" value="docCountTot" formatter="Integer" function="SUM" />
+      <element name="QTY" value="qty" formatter="Integer" function="SUM"/>
+      <element name="NET" value="netAmount" formatter="Accounting" function="SUM"/>
+      <element name="GROSS" value="grossAmount" formatter="Accounting" function="SUM"/>
+    </group>
+    <group name="G_SUMMARY_TOTAL_NET" source="Q_SUMMARY">
+      <element name="NET" value="netAmount" formatter="Accounting" function="SUM"/>
+    </group>
+    <group name="G_TAX" source="Q_TAX">
+      <element name="DESC" value="description"/>
+      <element name="REASON" value="exemptionReasonCode" />
+      <element name="RATE" value="rate" formatter="Percent"/>
+      <element name="TAXABLE" value="taxableAmount" formatter="Accounting"/>
+      <element name="TAX" value="taxAmount" formatter="Accounting"/>
+      <element name="TOTAL" value="totalAmount" formatter="Accounting"/>
+    </group>
+    <group name="G_TAX_TOTAL" source="Q_TAX">
+      <element name="TAXABLE" value="taxableAmount" formatter="Accounting" function="SUM"/>
+      <element name="TAX" value="taxAmount" formatter="Accounting" function="SUM"/>
+      <element name="TOTAL" value="totalAmount" formatter="Accounting" function="SUM"/>
+    </group>
+    <group name="G_TNDR_DSCRP" source="Q_TNDR_DSCRP">
+      <element name="TENDER" value="tenderType"/>
+      <element name="ISO" value="currency" />
+      <element name="EXP_RATE" value="expectedCurrRate" formatter="Accounting"/>
+      <element name="LOC_RATE" value="localCurrRate" formatter="Accounting"/>
+      <element name="EXP_CURR_RAW" value="expectedValueCurr" />
+      <element name="EXP_CURR" value="expectedValueCurr" formatter="Accounting"/>
+      <element name="EXP_LOCAL" value="expectedValueLocalCurr" formatter="Accounting"/>
+      <element name="CNT_CURR" value="countedValueCurr" formatter="Accounting"/>
+      <element name="CNT_LOCAL" value="countedValueLocalCurr" formatter="Accounting"/>
+      <element name="DIFF_CURR" value="diffValueCurr" formatter="Accounting"/>
+      <element name="DIFF_LOCAL" value="diffValueLocalCurr" formatter="Accounting"/>
+    </group>
+    <group name="G_TNDR_DSCRP_TOT" source="Q_TNDR_DSCRP">
+      <element name="EXP_LOCAL_TOT" value="expectedValueLocalCurr" formatter="Accounting" function="SUM"/>
+      <element name="CNT_LOCAL_TOT" value="countedValueLocalCurr" formatter="Accounting" function="SUM"/>
+      <element name="DIFF_LOCAL_TOT" value="diffValueLocalCurr" formatter="Accounting" function="SUM"/>
+    </group>
+    <group name="G_TNDR_SUM" source="Q_TNDR_SUMMARY">
+      <element name="TENDER" value="tenderType"/>
+      <element name="ISO" value="currency" />
+      <element name="EXP_RATE" value="expectedCurrRate" formatter="Accounting"/>
+      <element name="LOC_RATE" value="localCurrRate" formatter="Accounting"/>
+      <element name="EXP_CURR_RAW" value="expectedValueCurr" />
+      <element name="EXP_CURR" value="expectedValueCurr" formatter="Accounting"/>
+      <element name="EXP_LOCAL" value="expectedValueLocalCurr" formatter="Accounting"/>
+    </group>
+    <group name="G_TNDR_SUM_TOT" source="Q_TNDR_SUMMARY">
+      <element name="EXP_LOCAL_TOT" value="expectedValueLocalCurr" formatter="Accounting" function="SUM"/>
+    </group>
+    <group name="G_TILL_CASH_SUM" source="Q_TILL_CASH_SUMMARY">
+      <element name="ISO" value="currency" />
+      <element name="OPENING" value="dailyOpening" formatter="Accounting"/>
+      <element name="CASH" value="cash" formatter="Accounting"/>
+      <element name="PAID_IN" value="paidIn" formatter="Accounting"/>
+      <element name="PAID_OUT" value="paidOut" formatter="Accounting"/>
+      <element name="PICKUP" value="cashPickup" formatter="Accounting"/>
+      <element name="TRANSFER" value="cashTransfer" formatter="Accounting"/>
+      <element name="DISCREPANCY" value="tillDiscrepancy" formatter="Accounting"/>
+      <element name="DEPOSIT" value="tillToSafeDeposit" formatter="Accounting"/>
+      <element name="FLOAT" value="floatAmount" formatter="Accounting"/>
+      <element name="X_IN" value="tenderExchangeIn" formatter="Accounting"/>
+      <element name="X_OUT" value="tenderExchangeOut" formatter="Accounting"/>
+    </group>
+    <group name="G_SAFE_CASH_SUM" source="Q_SAFE_CASH_SUMMARY">
+      <element name="ISO" value="currency" />
+      <element name="PREVIOUS" value="previousSafeBalance" formatter="Accounting"/>
+      <element name="DAILY" value="dailySafeDeposit" formatter="Accounting"/>
+      <element name="PICKUP" value="cashPickup" formatter="Accounting"/>
+      <element name="TRANSFER" value="cashTransfer" formatter="Accounting"/>
+      <element name="STORE_BANK" value="storeBankCashTransfer" formatter="Accounting"/>
+      <element name="DEPOSIT" value="bankDeposit" formatter="Accounting"/>
+      <element name="SAFE" value="safeBalance" formatter="Accounting"/>
+      <element name="FLOAT" value="floatAmount" formatter="Accounting"/>
+    </group>
+    <group name="G_DISC_SUM" source="Q_DISCOUNT_SUMMARY">
+      <element name="DESC" value="description" />
+      <element name="ID" value="discountId" />
+      <element name="VALUE" value="discountValue" formatter="Accounting"/>
+    </group>
+    <group name="G_DISC_SUM_TOT" source="Q_DISCOUNT_SUMMARY">
+      <element name="VALUE" value="discountValue" formatter="Accounting" function="SUM"/>
+    </group>
+    <group name="G_CASH_MVMT_SUM" source="Q_CASH_MOVEMENT_SUMMARY">
+      <element name="TYPE" value="type" translation-prefix="_dtv.pos.till.types.TenderControlTransTypeCode."/>
+      <element name="SEQ" value="transactionSequence" />
+      <element name="REG" value="workstation" />
+      <element name="DESC" value="description" />
+      <element name="REASON" value="reasonCode" />
+      <element name="ISO" value="currency" />
+      <element name="NOTES" value="notes" formatter="Accounting"/>
+      <element name="AMOUNT" value="amount" formatter="Accounting"/>
+    </group>
+    <group name="G_EXT_TRANS_SUM" source="Q_EXTENDED_TRANSACTION_SUMMARY">
+      <element name="TYPE" value="type" translation-prefix="_dtv.pos.customer.account.type.CustAccountSearchStatusType."/>
+      <element name="ID" value="id" />
+      <element name="REG" value="workstation" />
+      <element name="SEQ" value="transactionSequence" />
+      <element name="STATUS" value="status" />
+      <element name="NAME" value="name" formatter="LastFirstNameFromString"/>
+      <element name="BALANCE" value="balanceToDate" formatter="Accounting"/>
+      <element name="DEPOSIT" value="todayDeposit" formatter="Accounting"/>
+      <element name="VALUE" value="totalValue" formatter="Accounting"/>
+    </group>
+    <group name="G_INV_SUM" source="Q_INVOICE_SUMMARY">
+      <element name="TYPE" value="type" translation-prefix="_oracle.retail.xstore.countrypack.common.invoice.InvoiceType."/>
+      <element name="ID" value="invoiceNumber" />
+      <element name="REG" value="workstation" />
+      <element name="SEQ" value="transactionSequence" />
+      <element name="VOID" value="voided" />
+      <element name="NAME" value="name" formatter="LastFirstNameFromString"/>
+      <element name="VALUE" value="total" formatter="Accounting"/>
+    </group>
+    <group name="G_FISCAL_SUM" source="Q_FISCAL_SUMMARY">
+      <element name="REG" value="workstation" />
+      <element name="DEV" value="device" />
+      <element name="ZR" value="closureNumber" />
+      <element name="INC" value="income" formatter="Accounting"/>
+      <element name="RET" value="return" formatter="Accounting"/>
+      <element name="S_INC" value="systemIncome" formatter="Accounting"/>
+      <element name="S_RET" value="systemReturn" formatter="Accounting"/>
+      <element name="M_INC" value="manualIncome" formatter="Accounting"/>
+      <element name="M_RET" value="manualReturn" formatter="Accounting"/>
+      <element name="MV_INC" value="manualVoidedIncome" formatter="Accounting"/>
+      <element name="MV_RET" value="manualVoidedReturn" formatter="Accounting"/>
+      <element name="INC_DESCR" value="incomeDiscrepancy" formatter="Accounting"/>
+      <element name="RET_DESCR" value="returnDiscrepancy" formatter="Accounting"/>
+      <element name="NOTES" value="notes" />
+    </group>
+    <group name="G_FISCAL_SUM_TOT" source="Q_FISCAL_SUMMARY">
+      <element name="INC" value="income" formatter="Accounting" function="SUM"/>
+      <element name="RET" value="return" formatter="Accounting" function="SUM"/>
+      <element name="S_INC" value="systemIncome" formatter="Accounting" function="SUM"/>
+      <element name="S_RET" value="systemReturn" formatter="Accounting" function="SUM"/>
+      <element name="M_INC" value="manualIncome" formatter="Accounting" function="SUM"/>
+      <element name="M_RET" value="manualReturn" formatter="Accounting" function="SUM"/>
+      <element name="MV_INC" value="manualVoidedIncome" formatter="Accounting" function="SUM"/>
+      <element name="MV_RET" value="manualVoidedReturn" formatter="Accounting" function="SUM"/>
+      <element name="INC_DESCR" value="incomeDiscrepancy" formatter="Accounting" function="SUM"/>
+      <element name="RET_DESCR" value="returnDiscrepancy" formatter="Accounting" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

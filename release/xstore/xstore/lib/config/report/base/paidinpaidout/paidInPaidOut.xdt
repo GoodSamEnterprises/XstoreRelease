@@ -1,0 +1,123 @@
+<dataTemplate name="PaidInPaidOut" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="CRITERIA_TRANSACTION_TYPE" value="_rptTransactionTypeColon"/>
+    <label name="CRITERIA_EMPLOYEE" value="_rptEmployeeColon"/>
+    <label name="CRITERIA_SORT_ORDER" value="_rptSortOrderColon"/>
+    <label name="CRITERIA_REGISTER_ID" value="_rptPaidInPaidOutRegisterID"/>
+    <label name="CRITERIA_REASON_CODE" value="_rptPaidInPaidOutReasonCode"/>
+    <label name="DATE" value="_rptDateTime"/>c
+    <label name="REG" value="_rptReg"/>
+    <label name="ID" value="_rptID"/>
+    <label name="NAME" value="_rptEmployeeName"/>
+    <label name="TRAN" value="_rptTransaction"/>
+    <label name="TILL" value="_rptTill"/>
+    <label name="TYPE" value="_rptType"/>
+    <label name="REASON" value="_rptReason"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="AMT" value="_rptAmount"/>
+    <label name="NET" value="_rptNetAmount"/>
+    <label name="TOTALS" value="_rptTotals"/>
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="employeeId" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptPaidInPaidOutStartEmployee;Text;Simple;maxCharacters=20]]></parameterDescription>
+    </parameter>
+    <parameter name="sortOrder" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptPaidInPaidOutSortOrderSearch;Combo;dtv.pos.reporting.fill.SoftEnumFactory;TT.wkstn_id, TT.trans_seq=_rptPaidInPaidOutSortOrderCode1|TT.end_datetime=_rptPaidInPaidOutSortOrderCode2|TT.operator_party_id,TT.end_datetime=_rptPaidInPaidOutSortOrderCode3]]></parameterDescription>
+      <defaultValueExpression><![CDATA["TT.operator_party_id,TT.end_datetime"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="transactionType" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptPaidInPaidOutTransactionTypeSearch;Combo;dtv.pos.reporting.fill.SoftEnumFactory;PAID%=_rptParamSelectionAll|PAID_IN=_rptPaidInPaidOutTransactionTypeCode1|PAID_OUT=_rptPaidInPaidOutTransactionTypeCode2]]></parameterDescription>
+      <defaultValueExpression><![CDATA["PAID%"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="reasonCode" class="java.lang.Object">
+      <parameterDescription><![CDATA[_rptPaidInPaidOutReasonCodeSearch;Combo;dtv.pos.till.fundxfer.PaidInOutReasonLoader;all=_rptParamSelectionAll;invokeMethods=getReasonCode,getDescription,getReasonTypeCode]]></parameterDescription>
+      <defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+    </parameter>
+    <parameter name="reasonCode_getReasonCode" class="java.lang.String" isForPrompting="false"/>
+    <parameter name="reasonCode_getDescription" class="java.lang.String" isForPrompting="false"/>
+    <parameter name="reasonCode_getReasonTypeCode" class="java.lang.String" isForPrompting="false"/>
+    <parameter name="registerId" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptPaidInPaidOutStartReg;Text;Simple;maxCharacters=20]]></parameterDescription>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_PAID" key="PAIDIN_PAIDOUT_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>transactionType</Parameter>
+        <Parameter>registerId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>reasonCode_getReasonCode</Parameter>
+        <Parameter>reasonCode_getReasonTypeCode</Parameter>
+      <Parameter>employeeId</Parameter>
+      <Parameter>sortOrder</Parameter>
+        </Parameters>
+      <ResultFields>
+        <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField>wkstn_id</ResultField>
+      <ResultField>trans_seq</ResultField>
+      <ResultField>end_datetime</ResultField>
+      <ResultField>total</ResultField>
+      <ResultField>employee_id</ResultField>
+      <ResultField>reason_code</ResultField>
+      <ResultField>description</ResultField>
+      <ResultField>typcode</ResultField>
+      <ResultField>employee_name</ResultField>
+      <ResultField>tillId</ResultField>
+      <ResultField>amount</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_PAID" source="Q_PAID">
+      <element name="TRANS" value="trans_seq"/>
+      <element name="DATE_TIME" value="end_datetime" formatter="DateTimeMedium"/>
+      <element name="ID" value="employee_id"/>
+      <element name="NAME" value="employee_name" formatter="LastFirstNameFromString"/>
+      <element name="REG" value="wkstn_id"/>
+      <element name="TILL" value="tillId"/>
+      <element name="TYPE" value="typcode"/>
+      <element name="REASN" value="reason_code"/>
+      <element name="DESC" value="description"/>
+      <element name="TOTAL" value="amount" formatter="Money"/>
+    </group>
+    <group name="G_PAID_SUBTTL" source="Q_PAID">
+      <element name="SUBTYP" value="typcode" group-by="true"/>
+      <element name="SUBTTL" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_PAID_TTL" source="Q_PAID">
+      <element name="NET" value="amount" formatter="Money" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

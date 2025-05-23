@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+    
+  <Form name="CUSTOMER_MAINTENANCE" type="MULTI_PURPOSE_VIEW" formLayoutRef="TOP_TO_BOTTOM_TRANSPARENT">    
+    <Header viewAction="CANCEL_EXIT_TOUCH" editAction="ABORT_CHANGES_TOUCH">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="customerMaintHeader" verticalAlignment="Center" padding="0, 0, 0, 0"/>
+    </Header>  
+    
+    <Page name="CustomerWishList" text="_customerWishListTabText" conditionRef="customerWishListEnabledRule" displayOrder="90">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="custWishList" />
+      
+      <ActionGroups view="CUSTOMER_WISH_LIST_VIEW_ACTIONS" edit="CUSTOMER_WISH_LIST_EDIT_ACTIONS" />
+    </Page>
+    
+    <Page name="CustomerHistory" text="_customerHistoryTabText" displayOrder="30">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="custPurchHistListLayout" />
+
+      <ActionGroups view="CUST_HISTORY_VIEW_ACTIONS" edit="CUST_HISTORY_EDIT_ACTIONS" />
+    </Page>
+    
+  </Form>
+</FormSet>

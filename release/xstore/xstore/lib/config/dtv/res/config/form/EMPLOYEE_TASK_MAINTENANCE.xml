@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri Feb 13 13:51:19 EST 2009 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">EMPLOYEE_TASK_MAINTENANCE</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -1.0, -1.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, FILL, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -1.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0
+          </param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="IntegerArray">0, 2, 0, 2</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskStoreCreatedColon</TextKey>
+        <Font fontSize="+1" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormYesNoLabel</Type>
+        <Resource dtype="String">storeCreated</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskStatusColon</TextKey>
+        <Font fontSize="+1" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">statusCode</Resource>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskCompletedDateColon</TextKey>
+        <Font fontSize="+1" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">5, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">completeDate</Resource>
+        <FormatterType dtype="String">DateMedium</FormatterType>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskType</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 5, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">typeCode</Resource>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskTitle</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 5, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">title</Resource>
+        <DataField editFormat="Simple">
+          <Parameter name="maxCharacters">
+            <param_value dtype="Integer"><![CDATA[255]]></param_value>
+          </Parameter>
+        </DataField>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 3, 1, 1, R, T</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskDescription</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 5, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLongTextField</Type>
+        <Resource dtype="String">description</Resource>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="-2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskPriority</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 5, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">priority</Resource>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 5, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskStartDate</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 5, 5, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">startDate</Resource>
+        <DataField ref="Date" />
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 6, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskDueDate</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 6, 5, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">endDate</Resource>
+        <DataField ref="Date" />
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 7, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskVisibility</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 7, 5, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">visibility</Resource>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 8, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_taskAssignment</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 8, 5, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">assignment</Resource>
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+2" />
+      </FormViewCell>
+    </FormViewPanel>
+    <ActionGroup key="VIEW">
+      <Action ref="CANCEL_BACK" />
+      <Action keyStrokeKey="F1" keyStroke="F1" visible="false" />
+      <Action dataKey="EDIT" text="_taskEditTaskAction" keyStroke="F2">
+        <VisibilityRule class="dtv.pos.info.StoreCreatedInfoVisibilityRule" />
+      </Action>
+      <Action chainKey="COMPLETE_EMPLOYEE_TASK" text="_taskCompleteTaskAction" keyStroke="F3" />
+      <Action chainKey="DELETE_EMPLOYEE_TASK" text="_taskDeleteTaskAction" keyStroke="F4">
+        <VisibilityRule class="dtv.pos.info.StoreCreatedInfoVisibilityRule" />
+      </Action>
+      <Action dataKey="NEW" text="_taskNewTaskAction" keyStroke="F7" />
+    </ActionGroup>
+    <ActionGroup key="EDIT">
+      <Action ref="ABORT_CHANGES" />
+      <Action ref="ACCEPT_SAVE" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

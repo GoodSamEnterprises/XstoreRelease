@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+
+  <FormatterMap>
+    <Formatter name="DateLong" class="dtv.pos.i18n.format.DateFormatter" ctx="RECEIPT" formatterType="DateLong" />
+    <Formatter name="DayAndMonth" class="dtv.pos.i18n.format.DateFormatter" format="dd MMMM" />
+    <Formatter name="Money" class="oracle.retail.xstore.countrypack.fr.i18n.format.FrMaskIfTrainingMoneyFormatter" ctx="RECEIPT" maskChar=" " />
+    <Formatter name="Money$" class="oracle.retail.xstore.countrypack.fr.i18n.format.FrMaskIfTrainingMoneyFormatter" ctx="RECEIPT" includeCurrencySymbol="true" maskChar=" " />
+    <Formatter name="Percent" class="oracle.retail.xstore.countrypack.fr.i18n.format.FrMaskIfTrainingPercentFormatter" ctx="RECEIPT" maskChar=" " />
+    <Formatter name="Quantity" class="oracle.retail.xstore.countrypack.fr.i18n.format.FrMaskIfTrainingQuantityFormatter" ctx="RECEIPT"  maskChar=" " />
+  </FormatterMap>
+
+  <ReceiptCopyRules>
+    <!-- Reprint customer copy -->
+    <ReceiptCopyRule name="CUSTOMER_COPY_REPRINT" document="CUSTOMER_COPY_REPRINT">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.IsInstanceCopyRule" value="oracle.retail.xstore.countrypack.fr.docbuilding.FrReceiptReprintSource" />
+    </ReceiptCopyRule>
+  </ReceiptCopyRules>
+
+  <receipts>
+    <receipt document="CUSTOMER_COPY_REPRINT" sectionref="SaleRcptReprintBody"/>
+  </receipts>
+
+  <sections>
+
+    <!--BEGIN: FISCAL HEADER INFORMATION (SIGNATURE, VERSION, ETC.) -->
+    <section name="LOCAL.HEADER_TOP">
+      <sectionref>COUNTRYPACK.FR.FISCAL_HEADER</sectionref>
+      <sectionref>COUNTRYPACK.FR.SUSPENDED_TRANS_HEADER</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.FR.FISCAL_HEADER">
+      <condition class="dtv.pos.docbuilding.conditions.TransactionSuspendedCondition" inverted="true" />
+      <sectionref>COUNTRYPACK.FR.FISCALLY_RELEVANT_HEADER</sectionref>
+      <sectionref>COUNTRYPACK.FR.FISCALLY_IRRELEVANT_HEADER</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.FR.SUSPENDED_TRANS_HEADER">
+      <condition class="dtv.pos.docbuilding.conditions.TransactionSuspendedCondition" />
+      <sectionref>COUNTRYPACK.FR.NON_FISCAL_STATEMENT</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.FR.FISCALLY_RELEVANT_HEADER">
+      <condition class="oracle.retail.xstore.countrypack.fr.docbuilding.conditions.IsFiscallyRelevantCondition" />
+      <sectionref>COUNTRYPACK.FR.REPRINT_RECEIPT_HEADER</sectionref>
+      <sectionref>COUNTRYPACK.FR.TICKET</sectionref>
+      <sectionref>COUNTRYPACK.FR.SIGNATURE</sectionref>
+      <sectionref>COUNTRYPACK.FR.FISCAL_DOC_NUMBER</sectionref>
+      <sectionref>COUNTRYPACK.FR.POS_SW_VERSION</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.FR.FISCALLY_IRRELEVANT_HEADER">
+      <condition class="oracle.retail.xstore.countrypack.fr.docbuilding.conditions.IsFiscallyRelevantCondition" inverted="true" />
+      <sectionref>COUNTRYPACK.FR.NON_FISCAL_STATEMENT</sectionref>
+    </section>
+    <!--END: FISCAL HEADER INFORMATION (SIGNATURE, VERSION, ETC.) -->
+
+    <section name="LOCAL.GIFT_RECEIPT_HEADER_TOP">
+      <sectionref>COUNTRYPACK.FR.NON_FISCAL_STATEMENT</sectionref>
+    </section>
+
+    <section name="LOCAL.ITEMS_COUNT">
+      <sectionref>COUNTRYPACK.FR.LINE_COUNT</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.FR.STORE_LOCATION">
+        <sectionref>COUNTRYPACK.FR.COUNTRY</sectionref>
+        <sectionref>COUNTRYPACK.FR.SIRET_NUMBER</sectionref>
+        <sectionref>COUNTRYPACK.FR.NAF_CODE</sectionref>
+        <sectionref>COUNTRYPACK.FR.TVA_NUMBER</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.FR.TICKET">
+      <row align="C">
+        <field text="_countrypack.fr.ticket" />
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.SIGNATURE">
+      <row align="C">
+        <field text="_countrypack.fr.signature" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.fr.docbuilding.FrSignFieldDocbuilderField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.FISCAL_DOC_NUMBER">
+      <row align="C">
+        <field text="_countrypack.fr.documentNumber" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.fr.docbuilding.FrDocumentNumberDocbuilderField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.POS_SW_VERSION">
+      <row align="C">
+        <field text="_countrypack.fr.posSWVersion" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.fr.docbuilding.FrPosSWVersionDocbuilderField" />
+        </field>
+      </row>
+      <row />
+    </section>
+
+    <section name="COUNTRYPACK.FR.NON_FISCAL_STATEMENT">
+      <row />
+      <row align="C" charsize="X2HW">
+        <field text="*********************" style="BOLD" />
+      </row>
+      <row align="C">
+        <field style="BOLD">
+          <aggregate class="oracle.retail.xstore.countrypack.fr.docbuilding.FrNonFiscalStatementDocBuilderField" />
+        </field>
+      </row>
+      <row align="C" charsize="X2HW">
+        <field text="*********************" style="BOLD" />
+      </row>
+      <row />
+    </section>
+
+    <section name="COUNTRYPACK.FR.COUNTRY">
+      <row align="C">
+        <field text="_countryFR" />
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.SIRET_NUMBER">
+      <row align="C">
+        <field text="_countrypack.fr.siret" />
+        <sp />
+        <field method="getStringProperty" method_param="FR_SIRET" />
+      </row>
+    </section>
+    
+    <section name="COUNTRYPACK.FR.NAF_CODE">
+      <row align="C">
+        <field text="_countrypack.fr.nafCode" />
+        <sp />
+        <field method="getStringProperty" method_param="FR_NAF_CODE" />
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.TVA_NUMBER">
+      <row align="C">
+        <field text="_countrypack.fr.tva" />
+        <sp />
+        <field method="getStringProperty" method_param="FR_TVA" />
+      </row>
+    </section>
+    
+    <section name="tax_code_summary_detail">
+      <row />
+      <row>
+        <field text="_countrypack.fr.taxPercent" loc="-33" />
+        <field text="_countrypack.fr.netAmount" loc="-23" />
+        <field text="_countrypack.fr.amount" loc="-13" />
+        <field text="_countrypack.fr.taxAmount" loc="-3" />
+      </row>
+      <iterator>
+        <impl dtype="Class">oracle.retail.xstore.countrypack.common.docbuilding.TaxTotalIterator</impl>
+        <condition method="getVoid" comparison="EQUAL">
+          <Parameter name="VALUE">
+            <param_value dtype="Boolean">false</param_value>
+          </Parameter>
+        </condition>
+        <row>
+          <field formatter="Percent" align="R" loc="-33">
+            <aggregate class="oracle.retail.xstore.countrypack.common.docbuilding.TaxPercentageGroupBuilderField" />
+          </field>
+          <sp />
+          <field formatter="Money" align="R" loc="-23">
+            <aggregate class="oracle.retail.xstore.countrypack.fr.docbuilding.FrAmountWithoutTaxesDocBuilderField" />
+          </field>
+          <sp />
+          <field method="getTaxableAmount" formatter="Money" align="R" loc="-13" />
+          <sp />
+          <field method="getTaxAmount" formatter="Money" align="R" loc="-3" />
+        </row>
+      </iterator>
+    </section>
+
+    <section name="item_header">
+      <!-- item header -->
+      <row style="STRONGUNDERLINE">
+        <field text="_item" />
+        <field text="_qty" align="R" loc="14" />
+        <field text="_price" align="R" loc="-18" />
+        <field text="_amount" align="R" loc="-9" />
+        <field text="_countrypack.fr.taxPercent" align="R" loc="-3" />
+      </row>
+      <sectionref>item_details</sectionref>
+      <row />
+    </section>
+
+    <section name="item_details_listing">
+      <row>
+        <field method="getItem.getItemId" />
+        <field method="getQuantity" formatter="Quantity" align="R" loc="14" />
+        <field method="getBaseUnitPrice" formatter="Money" align="R" loc="-18" />
+        <field method="getExtendedAmount" formatter="Money" align="R" loc="-9" />
+        <field formatter="Percent" align="R" loc="-3">
+          <aggregate class="oracle.retail.xstore.countrypack.fr.docbuilding.FrLineTaxPercentageDocBuilderField" />
+        </field>
+        <field loc="-1">
+          <aggregate class="dtv.pos.register.tax.TaxFlagDocBuilderField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.LINE_COUNT">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.trl.IRetailTransaction" />
+      <row>
+        <field text="_countrypack.fr.numberOfLines" />
+        <sp />
+        <field formatter="Quantity">
+          <aggregate class="oracle.retail.xstore.countrypack.fr.docbuilding.FrLineItemsCountDocBuilderField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="SaleRcptReprintBody">
+      <iterator>
+        <impl dtype="Class">oracle.retail.xstore.countrypack.fr.docbuilding.FrReprintRcptIterator</impl>
+        <sectionref>COUNTRYPACK.FR.DUPLICATE</sectionref>
+        <sectionref>COUNTRYPACK.FR.SIGNATURE</sectionref>
+        <sectionref>COUNTRYPACK.FR.IMPRESSION</sectionref>
+        <sectionref>COUNTRYPACK.FR.REPRINT_DATE</sectionref>
+        <sectionref>COUNTRYPACK.FR.CURRENT_WORKSTATION</sectionref>
+        <sectionref>COUNTRYPACK.FR.OPERATOR_CODE</sectionref>
+        <horizontal_rule />
+      </iterator>
+    </section>
+
+    <section name="COUNTRYPACK.FR.REPRINT_RECEIPT_HEADER">
+      <row>
+        <field text="%IF_REPRINT%" />
+      </row>
+      <row>
+        <field text="%FR_REPRINT_SIGNATURE%" />
+      </row>
+      <row>
+        <field text="%END_IF%" />
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.DUPLICATE">
+      <row align="C">
+        <condition method="getStringProperty" method_param="FR_REPRINT_DOC_NUMBER" comparison="NOT_BLANK" />
+        <field text="_countrypack.fr.duplicate" />
+        <sp />
+        <field method="getStringProperty" method_param="FR_REPRINT_DOC_NUMBER" />
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.IMPRESSION">
+      <row align="C">
+        <condition method="getStringProperty" method_param="FR_REPRINT_NUMBER" comparison="NOT_BLANK" />
+        <field text="_countrypack.fr.impression" />
+        <field method="getStringProperty" method_param="FR_REPRINT_NUMBER" />
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.REPRINT_DATE">
+      <row align="C">
+        <condition method="getDateProperty" method_param="FR_REPRINT_DATE" comparison="NOT_BLANK" />
+        <field text="_countrypack.fr.reprintDate" />
+        <sp />
+        <field method="getDateProperty" method_param="FR_REPRINT_DATE" formatter="DateTimeMedium" />
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.CURRENT_WORKSTATION">
+      <row align="C">
+        <field text="_countrypack.fr.workstation" />
+        <sp />
+        <field>
+          <aggregate class="oracle.retail.xstore.countrypack.fr.docbuilding.FrCurrentWorkstationDocBuilderField" />
+        </field>
+      </row>
+    </section>
+
+    <section name="COUNTRYPACK.FR.OPERATOR_CODE">
+      <row align="C">
+        <condition method="getStringProperty" method_param="FR_OPERATOR_CODE" comparison="NOT_EQUAL" value="0" />
+        <field text="_countrypack.fr.operatorCode" />
+        <sp />
+        <field method="getStringProperty" method_param="FR_OPERATOR_CODE" />
+      </row>
+    </section>
+
+    <section name="transaction_store_location">
+      <call method="getRetailLocationIdObject" impl="dtv.pos.docbuilding.RetailLocationLookupCall">
+        <row />
+        <row align="C">
+          <field method="getStoreName" />
+        </row>
+        <region left_margin="1" alignment="C">
+          <field method="." formatter="BasicAddress" />
+        </region>
+        <row align="C">
+          <condition method="getTelephone1" comparison="NOT_BLANK" />
+          <field method="getTelephone1" formatter="Phone" />
+        </row>
+        <sectionref>COUNTRYPACK.FR.STORE_LOCATION</sectionref>
+      </call>      
+    </section>
+
+    <section name="cust_account_store_location">
+      <row align="C">
+        <field method="getStoreName" />
+      </row>
+      <region alignment="C" left_margin="1">
+        <field method="." formatter="BasicAddress" />
+      </region>
+      <row align="C">
+        <condition method="getTelephone1" comparison="NOT_BLANK" />
+        <field method="getTelephone1" formatter="Phone" />
+      </row>
+      <sectionref>COUNTRYPACK.FR.STORE_LOCATION</sectionref>
+      <horizontal_rule />
+    </section>
+
+    <section name="LOCAL.POSTVOID_HEADER">
+      <sectionref>COUNTRYPACK.FR.NON_FISCAL_STATEMENT</sectionref>
+    </section>
+
+    <section name="LOCAL.NON_FISCAL">
+      <sectionref>COUNTRYPACK.FR.NON_FISCAL_STATEMENT</sectionref>
+    </section>
+
+    <section name="StoreCopy">
+      <sectionref>COUNTRYPACK.FR.STORE_COPY_HEADER</sectionref>
+      <sectionref>STORE_COPY_HEADER_DB</sectionref>
+      <sectionref>tenderExchangeLabel</sectionref>
+      <sectionref>items</sectionref>
+      <sectionref>totals</sectionref>
+      <sectionref>tax_code_summary</sectionref>
+      <sectionref>storecopy_tenders</sectionref>
+      <sectionref>change</sectionref>
+      <sectionref>TaxExemptInfo</sectionref>
+      <sectionref>TaxExemptSignature</sectionref>
+      <sectionref>account_receivable_terms</sectionref>
+      <sectionref>footer</sectionref>
+      <sectionref>system_mode</sectionref>
+      <sectionref>STORE_COPY_FOOTER_DB</sectionref>
+      <sectionref>StoreCopyLabel</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.FR.STORE_COPY_HEADER">
+      <sectionref>COUNTRYPACK.FR.STORE_COPY_HEADER_TOP</sectionref>
+      <sectionref>CUSTOMER_INFO</sectionref>
+      <row />
+      <sectionref>system_mode</sectionref>
+      <sectionref>return_header</sectionref>
+    </section>
+
+    <section name="COUNTRYPACK.FR.STORE_COPY_HEADER_TOP">
+      <sectionref>logo</sectionref>
+      <sectionref>transaction_store_location</sectionref>
+      <horizontal_rule />
+      <sectionref>COUNTRYPACK.FR.NON_FISCAL_STATEMENT</sectionref>
+      <sectionref>transaction_header_info</sectionref>
+      <sectionref>SALES_PERSON_INFO</sectionref>
+      <sectionref>transaction_cashier</sectionref>
+      <sectionref>transaction_flight_information</sectionref>
+    </section>
+
+  </sections>
+
+</ReceiptDefinitions>

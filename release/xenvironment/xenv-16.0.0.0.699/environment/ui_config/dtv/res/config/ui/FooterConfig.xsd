@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="column">
+        <xs:complexType>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required" fixed="double"/>
+            <xs:attribute name="value" type="xs:NMTOKEN" use="required" fixed="-1.0"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="columns">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="column" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="FooterPanel">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="columns"/>
+                <xs:element ref="rows"/>
+                <xs:element ref="icons"/>
+                <xs:element ref="labels"/>
+            </xs:sequence>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="xsi:noNamespaceSchemaLocation" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="Debug.Outline" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="icon">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="layout" type="xs:string" use="optional"/>
+            <xs:attribute name="path" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="icons">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="icon" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="label">
+        <xs:complexType>
+            <xs:attribute name="enabled" type="xs:NMTOKEN" use="required" fixed="true"/>
+            <xs:attribute name="token" type="xs:string" use="optional"/>
+            <xs:attribute name="layout" type="xs:string" use="required"/>
+            <xs:attribute name="value" type="xs:string" use="optional"/>
+            <xs:attribute name="sequence" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="labels">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="label" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="row">
+        <xs:complexType>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="value" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="rows">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="row" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       ORDER
+       These menus contain items pertaining to the creation and administration of Distributed Orders
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <MenuItem name="ORDER" text="_menuOrder" category="Retail" keywords="universal,order">
+    <MenuOption ref="ORDER::COMPLETE" />
+    <MenuOption ref="ORDER::EDIT_DELIVERY_INFO" />
+
+    <SubMenu actionRef="ORDER::MENU.MODIFY_LINE" sticky="false">
+      <MenuOption ref="ORDER::CHANGE_LINE_QUANTITY" />
+      <MenuOption ref="ORDER::CHANGE_LINE_PRICE" />
+
+      <SubMenu actionRef="ORDER::MENU.MODIFY_LINE_TAX">
+        <MenuOption ref="ORDER::TAX.CHANGE_LINE_LOCATION" />
+        <MenuOption ref="ORDER::TAX.EXEMPT_LINE" />
+      </SubMenu>
+
+      <MenuOption ref="ORDER::VOID_LINE" />
+      <MenuOption ref="ORDER::CHANGE_COMMISSIONED_ASSOCIATES" />
+      <MenuOption ref="ORDER::EDIT_LINE_COMMENT" />
+    </SubMenu>
+
+    <SubMenu actionRef="ORDER::MENU.ADD_DISCOUNT" sticky="false" displayType="LIST">
+      <MenuOption ref="ORDER::ADD_LINE_DISCOUNT" />
+      <MenuOption ref="ORDER::ADD_TRAN_DISCOUNT" />
+      <MenuOption ref="ORDER::ADD_AWARD_DISCOUNT" />
+    </SubMenu>
+
+    <MenuOption ref="ORDER::EDIT_COMMENTS" />
+    <MenuOption ref="ORDER::PICKUP_LINE" />
+    <MenuOption ref="ORDER::SEARCH_FOR_ITEM" />
+    <MenuOption ref="ORDER::CANCEL" />
+
+    <MenuOption>
+      <Action ref="ORDER::COMPLETE.TO_TENDERING" />
+      <Action ref="ORDER::COMPLETE.NO_TENDERING" />
+    </MenuOption>
+    
+    <MenuOption ref="CUSTOMER::EDIT"/>
+    <MenuOption ref="ORDER::ADD_COUPON" />
+  </MenuItem>
+</MenuSet>

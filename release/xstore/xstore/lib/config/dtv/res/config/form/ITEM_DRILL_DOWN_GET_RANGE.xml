@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri Jan 27 11:16:25 EST 2006 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">ITEM_DRILL_DOWN_GET_RANGE</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--MINIMUM, FILL, 0.1-->
+          <param_value dtype="DoubleArray">-3.0, -1.0, 0.1</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, 8.0, PREFERRED, 10.0-->
+          <param_value dtype="DoubleArray">-2.0, 8.0, -2.0, 10.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">false</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 3, 1, L, C</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">message</Resource>
+        <Font fontStyle="BOLD" fontSize="+3" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">dtv.pos.reporting.ui.SelectReportParamPanel</Type>
+        <Resource dtype="String">params</Resource>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" text="_rpt.item.drilldown.form.button.enter" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

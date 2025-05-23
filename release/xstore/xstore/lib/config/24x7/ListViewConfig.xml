@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ListViewConfig.xsd">
+  <Header name="TILL_DETAILS">
+    <Row>
+      <Column start="0" width="8" translatable="_tillDetailsTillId" />
+      <Column start="10" width="8" translatable="_tillDetailsTillIssued" alignment="CENTER" />
+      <Column start="19" width="10" translatable="_tillDetailsTillIssuedDate" alignment="LEFT" />
+      <Column start="29" width="10" translatable="_tillDetailsEmployeeId" />
+      <Column start="39" width="15" translatable="_tillDetailsEmployeeName" />
+      <Column start="52" width="8" translatable="_tillDetailsTillAttached" alignment="CENTER" />
+      <Column start="62" width="10" translatable="_tillDetailsCashDrawer" alignment="CENTER" />
+      <Column start="74" width="7" translatable="_tillDetailsRegister" alignment="CENTER" />
+      <Column start="83" width="17" translatable="_tillDetailsCountStatus" alignment="LEFT" />
+    </Row>
+  </Header>
+  <Element name="TILL_DETAILS">
+    <Row>
+      <Column start="0" width="8" method="getTenderRepositoryId" />
+      <Column start="10" width="8" alignment="CENTER">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.till.TillStatusCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="19" width="10" method="getDateIssued" alignment="LEFT" formatter="DateShort" />
+      <Column start="29" width="10" method="getIssuedEmployeeId" />
+      <Column start="39" width="15">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getIssuedFirstName" />
+          <EvaluatedFormattable method="getIssuedLastName" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="52" width="9" alignment="CENTER">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.till.TillStatusCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="UseAttachedStatus" value="true" />
+      </Column>
+      <Column start="62" width="12" method="getCashDrawerId" alignment="CENTER" />
+      <Column start="74" width="8" method="getWorkstationId" alignment="CENTER" />
+      <Column start="85" width="15" method="getCountStatus" alignment="LEFT" />
+    </Row>
+  </Element> 
+ 
+</ListView>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet>
+  <FormView>
+    <FormKey dtype="String">INVENTORY_REPLENISHMENT</FormKey>
+    <FormLocation dtype="String">TRANSACTION_LIST_AREA</FormLocation>
+    <FormViewPanel dtype="FormViewPanel">
+      <PanelType dtype="String">HEADER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--0.0-->
+          <param_value dtype="DoubleArray">0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ColorGroup dtype="ColorGroup">
+        <BgColor dtype="Color">#6056D1</BgColor>
+      </ColorGroup>
+    </FormViewPanel>
+    <FormViewPanel dtype="FormViewPanel">
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">viewList</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">INVENTORY_REPLENISHMENT_MAINTENANCE</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel dtype="FormViewPanel">
+      <PanelType dtype="String">FOOTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL, 0.15, 0.15, 0.1-->
+          <param_value dtype="DoubleArray">-1.0, -1.0, 0.15, 0.15, 0.1</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL, FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, -1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+    </FormViewPanel>
+    <ActionGroup key="DEFAULT">
+      <Action chainKey="INVENTORY_REPLENISHMENT_SAVE_CHANGES" text="_saveAndExitAction" keyStroke="F2">
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.InventoryDocumentStatusVisibilityRule">
+          <Parameter name="DocumentStatus" value="OPEN" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="REPLENISHMENT_SUBMIT_ORDER" text="_replenishmentSubmitOrder" keyStroke="F3">
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.InventoryDocumentStatusVisibilityRule">
+          <Parameter name="DocumentStatus" value="OPEN" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.NoReplenishmentLineItemVisibilityRule" inverted="true" />
+      </Action>
+      <Action chainKey="REPLENISHMENT_HEADER_COMMENTS" text="_replenishmentOrderCommentsEdit" keyStroke="F4">
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.InventoryDocumentStatusVisibilityRule">
+          <Parameter name="DocumentStatus" value="OPEN" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="REPLENISHMENT_DELETE_HEADER_COMMENT" text="_replenishmentOrderCommentsDelete" keyStroke="F5">
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.InventoryDocumentStatusVisibilityRule">
+          <Parameter name="DocumentStatus" value="OPEN" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="REPLENISHMENT_NON_MERCHANDISE" text="_replenishmentNonMerchandiseMenuOption" keyStroke="F6">
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.InventoryDocumentStatusVisibilityRule">
+          <Parameter name="DocumentStatus" value="OPEN" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="REPLENISHMENT_CANCEL_ORDER" text="_replenishmentCancelOrderMenuOption" keyStroke="F7">
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.InventoryDocumentStatusVisibilityRule">
+          <Parameter name="DocumentStatus" value="OPEN" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="REPLENISHMENT_FORCE_CLOSE_ORDER" text="_replenishmentForceCloseOrderMenuOption" keyStroke="F8" privilege="REPLENISHMENT_ORDER_FORCE_CLOSE">
+         <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.InventoryDocumentStatusVisibilityRule">
+          <Parameter name="DocumentStatus" value="SUBMITTED"/>
+          <Parameter name="DocumentStatus" value="CONFIRMED"/>
+          <Parameter name="DocumentStatus" value="PARTIALLY_RECEIVED"/>
+        </VisibilityRule>
+      </Action>
+      <Action formOptionsKey="ITEM_OPTIONS" text="_replenishmentItemOptionsAction" keyStroke="F10">
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.NoReplenishmentLineItemVisibilityRule" inverted="true" />
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.InventoryDocumentStatusVisibilityRule">
+          <Parameter name="DocumentStatus" value="OPEN" />
+        </VisibilityRule>
+      </Action>
+      <Action formOptionsKey="PRINT_OPTIONS" text="_replenishmentPrintOptionsAction" keyStroke="F11">
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.NoReplenishmentLineItemVisibilityRule" inverted="true" />
+      </Action>
+      <Action chainKey="GENERIC_ITEM_LOOKUP" text="_itemLookupKey" keyStroke="F12" >
+        <Parameter name="AddItemChainKey" value="REPLENISHMENT_ITEM_ENTRY_AFTER_LOOKUP" />
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.AnyLineItemStatusVisibilityRule" inverted="true">
+          <Parameter name="LineItemStatus" value="CLOSED" />
+          <Parameter name="LineItemStatus" value="SUBMITTED" />
+          <Parameter name="LineItemStatus" value="IN_PROCESS" />
+          <Parameter name="LineItemStatus" value="VOID" />
+          <Parameter name="LineItemStatus" value="CANCELLED" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.inventory.replenishment.visibilityrules.InventoryDocumentStatusVisibilityRule">
+          <Parameter name="DocumentStatus" value="OPEN" />
+        </VisibilityRule>
+      </Action>
+    </ActionGroup>
+    <ActionGroup key="ITEM_OPTIONS">
+      <Action chainKey="REPLENISHMENT_CHANGE_QUANTITY" text="_replenishmentChangeQuantity" />
+      <Action chainKey="REPLENISHMENT_EDIT_REASON_CODE" text="_replenishmentAddEditReasonCode" />
+      <Action chainKey="REPLENISHMENT_DELETE_REASON_CODE" text="_replenishmentDeleteReasonCode" />
+      <Action chainKey="REPLENISHMENT_EDIT_SOURCE" text="_replenishmentEditSource" />
+      <Action chainKey="REPLENISHMENT_DELETE_ITEM" text="_replenishmentDeleteItem" />
+    </ActionGroup>
+    <ActionGroup key="PRINT_OPTIONS">
+      <Action chainKey="REPLENISHMENT_REQUEST_DETAIL_REPORT" text="_replenishmentPrintRequestDetailMenuOption"/>
+      <Action chainKey="REPLENISHMENT_ORDER_WORKSHEET_REPORT" text="_replenishmentPrintOrderWorksheetMenuOption"/>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EventConfigRoot xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="EventConfig.xsd">
+  <ContextMapping context="DEFAULT" map="DEFAULT" />
+  <ContextMapping context="REGISTER_LOCKED" map="REGISTER_LOCKED" />
+  <ContextMapping context="SALE" map="SELLING" />
+  <ContextMapping context="PRE_SALE" map="PRE_SALE" />
+  <ContextMapping context="RETURN" map="RETURNING" />
+  <ContextMapping context="LAYAWAY" map="CUST_ACCOUNT" />
+  <ContextMapping context="SPECIAL_ORDER" map="CUST_ACCOUNT" />
+  <ContextMapping context="SEND_SALE" map="CUST_ACCOUNT" />
+  <ContextMapping context="SALE_TENDER" map="SALE_TENDER" />
+  <ContextMapping context="SALE_TENDER_EMPTY_MENU_OPTION" map="SALE_TENDER" />
+  <ContextMapping context="REFUND_TENDER" map="REFUND_TENDER" />
+  <ContextMapping context="SALE_TENDER_SIGCAP" map="MINIMAL_MAPPINGS" />
+  <ContextMapping context="TENDER_EXCHANGE_SIGCAP" map="MINIMAL_MAPPINGS" />
+  <ContextMapping context="CREDIT_CARD_REFUND" map="CREDIT_CARD_REFUND" />
+
+  <EventActionMap name="MINIMAL_MAPPINGS">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+  </EventActionMap>
+
+  <EventActionMap name="DEFAULT">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="20">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_EMPLOYEE_CARD" />
+      <!-- <Action chainKey="CLOCK_IN_OUT_EVENT" chainType="STACK" /> -->
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="30">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_OTHER" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="40">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_ERROR" />
+      <Action chainKey="BAD_CARD_READ" chainType="STACK" />
+    </EventAction>
+  </EventActionMap>
+
+  <EventActionMap name="CREDIT_CARD_REFUND">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="20">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CREDIT_CARD" />
+      <Action chainKey="INVALID_CREDIT_CARD_SWIPE" chainType="STACK" />
+    </EventAction>
+  </EventActionMap>
+
+  <EventActionMap name="REGISTER_LOCKED">
+    <EventAction priority="50">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="60">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_EMPLOYEE_CARD" />
+      <Action chainKey="CLOCK_IN_OUT_EVENT" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="70">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_OTHER" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="80">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_ERROR" />
+      <Action chainKey="BAD_CARD_READ" chainType="STACK" />
+    </EventAction>
+  </EventActionMap>
+
+  <EventActionMap name="PRE_SALE">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="20">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_ITEM" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="30">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_ERROR" />
+      <Action chainKey="BAD_CARD_READ" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="40">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_OTHER" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+  </EventActionMap>
+
+  <EventActionMap name="SELLING">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="20">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_EMPLOYEE_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    <EventAction priority="25">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_RAINCHECK_ID" />
+      <Action chainKey="REDEEM_RAIN_CHECK_BY_SCAN" chainType="START" >
+        <VisibilityRule class="dtv.pos.raincheck.RainCheckFeatureEnabledVisibilityRule" />
+      </Action>
+    </EventAction>
+    <EventAction priority="30">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_TRANSACTION" />
+      <Action chainKey="START_RETURN_FROM_RECEIPT_SCAN" chainType="START">
+        <VisibilityRule class="dtv.pos.framework.action.access.CurrentUserAccCheck">
+          <Parameter name="privilege" value="RETURN_ITEM" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowMixedInTransWithSaleItemTypeRule">
+          <Parameter name="type" value="RETURN" />
+        </VisibilityRule>
+      </Action>
+    </EventAction>
+    <EventAction priority="40">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_LAYAWAY_ID" />
+      <Action chainKey="PRE_LAYAWAY_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="50">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_SP_ORDER_ID" />
+      <Action chainKey="PRE_SPECIAL_ORDER_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="55">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_WORK_ORDER_ID" />
+      <Action chainKey="PRE_WORK_ORDER_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="60">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CCA_PRESALE_ID" />
+      <Action chainKey="PRE_PRESALE_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="65">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CCA_ONHOLD_ID" />
+      <Action chainKey="PRE_ONHOLD_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="67">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_ORDER_INFO" />
+      <Action chainKey="ORDER_MAINTENANCE_REGISTER_SETUP" chainType="START" />
+    </EventAction>
+    <EventAction priority="70">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CREDIT_CARD" />
+      <!-- CHOOSE ONE CHAIN FOR DESIRED BEHAVIOUR -->
+      <!--Action chainKey="INVALID_INPUT" chainType="STACK"-->
+      <!-- <Action chainKey="SAVE_CREDIT_CARD_INPUT" chainType="STACK" /> -->
+      <Action chainKey="TENDER_CREDIT_CARD_FROM_ITEMS" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" />
+      </Action>
+    </EventAction>
+    <EventAction priority="80">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_ERROR" />
+      <!-- CHOOSE ONE CHAIN FOR DESIRED BEHAVIOUR -->
+      <!--Action chainKey="INVALID_INPUT" chainType="STACK" /-->
+      <Action chainKey="BAD_CARD_READ" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="90">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_VOUCHER" />
+      <Action chainKey="SELLING_VOUCHER_EVENT" chainType="START" />
+    </EventAction>
+    <EventAction priority="100">
+      <Event class="dtv.hardware.types.InputType" name="IN-STORE_COUPON" />
+      <Action chainKey="SCAN_SMART_COUPON" chainType="START" />
+    </EventAction>
+    <EventAction priority="110">
+      <Event class="dtv.hardware.types.InputType" name="MANUFACTURER_COUPON" />
+      <Action chainKey="SCAN_SMART_COUPON" chainType="START" />
+    </EventAction>
+    <EventAction priority="120">
+      <Event class="dtv.hardware.types.InputType" name="COUPON_VOUCHER" />
+      <Action chainKey="REDEEM_VOUCHER_COUPON_START" chainType="START" />
+    </EventAction>
+    <EventAction priority="130">
+      <Event class="dtv.hardware.types.InputType" name="BOUNCE_BACK_COUPON" />
+      <Action chainKey="REDEEM_BOUNCE_BACK_COUPON_FROM_EVENT" chainType="START" />
+    </EventAction>
+    <EventAction priority="140">
+      <EventType dtype="Class">dtv.hardware.events.CouponScanEvent</EventType>
+      <Action chainKey="SCAN_COUPON" chainType="START" />
+    </EventAction>
+    <EventAction priority="150">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CUSTOMER_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    <EventAction priority="160">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_OTHER" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+    <!-- Zip code entry event handling -->
+    <EventAction priority="200">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_ZIP_CODE" />
+      <Action chainKey="CONTINUE_TENDER_AFTER_ZIP_ENTRY" chainType="STACK" />
+    </EventAction>
+     <!-- Zip code entry event handling -->
+  </EventActionMap>
+
+  <EventActionMap name="CUST_ACCOUNT">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="50">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CREDIT_CARD" />
+      <!-- CHOOSE ONE CHAIN FOR DESIRED BEHAVIOUR -->
+      <!--Action chainKey="INVALID_INPUT" chainType="STACK"-->
+      <Action chainKey="SAVE_CREDIT_CARD_INPUT" chainType="STACK" />
+      <!-- <Action chainKey="TENDER_CREDIT_CARD_FROM_ITEMS" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" />
+      </Action> -->
+    </EventAction>
+    <EventAction priority="60">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_ERROR" />
+      <!-- CHOOSE ONE CHAIN FOR DESIRED BEHAVIOUR -->
+      <!--Action chainKey="INVALID_INPUT" chainType="STACK" /-->
+      <Action chainKey="BAD_CARD_READ" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="80">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_COUPON" />
+      <Action chainKey="SCAN_COUPON" chainType="START" />
+    </EventAction>
+    <EventAction priority="110">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_OTHER" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="120">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_LAYAWAY_ID" />
+      <Action chainKey="PRE_LAYAWAY_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="130">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_SP_ORDER_ID" />
+      <Action chainKey="PRE_SPECIAL_ORDER_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="135">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_WORK_ORDER_ID" />
+      <Action chainKey="PRE_WORK_ORDER_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="140">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CCA_PRESALE_ID" />
+      <Action chainKey="PRE_PRESALE_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="150">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CCA_ONHOLD_ID" />
+      <Action chainKey="PRE_ONHOLD_CHAIN" chainType="START" />
+    </EventAction>
+    <EventAction priority="160">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_ORDER_INFO" />
+      <Action chainKey="ORDER_MAINTENANCE_REGISTER_SETUP" chainType="START" />
+    </EventAction>
+    <EventAction priority="190">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_ZIP_CODE" />
+      <Action chainKey="CONTINUE_TENDER_AFTER_ZIP_ENTRY" chainType="STACK" />
+    </EventAction>
+  </EventActionMap>
+
+  <EventActionMap name="RETURNING">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_VOUCHER" />
+      <Action chainKey="RETURN_VOUCHER_START" chainType="START" />
+    </EventAction>
+    <EventAction priority="20">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="30">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CREDIT_CARD" />
+      <!-- CHOOSE ONE CHAIN FOR DESIRED BEHAVIOUR -->
+      <!--Action chainKey="INVALID_INPUT" chainType="STACK"-->
+      <!--Action chainKey="SAVE_CREDIT_CARD_INPUT" chainType="STACK"-->
+      <Action chainKey="TENDER_CREDIT_CARD_FROM_ITEMS" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" />
+      </Action>
+    </EventAction>
+    <EventAction priority="40">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_ERROR" />
+      <!-- CHOOSE ONE CHAIN FOR DESIRED BEHAVIOUR -->
+      <!--Action chainKey="INVALID_INPUT" chainType="STACK" /-->
+      <Action chainKey="BAD_CARD_READ" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="50">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_COUPON" />
+      <Action chainKey="SCAN_COUPON" chainType="START" />
+    </EventAction>
+    <EventAction priority="60">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CUSTOMER_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    <EventAction priority="70">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_EMPLOYEE_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    <EventAction priority="80">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_OTHER" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+  </EventActionMap>
+
+  <EventActionMap name="SALE_TENDER">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="11">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="MICR_READ_FAILED" />
+      <Action chainKey="BAD_CHECK_READ" chainType="START" />
+    </EventAction>
+    <EventAction priority="20">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_VOUCHER" />
+      <Action chainKey="ROUTE_VOUCHER_FROM_TENDER" chainType="START">
+        <Parameter name="TenderStatus" value="Tender"/>
+        <Parameter name="VoucherActivityCodeType" value="REDEEMED"/>
+      </Action>
+    </EventAction>
+    <EventAction priority="30">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CREDIT_CARD" />
+      <Action chainKey="TENDER_CREDIT_CARD" chainType="START">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderAccCheck" >
+          <Parameter name="tender" value="CREDIT_CARD" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AvailableLayawayTenderAccCheck" >
+          <Parameter name="tender" value="CREDIT_CARD" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.register.sale.AmountDueVisibilityRule" />
+      </Action>
+    </EventAction>      
+    <EventAction priority="40">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_COUPON" />
+      <Action chainKey="INVALID_INPUT" chainType="START" />
+    </EventAction>
+    <EventAction priority="50">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CUSTOMER_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    <EventAction priority="60">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_EMPLOYEE_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    <EventAction priority="70">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_OTHER" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="80">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_ERROR" />
+      <Action chainKey="BAD_CARD_READ" chainType="STACK" />
+    </EventAction>
+  </EventActionMap>
+
+  <EventActionMap name="REFUND_TENDER">
+    <EventAction priority="10">
+      <Event class="dtv.hardware.types.DtvHardwareEventType" name="UNEXPECTED_DRAWER_OPEN" />
+      <Action chainKey="NO_SALE_MANUAL" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="20">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_VOUCHER" />
+      <Action chainKey="ROUTE_VOUCHER_FROM_TENDER" chainType="START">
+        <Parameter name="VoucherActivityCodeType" value="ISSUED"/>
+        <Parameter name="TenderStatus" value="Refund"/>
+      </Action>
+    </EventAction>
+    <EventAction priority="30">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CREDIT_CARD" />
+      <Action chainKey="REFUND_CREDIT_CARD" chainType="START">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.RefundTenderCheck" >
+          <Parameter name="tender" value="VISA" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.RefundBalanceTenderAccessCheck">
+          <Parameter name="privilege" value="REFUND_TENDER_BALANCE" />
+          <Parameter name="tender" value="VISA" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderAccCheck" >
+          <Parameter name="tender" value="CREDIT_CARD" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.register.sale.RefundDueVisibilityRule" />
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderOnReturnRule" />
+      </Action>
+    </EventAction>
+    <EventAction priority="40">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_COUPON" />
+      <Action chainKey="INVALID_INPUT" chainType="START" />
+    </EventAction>
+    <EventAction priority="50">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_CUSTOMER_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    <EventAction priority="60">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_EMPLOYEE_CARD" />
+      <Action chainKey="CUST_ASSOCIATION" chainType="START" />
+    </EventAction>
+    <EventAction priority="70">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_OTHER" />
+      <Action chainKey="INVALID_INPUT" chainType="STACK" />
+    </EventAction>
+    <EventAction priority="80">
+      <Event class="dtv.hardware.types.InputType" name="INPUT_MSR_ERROR" />
+      <Action chainKey="BAD_CARD_READ" chainType="STACK" />
+    </EventAction>
+  </EventActionMap>
+
+</EventConfigRoot>

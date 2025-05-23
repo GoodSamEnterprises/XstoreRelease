@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <!-- ********************************************** -->
+    <!-- Event (ctl_event_log) appenders -->
+    <!-- ********************************************** -->
+    <DtxAppender name="EVENT.dtx.critical" guaranteedDelivery="true" />
+
+    <!-- ********************************************** -->
+    <!-- Data access/modification appenders -->
+    <!-- ********************************************** -->
+    <XstRollingRandomAccessFile name="DATALOAD.file" fileName="${sys:user.dir}/log/dataloader.log"
+      filePattern="${sys:user.dir}/log/dataloader.%d{yyyy-MM-dd}.log">
+      <PatternLayout pattern="%d %5p [%t] %c - %m%n" header="loading ${log4j:configLocation}%n" />
+      <TimeBasedTriggeringPolicy />
+      <DefaultRolloverStrategy max="14" />
+    </XstRollingRandomAccessFile>
+    <XstRollingRandomAccessFile name="DATALOAD.file.failure" fileName="${sys:user.dir}/download/failures.dat"
+      filePattern="${sys:user.dir}/download/failures.%d{yyyy-MM-dd}.dat">
+      <PatternLayout charset="UTF8" />
+      <TimeBasedTriggeringPolicy />
+      <DefaultRolloverStrategy max="14" />
+    </XstRollingRandomAccessFile>
+    <XstRollingRandomAccessFile name="DATALOAD.file.success" fileName="${sys:user.dir}/download/success.dat"
+      filePattern="${sys:user.dir}/download/success.%d{yyyy-MM-dd}.dat">
+      <PatternLayout pattern="%d %m%n" />
+      <TimeBasedTriggeringPolicy />
+      <DefaultRolloverStrategy max="14" />
+    </XstRollingRandomAccessFile>
+  </Appenders>
+  <Loggers>
+
+    <!-- ********************************************** -->
+    <!-- Data Loader general application categories -->
+    <!-- ********************************************** -->
+    <!-- ***************** -->
+    <!-- ** Initialization/Loading ** -->
+    <!-- ***************** -->
+    <Logger name="dtv.util.config.ConfigHelper" level="info" />
+    <Logger name="com.micros.xstore.config" level="info" />
+
+    <!-- ********************************************** -->
+    <!-- Data access/modification categories -->
+    <!-- ********************************************** -->
+    <Logger name="dtv.data2.dataloader" additivity="false" level="info">
+      <AppenderRef ref="DATALOAD.file" />
+    </Logger>
+    <Logger name="dtv.xstore.dataloader.SuccessFile" additivity="false" level="info">
+      <AppenderRef ref="DATALOAD.file.success" />
+    </Logger>
+    <Logger name="dtv.xstore.dataloader.FailuresFile" additivity="false" level="info">
+      <AppenderRef ref="DATALOAD.file.failure" />
+    </Logger>
+    <Logger name="dtv.xstore" additivity="false" level="info">
+      <AppenderRef ref="EVENT.dtx.critical" />
+    </Logger>
+
+    <!-- ********************************************** -->
+    <!-- Miscellaneous third-party library categories -->
+    <!-- ********************************************** -->
+    <Logger name="org.apache.jcs" level="error" />
+
+    <Root level="warn">
+      <AppenderRef ref="DATALOAD.file" />
+    </Root>
+  </Loggers>
+
+</Configuration>

@@ -1,0 +1,86 @@
+<dataTemplate name="EmployeeTasks" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+    <label name="CRITERIA_STATUS" value="_rptStatusColon"/>
+    <label name="CRITERIA_TYPE" value="_rptEmployeeTasksReportTypeColon"/>
+    <label name="CRITERIA_VALUE_ALL" value="_rptParamSelectionAll"/>
+
+    <!--label name="STORE" value="_rptEmployeeTasksReportStore"/ -->
+    <label name="START_DATE" value="_rptStartDate"/>
+    <label name="END_DATE" value="_rptEndDate"/>
+    <label name="ASSIGNEE" value="_rptEmployeeTasksReportVisibility"/>
+    <label name="TYPE" value="_rptType"/>
+    <label name="TITLE" value="_rptTitle"/>
+    <label name="PRIORITY" value="_rptEmployeeTasksReportPriority"/>
+    <label name="STATUS" value="_rptStatus"/>   
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="status" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptStatus;Combo;dtv.pos.tasks.TaskStatusLoader;all=_rptParamSelectionAll]]></parameterDescription>
+      <!-- defaultValueExpression><![CDATA[""]]></defaultValueExpression -->
+    </parameter>
+    <parameter name="type" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptType;Combo;dtv.pos.tasks.TaskTypeLoader;all=_rptParamSelectionAll]]></parameterDescription>
+      <!-- defaultValueExpression><![CDATA[""]]></defaultValueExpression -->
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_EMPLOYEE_TASKS" key="EMPLOYEE_TASKS_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>status</Parameter>
+        <Parameter>type</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>start_date</ResultField>
+        <ResultField>due_date</ResultField>
+        <ResultField>type_desc</ResultField>
+        <ResultField>visibility_desc</ResultField>
+        <ResultField>title</ResultField>
+        <ResultField>priority_key</ResultField>
+       <ResultField>status_key</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_EMPLOYEE_TASKS" source="Q_EMPLOYEE_TASKS">
+      <element name="START_DATE" value="start_date" formatter="DateTimeMedium"/>
+      <element name="END_DATE" value="due_date" formatter="DateTimeMedium"/>
+      <element name="ASSIGNEE" value="visibility_desc"/>
+      <element name="TYPE" value="type_desc"/>
+      <element name="TITLE" value="title"/>
+      <element name="PRIORITY" value="priority_key"/>
+      <element name="STATUS" value="status_key"/>   
+    </group>
+  </dataStructure>
+</dataTemplate>

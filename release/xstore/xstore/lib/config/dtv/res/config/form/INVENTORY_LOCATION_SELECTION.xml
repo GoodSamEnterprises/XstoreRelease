@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">INVENTORY_LOCATION_SELECTION</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">10.0, -2.0, -1.0, -1.0, 10.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-3.0, -3.0, -3.0, -3.0, -3.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_inventoryQuantityToAllocate</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 0, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">quantityToAllocate</Resource>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_inventoryItemId</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 1, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">itemId</Resource>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_inventoryItemDescription</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 2, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">itemDescription</Resource>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_inventoryLocation</TextKey>
+        <Font fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">validLocation</Resource>
+        <Font fontSize="+2">
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+    </FormViewPanel>
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

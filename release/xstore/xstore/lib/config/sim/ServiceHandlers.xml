@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/ServiceHandlers.xsd">
+  <Service name="SIM_STORE_INVENTORY">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://localhost:17015/StoreInventoryBean/StoreInventoryService?WSDL</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="SIM_UIN_STORE_INVENTORY">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://localhost:17015/StoreInventoryUinBean/StoreInventoryUinService?WSDL</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="SIM_POS_TRANSACTION">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://localhost:17015/POSTransactionBean/POSTransactionService?WSDL</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <ProcessTransRetryInterval dtype="Integer">15</ProcessTransRetryInterval>
+    </Parameters>
+  </Service>
+</Services>

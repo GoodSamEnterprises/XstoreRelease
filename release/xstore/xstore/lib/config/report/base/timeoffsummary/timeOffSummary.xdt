@@ -1,0 +1,67 @@
+<dataTemplate name="TimeOff" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+    <label name="NAME" value="_rptEmployeeName"/>
+    <label name="ID" value="_rptEmpID"/>
+    <label name="DATE" value="_rptDate"/>
+    <label name="TIME" value="_rptTime"/>
+    <label name="REASON" value="_rptReason"/>
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>    
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>    
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_TIME_OFF" key="TIME_OFF_REPORT">
+      <Parameters>
+      	<Parameter>organizationId</Parameter>
+      	<Parameter>argBusinessDateStart</Parameter>
+      	<Parameter>argBusinessDateEnd</Parameter>
+      	<Parameter>argBusinessDateStart</Parameter>
+      	<Parameter>argBusinessDateEnd</Parameter>
+      </Parameters>
+      <ResultFields>
+      <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    	<ResultField>start_datetime</ResultField>
+    	<ResultField>time_off_typcode</ResultField>
+    	<ResultField>employee_id</ResultField>
+    	<ResultField>reason_description</ResultField>
+    	<ResultField>employee_name</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_TIME_OFF" source="Q_TIME_OFF">
+      <element name="EMP" value="employee_id"/>    
+      <element name="NAME" value="employee_name" formatter="LastFirstNameFromString"/>
+      <element name="DATE" value="start_datetime" formatter="DateMedium"/>
+      <element name="TIME" value="time_off_typcode"/>
+      <element name="REASON" value="reason_description"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

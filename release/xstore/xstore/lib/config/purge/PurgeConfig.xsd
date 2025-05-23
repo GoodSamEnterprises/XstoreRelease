@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:include schemaLocation="../dtv/res/config/DtvConfigLibrary.xsd" />
+
+  <xs:element name="Root">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Parameter" type="Parameter_Type" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Group" type="PurgeGroup" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType name="PurgeGroup">
+    <xs:sequence>
+      <xs:element name="Query" type="PurgeQuery" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:ID" />
+    <xs:attributeGroup ref="PurgeCriteria" />
+  </xs:complexType>
+  
+  <xs:complexType name="PurgeQuery">
+    <xs:attribute name="name" type="xs:string" />
+    <xs:attribute name="key" type="xs:string" />
+    <xs:attributeGroup ref="PurgeCriteria" />
+  </xs:complexType>
+  
+  <xs:attributeGroup name="PurgeCriteria">
+    <xs:attribute name="enabled" type="xs:boolean" default="true" />
+    <xs:attribute name="order" type="xs:integer" />
+    <xs:attribute name="age" type="xs:integer" />
+    <xs:attribute name="status" type="xs:string" />
+    <xs:attribute name="status1" type="xs:string" />
+    <xs:attribute name="status2" type="xs:string" />
+  </xs:attributeGroup>
+</xs:schema>

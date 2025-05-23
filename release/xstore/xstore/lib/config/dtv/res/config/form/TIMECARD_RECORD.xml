@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed Dec 16 10:18:26 CET 2015 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner. ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet>
+  <FormView formKey="TIMECARD_RECORD" formLocation="POPUP_VIEW_PANEL">
+    <FormViewPanel panelType="DETAIL" formTabKey="DEFAULT">
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, 20.0, 20.0, 20.0, 20.0-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, 20.0, 20.0, 20.0, 20.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell layoutLocation="0, 0, 2, 1, F, F" type="FormLabel" textKey="_timecardRecordTitle">
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 0, 1, 1, F, F" type="FormLabel" resource="timecardDate">
+        <FormatterType dtype="String">DateMedium</FormatterType>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 2, 1, 1, F, F" type="FormLabel" textKey="_timecardRecordWorkCode">
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 3, 1, 1, F, F" type="FormLabel" textKey="_timecardRecordClockInTime">
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 4, 1, 1, F, F" type="FormLabel" textKey="_timecardRecordClockOutTime">
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 2, 1, 1, F, F" type="FormComboBox" resource="workCode">
+        <TabOrder dtype="Integer">10</TabOrder>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 3, 1, 1, F, F" type="FormTextField" resource="clockInDateTime">
+        <TabOrder dtype="Integer">20</TabOrder>
+        <DataField Ref="TimeShort" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 4, 1, 1, F, F" type="FormTextField" resource="clockOutDateTime">
+        <TabOrder dtype="Integer">30</TabOrder>
+        <DataField Ref="TimeShort" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+      <Action ref="ACCEPT_SAVE" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

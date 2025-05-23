@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AuthConfig.xsd">
+
+  <AuthProcess name="GLOBAL_BLUE_15_01" extends="TAXFREE_BASE">
+    <parameter name="communicator">
+      <param_value dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.auth.TaxFreeHttpsCommunicator</param_value>
+    </parameter>
+    <parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various reasons -->
+    </parameter>
+    <parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry key="1401">
+          <value dtype="AuthFailedActionTypes">
+          <!-- Invalid Traveller Identifier -->
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="1201">
+          <!-- Cheque Already Voided -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </parameter>
+  </AuthProcess>
+
+  <AuthProcess name="GLOBAL_BLUE_16_06" extends="TAXFREE_BASE">
+    <parameter name="communicator">
+      <param_value dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.auth.TaxFreeHttpsCommunicator</param_value>
+    </parameter>
+    <parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various reasons -->
+    </parameter>
+    <parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry key="1401">
+          <value dtype="AuthFailedActionTypes">
+          <!-- Invalid Traveller Identifier -->
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="1201">
+          <!-- Cheque Already Voided -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </parameter>
+  </AuthProcess>
+  
+  <AuthProcess name="GLOBAL_BLUE_17" extends="TAXFREE_BASE">
+    <parameter name="communicator">
+      <param_value dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.auth.TaxFreeHttpsCommunicator</param_value>
+    </parameter>
+    <parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various reasons -->
+    </parameter>
+    <parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry key="1401">
+          <value dtype="AuthFailedActionTypes">
+          <!-- Invalid Traveller Identifier -->
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="1201">
+          <!-- Cheque Already Voided -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </parameter>
+  </AuthProcess>
+
+  <AuthRequestMap name="GLOBAL_BLUE_15_01">
+    <AuthRequest key="GB_DESK_CONFIG_15_01" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_15_01.GlobalBlueDeskConfigRequest_15_01" enabled="true" />
+    <AuthRequest key="GB_GLOBAL_CONFIG_15_01" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_15_01.GlobalBlueGlobalConfigRequest_15_01" enabled="true" />
+    <AuthRequest key="GB_BLOCKED_COUNTRIES_15_01" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_15_01.GlobalBlueBlockedCountriesRequest_15_01" enabled="true" />
+    <AuthRequest key="GB_CONDENSED_TRED_CONFIG_15_01" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_15_01.GlobalBlueCondTredAuthRequest_15_01" enabled="true" />
+    <AuthRequest key="GB_ISSUE_FORM_15_01" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_15_01.GlobalBlueIssueFormAuthRequest_15_01" enabled="true" />
+    <AuthRequest key="GB_TRAVELLER_15_01" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_15_01.GlobalBlueTravellerAuthRequest_15_01" enabled="true" />
+    <AuthRequest key="GB_STATUS_15_01" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_15_01.GlobalBlueStatusAuthRequest_15_01" enabled="true" />
+    <AuthRequest key="GB_VOID_FORM_15_01" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_15_01.GlobalBlueVoidFormAuthRequest_15_01" enabled="true" />
+    <AuthRequest key="GB_REISSUE_FORM_15_01" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_15_01.GlobalBlueReissueFormAuthRequest_15_01" enabled="true" />
+  </AuthRequestMap>
+
+  <AuthRequestMap name="GLOBAL_BLUE_16_06">
+    <AuthRequest key="GB_DESK_CONFIG_16_06" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_16_06.GlobalBlueDeskConfigRequest_16_06" enabled="true" />
+    <AuthRequest key="GB_GLOBAL_CONFIG_16_06" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_16_06.GlobalBlueGetCountriesRequest_16_06" enabled="true" />
+    <AuthRequest key="GB_BLOCKED_COUNTRIES_16_06" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_16_06.GlobalBlueBlockedCountriesRequest_16_06" enabled="true" />
+    <AuthRequest key="GB_CONDENSED_TRED_CONFIG_16_06" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_16_06.GlobalBlueCondTredAuthRequest_16_06" enabled="true" />
+    <AuthRequest key="GB_ISSUE_FORM_16_06" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_16_06.GlobalBlueIssueFormAuthRequest_16_06" enabled="true" />
+    <AuthRequest key="GB_TRAVELLER_16_06" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_16_06.GlobalBlueTravellerAuthRequest_16_06" enabled="true" />
+    <AuthRequest key="GB_STATUS_16_06" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_16_06.GlobalBlueStatusAuthRequest_16_06" enabled="true" />
+    <AuthRequest key="GB_VOID_FORM_16_06" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_16_06.GlobalBlueVoidFormAuthRequest_16_06" enabled="true" />
+    <AuthRequest key="GB_REISSUE_FORM_16_06" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_16_06.GlobalBlueReissueFormAuthRequest_16_06" enabled="true" />
+  </AuthRequestMap>
+  
+  <AuthRequestMap name="GLOBAL_BLUE_17">
+    <AuthRequest key="GB_DESK_CONFIG_17" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_17.GlobalBlueDeskConfigRequest_17" enabled="true" />
+    <AuthRequest key="GB_GLOBAL_CONFIG_17" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_17.GlobalBlueGetCountriesRequest_17" enabled="true" />
+    <AuthRequest key="GB_BLOCKED_COUNTRIES_17" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_17.GlobalBlueBlockedCountriesRequest_17" enabled="true" />
+    <AuthRequest key="GB_CONDENSED_TRED_CONFIG_17" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_17.GlobalBlueCondTredAuthRequest_17" enabled="true" />
+    <AuthRequest key="GB_ISSUE_FORM_17" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_17.GlobalBlueIssueFormAuthRequest_17" enabled="true" />
+    <AuthRequest key="GB_TRAVELLER_17" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_17.GlobalBlueTravellerAuthRequest_17" enabled="true" />
+    <AuthRequest key="GB_STATUS_17" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_17.GlobalBlueStatusAuthRequest_17" enabled="true" />
+    <AuthRequest key="GB_VOID_FORM_17" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_17.GlobalBlueVoidFormAuthRequest_17" enabled="true" />
+    <AuthRequest key="GB_REISSUE_FORM_17" class="oracle.retail.xstore.countrypack.common.taxfree.globalblue.auth.grips_17.GlobalBlueReissueFormAuthRequest_17" enabled="true" />
+  </AuthRequestMap>
+</AuthConfig>

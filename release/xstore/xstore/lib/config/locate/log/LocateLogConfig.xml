@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/log/LogConfig.xsd">
+  
+  <RoutingRules>
+    <RoutingRule name="LOCATE.STATUS_UPDATE" document="LOCATE.REQUEST" file="LOCATE.STATUS_UPDATE">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.xom.locate.impl.order.update.req.StatusUpdateLogEntry" />
+    </RoutingRule>
+    <RoutingRule name="LOCATE.ORDER_SUBMIT" document="LOCATE.REQUEST" file="LOCATE.ORDER_SUBMIT">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.xom.locate.impl.order.submit.req.OrderSubmitLogEntry" />
+    </RoutingRule>
+    <RoutingRule name="LOCATE.UPDATE_AVAILABLE_INVENTORY" document="LOCATE.REQUEST" file="LOCATE.UPDATE_AVAILABLE_INVENTORY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.xom.locate.impl.order.update.req.UpdateAvailableInventoryLogEntry" />
+    </RoutingRule>
+  </RoutingRules>
+
+  <LogFiles>
+    <LogFile id="LOCATE.STATUS_UPDATE">
+      <Destination class="dtv.logbuilder.writers.LogEntryFileWriter">
+        <Parameter name="file_path" value="${user.dir}/log/locate/statusUpdate" />
+        <Parameter name="file_per_object" value="true" />
+        <Parameter name="training_file_path" value="${user.dir}/log/training/locate/statusUpdate" />
+      </Destination>
+    </LogFile>
+    <LogFile id="LOCATE.ORDER_SUBMIT">
+      <Destination class="dtv.logbuilder.writers.LogEntryFileWriter">
+        <Parameter name="file_path" value="${user.dir}/log/locate/submit" />
+        <Parameter name="file_per_object" value="true" />
+        <Parameter name="training_file_path" value="${user.dir}/log/training/locate/submit" />
+      </Destination>
+    </LogFile>
+    <LogFile id="LOCATE.UPDATE_AVAILABLE_INVENTORY">
+      <Destination class="dtv.logbuilder.writers.LogEntryFileWriter">
+        <Parameter name="file_path" value="${user.dir}/log/locate/inventoryUpdate" />
+        <Parameter name="file_per_object" value="true" />
+        <Parameter name="training_file_path" value="${user.dir}/log/training/locate/inventoryUpdate" />
+      </Destination>
+    </LogFile>
+  </LogFiles>
+
+  <LogTypes>
+    <LogType document="LOCATE.REQUEST" sectionref="LOCATE.REQUEST" />
+  </LogTypes>
+
+  <sections>
+    <section name="LOCATE.REQUEST">
+      <row>
+        <field>
+          <aggregate class="dtv.xst.xom.locate.impl.ServiceRequestLogEntryField" />
+        </field>
+      </row>
+    </section>
+  </sections>
+</LogDefinitions>

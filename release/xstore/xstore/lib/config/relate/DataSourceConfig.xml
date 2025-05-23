@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSourceSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/DataSourceConfig.xsd">
+  <!-- Relate data sources for customer reads and writes.  Two separate data sources are used 
+  because read operations are done in real-time and thus subject to online/offline processing.  
+  Write operations, on the other hand, are, by default, simply written out to a log file for later
+  batch/polling processing.  We should always write to a log file even when Relate is offline. -->
+  <DataSource name="ConcurrentStoreRelate" networkScope="LAN">
+    <Strategy dtype="String">concurrentWritePersistenceStrategy</Strategy>
+    <Property key="DataSource1" value="StorePrimary" />
+    <Property key="DataSource2" value="Relate" />
+  </DataSource>
+  
+  <DataSource name="Relate" enabled="false" />
+</DataSourceSet>

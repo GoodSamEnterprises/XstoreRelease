@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <context:annotation-config />
+
+  <!-- Report Beans for FR -->
+  <!-- BEGIN: Report Framework Beans -->
+  <beans profile="retail" >
+
+  <bean id="COUNTRYPACK.TECHNICAL_EVENT_LOG_REPORT" class="dtv.pos.framework.reporting.ReportDefinition">
+    <property name="title" value="_countrypack.fr.technicalEventLogReport" />
+    <property name="dataTemplate" value="classpath:countrypack/FR/report/technicaleventlog/TechnicalEventLog.xdt" />
+    <property name="layoutTemplate" value="classpath:countrypack/FR/report/technicaleventlog/TechnicalEventLog.rtf" />
+  </bean>
+  
+  <bean id="COUNTRYPACK.INVOICE" class="dtv.pos.framework.reporting.ReportDefinition">
+    <property name="title" value="_countrypack.invoice.layoutRegularTitle" />
+    <property name="parameterPromptMessage" value="_rptEnterParamMessage" />
+    <property name="dataTemplate"   value="classpath:countrypack/FR/report/invoice/Invoice.xdt"/>
+    <property name="layoutTemplate" value="classpath:countrypack/FR/report/invoice/Invoice.rtf"/>
+  </bean>
+  
+  </beans>
+  <!-- END: Report Definition Beans -->
+</beans>

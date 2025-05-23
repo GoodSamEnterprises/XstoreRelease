@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Security>
+  <ThreadContext name="DbAccessFromUiThread">
+    <ignore>dtv.data2.access.</ignore>
+    <ignore>dtv.pos.i18n.DatabaseTranslationService#</ignore>
+    <ignore>dtv.pos.common.LocationFactory#</ignore>
+    <ignore>dtv.pos.common.ConfigurationMgr#</ignore>
+    <ignore>dtv.pos.ejournal.TransactionSearchHelper#</ignore>
+    <ignore>oracle.ucp.</ignore>
+    <allow>dtv.xst.dao.com.CodeLocator</allow>
+    <allow>dtv.pos.i18n.format.PosTextFormatter#format</allow>
+    <allow>dtv.pos.framework.systemcycle.StateJournalHelper#lookupStateJournal</allow>
+    <allow>dtv.pos.framework.systemcycle.SystemCycleHelper#getPendingCloseWorkStations</allow>
+    <allow>dtv.xst.log4j.DtxAppender#writeEventLog</allow>
+    <allow>dtv.xst.dao.inv.impl.InventoryDocumentLineItemModel#getInventoryItem</allow>
+    <allow>dtv.pos.inventory.level.MerchHierHelper#</allow>
+    <allow>dtv.pos.register.ui.status</allow>
+    <allow>dtv.pos.info.quickitems.QuickItemsModel#getQuickItemsTree</allow>
+    <allow>dtv.pos.employee.message.EmployeeMessageModel#rebuildMessages</allow>
+    <allow>dtv.pos.employee.schedule.tab.EmployeeScheduleModel#loadEmployees</allow>
+    <allow>dtv.pos.ejournal.EjournalEditModel#</allow>
+    <allow>dtv.xst.dao.tax.impl.TaxExemptionModel#getReasonCodeObject</allow>
+    <allow>dtv.xst.dao.trl.impl.WarrantyModifierModel#getWarranty</allow>
+    <allow>dtv.xst.dao.xom.impl.OrderLineModel#getShipperMethodForId</allow>
+    <allow>dtv.xst.dao.xom.impl.OrderModel#getOrderLocationObject</allow>
+    <allow>dtv.pos.inventory.lookup.ItemResultsEditModel#getTaxGroup</allow>
+    <allow>dtv.pos.inventory.receive.AddReceivingDocumentModel#updateReceivedFromFieldDependencies</allow>
+    <allow>dtv.pos.inventory.ship.ShipperFactory</allow>
+    <allow>dtv.pos.inventory.ship.ShipperMethodFactory</allow>
+    <allow>dtv.pos.inventory.ship.ShippingDocumentEditModel#getPossibleShipTos</allow>
+    <allow>dtv.pos.inventory.ship.ShippingDocumentEditModel#updateShipToFieldDependencies</allow>
+    <allow>dtv.pos.tender.TenderHelper#getTender</allow>
+    <allow>dtv.pos.customer.CustomerGroupEnumValueWrapper#setActualValue</allow>
+    <allow>dtv.pos.customer.CustomerUIHelper#getCustomerLoyaltyIconUrl</allow>
+    <allow>dtv.pos.customer.activitystream.ActivityStreamHelper#getActivityStream</allow>
+    <allow>dtv.xst.crm.relate.impl.task.lookup.RelateTaskTypeAdapter#adaptToXstoreParty</allow>
+    <allow>dtv.pos.customer.model.CustTransHistoryListModel#retrieveData</allow>
+    <allow>dtv.pos.shared.visibilityrules.TillAttachedAccessCheck#checkVisibilityImpl</allow>
+    <allow>dtv.pos.raincheck.PrintRainCheckVisibilityRule#checkVisibilityImpl</allow>
+    <allow>dtv.pos.common.LocationFactory#getStoreByNumber</allow>
+    <allow>dtv.pos.tasks.TaskInfoModel#</allow>
+    <allow>dtv.pos.flight.visibilityrules.AnySuspendedTransactionVisibilityRule#checkVisibilityImpl</allow>
+    <allow>dtv.xst.dao.trn.impl.NoSaleTransactionModel#getReasonCodeObject</allow>
+  </ThreadContext>
+  <ThreadContext name="XcenterAccessFromUiThread">
+    <ignore>dtv.data2.access.</ignore>
+    <ignore>dtv.pos.i18n.DatabaseTranslationService#</ignore>
+    <allow>dtv.pos.ejournal.EjournalEditModel#</allow>
+    <allow>dtv.pos.customer.activitystream.ActivityStreamHelper#getActivityStream</allow>
+    <allow>dtv.pos.customer.CustomerUIHelper#getCustomerLoyaltyIconUrl</allow>
+    <allow>dtv.pos.customer.model.CustTransHistoryInformationTabsModel#getRollingData</allow>
+    <allow>dtv.xst.crm.relate.impl.cust.ValueHelper#getXstorePartyId</allow>
+    <allow>dtv.pos.tasks.TaskInfoModel#</allow>
+  </ThreadContext>
+</Security>

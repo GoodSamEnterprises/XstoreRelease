@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AuthConfig.xsd">
+
+  <AuthProcess name="FINTRAX_4_4" extends="TAXFREE_BASE">
+    <parameter name="communicator">
+      <param_value dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.auth.TaxFreeHttpsCommunicator</param_value>
+    </parameter>
+  </AuthProcess>
+
+  <AuthRequestMap name="FINTRAX_4_4">
+    <AuthRequest key="FINTRAX_STATUS_4_4" class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.auth.service_4_4.FintraxStatusAuthRequest_4_4" enabled="true" />
+    <AuthRequest key="FINTRAX_TRAVELLER_4_4" class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.auth.service_4_4.FintraxTravellerAuthRequest_4_4" enabled="true" />
+    <AuthRequest key="FINTRAX_INSERT_INVOICE_4_4" class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.auth.service_4_4.FintraxInsertInvoiceAuthRequest_4_4" enabled="true" />
+    <AuthRequest key="FINTRAX_CREATE_VOUCHER_4_4" class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.auth.service_4_4.FintraxCreateVoucherAuthRequest_4_4" enabled="true" />
+    <AuthRequest key="FINTRAX_REPRINT_VOUCHER_4_4" class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.auth.service_4_4.FintraxReprintVoucherAuthRequest_4_4" enabled="true" />
+    <AuthRequest key="FINTRAX_VOID_VOUCHER_4_4" class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.auth.service_4_4.FintraxVoidVoucherAuthRequest_4_4" enabled="true" />
+    <AuthRequest key="FINTRAX_BRT_SEARCH_4_4" class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.auth.service_4_4.FintraxBrtSearchAuthRequest_4_4" enabled="true" />
+  </AuthRequestMap>
+
+</AuthConfig>

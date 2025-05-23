@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+  <context:annotation-config />
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="invisibleRule" class="com.micros_retail.xfgclient.visibilityrule.InvisibleRule" />
+
+  <bean id="activeRule" class="com.micros_retail.xfgclient.visibilityrule.ActiveRule" />
+
+  <bean id="inactiveRule" class="com.micros_retail.xfgclient.visibilityrule.InactiveRule" />
+
+  <bean id="disabledRule" class="com.micros_retail.xfgclient.visibilityrule.DisabledRule" />
+
+  <bean id="quickTabItemSelectionsPressableRule" class="com.micros_retail.xfgclient.visibilityrule.state.CurrentStateRule">
+    <property name="successResult" value="ACTIVE" />
+    <property name="failureResult" value="INACTIVE" />
+    <property name="states">
+      <list>
+        <ref bean="STATE_LoggedIn" />
+        <ref bean="STATE_ReturnInTransaction" />
+        <ref bean="STATE_ReturnMode" />
+        <!-- <ref bean="STATE_AlphanumericStringEntry" /> -->
+        <!-- <ref bean="STATE_SerialNumberEntry" /> -->
+        <ref bean="STATE_ItemEntry" />
+        <ref bean="STATE_LineItemEntry" />
+        <!-- <ref bean="STATE_TenderLineEntry" /> -->
+        <ref bean="STATE_SaleInTransaction" />
+        <ref bean="STATE_InPreselection" />
+        <ref bean="STATE_DepartmentLookup" />
+        <ref bean="STATE_QuickPick" />
+        <ref bean="STATE_ItemSelection" />
+        <ref bean="STATE_ItemSearch" />
+        <ref bean="STATE_InventoryAdjustment" />
+        <ref bean="STATE_InventoryAdjustmentInTransaction" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="quickTabFunctionGridButtonActiveRule" class="com.micros_retail.xfgclient.visibilityrule.state.CurrentStateRule">
+    <property name="successResult" value="ACTIVE" />
+    <property name="failureResult" value="DISABLED" />
+    <property name="states">
+      <list>
+        <ref bean="STATE_ItemSearch" />
+        <ref bean="STATE_CustomerSearch" />
+        <ref bean="STATE_DepartmentLookup" />
+        <ref bean="STATE_QuickPick" />
+        <ref bean="STATE_ItemSelection" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="departmentLookupActiveRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.constant.IsEnabledRule">
+          <property name="enabled"
+            value="#{T(com.micros_retail.xfgclient.config.ConfigurationMgr).getDepartmentLookupEnabled()}" />
+        </bean>
+        <ref bean="quickTabItemSelectionsPressableRule" />
+        <bean class="com.micros_retail.xfgclient.visibilityrule.state.CurrentStateRule">
+          <property name="successResult" value="DISABLED" />
+          <property name="failureResult" value="ACTIVE" />
+          <property name="states">
+            <list>
+              <ref bean="STATE_DepartmentLookup" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="quickPickActiveRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.constant.IsEnabledRule">
+          <property name="enabled"
+            value="#{T(com.micros_retail.xfgclient.config.ConfigurationMgr).getQuickPickEnabled()}" />
+        </bean>
+        <ref bean="quickTabItemSelectionsPressableRule" />
+        <bean class="com.micros_retail.xfgclient.visibilityrule.state.CurrentStateRule">
+          <property name="successResult" value="DISABLED" />
+          <property name="failureResult" value="ACTIVE" />
+          <property name="states">
+            <list>
+              <ref bean="STATE_QuickPick" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="itemSelectionActiveRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.constant.IsEnabledRule">
+          <property name="enabled"
+            value="#{T(com.micros_retail.xfgclient.config.ConfigurationMgr).getItemSelectionEnabled()}" />
+        </bean>
+        <ref bean="quickTabItemSelectionsPressableRule" />
+        <bean class="com.micros_retail.xfgclient.visibilityrule.state.CurrentStateRule">
+          <property name="successResult" value="DISABLED" />
+          <property name="failureResult" value="ACTIVE" />
+          <property name="states">
+            <list>
+              <ref bean="STATE_ItemSelection" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="storeMessagesPressableRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.constant.IsEnabledRule">
+          <property name="enabled"
+            value="#{T(com.micros_retail.xfgclient.config.ConfigurationMgr).getStoreMessagesEnabled()}" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.state.CurrentStateRule">
+          <property name="successResult" value="ACTIVE" />
+          <property name="failureResult" value="INACTIVE" />
+          <property name="states">
+            <list>
+              <ref bean="STATE_LoggedIn" />
+              <ref bean="STATE_ReturnMode" />
+              <ref bean="STATE_SaleInTransaction" />
+              <ref bean="STATE_ReturnInTransaction" />
+              <ref bean="STATE_SaleInTotal" />
+              <ref bean="STATE_ReturnInTotal" />
+              <ref bean="STATE_InPreselection" />
+              <ref bean="STATE_DepartmentLookup" />
+              <ref bean="STATE_QuickPick" />
+              <ref bean="STATE_ItemSelection" />
+              <ref bean="STATE_ItemSearch" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="storeMessagesActiveRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.storemessages.StoreMessagesAvailableRule" />
+        <ref bean="storeMessagesPressableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="emptyStoreMessagesActiveRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.storemessages.NoStoreMessagesAvailableRule" />
+        <ref bean="storeMessagesPressableRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="amountDueButtonActiveRule" class="com.micros_retail.xfgclient.visibilityrule.state.CurrentStateRule">
+    <property name="successResult" value="ACTIVE" />
+    <property name="failureResult" value="INACTIVE" />
+    <property name="states">
+      <list>
+        <ref bean="STATE_SaleInTransaction" />
+        <ref bean="STATE_ReturnInTransaction" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="customerAwardsBarStateRule" class="com.micros_retail.xfgclient.visibilityrule.state.CurrentStateRule">
+    <property name="successResult" value="ACTIVE" />
+    <property name="failureResult" value="INACTIVE" />
+    <property name="states">
+      <list>
+        <ref bean="STATE_LoggedIn" />
+        <ref bean="STATE_SaleInTransaction" />
+        <ref bean="STATE_SaleInPayment" />
+        <ref bean="STATE_SaleInTotal" />
+        <ref bean="STATE_ReturnMode" />
+        <ref bean="STATE_ReturnInTransaction" />
+        <ref bean="STATE_ReturnInPayment" />
+        <ref bean="STATE_ReturnInTotal" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="customerAwardsBarActiveRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.customer.CustomerAwardsBarActiveRule" />
+        <ref bean="customerAwardsBarStateRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="customerAwardsBarInvisibleRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.customer.CustomerAwardsBarInvisibleRule" />
+        <ref bean="customerAwardsBarStateRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="customerViewDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.state.CurrentStateRule">
+          <property name="successResult" value="ACTIVE" />
+          <property name="failureResult" value="INVISIBLE" />
+          <property name="states">
+            <list>
+              <ref bean="STATE_CustomerSearch" />
+            </list>
+          </property>
+        </bean>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.customer.CustomerViewDisabledRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="selectCustomerActiveRule" class="com.micros_retail.xfgclient.visibilityrule.customer.SelectCustomerActiveRule" />
+
+  <bean id="voidLineDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.voiding.VoidItemDisabledRule">
+    <property name="checkLastItem" value="false" />
+  </bean>
+
+  <bean id="voidLastDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.voiding.VoidItemDisabledRule">
+    <property name="checkLastItem" value="true" />
+  </bean>
+
+  <bean id="voidLineInvAdjustmentItemDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.voiding.VoidInventoryAdjustmentItemDisabledRule">
+    <property name="checkLastItem" value="false" />
+  </bean>
+
+  <bean id="voidLastInvAdjustmentItemDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.voiding.VoidInventoryAdjustmentItemDisabledRule">
+    <property name="checkLastItem" value="true" />
+  </bean>
+
+  <bean id="noReceiptReturnDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.returns.NoReceiptReturnDisabledRule" />
+
+  <bean id="isTenderDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.tender.IsTenderDisabledRule" />
+
+  <bean id="allowMixedReturnInSaleTransActiveRule" class="com.micros_retail.xfgclient.visibilityrule.sale.AllowMixedInTransWithSaleItemTypeRule">
+    <property name="type" value="RETURN" />
+  </bean>
+
+  <bean id="allowMixedSaleInReturnTransActiveRule" class="com.micros_retail.xfgclient.visibilityrule.sale.AllowMixedInTransWithSaleItemTypeRule">
+    <property name="type" value="SALE" />
+  </bean>
+
+  <bean id="scaleInfoRule" class="com.micros_retail.xfgclient.visibilityrule.scale.ScaleDevicePresentRule" />
+
+  <bean id="trainingModeActiveRule" class="com.micros_retail.xfgclient.visibilityrule.training.TrainingModeActiveRule" />
+
+  <bean id="trainingModeInactiveRule" class="com.micros_retail.xfgclient.visibilityrule.training.TrainingModeInactiveRule" />
+
+  <bean id="customerRemoveDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.customer.CustomerRemoveDisabledRule" />
+
+  <bean id="sellNonMerchRule" class="com.micros_retail.xfgclient.visibilityrule.CheckPrivilegeForVisibilityRule">
+    <property name="privilege" ref="PRV_SellNonPhysical" />
+  </bean>
+
+  <bean id="sellGiftCardRule" class="com.micros_retail.xfgclient.visibilityrule.CheckPrivilegeForVisibilityRule">
+    <property name="privilege" ref="PRV_SellGiftCard" />
+  </bean>
+
+  <bean id="sellGiftCertficateRule" class="com.micros_retail.xfgclient.visibilityrule.CheckPrivilegeForVisibilityRule">
+    <property name="privilege" ref="PRV_SellGiftCertficate" />
+  </bean>
+
+  <bean id="returnNonMerchRule" class="com.micros_retail.xfgclient.visibilityrule.CheckPrivilegeForVisibilityRule">
+    <property name="privilege" ref="PRV_ReturnWithNonReturnItem" />
+  </bean>
+
+  <bean id="returnGiftCardRule" class="com.micros_retail.xfgclient.visibilityrule.CheckPrivilegeForVisibilityRule">
+    <property name="privilege" ref="PRV_ReturnGiftCard" />
+  </bean>
+
+  <bean id="returnGiftCertficateRule" class="com.micros_retail.xfgclient.visibilityrule.CheckPrivilegeForVisibilityRule">
+    <property name="privilege" ref="PRV_ReturnGiftCertficate" />
+  </bean>
+
+  <bean id="contextSensitiveDiscountsEnabledRule" class="com.micros_retail.xfgclient.visibilityrule.constant.IsEnabledRule">
+    <property name="enabled"
+      value="#{T(com.micros_retail.xfgclient.config.ConfigurationMgr).getConfigSensitiveDiscountsEnabled()}" />
+  </bean>
+
+  <bean id="contextSensitiveDiscountsDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.constant.IsEnabledRule">
+    <property name="enabled"
+      value="#{!T(com.micros_retail.xfgclient.config.ConfigurationMgr).getConfigSensitiveDiscountsEnabled()}" />
+  </bean>
+
+  <bean id="voidCountActiveRule" class="com.micros_retail.xfgclient.visibilityrule.till.VoidCountActiveRule" />
+
+  <bean id="addAwardDiscountDisabledRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.constant.IsEnabledRule">
+          <property name="enabled"
+            value="#{!T(com.micros_retail.xfgclient.config.ConfigurationMgr).getConfigSensitiveDiscountsEnabled()}" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.constant.IsEnabledRule">
+          <property name="enabled"
+            value="#{!T(com.micros_retail.xfgclient.config.ConfigurationMgr).getDiscountTypeSelectionEnabled()}" />
+        </bean>
+        <ref bean="awardVisibilityRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="addAwardDiscountEnabledRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.constant.IsEnabledRule">
+          <property name="enabled"
+            value="#{T(com.micros_retail.xfgclient.config.ConfigurationMgr).getConfigSensitiveDiscountsEnabled()}" />
+        </bean>
+        <ref bean="awardVisibilityRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="awardVisibilityRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <list>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.xfr.XFRVisibilityRuleWrapper">
+          <property name="invert" value="true" />
+          <property name="rule">
+            <bean class="dtv.pos.customer.loyalty.LoyaltyCardInUseVisibilityRule" />
+          </property>
+        </bean>
+        <bean class="com.micros_retail.xfgclient.visibilityrule.xfr.XFRVisibilityRuleWrapper">
+          <property name="rule">
+            <bean class="dtv.pos.customer.award.AnyAwardsAvailableRule" />
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="anySaleReturnLineItemVisibilityRule" class="com.micros_retail.xfgclient.visibilityrule.AllVisibilityRule">
+    <property name="rules">
+      <bean class="com.micros_retail.xfgclient.visibilityrule.xfr.XFRVisibilityRuleWrapper">
+        <property name="rule">
+          <bean class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" />
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+</beans>

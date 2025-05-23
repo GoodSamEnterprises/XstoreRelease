@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OpChainConfig.xsd">
+
+  <OpChain name="ELECTRONIC_JOURNAL_VIEW" contextKey="ELECTRONIC_JOURNAL_VIEW" rollbackLevel="40">
+    <Op class="dtv.pos.ejournal.ViewEJournalOp" />
+  </OpChain>
+
+  <OpChain name="RETAIL_LOCATION_OPEN_ACTIVITY.local.1">
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.StoreOpenResetInvoiceSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.RETAIL_LOCATION_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.StoreOpenResetCreditNoteSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.RETAIL_LOCATION_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.op.StoreOpenResetTaxFreeSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.RETAIL_LOCATION_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.op.StoreOpenResetTaxFreeSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.RETAIL_LOCATION_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+      <Parameter name="TaxFreeCreditNote" value="true" />
+    </Op>    
+  </OpChain>
+
+  <OpChain name="WORKSTATION_OPEN_EXT.local.1">
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.WorkstationOpenResetInvoiceSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.WorkstationOpenResetCreditNoteSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.op.WorkstationOpenResetTaxFreeSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.op.WorkstationOpenResetTaxFreeSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+      <Parameter name="TaxFreeCreditNote" value="true" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="RETURN_INFORMATION_CHAIN.local.pre">
+    <ValidationOp validationsBean="countryPack.returnValidations" />
+    <ValidationOp class="oracle.retail.xstore.countrypack.common.invoice.op.ValidateInvoiceLineOp" validationsBean="countryPack.validateReturnLineForInvoice" >
+      <Parameter name="LineType" value="blindReturn" />
+    </ValidationOp>
+  </OpChain>
+
+  <OpChain name="PRE_RETURN_VERIFICATION.local.invoice">
+    <ValidationOp class="oracle.retail.xstore.countrypack.common.invoice.op.ValidateInvoiceLineOp" validationsBean="countryPack.validateReturnLineForInvoice" >
+      <Parameter name="LineType" value="return" />
+    </ValidationOp>
+  </OpChain>
+
+  <OpChain name="SALE_ITEM_VALIDATE.local.pre">
+    <ValidationOp class="oracle.retail.xstore.countrypack.common.invoice.op.ValidateInvoiceLineOp" validationsBean="countryPack.validateLineForInvoice" >
+      <Parameter name="LineType" value="sale" />
+    </ValidationOp>
+  </OpChain>
+
+  <!-- Clear issue flags when rolling back from tenders -->
+  <OpChain name="ROLLBACK_TENDER.local.pre">
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.InvoiceIssueSetValueOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.op.TaxFreeInvoiceIssueSetValueOp" />
+  </OpChain>
+
+  <OpChain name="ELECTRONIC_JOURNAL_DETAIL" rollbackLevel="50">
+    <Op class="oracle.retail.xstore.countrypack.common.op.ViewEJournalDetailInvoiceFunctionsOp" />
+  </OpChain>
+
+  <!-- Before tendering check if there is something to issue -->
+  <OpChain name="PRE_TENDERING_ACTIVITY.local.pre">
+    <PromptOp class="oracle.retail.xstore.countrypack.common.taxfree.op.PromptTaxFreeReissueAfterSaleOp" >
+      <Parameter name="chainKey" value="COUNTRYPACK.TAXFREE_CUSTOMER_DATA" />
+    </PromptOp>
+    <PromptOp class="oracle.retail.xstore.countrypack.common.taxfree.op.PromptTaxFreeOnCustomer" />
+    <OpChainRoute>
+      <Choice chainKey="COUNTRYPACK.INVOICE_REQUEST_IMPL" condition="oracle.retail.xstore.countrypack.common.invoice.condition.IsForceCreditNoteIssue" />
+      <Choice chainKey="COUNTRYPACK.TAXFREE_CUSTOMER_DATA"  >
+        <Condition class="oracle.retail.xstore.countrypack.common.taxfree.condition.IsTaxFreeIssueSelected">
+          <Parameter name="RequiredStatus" value="TF_REQUESTED" />
+        </Condition>
+      </Choice>
+    </OpChainRoute>
+  </OpChain>
+
+  <!-- Check for tax free eligibility based on Credit Card -->
+  <OpChain name="SALE_COMPLETE_AFTER_START.local.1" >
+    <OpChainRoute chainKey="COUNTRYPACK.TAXFREE_PROVIDER_CHECK_CARD_ELIGIBLE" />
+    <PromptOp class="oracle.retail.xstore.countrypack.common.taxfree.op.PromptTaxFreeOnCardOp" >
+      <Parameter name="chainKey" value="COUNTRYPACK.TAXFREE_CUSTOMER_DATA" />
+    </PromptOp>
+  </OpChain>
+
+    <!-- Manage invoice on a transaction post-voided from Electronic Journal -->
+  <OpChain name="POST_VOID_MAIN.1.pre">
+    <ValidationOp class="oracle.retail.xstore.countrypack.common.invoice.op.LoadInvoicesOp" validationsBean="countryPack.validatePostVoidInvoiceFromEj" />
+    <OpChainRoute>
+      <Choice chainKey="COUNTRYPACK.INVOICE_POST_VOID_MAIN.1.pre" condition="oracle.retail.xstore.countrypack.common.invoice.condition.TransactionHasSalesInvoice" />
+      <Choice chainKey="COUNTRYPACK.TAXFREE_POST_VOID_MAIN.1.pre" condition="oracle.retail.xstore.countrypack.common.taxfree.condition.TransactionHasTaxFreeInvoice" />
+    </OpChainRoute>
+  </OpChain>
+
+  <OpChain name="POST_VOID_MAIN.2.local.pre">
+    <OpChainRoute>
+      <Choice chainKey="COUNTRYPACK.INVOICE_POST_VOID" condition="oracle.retail.xstore.countrypack.common.invoice.condition.TransactionHasSalesInvoice" />
+      <Choice chainKey="COUNTRYPACK.TAXFREE_POST_VOID" condition="oracle.retail.xstore.countrypack.common.taxfree.condition.TransactionHasTaxFreeInvoice" />
+    </OpChainRoute>
+  </OpChain>
+  
+  <!-- Tax Free credit note issuing needs to be before any fiscal document to handle cases where credit note fails -->
+  <OpChain name="SALE_COMPLETE_BEFORE_FINISH.invoice">
+    <OpChainRoute chainKey="COUNTRYPACK.TAXFREE_VOID_FORM_ON_SALE_PROVIDER_IMPL" condition="oracle.retail.xstore.countrypack.common.taxfree.condition.TransactionHasTaxFreeInvoiceReturned" />
+  </OpChain>
+
+  <!-- Create tax free invoice -->
+  <OpChain name="SALE_COMPLETE_FINISH.local.post">
+    <OpChainRoute>
+      <Choice chainKey="COUNTRYPACK.TAXFREE_ISSUE_FORM_PROVIDER_IMPL" >
+        <Condition class="oracle.retail.xstore.countrypack.common.taxfree.condition.IsTaxFreeIssueSelected">
+          <Parameter name="RequiredStatus" value="TF_CONFIRMED" />
+        </Condition>
+      </Choice>
+    </OpChainRoute>
+  </OpChain>
+
+  <!-- Create invoice -->
+  <OpChain name="SALE_COMPLETE_FINISH.3">
+    <OpChainRoute>
+      <Choice chainKey="COUNTRYPACK.CREATE_INVOICE" condition="oracle.retail.xstore.countrypack.common.invoice.condition.IsPrintInvoice" />
+    </OpChainRoute>
+  </OpChain>
+
+  <!-- Print Tax Free form -->
+  <OpChain name="PRINT_FISCAL_RECEIPTS.post">
+    <OpChainRoute>
+      <Choice chainKey="COUNTRYPACK.TAXFREE_PRINT_CONFIRM" >
+        <Condition class="oracle.retail.xstore.countrypack.common.taxfree.condition.IsTaxFreeIssueSelected">
+          <Parameter name="RequiredStatus" value="TF_CONFIRMED" />
+        </Condition>
+      </Choice>
+    </OpChainRoute>
+  </OpChain>
+
+  <OpChain name="RESET_REGISTER.local.post">
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.ClearInvoiceDataOp" />
+  </OpChain>
+
+  <OpChain name="REFUND_TENDER" rollbackChainKey="ROLLBACK_TENDER_PROMPT" rollbackLevel="50">
+    <PromptOp class="oracle.retail.xstore.countrypack.common.taxfree.op.DisplayTaxFreeCreditNoteWarningOp" />
+    <!--ContextKey dtype="String">REFUND_TENDER</ContextKey-->
+    <Op class="dtv.pos.register.itemmessages.DisplayInstructionsOp">
+      <Parameter name="FILENAME" value="_instructionalTenderReturnMsg" />
+    </Op>
+    <!-- this operation REQUIRES this context to be active so
+         that if it needs to route a credit card event,
+         it will be routed correctly -->
+    <Op class="dtv.pos.tender.ProcessSavedTenderInputOp" contextKey="REFUND_TENDER" />
+    <Op class="dtv.pos.hardware.op.SubtotalCustomerDisplayOp" />
+    <!-- reasserting for this last op, because it is what gets rerun -->
+    <Op class="dtv.pos.register.PromptTenderMenuOp">
+      <Parameter name="MenuKey" value="RETURN::TENDER_OPTIONS" />
+    </Op>
+  </OpChain>
+</OpChainSet>

@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView formKey="ORDER_TRANSACTION_LIST" formLocation="TRANSACTION_LIST_AREA" formLayout="LEFT_TO_RIGHT">
+  
+    <FormViewPanel panelType="TOP_INFO" class="dtv.pos.register.ui.FormTransactionInformationHeader">
+      <Touch ref="CUSTOMER::EDIT">
+        <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+        <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateCurrentPromptResponsivenessRule" />
+      </Touch>
+      <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsTransactionInformationPanel</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginTransactionInformationPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      
+      <FormViewCell type="FormLabelEmphasized" resource="customerName">
+        <Font fontSize="+8"/>
+      </FormViewCell>
+      <FormViewCell layoutLocation="Last" type="FormIcon" resource="loyaltyIcon">
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+    </FormViewPanel>
+    <!-- This section is used to take over the area just below the customer name/loyalty information section
+     and just above the header section of the transaction list area
+    <FormViewPanel panelType="TOP_INFO_FOOTER">
+    </FormViewPanel>
+    -->
+    <FormViewPanel panelType="LIST" formTabKey="DEFAULT">
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell layoutLocation="0, 0, 1, 1, F, F" type="ScrollEventFormList" resource="viewList">
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">ORDER_LINE_REGISTER</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <RuleSet dtype="String">ORDER_TRANSACTION</RuleSet>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel panelType="LIST_FOOTER" class="dtv.pos.register.ui.FormTransactionListDetails">
+      <ComponentParameter name="setName">
+        <param_value dtype="String">TRANSACTION_LIST_FOOTER</param_value>
+      </ComponentParameter>
+    </FormViewPanel>
+    <FormViewPanel panelType="BOTTOM_INFO" class="dtv.pos.register.ui.FormTransactionInformationFooter">
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">-1.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginTransactionInformationPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      
+      <FormViewPanel name="ASSOCIATES_AREA">
+        <Touch ref="ORDER::CHANGE_COMMISSIONED_ASSOCIATES_TOUCH">
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateMenuPromptResponsivenessRule" />
+        </Touch>
+        <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setGaps">
+            <Param_value dtype="InsetsRef">_gapsTransactionHeaderPanel</Param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell type="FormLabelEmphasized" textKey="_commissionedViewAssociates">
+          <Font fontSize="+8"/>
+        </FormViewCell>
+        <FormViewCell type="FormLabelEmphasized" resource="associateList">
+          <Font fontSize="+8"/>
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewPanel name="TENDER_AREA">
+        <Touch ref="ORDER::COMPLETE.TO_TENDERING">
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateMenuPromptResponsivenessRule" />
+        </Touch>
+        <Touch ref="ORDER::COMPLETE.NO_TENDERING">
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateMenuPromptResponsivenessRule" />
+        </Touch>
+        <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+        <LayoutLocation dtype="String">1, 0, 1, 1, R, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setGaps">
+            <Param_value dtype="InsetsRef">_gapsTransactionInformationPanel</Param_value>
+          </Parameter>
+        </LayoutParameters>
+        
+        <FormViewCell type="FormLabelTransaction" resource="footerAmountLabel">
+          <Font fontSize="+8"/>
+        </FormViewCell>
+        <FormViewCell type="FormLabelTransaction" resource="amountDue">
+          <FormatterType dtype="String">Money</FormatterType>
+          <Font fontSize="+8"/>
+        </FormViewCell>
+        <FormViewCell type="FormIcon" resource="footerCompleteTransactionIcon">
+          <Font fontSize="+8"/>
+        </FormViewCell>
+      </FormViewPanel>
+
+    </FormViewPanel>
+
+  </FormView>
+</FormViewSet>

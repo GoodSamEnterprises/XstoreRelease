@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri Feb 19 12:33:38 CET 2016 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner. ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet>
+  <FormView formKey="TAXFREE_REFUND_ETIHAD_CARD" formLocation="POPUP_VIEW_PANEL" formLayout="LEFT_TO_RIGHT">
+    <FormViewPanel panelType="DETAIL" formTabKey="DEFAULT">
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">-2.0, 5.0, 100.0, 5.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="IntegerArray">1, 0, 1, 0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      
+      <FormViewCell layoutLocation="0, 0, 5, 1, L, F" type="FormLabelDiminished" textKey="_countrypack.taxfree.refund.form.Etihad">
+        <FontRef fontSize="+4" fontKey="_fontLabelMedium" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 2, 5, 1, F, F" type="FormIcon" textKey="_imageBlueSeparator2">
+        <ComponentParameter name="setIsHorizontallyStretched">
+          <param_value dtype="Boolean">true</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewPanel layoutLocation="0, 3, 5, 1, F, F">
+        <ComponentParameter name="setPreferredSize">
+          <param_value dtype="DimensionRef"><![CDATA[_sizePreferredCustomerMaintananceSpacing]]></param_value>
+        </ComponentParameter>
+      </FormViewPanel>
+      <FormViewCell layoutLocation="0, 4, 1, 1, F, F" type="FormLabel" textKey="_countrypack.taxfree.refund.form.EtihadCard" resourceLink="etihadNumber">
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="2, 4, 3, 1, F, F" type="FormTextField" resource="etihadNumber">
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+        </ComponentParameter>
+        <DataField ref="EtihadNumber" />
+      </FormViewCell>
+
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT_OK" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

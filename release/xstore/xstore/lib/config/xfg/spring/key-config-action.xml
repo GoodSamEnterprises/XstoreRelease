@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="KEY_Escape" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.escape.label" />
+    <property name="code" value="23" />
+  </bean>
+
+  <bean id="KEY_Enter" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.enter.label" />
+    <property name="code" value="1" />
+  </bean>
+
+  <bean id="KEY_PLU" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.plu.label" />
+    <property name="code" value="3" />
+  </bean>
+
+  <bean id="KEY_Logout" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.logout.label" />
+    <property name="code" value="5" />
+  </bean>
+
+  <bean id="KEY_CompleteTransaction" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.completetransaction.label" />
+    <property name="code" value="6" />
+  </bean>
+
+  <bean id="KEY_Pause" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.pause.label" />
+    <property name="code" value="7" />
+  </bean>
+
+  <bean id="KEY_TransactionCancel" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.transactioncancel.label" />
+    <property name="code" value="8" />
+  </bean>
+
+  <bean id="KEY_Code" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.code.label" />
+    <property name="code" value="9" />
+  </bean>
+
+  <bean id="KEY_Quantity" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.quantity.label" />
+    <property name="code" value="10" />
+  </bean>
+
+  <bean id="KEY_Price" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.price.label" />
+    <property name="code" value="11" />
+  </bean>
+
+  <bean id="KEY_VoidLast" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.voidlast.label" />
+    <property name="code" value="12" />
+  </bean>
+
+  <bean id="KEY_PriceEnquiry" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.priceenquiry.label" />
+    <property name="code" value="13" />
+  </bean>
+
+  <bean id="KEY_ScaleZero" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.scalezero.label" />
+    <property name="code" value="14" />
+  </bean>
+
+  <bean id="KEY_ScaleTare" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.scaletare.label" />
+    <property name="code" value="15" />
+  </bean>
+
+  <bean id="KEY_ManualEntry" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.manualentry.label" />
+    <property name="code" value="16" />
+  </bean>
+
+  <bean id="KEY_ScaleInfo" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.scaleinfo.label" />
+    <property name="code" value="17" />
+  </bean>
+
+  <bean id="KEY_Discount" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.discount.label" />
+    <property name="code" value="18" />
+  </bean>
+
+  <bean id="KEY_VoidDiscount" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.voiddiscount.label" />
+    <property name="code" value="19" />
+  </bean>
+
+  <bean id="KEY_Camera" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.camera.label" />
+    <property name="code" value="20" />
+  </bean>
+
+  <bean id="KEY_ItemDiscount" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.itemdiscount.label" />
+    <property name="code" value="21" />
+  </bean>
+
+  <bean id="KEY_VoidItemDiscount" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.voiditemdiscount.label" />
+    <property name="code" value="22" />
+  </bean>
+
+  <!-- DONT FORGET: code 23 is reserved for KEY_ESCAPE -->
+  <!-- 24 is reserved for KEY_Toggle_Shift -->
+
+  <bean id="KEY_TransactionDiscount" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.transactiondiscount.label" />
+    <property name="code" value="25" />
+  </bean>
+
+  <bean id="KEY_VoidTransactionDiscount" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.voidtransactiondiscount.label" />
+    <property name="code" value="26" />
+  </bean>
+
+  <bean id="KEY_VoidSelected" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.void.label" />
+    <property name="code" value="27" />
+  </bean>
+
+  <bean id="KEY_ItemSearch" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.itemsearch.label" />
+    <property name="code" value="28" />
+  </bean>
+
+  <bean id="KEY_CustomerSearch" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.customersearch.label" />
+    <property name="code" value="29" />
+  </bean>
+
+  <bean id="KEY_CustomerRemove" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.customerremove.label" />
+    <property name="code" value="30" />
+  </bean>
+
+  <bean id="KEY_UnverifiedReturnMode" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.unverifiedreturn.label" />
+    <property name="code" value="31" />
+  </bean>
+
+  <bean id="KEY_Void" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.void.label" />
+    <property name="code" value="32" />
+  </bean>
+
+  <!-- 33 is reserved for KEY_Next_Keyboard_Language -->
+  <!-- 34 is reserved for KEY_Previous_Keyboard_Language -->
+
+  <bean id="KEY_Accept" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.accept.label" />
+    <property name="code" value="35" />
+  </bean>
+
+  <bean id="KEY_Manual_GS1_Entry" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.manualgs1.label" />
+    <property name="code" value="36" />
+  </bean>
+
+  <bean id="KEY_PostVoid" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.postvoid.label" />
+    <property name="code" value="37" />
+  </bean>
+
+  <bean id="KEY_View" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.view.label" />
+    <property name="code" value="38" />
+  </bean>
+
+  <bean id="KEY_Paid_In" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.paidin.label" />
+    <property name="code" value="39" />
+  </bean>
+
+  <bean id="KEY_Paid_Out" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.paidout.label" />
+    <property name="code" value="40" />
+  </bean>
+
+  <bean id="KEY_Suspend_Transaction" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.suspendtransaction.label" />
+    <property name="code" value="41" />
+  </bean>
+
+  <bean id="KEY_Resume_Transaction" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.resumetransaction.label" />
+    <property name="code" value="42" />
+  </bean>
+
+  <bean id="KEY_Close_Register" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.registerclose.label" />
+    <property name="code" value="43" />
+  </bean>
+
+  <bean id="KEY_Foreign_Currency" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.foreigncurrency.label" />
+    <property name="code" value="44" />
+  </bean>
+
+  <bean id="KEY_Available_Currencies" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.availableCurrencies.label" />
+    <property name="code" value="45" />
+  </bean>
+
+  <bean id="KEY_Reprint_Last_Receipt" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.reprintlastreceipt.label" />
+    <property name="code" value="46" />
+  </bean>
+
+  <bean id="KEY_Reprint_Receipt" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.reprintreceipt.label" />
+    <property name="code" value="47" />
+  </bean>
+
+  <bean id="KEY_EnterTrainingMode" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.entertrainingmode.label" />
+    <property name="code" value="48" />
+  </bean>
+
+  <bean id="KEY_ExitTrainingMode" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.exittrainingmode.label" />
+    <property name="code" value="49" />
+  </bean>
+
+  <bean id="KEY_Show_Xenvironment" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.showxenvironment.label" />
+    <property name="code" value="50" />
+  </bean>
+
+  <bean id="KEY_StoreMessages" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.storemessage.label" />
+    <property name="code" value="51" />
+  </bean>
+
+  <bean id="KEY_Gift_Card_Balance" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.storemessage.label" />
+    <property name="code" value="52" />
+  </bean>
+
+  <bean id="KEY_Till_Audit" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.tillaudit.label" />
+    <property name="code" value="53" />
+  </bean>
+
+  <bean id="KEY_Activate_Rcpt_Printing" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.activatercptprinting.label" />
+    <property name="code" value="54" />
+  </bean>
+
+  <bean id="KEY_RelateBrowser" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.relatebrowser.label" />
+    <property name="code" value="55" />
+  </bean>
+
+  <bean id="KEY_XcenterBrowser" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.xcenterbrowser.label" />
+    <property name="code" value="56" />
+  </bean>
+
+  <bean id="KEY_HouseAccountPayment" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.houseaccountpayment.label" />
+    <property name="code" value="57" />
+  </bean>
+
+  <bean id="KEY_HouseAccountReversal" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.houseaccountreversal.label" />
+    <property name="code" value="58" />
+  </bean>
+
+  <bean id="KEY_NoSale" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.nosale.label" />
+    <property name="code" value="59" />
+  </bean>
+
+  <bean id="KEY_LoyaltyInquiry" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.loyaltyinquiry.label" />
+    <property name="code" value="60" />
+  </bean>
+
+  <bean id="KEY_CloseVirtualKeyboard" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.closevirtualkeyboard.label" />
+    <property name="code" value="61" />
+  </bean>
+
+  <bean id="KEY_AboutScreen" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.about.label" />
+    <property name="code" value="62" />
+  </bean>
+
+  <bean id="KEY_DepartmentLookup" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.departmentlookup.label" />
+    <property name="code" value="64" />
+  </bean>
+
+  <bean id="KEY_QuickPick" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.quickpick.label" />
+    <property name="code" value="65" />
+  </bean>
+
+  <bean id="KEY_ItemSelection" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.itemselection.label" />
+    <property name="code" value="66" />
+  </bean>
+
+  <bean id="KEY_InventoryAdjustment" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.inventoryadjustment.label" />
+    <property name="code" value="67" />
+  </bean>
+
+  <bean id="KEY_VerifiedReturnMode" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.unverifiedreturn.label" />
+    <property name="code" value="68" />
+  </bean>
+
+  <bean id="KEY_ClockInOut" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.clockinout.label" />
+    <property name="code" value="69" />
+  </bean>
+
+  <bean id="KEY_CompleteTillCount" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.completetillcount.label" />
+    <property name="code" value="70" />
+  </bean>
+
+  <bean id="KEY_AwardDiscount" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.discount.award.label" />
+    <property name="code" value="71" />
+  </bean>
+
+  <bean id="KEY_NonMerch" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.nonmerch.label" />
+    <property name="code" value="72" />
+  </bean>
+
+  <bean id="KEY_Up" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.uparrow.label" />
+    <property name="code" value="100" />
+  </bean>
+
+  <bean id="KEY_Down" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.downarrow.label" />
+    <property name="code" value="101" />
+  </bean>
+
+  <bean id="KEY_Left" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.leftarrow.label" />
+    <property name="code" value="102" />
+  </bean>
+
+  <bean id="KEY_Right" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.rightnarrow.label" />
+    <property name="code" value="103" />
+  </bean>
+
+  <bean id="KEY_PageUp" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.pageup.label" />
+    <property name="code" value="104" />
+  </bean>
+
+  <bean id="KEY_PageDown" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.pagedown.label" />
+    <property name="code" value="105" />
+  </bean>
+
+  <bean id="KEY_Home" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.home.label" />
+    <property name="code" value="106" />
+  </bean>
+
+  <bean id="KEY_End" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.end.label" />
+    <property name="code" value="107" />
+  </bean>
+
+  <!-- not used atm. 
+  <bean id="KEY_Sum" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="Sum" />
+    <property name="code" value="33" />
+  </bean>
+
+  <bean id="KEY_ItemReturn" class="com.micros_retail.xfgclient.key.ActionKey"> 
+    <property name="label" value="Item Return" />
+    <property name="code" value="37" />
+  </bean>
+   -->
+
+</beans>

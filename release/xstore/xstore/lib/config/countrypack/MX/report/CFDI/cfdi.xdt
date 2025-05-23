@@ -1,0 +1,368 @@
+<dataTemplate name="Invoice" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="STORE" value="_countrypack.invoice.store"/>
+    <label name="CUSTOMER" value="_countrypack.invoice.customer"/>
+
+    <label name="TOTAL" value="_countrypack.invoice.mx.cfdiTotalBalance"/>
+
+    <label name="ITM_DESC" value="_countrypack.invoice.itemDescription"/>
+    <label name="DOC_DATE" value="_countrypack.invoice.documentDate "/>
+    <label name="TRN_DATE" value="_countrypack.invoice.transactionDate"/>
+    <label name="TRN_SEQ" value="_countrypack.invoice.transactionNumber"/>
+    <label name="DASH" value="_rptDashDelimiter"/>
+
+    <label name="PERCENT" value="_rptPercent"/>
+    <label name="HEADER_TRAINING_MODE" value="_countrypack.invoice.trainingmode"/>
+
+    <label name="ITEM_ID" value="_countrypack.invoice.itemId"/>
+    <label name="UNIT_PRICE" value="_countrypack.invoice.unitPrice"/>
+    <label name="QTY" value="_countrypack.invoice.quantity"/>
+    <label name="DISC_AMNT" value="_countrypack.invoice.discountAmount"/>
+    <label name="ITEM_TOTAL" value="_countrypack.invoice.itemTotal"/>
+
+    <label name="AMNT" value="_countrypack.invoice.amount"/>
+
+    <label name="CFDI_VERSION" value="_countrypack.invoice.mx.cfdiVersion"/>
+    <label name="CFDI_TYPE" value="_countrypack.invoice.mx.cfdiType"/>
+    <label name="CFDI_FOLIO" value="_countrypack.invoice.mx.cfdiFolio"/>
+    <label name="CFDI_SERIE" value="_countrypack.invoice.mx.cfdiSerie"/>
+    <label name="CFDI_UUID" value="_countrypack.invoice.mx.cfdiUUID"/>
+    <label name="CFDI_DIGITAL_SIGNATURE" value="_countrypack.invoice.mx.cfdiDigitalSignature"/>
+    <label name="CFDI_SUBTOTAL" value="_countrypack.invoice.mx.cfdiSubTotal"/>
+    <label name="CFDI_CURRENCY" value="_countrypack.invoice.mx.cfdiCurrency"/>
+    <label name="CFDI_PAYMENTTYPE" value="_countrypack.invoice.mx.cfdiPaymentType"/>
+    <label name="CFDI_PAYMENTMETHOD" value="_countrypack.invoice.mx.cfdiPaymentMethod"/>
+    <label name="CFDI_ISSUING_LOCATION" value="_countrypack.invoice.mx.cfdiIssuingLocation"/>
+    <label name="CFDI_CONFIRMATION" value="_countrypack.invoice.mx.cfdiConfirmationNumber"/>
+    
+    <label name="CFDI_RELATED_CFDI" value="_countrypack.invoice.mx.cfdiRelatedInvoices"/>
+    <label name="CFDI_RELATION_TYPE" value="_countrypack.invoice.mx.cfdiRelationType"/>
+    <label name="CFDI_EXCHANGE_RATE" value="_countrypack.invoice.mx.cfdiExchangeRate"/>
+    
+    <label name="RFC" value="_countrypack.invoice.mx.rfc"/>
+    <label name="RFC_PAC" value="_countrypack.invoice.mx.rfcPac"/>
+    
+    <label name="ISSUER_NAME" value="_countrypack.invoice.mx.name"/>
+    <label name="ISSUER_REGIME" value="_countrypack.invoice.mx.fiscalRegime"/>
+    <label name="ISSUER_CERTIFICATE" value="_countrypack.invoice.mx.certificateNbr"/>
+    
+    <label name="RECEIVER_CFDI_USE" value="_countrypack.invoice.mx.cfdiUse"/>
+    <label name="RECEIVER_FISCAL_RESIDENCE" value="_countrypack.invoice.mx.fiscalResidence"/>
+    
+    <label name="ITEM_FISCAL_ID" value="_countrypack.invoice.mx.itemClaveProdServ"/>
+    <label name="ITEM_MEASURE_UNIT" value="_countrypack.invoice.mx.itemMeasureUnit"/>
+    <label name="ITEM_COMPONENT" value="_countrypack.invoice.mx.itemComponent"/>
+    
+    <label name="TAX_PAID_TAX_DESC_ITEM" value="_countrypack.invoice.mx.taxPaidTax"/>
+    <label name="TAX_PAID_TAX_DESC_SUMMARY" value="_countrypack.invoice.mx.taxPaidTaxSummary"/>
+    <label name="TAX_WITHHELD_TAX_DESC" value="_countrypack.invoice.mx.taxWithheldTax"/>
+    <label name="TAX_TAXNAME" value="_countrypack.invoice.mx.taxName"/>
+    <label name="TAX_FACTOR_TYPE" value="_countrypack.invoice.mx.taxFactorType"/>
+    <label name="TAX_RATE_QUOTA" value="_countrypack.invoice.mx.taxRateQuota"/>
+    <label name="TAX_BASE_AMNT" value="_countrypack.invoice.mx.taxBaseAmount"/>
+    <label name="TAX_AMNT" value="_countrypack.invoice.mx.taxAmount"/>
+    <label name="TAX_LABEL_DESC" value="_countrypack.invoice.mx.taxLabelDesc"/>
+    <label name="TAX_TOTAL_PAID" value="_countrypack.invoice.mx.taxTotalPaid"/>
+    <label name="TAX_TOTAL_WITHHELD" value="_countrypack.invoice.mx.taxTotalWithheld"/>
+    <label name="TAX_AMNT_COLUMN" value="_countrypack.invoice.mx.taxAmountColumnTitle"/>
+    
+    <label name="FISCAL_FOLIO" value="_countrypack.invoice.mx.fiscalFolio"/>
+    <label name="AMOUNT_IN_WORDS" value="_countrypack.invoice.mx.amountInWords"/>
+    <label name="TFD_ORIGINAL_STRING" value="_countrypack.invoice.mx.originalStringComplementCertificate"/>
+    
+    <label name="SAT_DIGITAL_SIGNATURE" value="_countrypack.invoice.mx.satDigitalSignature"/>
+    <label name="SAT_CERTIFICATE_NBR" value="_countrypack.invoice.mx.satCertificateNbr"/>
+    <label name="SAT_CERTIFICATION_DATE" value="_countrypack.invoice.mx.satCertificationDate"/>
+    
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="invoicelogo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <!-- User Parameters -->
+  </parameters>
+
+  <dataSource>
+    <dataReference name="INVOICE_HEADER">
+      <ResultFields>
+        <ResultField>RetailLocation</ResultField>
+        <ResultField>RetailLocation.getStoreNbr</ResultField>
+        <ResultField>RetailLocation.getStoreName</ResultField>
+        <ResultField>InvoiceParty</ResultField>
+        <ResultField>InvoiceParty.getCustomerId</ResultField>
+        <ResultField>InvoiceParty.getOrganizationName</ResultField>
+        <ResultField>InvoiceParty.getPrimaryLocaleInformation</ResultField>
+        <ResultField>InvoiceParty.getPersonalTaxId</ResultField>
+        <ResultField>InvoiceParty.getNationalTaxId</ResultField>
+        <ResultField>TrainingMode</ResultField>
+        <ResultField>TransactionDate</ResultField>
+        <ResultField>TransactionSequence</ResultField>
+      </ResultFields>
+    </dataReference>
+    
+    <dataReference name="CFDI_HEADER">
+      <ResultFields>
+        <ResultField>Comprobante.getVersion</ResultField>
+        <ResultField>Comprobante.getSerie</ResultField>
+        <ResultField>Comprobante.getFolio</ResultField>
+        <ResultField>ComprobanteDate</ResultField>
+        <ResultField>FormaPago</ResultField>
+        <ResultField>Comprobante.getNoCertificado</ResultField>
+        <ResultField>Comprobante.getSubTotal</ResultField>
+        <ResultField>Comprobante.getMoneda</ResultField>
+        <ResultField>Comprobante.getTotal</ResultField>
+        <ResultField>TipoDeComprobante</ResultField>
+        <ResultField>MetodoPago</ResultField>
+        <ResultField>Comprobante.getLugarExpedicion</ResultField> 
+        <ResultField>Comprobante.getImpuestos.getTotalImpuestosTrasladados</ResultField>
+        <ResultField>Comprobante.getImpuestos.getTotalImpuestosRetenidos</ResultField>
+        <ResultField>Comprobante.getDescuento</ResultField>
+        <ResultField>Comprobante.getConfirmacion</ResultField>
+        <ResultField>TipoRelacion</ResultField>
+        <ResultField>Comprobante.getTipoCambio</ResultField>
+      </ResultFields>
+    </dataReference>
+    
+    <dataReference name="O_Issuer">
+      <ResultFields>
+        <ResultField>Comprobante.getEmisor.getRfc</ResultField>
+        <ResultField>Comprobante.getEmisor.getNombre</ResultField>
+        <ResultField>RegimenFiscal</ResultField>
+      </ResultFields>
+    </dataReference>
+    
+    <dataReference name="O_Receiver">
+      <ResultFields>
+        <ResultField>Comprobante.getReceptor.getRfc</ResultField>
+        <ResultField>Comprobante.getReceptor.getNombre</ResultField>
+        <ResultField>Comprobante.getReceptor.getResidenciaFiscal</ResultField>
+        <ResultField>UsoCFDI</ResultField>
+      </ResultFields>
+    </dataReference>
+    
+    <dataReference name="O_Concepts" key="Items">
+      <ResultFields>
+        <ResultField>LineSequence</ResultField>
+        <ResultField>ClaveProdServ</ResultField>
+        <ResultField>NoIdentificacion</ResultField>
+        <ResultField>Cantidad</ResultField>
+        <ResultField>ClaveUnidad</ResultField>
+        <ResultField>Descripcion</ResultField>
+        <ResultField>ValorUnitario</ResultField>
+        <ResultField>Importe</ResultField>
+        <ResultField>Descuento</ResultField>
+        <ResultField>TotalTaxes</ResultField>
+        <ResultField>Total</ResultField>
+      </ResultFields>
+    </dataReference>
+    
+    <dataReference name="O_PaidTax" key="PaidItemTaxes">
+      <ResultFields>
+        <ResultField>LineSequence</ResultField>
+        <ResultField>Base</ResultField>
+        <ResultField>ImpuestoDesc</ResultField>
+        <ResultField>TipoFactorDesc</ResultField>
+        <ResultField>TasaOCuota</ResultField>
+        <ResultField>Importe</ResultField>
+      </ResultFields>
+    </dataReference>
+    
+    <dataReference name="O_WithheldTax" key="WithheldItemTaxes">
+      <ResultFields>
+        <ResultField>LineSequence</ResultField>
+        <ResultField>Base</ResultField>
+        <ResultField>ImpuestoDesc</ResultField>
+        <ResultField>TipoFactorDesc</ResultField>
+        <ResultField>TasaOCuota</ResultField>
+        <ResultField>Importe</ResultField>
+      </ResultFields>
+    </dataReference>
+    
+    <dataReference name="O_KitItem_Component" key="ItemParte">
+      <ResultFields>
+        <ResultField>LineSequence</ResultField>
+        <ResultField>ClaveProdServ</ResultField>
+        <ResultField>NoIdentificacion</ResultField>
+        <ResultField>Cantidad</ResultField>
+        <ResultField>ClaveUnidad</ResultField>
+        <ResultField>Descripcion</ResultField>
+        <ResultField>ValorUnitario</ResultField>
+      </ResultFields>
+    </dataReference>
+
+    <dataReference name="O_Comprobante_Traslados" key="ComprobanteTraslados">
+      <ResultFields>
+        <ResultField>ImpuestoDesc</ResultField>
+        <ResultField>Base</ResultField>
+        <ResultField>TipoFactorDesc</ResultField>
+        <ResultField>TasaOCuota</ResultField>
+        <ResultField>Importe</ResultField>
+      </ResultFields>
+    </dataReference>
+
+    <dataReference name="O_Comprobante_Retenciones" key="ComprobanteRetenciones">
+      <ResultFields>
+        <ResultField>ImpuestoDesc</ResultField>
+        <ResultField>Importe</ResultField>
+      </ResultFields>
+    </dataReference>
+    
+    <dataReference name="O_TFD">
+      <ResultFields>
+        <ResultField>Tfd.getVersion</ResultField>
+        <ResultField>Tfd.getUUID</ResultField>
+        <ResultField>Tfd.getFechaTimbrado</ResultField>
+        <ResultField>Tfd.getRfcProvCertif</ResultField>
+        <ResultField>Tfd.getLeyenda</ResultField>
+        <ResultField>Tfd.getSelloCFD</ResultField>
+        <ResultField>Tfd.getNoCertificadoSAT</ResultField>
+        <ResultField>Tfd.getSelloSAT</ResultField>
+        <ResultField>QrCode</ResultField>
+        <ResultField>SatOriginalString</ResultField>
+      </ResultFields>
+    </dataReference>
+
+    <dataReference name="O_RELATED_CFDI" key="CFDIRelacionados">
+      <ResultFields>
+        <ResultField>UUID</ResultField>
+      </ResultFields>
+    </dataReference>
+    
+  </dataSource>
+  
+  <dataStructure>
+    <group name="G_INVOICE_HEADER" source="INVOICE_HEADER">
+      <element name="STORE_NBR" value="RetailLocation.getStoreNbr"/> 
+      <element name="STORE_NAME" value="RetailLocation.getStoreName"/> 
+      <element name="STORE_ADDRESS" value="RetailLocation" formatter="BasicAddress"/>
+      <element name="CUST_ID" value="InvoiceParty.getCustomerId"/>
+      <element name="CUST_NAME" value="InvoiceParty" formatter="BasicName"/>
+      <element name="CUST_ORG_NAME" value="InvoiceParty.getOrganizationName"/>
+      <element name="CUST_ADDRESS" value="InvoiceParty.getPrimaryLocaleInformation" formatter="BasicAddress"/>
+      <element name="TRANING_MODE" value="TrainingMode"/>
+      <element name="TRN_DATE" value="TransactionDate" formatter="DateMedium"/>
+      <element name="TRN_SEQ" value="TransactionSequence"/>
+    </group>
+    
+    <group name="G_HEADER" source="CFDI_HEADER">
+      <element name="Version" value="Comprobante.getVersion"/> 
+      <element name="Serie" value="Comprobante.getSerie"/> 
+      <element name="Folio" value="Comprobante.getFolio" />  
+      <element name="Fecha" value="ComprobanteDate" formatter="DateTimeMedium" />
+      <element name="FormaPago" value="FormaPago"/>
+      <element name="NoCertificado" value="Comprobante.getNoCertificado"/>
+      <element name="SubTotal" value="Comprobante.getSubTotal" formatter="Accounting"/>
+      <element name="Moneda" value="Comprobante.getMoneda" />
+      <element name="Total" value="Comprobante.getTotal" formatter="Accounting"/>
+      <element name="TipoDeComprobante" value="TipoDeComprobante" />
+      <element name="MetodoPago" value="MetodoPago"/>
+      <element name="LugarExpedicion" value="Comprobante.getLugarExpedicion"/>
+      <element name="TotalTraslados" value="Comprobante.getImpuestos.getTotalImpuestosTrasladados" formatter="Accounting"/>
+      <element name="TotalRetenciones" value="Comprobante.getImpuestos.getTotalImpuestosRetenidos" formatter="Accounting"/>
+      <element name="Descuento" value="Comprobante.getDescuento" formatter="Accounting"/>
+      <element name="Confirmacion" value="Comprobante.getConfirmacion"/>
+      <element name="TipoRelacion" value="TipoRelacion"/>
+      <element name="TipoCambio" value="Comprobante.getTipoCambio"/>
+    </group>
+    
+    <group name="G_ISSUER" source="O_Issuer">
+      <element name="Rfc" value="Comprobante.getEmisor.getRfc"/>
+      <element name="Nombre" value="Comprobante.getEmisor.getNombre" />
+      <element name="RegimenFiscal" value="RegimenFiscal"/>
+    </group>
+    
+    <group name="G_RECEIVER" source="O_Receiver">
+      <element name="Rfc" value="Comprobante.getReceptor.getRfc"/>
+      <element name="Nombre" value="Comprobante.getReceptor.getNombre"/>
+      <element name="UsoCFDI" value="UsoCFDI"/>
+      <element name="ResidenciaFiscal" value="Comprobante.getReceptor.getResidenciaFiscal"/>
+    </group>
+    
+    <group name="G_ITEMS" source="O_Concepts">
+      <element name="LineSequence" value="LineSequence"/>
+      <element name="ClaveProdServ" value="ClaveProdServ"/>
+      <element name="NoIdentificacion" value="NoIdentificacion"/>
+      <element name="Cantidad" value="Cantidad" formatter="Accounting"/>
+      <element name="ClaveUnidad" value="ClaveUnidad" />
+      <element name="Descripcion" value="Descripcion" />
+      <element name="ValorUnitario" value="ValorUnitario" formatter="Accounting"/>
+      <element name="Importe" value="Importe" formatter="Accounting"/>
+      <element name="Descuento" value="Descuento" formatter="Accounting"/>
+      <element name="Total" value="Total" formatter="Accounting"/>
+      <element name="TotalTaxes" value="TotalTaxes" formatter="Accounting"/>
+    </group>
+
+    <group name="G_ITEM_PAID_TAXES" source="O_PaidTax">
+      <element name="LineSequence" value="LineSequence"/>
+      <element name="Base" value="Base" formatter="Accounting"/>
+      <element name="Impuesto" value="ImpuestoDesc"/>
+      <element name="TipoFactor" value="TipoFactorDesc" />
+      <element name="TasaOCuota" value="TasaOCuota" formatter="Accounting"/>
+      <element name="Importe" value="Importe" formatter="Accounting"/>
+    </group>
+
+    <group name="G_ITEM_WITHHELD_TAXES" source="O_WithheldTax">
+      <element name="LineSequence" value="LineSequence"/>
+      <element name="Base" value="Base" formatter="Accounting"/>
+      <element name="Impuesto" value="ImpuestoDesc"/>
+      <element name="TipoFactor" value="TipoFactorDesc" />
+      <element name="TasaOCuota" value="TasaOCuota" formatter="Accounting"/>
+      <element name="Importe" value="Importe" formatter="Accounting"/>
+    </group>
+
+    <group name="G_KITITEM_COMPONENT" source="O_KitItem_Component">
+      <element name="LineSequence" value="LineSequence"/>
+      <element name="ClaveProdServ" value="ClaveProdServ"/>
+      <element name="NoIdentificacion" value="NoIdentificacion"/>
+      <element name="Cantidad" value="Cantidad" formatter="Accounting"/>
+      <element name="ClaveUnidad" value="ClaveUnidad" formatter="Accounting"/>
+      <element name="Descripcion" value="Descripcion" />
+      <element name="ValorUnitario" value="ValorUnitario" formatter="Accounting"/>
+    </group>
+
+    <group name="G_INVOICE_PAID_TAXES" source="O_Comprobante_Traslados">
+      <element name="Impuesto" value="ImpuestoDesc"/>
+      <element name="Base" value="Base" formatter="Accounting"/>
+      <element name="TipoFactor" value="TipoFactorDesc" />
+      <element name="TasaOCuota" value="TasaOCuota" formatter="Accounting"/>
+      <element name="Importe" value="Importe" formatter="Accounting"/>
+    </group>
+
+    <group name="G_INVOICE_WITHHELD_TAXES" source="O_Comprobante_Retenciones">
+      <element name="Impuesto" value="ImpuestoDesc"/>
+      <element name="Importe" value="Importe" formatter="Accounting"/>
+    </group>
+    
+    <group name="G_INVOICE_TFD" source="O_TFD">
+      <element name="Version" value="Tfd.getVersion"/>
+      <element name="Uuid" value="Tfd.getUUID" />
+      <element name="FechaTimbrado" value="Tfd.getFechaTimbrado"/>
+      <element name="RfcProvCertif" value="Tfd.getRfcProvCertif" />
+      <element name="Leyenda" value="Tfd.getLeyenda"/>
+      <element name="SelloCFD" value="Tfd.getSelloCFD" />
+      <element name="NoCertificadoSAT" value="Tfd.getNoCertificadoSAT"/>
+      <element name="SelloSAT" value="Tfd.getSelloSAT" />
+      <element name="QrCode" value="QrCode" barcode="CodeQR" width="50" height="50" />
+      <element name="SatOriginalString" value="SatOriginalString" />
+    </group>
+    
+    <group name="G_INVOICE_CFDI_RELACIONADOS" source="O_RELATED_CFDI">
+      <element name="UUID" value="UUID"/>
+    </group>
+    
+  </dataStructure>
+</dataTemplate>

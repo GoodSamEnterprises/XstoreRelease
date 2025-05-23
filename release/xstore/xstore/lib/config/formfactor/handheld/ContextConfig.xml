@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContextSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ContextConfig.xsd">
+  <!-- This is the standard register context that makes sure the transaction
+         list, menu, and focus bar are visible and enabled. -->
+
+  <Context name="XSTOREM_MAIN_MENU">
+    <ParentContext dtype="String">TEXT_PROMPT_ONLY</ParentContext>
+    <ColorGroup bgColor="0x339933" />
+    <ComponentGroup ref="DEFAULT" />
+    <ComponentPropertySet ref="TABBED_PANE_DEFAULT" />
+  </Context>
+  
+  <Context name="TO_XSTOREM_LOGIN">
+    <ParentContext dtype="String">REGISTER_LOGIN</ParentContext>
+    <MenuKey dtype="String">XSTOREM::XSTOREM_MENU</MenuKey>
+    <Text2 dtype="Translatable">_appBackOffice</Text2>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsgToRegisterLogin</HelpKey>
+  </Context>
+
+  <Context name="REGISTER_LOGIN">
+    <ParentContext dtype="String">TEXT_PROMPT_ONLY</ParentContext>
+    <SecondDisplayMode dtype="String">OTHER</SecondDisplayMode>
+    <MenuKey dtype="String">EMPTY</MenuKey>
+    <Text1 dtype="Translatable">_contextRegisterLogin</Text1>
+    <Text2 dtype="Translatable">_appRegister</Text2>
+    <ColorGroup bgColor="0x009696" />
+    <ComponentGroup ref="ORANGE" />
+    <ComponentPropertySet ref="TABBED_PANE_DEFAULT" />
+  </Context>
+
+  <Context name="BACK_OFFICE_INVENTORY_MENU">
+    <ParentContext dtype="String">BACK_OFFICE_MAIN_MENU</ParentContext>
+    <MenuKey dtype="String">INVENTORY::OPTIONS</MenuKey>
+  </Context>
+
+</ContextSet>

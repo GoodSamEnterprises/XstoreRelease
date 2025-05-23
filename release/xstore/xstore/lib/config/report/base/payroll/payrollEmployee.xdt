@@ -1,0 +1,121 @@
+<dataTemplate name="PayrollEmployee" xmlns="http://micros.com/xstore/config/report">
+    <labels>
+        <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+        <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+        <label name="HEADER_STORE" value="_rptStore"/>
+        <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+        <label name="FOOTER_PAGE" value="_rptPage"/>
+        <label name="FOOTER_OF" value="_rptof"/>
+    
+        <label name="SELECTION_DATE_RANGE" value="_rptSelectionDateRange"/>
+        <label name="CRITERIA_EMPLOYEE" value="_rptEmployeeColon" />
+        <label name="SELECTION_ALL_EMPLOYEES" value="_rptDefaultAll" />
+        <label name="COMMA" value="_rptComma" />
+
+        <!-- Payroll Report labels -->
+        <label name="REG_HRS" value="_rptPayrollEmployeeRegHours" />
+        <label name="OT_HRS" value="_rptPayrollEmployeeOTHours" />
+        <label name="OTH_HRS" value="_rptPayrollByEmployeeOtherHours" />
+        <label name="TOT_HRS" value="_rptPayrollEmployeeTotalHours" />
+        <label name="VAC_HRS" value="_rptPayrollEmployeeVacationHours" />
+        <label name="PERS_HRS" value="_rptPayrollEmployeePersonalHours" />
+        <label name="SICK_HRS" value="_rptPayrollEmployeeSickHours" />
+        <label name="BRV_HRS" value="_rptPayrollEmployeeFuneralHours" />
+        <label name="PYRL_PRD" value="_rptPayrollEmployeePayrollPeriod" />
+        <label name="DBL_HRS" value="_rptPayrollEmployeeDTHours" />
+        <label name="EMP_STORE_TOTALS" value="_rptPayrollEmployeeStoreTotals" />
+        <label name="EMP_SIGNATURE" value="_rptPayrollEmployeeReportSignature" />
+        <label name="SIG_DATE" value="_rptPayrollEmployeeReportSignatureDate" />
+    </labels>
+  
+    <parameters>
+        <!-- System Parameters -->
+        <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+        <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+        <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+        <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+        <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+        <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+     
+        <!-- REPORT PARAMS -->
+    
+        <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange">
+            <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+            <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+        </parameter>
+
+        <parameter name="employeeId" class="java.lang.String">
+            <parameterDescription><![CDATA[_rptPayrollEmployeePayrollEmployeeId;Text;Simple;maxCharacters=20]]></parameterDescription>
+        </parameter>
+    
+        <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+            <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+            <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+        </parameter>
+
+    </parameters>
+
+    <dataSource>
+        <queryReference name="Q_PAYROLL" key="PAYROLL_CATEGORY_HOURS_REPORT" > 
+            <Parameters>
+                <Parameter>organizationId</Parameter>
+                <Parameter>retailLocationId</Parameter>
+                <Parameter>startDate</Parameter>
+                <Parameter>endDate</Parameter>
+                <Parameter>employeeId</Parameter>
+            </Parameters>
+      
+            <ResultFields>
+                <ResultField>employee_id</ResultField>
+                <ResultField>last_name</ResultField>
+                <ResultField>first_name</ResultField>
+                <ResultField>business_date</ResultField>
+                <ResultField>dayOfWeek</ResultField>
+                <ResultField>Bereavement</ResultField>
+                <ResultField>DT</ResultField>
+                <ResultField>Funeral</ResultField>
+                <ResultField>Holiday</ResultField>
+                <ResultField>Jury</ResultField>
+                <ResultField>Overtime</ResultField>
+                <ResultField>Personal</ResultField>
+                <ResultField>Regular</ResultField>
+                <ResultField>Sick</ResultField>
+                <ResultField>Vacation</ResultField>
+                <ResultField>Other</ResultField>
+                <ResultField>DailyTotal</ResultField>
+                <ResultField>NonWorking</ResultField>
+            </ResultFields>
+        </queryReference>
+    </dataSource>
+
+    <dataStructure>
+        <group name="G_DETAIL" source="Q_PAYROLL">
+            <element name="EMP_ID" value="employee_id" />
+            <element name="FN" value="first_name" />
+            <element name="LN" value="last_name" />
+            <element name="BDATE" value="business_date" formatter="DateMedium" />
+            <element name="DOW" value="dayOfWeek" translation-prefix="_rpt.dayofweek." />
+            <element name="REG" value="Regular" formatter="Accounting" />
+            <element name="OT" value="Overtime" formatter="Accounting" />
+            <element name="DT" value="DT" formatter="Accounting" />
+            <element name="VAC" value="Vacation" formatter="Accounting" />
+            <element name="PRS" value="Personal" formatter="Accounting" />
+            <element name="SCK" value="Sick" formatter="Accounting" />
+            <element name="FNL" value="Funeral" formatter="Accounting" />
+            <element name="OTHER" value="Other" formatter="Accounting" />
+            <element name="DTOT" value="DailyTotal" formatter="Accounting" />
+        </group>
+        <group name="G_HOURS_TOT" source="Q_PAYROLL">
+            <element name="EMP_ID" group-by="true" value="employee_id" />
+            <element name="SDT" value="DT" function="SUM" formatter="Accounting"/>
+            <element name="SFNL" value="Funeral" function="SUM" formatter="Accounting"/>
+            <element name="SOT" value="Overtime" function="SUM" formatter="Accounting"/>
+            <element name="SPRS" value="Personal" function="SUM" formatter="Accounting"/>
+            <element name="SREG" value="Regular" function="SUM" formatter="Accounting"/>
+            <element name="SSCK" value="Sick" function="SUM" formatter="Accounting"/>
+            <element name="SVAC" value="Vacation" function="SUM" formatter="Accounting"/>
+            <element name="SOTH" value="Other" function="SUM" formatter="Accounting"/>
+            <element name="SDTOT" value="DailyTotal" function="SUM" formatter="Accounting"/>
+        </group>
+    </dataStructure>
+</dataTemplate>

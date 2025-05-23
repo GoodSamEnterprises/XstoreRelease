@@ -1,0 +1,38 @@
+<dataTemplate name="shippingLabel5163" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+
+    <!-- Template-specific Text -->
+    
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+  
+    <!-- User Parameters -->
+
+  </parameters>
+  
+  <dataSource>
+    <dataReference name="O_SHIPPING_HEADER">
+      <ResultFields>
+        <ResultField>Address</ResultField>
+        <ResultField>DestinationName</ResultField>
+        <ResultField>DestinationRetailLocation</ResultField>
+        <ResultField>DestinationRetailLocation.getDescription</ResultField>
+        <ResultField>DestinationServiceLocationId</ResultField>
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+  
+  <dataStructure>
+    <group name="G_HEADER" source="O_SHIPPING_HEADER">
+      <element name="ADDRESS" value="Address" formatter="BasicAddress"/>
+      <element name="DESTINATION_NAME" value="DestinationName"/>
+      <element name="DESTINATION_NAME_ALT" value="DestinationRetailLocation.getDescription"/>
+      <element name="DESTINATION_NAME_ALT_1" value="DestinationServiceLocationId"/>
+      <element name="RTL_LOC_ADDRESS" value="DestinationRetailLocation" formatter="BasicAddress"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

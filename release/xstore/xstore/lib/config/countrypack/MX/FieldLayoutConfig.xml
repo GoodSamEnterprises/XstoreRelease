@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldLayoutSet xmlns="http://micros.com/xstore/config/form/fieldlayout" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FieldLayoutConfig.xsd">
+  
+  <FieldLayout name="customerAddressInformationLayout" type="ListLayout">      
+    <Row>
+      <Column start="0" width="15" fieldRef="organizationNameLabel" horizontalAlignment="Right" />
+      <Column start="15" width="55" fieldRef="organizationName" refreshOnChange="true" fieldSubmitPriority="2" />
+      <Column start="68" width="12" fieldRef="organizationTypeCodeLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="organizationTypeCode" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column start="15" width="55" fieldRef="address1" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="address2Label" horizontalAlignment="Right" />
+      <Column start="15" width="20" fieldRef="address2" />
+      <Column start="35" width="10" fieldRef="address3Label" horizontalAlignment="Right" />
+      <Column start="45" width="25" fieldRef="apartment" visibilityGroup="apartmentVisibility" />
+      <Column start="68" width="12" fieldRef="countryLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="country" required="true" />    
+    </Row>
+    <Row>      
+      <Column start="0" width="15" fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column start="15" width="20" fieldRef="city" required="true" />
+      <Column start="35" width="10" fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column start="45" width="25" fieldRef="stateCustMaint" required="true"/>
+      <Column start="68" width="12" fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="postalCode" refreshOnChange="true"/>
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="countyLabel" visibilityGroup="countyVisibility"
+              horizontalAlignment="Right" />
+      <Column start="15" width="20" fieldRef="county" visibilityGroup="countyVisibility" />
+      <Column start="35" width="10" fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility"
+              horizontalAlignment="Right" />
+      <Column start="45" width="25" fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" />
+    </Row>    
+  </FieldLayout>
+  
+</FieldLayoutSet>

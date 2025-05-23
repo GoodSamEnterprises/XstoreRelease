@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="formDesigner" xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+  default-init-method="init">
+
+  <context:annotation-config />
+
+  <bean id="theAllmightyThor" class="dtv.util.temp.InjectionHammerInitializer" />
+  <bean id="uiInvoker" class="dtv.ui.SwingUIServicesExecutor" destroy-method="destroy" />
+  <bean id="trainingModeHelper" class="dtv.pos.assistance.NotTrainingModeHelper" />
+  <bean id="stationState" class="dtv.pos.iframework.security.StationState" />
+  
+  <bean id="formLayoutConfigHelper" class="dtv.pos.framework.form.config.FormLayoutConfigHelper" />
+  <bean id="formViewConfigHelper" class="dtv.pos.framework.form.config.FormViewConfigHelper" init-method="initialize" />
+  <bean id="processLogger" class="dtv.pos.framework.logging.ProcessLogger" />
+  <bean id="testHarness" class="dtv.xunit.DummyTestHarness" />
+
+  <bean id="actionFactory" class="dtv.pos.framework.action.XstActionFactory">
+    <constructor-arg>
+      <bean class="com.micros.xstore.config.impl.ActionConfigMgr">
+        <constructor-arg ref="actionCascader" />
+      </bean>
+    </constructor-arg>
+    <property name="actionCascader" ref="actionCascader" />
+  </bean>
+</beans>

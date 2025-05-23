@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  default-init-method="init">
+
+  <context:annotation-config />
+
+  <beans profile="xstore">
+    <bean id="countyVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+        <constructor-arg value="false" />
+    </bean>
+    <bean id="neighborhoodVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+        <constructor-arg value="false" />
+    </bean>
+    <bean id="journalFiscalNumberVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+    </bean>
+
+    <!-- Field validators for edit models -->
+    <bean id="countryPack.de.startDateValidator" class="oracle.retail.xstore.countrypack.de.gobd.validators.DeGobdStartDateValidator" />
+    <bean id="countryPack.de.endDateValidator" class="oracle.retail.xstore.countrypack.de.gobd.validators.DeGobdEndDateValidator" />
+    <bean id="countryPack.de.dataSourceDateValidator" class="oracle.retail.xstore.countrypack.de.gobd.validators.DeGobdDataSourceValidator" />
+
+    <bean id="countryPack.de.gobdExportValidation" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory">
+      <property name="parameters">
+        <map>
+          <entry key="startDate" value-ref="countryPack.de.startDateValidator" />
+          <entry key="endDate" value-ref="countryPack.de.endDateValidator" />
+          <entry key="dataSource" value-ref="countryPack.de.dataSourceDateValidator" />
+        </map>
+      </property>
+    </bean>
+
+    <!-- Helper classes -->
+    <bean id="countryPack.de.gobdDataHelper" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdDataHelper" lazy-init="true" />
+    <bean id="countryPack.de.gobdGenerator" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdGenerator" lazy-init="true" />
+    <bean id="countryPack.de.gobdLineWriter" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdLineWriter" lazy-init="true" />
+
+    <!-- Extract files -->
+    <util:constant id="DE_TICKET_HEADER_FILE" static-field="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile.TICKET_HEADER_FILE" />
+    <util:constant id="DE_TICKET_TAX_FILE" static-field="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile.TICKET_TAX_FILE" />
+    <util:constant id="DE_TICKET_LINE_ITEM_FILE" static-field="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile.TICKET_LINE_ITEM_FILE" />
+    <util:constant id="DE_TICKET_LINE_DISCOUNT_FILE" static-field="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile.TICKET_LINE_DISCOUNT_FILE" />
+    <util:constant id="DE_TICKET_LINE_TENDER_FILE" static-field="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile.TICKET_LINE_TENDER_FILE" />
+    <util:constant id="DE_TAX_EXEMPTION_FILE" static-field="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile.TAX_EXEMPTION_FILE" />
+    <util:constant id="DE_TENDER_FILE" static-field="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile.TENDER_FILE" />
+    <util:constant id="DE_ITEM_FILE" static-field="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile.ITEM_FILE" />
+    <util:constant id="DE_ASSOCIATE_FILE" static-field="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile.ASSOCIATE_FILE" />
+
+    <bean id="de.export.ticketHeader.fields" class="oracle.retail.xstore.countrypack.de.gobd.generate.fields.DeGobdTicketHeaderFields" lazy-init="true" />
+    <bean id="de.export.ticketTax.fields" class="oracle.retail.xstore.countrypack.de.gobd.generate.fields.DeGobdTicketTaxFields" lazy-init="true" />
+    <bean id="de.export.ticketLineItem.fields" class="oracle.retail.xstore.countrypack.de.gobd.generate.fields.DeGobdTicketLineFields" lazy-init="true" />
+    <bean id="de.export.ticketLineDiscount.fields" class="oracle.retail.xstore.countrypack.de.gobd.generate.fields.DeGobdTicketDiscountFields" lazy-init="true" />
+    <bean id="de.export.ticketLineTender.fields" class="oracle.retail.xstore.countrypack.de.gobd.generate.fields.DeGobdTicketTenderFields" lazy-init="true" />
+    <bean id="de.export.taxExemption.fields" class="oracle.retail.xstore.countrypack.de.gobd.generate.fields.DeGobdTaxExemptionFields" lazy-init="true" />
+    <bean id="de.export.tender.fields" class="oracle.retail.xstore.countrypack.de.gobd.generate.fields.DeGobdTenderFields" lazy-init="true" />
+    <bean id="de.export.item.fields" class="oracle.retail.xstore.countrypack.de.gobd.generate.fields.DeGobdItemFields" lazy-init="true" />
+    <bean id="de.export.associate.fields" class="oracle.retail.xstore.countrypack.de.gobd.generate.fields.DeGobdAssociateFields" lazy-init="true" />
+
+    <bean id="de.export.ticketHeader" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile">
+      <constructor-arg index="0" ref="DE_TICKET_HEADER_FILE" />
+      <constructor-arg index="1" value="TicketHeader" />
+      <constructor-arg index="2" value="_countrypack.de.gobd.file.ticketHeader" />
+      <constructor-arg index="3" ref="de.export.ticketHeader.fields" />
+    </bean>
+    <bean id="de.export.ticketTax" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile">
+      <constructor-arg index="0" ref="DE_TICKET_TAX_FILE" />
+      <constructor-arg index="1" value="TicketTax" />
+      <constructor-arg index="2" value="_countrypack.de.gobd.file.ticketTax" />
+      <constructor-arg index="3" ref="de.export.ticketTax.fields" />
+    </bean>
+    <bean id="de.export.ticketLineItem" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile">
+      <constructor-arg index="0" ref="DE_TICKET_LINE_ITEM_FILE" />
+      <constructor-arg index="1" value="TicketLineItem" />
+      <constructor-arg index="2" value="_countrypack.de.gobd.file.ticketLine" />
+      <constructor-arg index="3" ref="de.export.ticketLineItem.fields" />
+    </bean>
+    <bean id="de.export.ticketLineDiscount" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile">
+      <constructor-arg index="0" ref="DE_TICKET_LINE_DISCOUNT_FILE" />
+      <constructor-arg index="1" value="TicketLineItemDiscount" />
+      <constructor-arg index="2" value="_countrypack.de.gobd.file.ticketDiscount" />
+      <constructor-arg index="3" ref="de.export.ticketLineDiscount.fields" />
+    </bean>
+    <bean id="de.export.ticketLineTender" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile">
+      <constructor-arg index="0" ref="DE_TICKET_LINE_TENDER_FILE" />
+      <constructor-arg index="1" value="TicketTender" />
+      <constructor-arg index="2" value="_countrypack.de.gobd.file.ticketTender" />
+      <constructor-arg index="3" ref="de.export.ticketLineTender.fields" />
+    </bean>
+    <bean id="de.export.taxExemption" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile">
+      <constructor-arg index="0" ref="DE_TAX_EXEMPTION_FILE" />
+      <constructor-arg index="1" value="TaxExemption" />
+      <constructor-arg index="2" value="_countrypack.de.gobd.file.taxExemption" />
+      <constructor-arg index="3" ref="de.export.taxExemption.fields" />
+    </bean>
+    <bean id="de.export.tender" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile">
+      <constructor-arg index="0" ref="DE_TENDER_FILE" />
+      <constructor-arg index="1" value="Tender" />
+      <constructor-arg index="2" value="_countrypack.de.gobd.file.tender" />
+      <constructor-arg index="3" ref="de.export.tender.fields" />
+    </bean>
+    <bean id="de.export.item" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile">
+      <constructor-arg index="0" ref="DE_ITEM_FILE" />
+      <constructor-arg index="1" value="Item" />
+      <constructor-arg index="2" value="_countrypack.de.gobd.file.item" />
+      <constructor-arg index="3" ref="de.export.item.fields" />
+    </bean>
+    <bean id="de.export.associate" class="oracle.retail.xstore.countrypack.de.gobd.generate.DeGobdFile">
+      <constructor-arg index="0" ref="DE_ASSOCIATE_FILE" />
+      <constructor-arg index="1" value="Associate" />
+      <constructor-arg index="2" value="_countrypack.de.gobd.file.associate" />
+      <constructor-arg index="3" ref="de.export.associate.fields" />
+    </bean>
+
+  </beans>
+
+</beans>

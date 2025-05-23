@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <FormatterMap>
+    <!-- @Deprecated (4.8.0) -->
+    <Formatter name="TRANSLATE_IF_KEY" class="dtv.pos.i18n.format.I18nFormatter" ctx="RECEIPT" >
+      <Parameter name="setOutputContext" value="RECEIPT" />
+      <Parameter name="setConditionalTranslation" value="true" />
+    </Formatter>
+    <Formatter name="TRAINING_MODE" class="dtv.pos.i18n.format.TrainingModeFormatter" />
+    <Formatter name="IS_CANCEL" class="dtv.pos.i18n.format.EqualsFormatter">
+      <Parameter name="setTestObject" value="CANCEL" />
+      <Parameter name="setTestObject" value="CANCEL_ORPHANED" />    
+    </Formatter>
+    <Formatter name="IS_SALARIED" class="dtv.pos.i18n.format.EqualsFormatter">
+      <Parameter name="setTestObject" value="S" />
+    </Formatter>
+    <!-- /@Deprecated (4.8.0) -->
+
+    <Formatter name="RcptTranslater" class="dtv.pos.i18n.format.I18nFormatter" ctx="RECEIPT" force="true" />
+    <Formatter name="TranslateIfKey" class="dtv.pos.i18n.format.I18nFormatter" ctx="RECEIPT" force="false" />
+    <Formatter name="Boolean" class="dtv.pos.i18n.format.BooleanFormatter" />
+    <Formatter name="Date" class="dtv.pos.i18n.format.DateFormatter" format="yyyy-MM-dd" />
+    <Formatter name="DateTime" class="dtv.pos.i18n.format.DateFormatter" format="yyyy-MM-dd&apos;T&apos;HH:mm:ss.SSS" />
+    <Formatter name="Decimal" class="dtv.pos.i18n.format.LogDecimalFormatter" format="0.0000000;-0.0000000" />
+    <Formatter name="DecimalNoNull" class="dtv.pos.i18n.format.LogDecimalFormatter" format="0.0000000;-0.0000000" ifNull="0.0" />
+    <Formatter name="Money" class="dtv.pos.i18n.format.LogDecimalFormatter" format="0.00;-0.00" />
+    <Formatter name="Quantity" class="dtv.pos.i18n.format.LogDecimalFormatter" format="0.###;-0.###" />
+    <Formatter name="TrainingMode" class="dtv.pos.i18n.format.TrainingModeFormatter" />
+    <Formatter name="IsCancel" class="dtv.pos.i18n.format.EqualsFormatter">
+      <Parameter name="setTestObject" value="CANCEL" />
+      <Parameter name="setTestObject" value="CANCEL_ORPHANED" />    
+    </Formatter>
+    <Formatter name="IsSalaried" class="dtv.pos.i18n.format.EqualsFormatter">
+      <Parameter name="setTestObject" value="S" />
+    </Formatter>
+
+    <Formatter name="LineItemType" class="dtv.pos.i18n.format.LogRegExCodeFormatter">
+      <Parameter name="addValid" value="Stock" />
+      <Parameter name="addValid" value="Service" />
+      <Parameter name="addValid" value="Alteration" />
+      <Parameter name="addValid" value="Fee" />
+      <Parameter name="addValid" value="Deposit" />
+      <Parameter name="addValid" value="DepositRefund" />
+      <Parameter name="addValid" value="Tare" />
+      <Parameter name="addValid" value="ItemCollection" />
+      <!-- ************************************* -->
+      <Parameter name="addPattern">
+        <param_value dtype="String">STANDARD</param_value>
+        <param_value dtype="String">Stock</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">NOT_ON_FILE</param_value>
+        <param_value dtype="String">Stock</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">DUMMY</param_value>
+        <param_value dtype="String">Stock</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">STYLE</param_value>
+        <param_value dtype="String">Stock</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">WORK_ORDER</param_value>
+        <param_value dtype="String">Service</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">ALTERATIONS</param_value>
+        <param_value dtype="String">Alteration</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">REPAIR</param_value>
+        <param_value dtype="String">Service</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">KIT</param_value>
+        <param_value dtype="String">ItemCollection</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">WARRANTY_GIFT</param_value>
+        <param_value dtype="String">Warranty</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">VOUCHER</param_value>
+        <param_value dtype="String">dtv:GiftCertificate</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">.*_FEE</param_value>
+        <param_value dtype="String">Fee</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">.*_DEPOSIT</param_value>
+        <param_value dtype="String">Deposit</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">.*_PAYMENT</param_value>
+        <param_value dtype="String">dtv:Payment</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">.*</param_value>
+        <param_value dtype="String">dtv:NonMerchandise</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="TaxType" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">SALES</param_value>
+        <param_value dtype="String">Sales</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">EXCISE</param_value>
+        <param_value dtype="String">Excise</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="TenderTypeCode" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">Tender</param_value>
+        <param_value dtype="String">Sale</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">Change</param_value>
+        <param_value dtype="String">Sale</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">Refund</param_value>
+        <param_value dtype="String">Refund</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="TenderChangeFlag" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">Tender</param_value>
+        <param_value dtype="String">false</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">Change</param_value>
+        <param_value dtype="String">true</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">Refund</param_value>
+        <param_value dtype="String">false</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="CheckTag" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">CHECK</param_value>
+        <param_value dtype="String">Check</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">HOME_OFFICE_CHECK</param_value>
+        <param_value dtype="String">Check</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">PAYROLL_CHECK</param_value>
+        <param_value dtype="String">Check</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">TRAVELERS_CHECK</param_value>
+        <param_value dtype="String">TravelersCheck</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="VoucherTag" class="dtv.pos.i18n.format.LogRegExCodeFormatter">
+      <Parameter name="addPattern">
+        <param_value dtype="String">GIFT_CERTIFICATE</param_value>
+        <param_value dtype="String">Voucher</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">.*GIFT_CARD</param_value>
+        <param_value dtype="String">GiftCard</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">STORE_CREDIT</param_value>
+        <param_value dtype="String">Voucher</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">ISSUE_STORE_CREDIT</param_value>
+        <param_value dtype="String">Voucher</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">MERCHANDISE_CREDIT_CARD</param_value>
+        <param_value dtype="String">Voucher</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">ISSUE_MERCHANDISE_CREDIT_CARD</param_value>
+        <param_value dtype="String">Voucher</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">RELOAD_MERCHANDISE_CREDIT_CARD</param_value>
+        <param_value dtype="String">Voucher</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="VoucherSerialNumberTag" class="dtv.pos.i18n.format.LogRegExCodeFormatter">
+      <Parameter name="addPattern">
+        <param_value dtype="String">GIFT_CERTIFICATE</param_value>
+        <param_value dtype="String">SerialNumber</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">.*GIFT_CARD</param_value>
+        <param_value dtype="String">CardNumber</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">STORE_CREDIT</param_value>
+        <param_value dtype="String">SerialNumber</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">ISSUE_STORE_CREDIT</param_value>
+        <param_value dtype="String">SerialNumber</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">MERCHANDISE_CREDIT_CARD</param_value>
+        <param_value dtype="String">CardNumber</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">ISSUE_MERCHANDISE_CREDIT_CARD</param_value>
+        <param_value dtype="String">CardNumber</param_value>
+      </Parameter>
+      <Parameter name="addPattern">
+        <param_value dtype="String">RELOAD_MERCHANDISE_CREDIT_CARD</param_value>
+        <param_value dtype="String">CardNumber</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="EntryMethod" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">MAIN_MSR</param_value>
+        <param_value dtype="String">MSR</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">MSR.MAIN_MSR</param_value>
+        <param_value dtype="String">MSR</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CUST_MSR</param_value>
+        <param_value dtype="String">MSR</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">MSR.CUST_MSR</param_value>
+        <param_value dtype="String">MSR</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">MAIN_MICR</param_value>
+        <param_value dtype="String">MICR</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">MSR.RFID</param_value>
+        <param_value dtype="String">RFID</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">MICR.MAIN_MICR</param_value>
+        <param_value dtype="String">MICR</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">KEYBOARD</param_value>
+        <param_value dtype="String">Keyed</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">KEYBOARD.KEYBOARD</param_value>
+        <param_value dtype="String">Keyed</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">BARCODE_SCANNER</param_value>
+        <param_value dtype="String">Scanned</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">AUTOMATIC</param_value>
+        <param_value dtype="String">dtv:Automatic</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">UNKNOWN</param_value>
+        <param_value dtype="String">dtv:Unknown</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">UNKNOWN [0]</param_value>
+        <param_value dtype="String">dtv:Unknown</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SWIPED [49]</param_value>
+        <param_value dtype="String">Swiped</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">TAP_ICC [51]</param_value>
+        <param_value dtype="String">Tapped</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">ICC [53]</param_value>
+        <param_value dtype="String">Chip</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="InvTransType" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">RECEIVING_ASN</param_value>
+        <param_value dtype="String">ReceiveInventory</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">RECEIVING_TRANSFER</param_value>
+        <param_value dtype="String">ReceiveInventory</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">RECEIVING_STORE_TRANSFER</param_value>
+        <param_value dtype="String">ReceiveInventory</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">ReceivingStoreTransfer</param_value>
+        <param_value dtype="String">ReceiveInventory</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">RECEIVING_ORDER</param_value>
+        <param_value dtype="String">ReceivingOrder</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">RECEIVING_REPLENISHMENT</param_value>
+        <param_value dtype="String">ReceivingReplenishment</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">RECEIVING_SPECIAL_ORDER</param_value>
+        <param_value dtype="String">ReceivingSpecialOrder</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">RECEIVING_WORK_ORDER</param_value>
+        <param_value dtype="String">ReceivingWorkOrder</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SHIPPING_RETURN_TO_VENDOR</param_value>
+        <param_value dtype="String">ReturnToVendor</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SHIPPING_STORE_TRANSFER</param_value>
+        <param_value dtype="String">TransferOut</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SHIPPING_WAREHOUSE</param_value>
+        <param_value dtype="String">TransferOut</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SHIPPING_ORDER</param_value>
+        <param_value dtype="String">ShippingOrder</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SHIPPING_SALE</param_value>
+        <param_value dtype="String">ShippingSale</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SHIPPING_WORK_ORDER</param_value>
+        <param_value dtype="String">ShippingWorkOrder</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SHIPPING_DEFECTIVE_RETURN</param_value>
+        <param_value dtype="String">ShippingDefectiveReturn</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="SystemCycleType" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">SYSTEM_OPEN</param_value>
+        <param_value dtype="String">Store Open</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SYSTEM_CLOSE</param_value>
+        <param_value dtype="String">Store Close</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CASHDRAWER_OPEN</param_value>
+        <param_value dtype="String">Cash Drawer Open</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CASHDRAWER_CLOSE</param_value>
+        <param_value dtype="String">Cash Drawer Close</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">WORKSTATION_OPEN</param_value>
+        <param_value dtype="String">Register Open</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">WORKSTATION_CLOSE</param_value>
+        <param_value dtype="String">Register Close</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">WORKSTATION_START_REMOTE_CLOSE</param_value>
+        <param_value dtype="String">Register Start Remote Close</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">WORKSTATION_COMPLETE_REMOTE_CLOSE</param_value>
+        <param_value dtype="String">Register Complete Remote Close</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="TillCountType" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">ISSUE_TILL_STARTING_CASH</param_value>
+        <param_value dtype="String">dtv:AssignTillTenderTransfer</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">BEGINCOUNT</param_value>
+        <param_value dtype="String">dtv:BeginTillCount</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">MIDCOUNT</param_value>
+        <param_value dtype="String">dtv:MidDayTillDeposit</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">ENDCOUNT</param_value>
+        <param_value dtype="String">dtv:TillClosingCount</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">RECONCILE</param_value>
+        <param_value dtype="String">dtv:TillReconcileCount</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">BANK_DEPOSIT</param_value>
+        <param_value dtype="String">dtv:BankDeposit</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CASH_PICKUP</param_value>
+        <param_value dtype="String">dtv:LocalCurrencyPickup</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CASH_TRANSFER</param_value>
+        <param_value dtype="String">dtv:CashTransfer</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">STORE_BANK_CASH_DEPOSIT</param_value>
+        <param_value dtype="String">dtv:LocalCurrencyDeposit</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">TILL_AUDIT</param_value>
+        <param_value dtype="String">dtv:TillAudit</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">STORE_BANK_AUDIT</param_value>
+        <param_value dtype="String">dtv:StoreBankAudit</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="TenderTypeFromTender" class="dtv.pos.i18n.format.TenderTypeCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">CURRENCY</param_value>
+        <param_value dtype="String">Cash</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">FOREIGN_CURRENCY</param_value>
+        <param_value dtype="String">Cash</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CREDIT_CARD</param_value>
+        <param_value dtype="String">CreditDebit</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">DEBIT_CARD</param_value>
+        <param_value dtype="String">CreditDebit</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CHECK</param_value>
+        <param_value dtype="String">Check</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">VOUCHER</param_value>
+        <param_value dtype="String">Voucher</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">ACCOUNT</param_value>
+        <param_value dtype="String">dtv:Account</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">HOME_OFFICE_CHECK</param_value>
+        <param_value dtype="String">Check</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">COUPON</param_value>
+        <param_value dtype="String">ManufacturerCoupon</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">MISCELLANEOUS</param_value>
+        <param_value dtype="String">dtv:Miscellaneous</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">MISCELLANEOUS_VOUCHER</param_value>
+        <param_value dtype="String">Voucher</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">HOUSE_ACCOUNT</param_value>
+        <param_value dtype="String">HouseAccount</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="TransactionStatus" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">COMPLETE</param_value>
+        <param_value dtype="String">Delivered</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CANCEL</param_value>
+        <param_value dtype="String">Failed</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">NEW</param_value>
+        <param_value dtype="String">inProcess</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">RESUME</param_value>
+        <param_value dtype="String">inProcess</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SUSPEND</param_value>
+        <param_value dtype="String">Suspended</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">VOID</param_value>
+        <param_value dtype="String">TransactionVoided</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="PriceModifierMethodCode" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">PRICE_OVERRIDE</param_value>
+        <param_value dtype="String">PriceOverride</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">DEAL</param_value>
+        <param_value dtype="String">Promotion</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">LINE_ITEM_DISCOUNT</param_value>
+        <param_value dtype="String">Promotion</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">TRANSACTION_DISCOUNT</param_value>
+        <param_value dtype="String">Promotion</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">PROMPT_PRICE_CHANGE</param_value>
+        <param_value dtype="String">PriceOverride</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">BASE_PRICE_RULE</param_value>
+        <param_value dtype="String">PriceRule</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="VoidEntryType" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">KEYED</param_value>
+        <param_value dtype="String">Keyed</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SCANNED</param_value>
+        <param_value dtype="String">Scanned</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">EJOURNAL</param_value>
+        <param_value dtype="String">dtv:ElectronicJournal</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="PreviousLayawayAction" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">CANCELLED</param_value>
+        <param_value dtype="String">Cancelled</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">COMPLETED</param_value>
+        <param_value dtype="String">Completed</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">LAYAWAY_CANCEL</param_value>
+        <param_value dtype="String">Cancelled</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SPECIAL_ORDER_CANCEL</param_value>
+        <param_value dtype="String">Cancelled</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SPECIAL_ORDER_PICKUP</param_value>
+        <param_value dtype="String">Completed</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">LAYAWAY_PICKUP</param_value>
+        <param_value dtype="String">Completed</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">WORK_ORDER_CANCEL</param_value>
+        <param_value dtype="String">Cancelled</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">WORK_ORDER_PICKUP</param_value>
+        <param_value dtype="String">Completed</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CUSTOMER_ACCOUNT_PICKUP</param_value>
+        <param_value dtype="String">Completed</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CUSTOMER_ACCOUNT_CANCEL</param_value>
+        <param_value dtype="String">Cancelled</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="CC_ENC" class="dtv.pos.i18n.format.EncryptingFormatter">
+      <Parameter name="setCipher" value="ccenc" />
+    </Formatter>
+    <Formatter name="CDATA" class="dtv.pos.i18n.format.CdataFormatter" />
+    
+    <Formatter name="EmployeeStatus" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">A</param_value>
+        <param_value dtype="String">Active</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">I</param_value>
+        <param_value dtype="String">Inactive</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">T</param_value>
+        <param_value dtype="String">Inactive</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="IdentificationType" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">DRIVER_LICENSE</param_value>
+        <param_value dtype="String">DriversLicense</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">SOCIAL_SECURITY</param_value>
+        <param_value dtype="String">dtv:SocialSecurity</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">MILITARY_ID</param_value>
+        <param_value dtype="String">MilitaryID</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CREDIT_CARD</param_value>
+        <param_value dtype="String">dtv:CreditCard</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">EMPLOYEE_ID</param_value>
+        <param_value dtype="String">StoreID</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">CUSTOMER_CARD</param_value>
+        <param_value dtype="String">dtv:CustomerCard</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">PASSPORT</param_value>
+        <param_value dtype="String">Passport</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">ANY</param_value>
+        <param_value dtype="String">dtv:Any</param_value>
+      </Parameter>
+    </Formatter>
+    
+    <Formatter name="GENDER" class="dtv.pos.i18n.format.LogCodeFormatter">
+      <Parameter name="addMapping">
+        <param_value dtype="String">M</param_value>
+        <param_value dtype="String">Male</param_value>
+      </Parameter>
+      <Parameter name="addMapping">
+        <param_value dtype="String">F</param_value>
+        <param_value dtype="String">Female</param_value>
+      </Parameter>
+    </Formatter>
+  </FormatterMap>
+</LogDefinitions>

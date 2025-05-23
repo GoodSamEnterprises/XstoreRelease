@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="codeMapAppenderEFTLink" class="com.micros_retail.xfgclient.code.CodeMapAppender">
+    <property name="codeMap" >
+      <map>
+        <entry key="59">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_EFTLINK_Administration" />
+            <property name="description" value="_xfgclient.codefunction.eftlinkadministration" />
+            <property name="validations" ref="loggedInStateRules" />
+            <property name="privilege" ref="PRV_Manager" />
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+</beans>

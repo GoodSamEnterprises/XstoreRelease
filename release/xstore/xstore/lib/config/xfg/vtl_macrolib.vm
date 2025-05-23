@@ -1,0 +1,21 @@
+#macro( FmtN0 $name $data )
+$BEAN_intpFormatterFactory.format($OUTPUT_CONTEXT,$LOCALE,$name,$data)#end
+
+#macro( FmtN1 $name $data $param1 )
+$BEAN_intpFormatterFactory.format($OUTPUT_CONTEXT,$LOCALE,$name,$data,$param1)#end
+
+#macro( FmtN2 $name $data $param1 $param2 )
+$BEAN_intpFormatterFactory.format($OUTPUT_CONTEXT,$LOCALE,$name,$data,$param1,$param2)#end
+
+#macro( FmtN3 $name $data $param1 $param2 $param3 )
+$BEAN_intpFormatterFactory.format($OUTPUT_CONTEXT,$LOCALE,$name,$data,$param1,$param2,$param3)#end
+
+#macro( OPERATOR_LAST_NAME )
+$!BEAN_statusHelper.getOperator().getParty().getLastName()#end
+
+#macro ( Rep $str $cnt )
+$StringUtils.repeat($str,$cnt)#end
+
+
+#macro ( Pattern $name )
+$BEAN_intpFormatterFactory.getDisplayPattern($OUTPUT_CONTEXT,$name)#end

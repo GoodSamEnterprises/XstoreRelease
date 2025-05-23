@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+
+  <Form name="INVENTORY_COUNT_SEARCH" type="POPUP_VIEW_PANEL">
+    <Page name="inventoryCountSearch">
+      <Panel startX="0" startY="0" width="100" height="100" fieldLayoutRef="invCountLayout"  />
+
+    </Page>
+    
+    <ActionGroup name="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action chainKey="INVENTORY_COUNT_CREATE" text="_invCountAddNewAction" keyStroke="F7">
+        <VisibilityRule class="dtv.pos.inventory.count.CreateCountVisibilityRule" />
+      </Action>
+      <Action ref="ACCEPT" />
+    </ActionGroup>
+  </Form>
+
+</FormSet>

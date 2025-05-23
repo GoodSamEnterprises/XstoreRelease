@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ShippingFees xmlns:dtv="http://www.datavantagecorp.com/xstore" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="ShippingFeeConfig.xsd">
+  
+  <ShippingRule name="TRUE_RULE">
+    <Class>dtv.pos.shippingfee.rules.TrueRule</Class>
+  </ShippingRule>
+  <ShippingRule name="FALSE_RULE">
+    <Class>dtv.pos.shippingfee.rules.FalseRule</Class>
+  </ShippingRule>
+  <ShippingRule name="SHIP_TO_STATE_RULE">
+    <Class>dtv.pos.shippingfee.rules.ShipToStateCheckRule</Class>
+  </ShippingRule>
+  <ShippingRule name="SHIP_TO_ZIP_RULE">
+    <Class>dtv.pos.shippingfee.rules.ShipToZipCheckRule</Class>
+  </ShippingRule>
+  <ShippingRule name="ACCOUNT_TYPE_RULE">
+    <Class>dtv.pos.shippingfee.rules.AccountTypeRule</Class>
+  </ShippingRule>
+  <ShippingRule name="SPECIAL_ORDER_RULE">
+    <Class>dtv.pos.shippingfee.rules.SpecialOrderRule</Class>
+  </ShippingRule>
+  <FeeAggregation name="TOTAL">
+    <Class>dtv.pos.shippingfee.aggregation.TotalFeeAggregation</Class>
+  </FeeAggregation>
+  <FeeAggregation name="AVERAGE">
+    <Class>dtv.pos.shippingfee.aggregation.AverageFeeAggregation</Class>
+  </FeeAggregation>
+  <FeeAggregation name="HIGHEST">
+    <Class>dtv.pos.shippingfee.aggregation.HighestFeeAggregation</Class>
+  </FeeAggregation>
+  <FeeAggregation name="LOWEST">
+    <Class>dtv.pos.shippingfee.aggregation.LowestFeeAggregation</Class>
+  </FeeAggregation>
+</ShippingFees>

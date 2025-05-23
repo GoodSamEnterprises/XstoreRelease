@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+
+  <ReceiptCopyRules>
+    <ReceiptCopyRule name="AJB_PRIVATE_CREDIT_RECEIPT" document="AJB_PRIVATE_CREDIT_RECEIPT">
+      <Rule class="dtv.tenderauth.impl.copyrules.AjbPrivateCreditCopyRule" />
+    </ReceiptCopyRule>
+  </ReceiptCopyRules>
+
+  <receipts>
+    <receipt document="AJB_PRIVATE_CREDIT_RECEIPT" sectionref="AJB_PRIVATE_CREDIT_RECEIPT" />
+  </receipts>
+
+  <sections>
+    <section name="AJB_PRIVATE_CREDIT_RECEIPT">
+      <condition method="isSuccess" comparison="TRUE" />
+      <call method="getRequest.getLineItem.getParentTransaction">
+        <sectionref>header</sectionref>
+      </call>
+      <sectionref>ABJ_PRIVATE_CREDIT_ITEM</sectionref>
+      <call method="getRequest.getLineItem.getParentTransaction">
+        <sectionref>footer</sectionref>
+        <sectionref>system_mode</sectionref>
+      </call>
+      <sectionref>CustomerCopyLabel</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+    <section name="ABJ_PRIVATE_CREDIT_ITEM">
+      <row>
+        <field text="_ajbPrivateCreditApprovedRcptText" />
+      </row>
+      <row>
+        <field text="_ajbPrivateCreditLimit" /><sp />
+        <field method="getApprovedAmount" formatter="Money" />
+      </row>
+      <row>
+        <field text="_ajbPrivateCreditAccount" /><sp />
+        <field method="getAccountNumber" formatter="CreditCard" />
+      </row>
+    </section>
+  </sections>
+</ReceiptDefinitions>

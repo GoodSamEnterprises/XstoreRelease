@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Mon Feb 13 17:35:47 EST 2006 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">RETAIL_LOCATION_SEARCH</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--MINIMUM, FILL-->
+          <param_value dtype="DoubleArray">-3.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, 10.0, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, 10.0, PREFERRED, 10.0, PREFERRED, 10.0, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, 10.0, -2.0, -2.0, -2.0, -2.0, -2.0, 10.0, -2.0, 10.0, -2.0,
+            -10.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="IntegerArray">0, 1, 0, 1</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_retailLocSearchRetailLocId</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">retailLocationId</Resource>
+        <DataField ref="Integer" />
+        <Font fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_retailLocSearchAddress</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">address</Resource>
+        <Font fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 3, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_retailLocSearchCity</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">city</Resource>
+        <DataField ref="Address" />
+        <Font fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_retailLocSearchState</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">state</Resource>
+        <DataField ref="Address" />
+        <Font fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 5, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_retailLocSearchPostalCode</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">postalCode</Resource>
+        <DataField ref="PostalCode">
+          <Parameter name="maxCharacters">
+            <param_value dtype="Integer"><![CDATA[10]]></param_value>
+          </Parameter>
+          <Parameter name="regexPolicy">
+            <param_value dtype="String"><![CDATA[[\w-]*]]></param_value>
+          </Parameter>
+        </DataField>
+        <Font fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 6, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_retailLocSearchCountry</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 6, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">country</Resource>
+        <DataField ref="Address" />
+        <Font fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 8, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_retailLocSearchPhoneNumber</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 8, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">phoneNumber</Resource>
+        <Font fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 10, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_retailLocSearchManagerName</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 10, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">managerName</Resource>
+        <Font fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 12, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_retailLocSearchDescription</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 12, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">description</Resource>
+        <Font fontSize="+10" />
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

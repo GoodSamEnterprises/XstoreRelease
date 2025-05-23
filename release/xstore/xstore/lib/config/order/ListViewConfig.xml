@@ -1,0 +1,480 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> //-->
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/ListViewConfig.xsd">
+  <Rule name="ORDER_LINE_REGISTER">
+    <Class>dtv.pos.framework.ui.listview.InstanceOfListViewRule</Class>
+    <Type dtype="String">ORDER_LINE_REGISTER</Type>
+    <Parameter dtype="Class">dtv.xst.dao.xom.IOrderLine</Parameter>
+  </Rule>
+  <Rule name="ORDER_FEE">
+    <Class>dtv.pos.framework.ui.listview.InstanceOfListViewRule</Class>
+    <Type dtype="String">ORDER_FEE</Type>
+    <Parameter dtype="Class">dtv.xst.dao.xom.IOrderFee</Parameter>
+  </Rule>
+  <Rule name="ORDER_PAYMENT">
+    <Class>dtv.pos.framework.ui.listview.InstanceOfListViewRule</Class>
+    <Type dtype="String">ORDER_PAYMENT</Type>
+    <Parameter dtype="Class">dtv.xst.dao.xom.IOrderPayment</Parameter>
+  </Rule>
+  <Rule name="ORDER_ITEM_SUFFICIENT_INVENTORY">
+    <Class>dtv.pos.order.maint.SufficientInventoryListRule</Class>
+    <Type dtype="String">ORDER_ITEM_SUFFICIENT_INVENTORY</Type>
+  </Rule>
+  <Rule name="ORDER_ITEM_INSUFFICIENT_INVENTORY">
+    <Class>dtv.pos.order.maint.SufficientInventoryListRule</Class>
+    <Type dtype="String">ORDER_ITEM_INSUFFICIENT_INVENTORY</Type>
+    <Parameter dtype="String">Invert</Parameter>
+  </Rule>
+  <Rule name="ORDER_DEAL_PRICE_MODIFIER">
+    <Class>dtv.pos.pricing.deal.DealPriceModifierListViewRule</Class>
+    <Type dtype="String">ORDER_DEAL_PRICE_MODIFIER</Type>
+  </Rule>
+  
+  <RuleSet name="ORDER_TRANSACTION">
+    <RuleKey dtype="String">ORDER_LINE_REGISTER</RuleKey>
+    <RuleKey dtype="String">ORDER_FEE</RuleKey>
+    <RuleKey dtype="String">ORDER_PAYMENT</RuleKey>
+    <RuleKey dtype="String">DISCOUNT_LINE_ITEM</RuleKey>
+    <RuleKey dtype="String">DEAL_LINE_ITEM</RuleKey>
+    <RuleKey dtype="String">ORDER_DEAL_PRICE_MODIFIER</RuleKey>
+    <RuleKey dtype="String">PRICING_MODIFIER</RuleKey>
+    <RuleKey dtype="String">DISCOUNT_LIST</RuleKey>
+    <RuleKey dtype="String">COUPON_LIST</RuleKey>
+    <RuleKey dtype="String">APPLIED_DISCOUNT_LIST</RuleKey>
+  </RuleSet>
+  <RuleSet name="ORDER_LINES_INVENTORY_LEVELS">
+    <RuleKey dtype="String">ORDER_ITEM_SUFFICIENT_INVENTORY</RuleKey>
+    <RuleKey dtype="String">ORDER_ITEM_INSUFFICIENT_INVENTORY</RuleKey>
+  </RuleSet>
+  
+  <Element name="ORDER_DEAL_PRICE_MODIFIER">
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <Column start="5" width="6" icon="_imageDealIcon" />
+      <Column start="11" width="61" method="getDescription" />
+      <Column start="72" width="14" method="getExtendedAmount.negate" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+
+  <Header name="ORDER_DETAIL_ITEM">
+    <Row>
+      <Column start="0" width="12" translatable="_orderDetailStatus" />
+      <Column start="14" width="18" translatable="_orderDetailSourceLocation" />
+      <Column start="32" width="27" translatable="_orderDetailDestination" />
+      <Column start="59" width="21" translatable="_orderDetailItem" />
+      <Column start="81" width="4" translatable="_orderDetailQuantity" alignment="RIGHT" />
+      <Column start="88" width="10" translatable="_orderDetailExtendedPrice" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="ORDER_DETAIL_ITEM" >
+    <ColorGroup selectionBgColor="#009F9B" selectionBgColor2="#00ACA8" />
+    <Row>
+      <Column start="0" width="14">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="14" width="18" method="getSourceModifier.getLocationId" />
+      <Column start="32" width="27">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.maint.FulfillmentMethodCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="59" width="21" method="getItemId" />
+      <Column start="81" width="4" method="getQuantity" alignment="RIGHT" formatter="Integer" />
+      <Column start="88" width="10" method="getExtendedPrice" alignment="RIGHT" formatter="Money" />
+    </Row>
+    <Row>
+      <Column start="14" width="18">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getSourceModifier.getLocationName1" />
+          <EvaluatedFormattable method="getSourceModifier.getLocationName2" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="32" width="27">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getFulfillmentModifier.getLocationId" />
+          <EvaluatedFormattable method="getFulfillmentModifier" formatter="BasicName" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="59" width="21" method="getItem.getDescription" />
+    </Row>
+    <Row>
+      <Column start="0" width="32">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.maint.ActualShipMethodCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="32" width="27" method="getFulfillmentModifier.getAddress" formatter="BasicAddress" wrapText="true"/>
+    </Row>
+    <Row>
+      <Column start="0" width="32">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.maint.TrackingNumberCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getNotes" />
+    </Row>
+  </Element>
+  <Element name="ORDER_FEE">
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <Column start="25" width="42">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderFeeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="87" width="13" method="getAmount" alignment="RIGHT" formatter="Money" >
+        <Touch ref="TOUCH::ORDER.CHANGE_LINE_PRICE" >
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        </Touch>
+      </Column>
+    </Row>
+  </Element>
+  <Header name="ORDER_ITEMS_TO_PICKUP">
+    <Row>
+      <Column start="1" width="26" translatable="_orderDetailItemId" alignment="LEFT" />
+      <Column start="29" width="45" translatable="_orderDetailDescription" alignment="LEFT" />
+      <Column start="80" width="20" translatable="_orderDetailStatus" alignment="LEFT" />
+    </Row>
+  </Header>
+  <Element name="ORDER_ITEMS_TO_PICKUP">
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <Column start="1" width="26" method="getItemId" />
+      <Column start="29" width="45" method="getItem.getDescription" />
+      <Column start="80" width="24">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <Header name="ORDER_LINE_REGISTER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.TransactionHeaderViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="45" wrapText="true">
+        <AppendingFormattable separator="\u0020">
+          <Translatable name="_retailtransactionitemstransactionnr" />
+          <EvaluatedFormattable method="getTransactionNumber" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="45" width="18" translatable="_orderDetailUnitPrice" alignment="RIGHT" />
+      <Column start="68" width="10" translatable="_orderDetailQuantity" alignment="CENTER" />
+      <Column start="78" width="18" translatable="_orderDetailExtendedPrice" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="ORDER_LINE_REGISTER" iconKey="imageFromItemUrl">
+    <HiddenButton ref="TOUCH::ORDER.VOID_LINE" >
+      <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+      <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateCurrentPromptResponsivenessRule" />
+    </HiddenButton>
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="45" method="getItem.getDescription">
+         <FontRef fontKey="_fontListMedium" fontStyle="BOLD" />
+      </Column>
+      <Column start="45" width="18" method="getUnitPrice" alignment="RIGHT" formatter="Money">
+        <Touch ref="TOUCH::ORDER.CHANGE_LINE_PRICE" >
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        </Touch>
+      </Column>
+      <Column start="63" width="5">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.PriceDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="PROMO_PRICE">
+          <param_value dtype="IconRef">_imageListPriceMarkedDown</param_value>
+        </Parameter>
+        <Parameter name="CLEARANCE_PRICE">
+          <param_value dtype="IconRef">_imageListPriceClearance</param_value>
+        </Parameter>
+      </Column>
+      <Column start="68" width="10" method="getQuantity" alignment="CENTER" formatter="Decimal">
+        <Touch ref="TOUCH::ORDER.CHANGE_LINE_QUANTITY" >
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        </Touch>
+      </Column>
+      <Column start="78" width="18" method="getExtendedPrice" alignment="RIGHT" formatter="Money">
+        <FontRef fontKey="_fontListMedium" fontStyle="BOLD" />
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="15">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderStatusCellHandler</CellDataHandlerFactoryClass>
+        <Touch ref="TOUCH::DISPLAY_SELECTED_ITEM" >
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        </Touch>
+      </Column>
+      <Column start="15" width="15" method="getItemId">
+        <Touch ref="TOUCH::DISPLAY_SELECTED_ITEM" >
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+          <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        </Touch>
+      </Column>
+      <Column start="85" width="5">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.shared.listview.IconLineItemCellHandler</CellDataHandlerFactoryClass>
+        <Parameter name="attachedItem">
+          <param_value dtype="IconRef">_imageAttachedItem</param_value>
+        </Parameter>
+        <Parameter name="wishListItem">
+          <param_value dtype="IconRef">_imageWishListItem</param_value>
+        </Parameter>
+        <Parameter name="digitalCartItem">
+          <param_value dtype="IconRef">_imageDigitalCartItem</param_value>
+        </Parameter>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="30" width="20">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.sale.ItemDimensionCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="DimensionIndex" value="1" />
+      </Column>
+      <Column start="52" width="20">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.sale.ItemDimensionCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="DimensionIndex" value="2" />
+      </Column>
+      <Column start="74" width="20">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.sale.ItemDimensionCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="DimensionIndex" value="3" />
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="27" translatable="_orderSourceColon" alignment="RIGHT" />
+      <Column start="30" width="36">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderSourceLocationCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="27" alignment="RIGHT">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.FulfillmentMethodCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="30" width="36">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getFulfillmentModifier.getLocationId" />
+          <EvaluatedFormattable method="getFulfillmentModifier" formatter="BasicName" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="30" width="50" method="getFulfillmentModifier.getAddress" wrapText="true" formatter="BasicAddress" />
+    </Row>
+    <Row>
+      <Column start="0" width="27" alignment="RIGHT">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.ShippingMethodCellHandler</CellDataHandlerFactoryClass>
+        <Parameter name="TranslationKey" value="_orderShipViaColon" />
+      </Column>
+      <Column start="30" width="36" method="getSelectedShipMethodObject.getShipperMethodDesc" />
+    </Row>
+    <Row>
+      <Column start="30" width="70">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.item.PropertyCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="ItemPropertyKey" value="GIFT_REGISTRY_NAME" />
+        <Parameter name="LabelTranslationKey" value="_giftRegistryLineItemLabel" />
+      </Column>
+    </Row>
+  </Element>
+  <Header name="ORDER_LINES_INVENTORY_LEVELS">
+    <Row>
+      <Column start="0" width="60" translatable="_orderDetailItemId" />
+      <Column start="65" width="13" translatable="_orderDetailQuantityLong" alignment="RIGHT" />
+      <Column start="83" width="13" translatable="_orderDetailQuantityLong" alignment="RIGHT" />
+    </Row>
+    <Row>
+      <Column start="0" width="60" translatable="_orderDetailDescription" />
+      <Column start="65" width="13" translatable="_orderDetailQuantityOrdered" alignment="RIGHT" />
+      <Column start="83" width="13" translatable="_orderDetailQuantityOnHand" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="ORDER_ITEM_SUFFICIENT_INVENTORY">
+    <ColorGroup fgColor="0x009900" bgColor="0xFFFFFF" selectionFgColor="0xFFFFFF" selectionBgColor="0x287828"
+      selectionBgColor2="0x46C846" />
+    <Row>
+      <Column start="0" width="60" method="getItemId" />
+      <Column start="65" width="13" method="getQuantityOrdered" alignment="RIGHT" formatter="Decimal" />
+      <Column start="83" width="13" method="getQuantityOnHand" alignment="RIGHT" formatter="Decimal" />
+    </Row>
+    <Row>
+      <Column start="0" width="60" method="getDescription" />      
+    </Row>
+  </Element>
+  <Element name="ORDER_ITEM_INSUFFICIENT_INVENTORY">
+    <ColorGroup fgColor="0xC60000" bgColor="0xFFFFFF" selectionFgColor="0xFFFFFF" selectionBgColor="0xC60000"
+      selectionBgColor2="0xFF0A0A" />
+    <Row>
+      <Column start="0" width="60" method="getItemId" />
+      <Column start="65" width="13" method="getQuantityOrdered" alignment="RIGHT" formatter="Decimal" />
+      <Column start="83" width="13" method="getQuantityOnHand" alignment="RIGHT" formatter="Decimal" />
+    </Row>
+    <Row>
+      <Column start="0" width="60" method="getDescription" />      
+    </Row>
+  </Element>
+  <Header name="ORDER_LOCATE_ITEM_RESULT">
+    <Row>
+      <Column start="0" width="60" translatable="_orderLocateItemLocation" />
+      <Column start="60" width="20" translatable="_orderLocateItemDistance" alignment="CENTER" />
+      <Column start="80" width="20" translatable="_orderLocateItemQuantity" alignment="CENTER" />
+    </Row>
+  </Header>
+  <Element name="ORDER_LOCATE_ITEM_RESULT">
+    <Row>
+      <Column start="0" width="10" method="getLocationId" />
+      <Column start="10" width="50" method="getLocationName" />
+      <Column start="60" width="20" alignment="CENTER">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getDistance.getMagnitude" formatter="Decimal" />
+          <EvaluatedFormattable method="getDistance.getUnit" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="80" width="20" method="getAvailableQuantity" alignment="CENTER" formatter="Decimal" />
+    </Row>
+    <Row>
+      <Column start="10" width="80" method="." formatter="BasicAddress" wrapText="true" />
+      <Column start="80" width="20" alignment="CENTER">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.QuantityStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <Header name="ORDER_LOCATE_MULTIPLE_ITEM_RESULT">
+    <Row>
+      <Column start="0" width="60" translatable="_orderLocateItemLocation" />
+      <Column start="60" width="40" translatable="_orderLocateItemDistance" alignment="CENTER" />
+    </Row>
+  </Header>
+  <Element name="ORDER_LOCATE_MULTIPLE_ITEM_RESULT">
+    <Row>
+      <Column start="0" width="10" method="getLocationId" />
+      <Column start="10" width="50" method="getLocationName" />
+      <Column start="60" width="40" alignment="CENTER">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getDistance.getMagnitude" formatter="Decimal" />
+          <EvaluatedFormattable method="getDistance.getUnit" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="10" width="90" method="." formatter="BasicAddress" wrapText="true" />
+    </Row>
+  </Element>
+  <Element name="ORDER_PAYMENT">
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <Column start="25" width="42">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderPaymentCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="87" width="13" method="getAmount" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <Header name="ORDER_SEARCH_RESULT">
+    <Row>
+      <Column start="0" width="39" translatable="_orderId" />
+      <Column start="40" width="30" translatable="_orderType" />
+      <Column start="71" width="29" translatable="_orderStatus" />
+    </Row>
+    <Row>
+      <Column start="0" width="39" translatable="_orderCustomer" />
+      <Column start="40" width="30" translatable="_orderCustomerPhone" />
+      <Column start="71" width="29" translatable="_orderDate" />
+    </Row>
+  </Header>
+  <Element name="ORDER_SEARCH_RESULT">
+    <Row>
+      <Column start="0" width="39" method="getOrderId" />
+      <Column start="40" width="30">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.maint.OrderTypeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="71" width="29">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="39">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getFirstName" />
+          <EvaluatedFormattable method="getLastName" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="40" width="30" method="getTelephone" formatter="Phone" />
+      <Column start="71" width="29" method="getOrderDate" formatter="DateMedium" />
+    </Row>
+  </Element>
+  <Header name="ORDER_WORKLIST_RESULT">
+    <Row>
+      <Column start="0" width="25" translatable="_orderTitle" />
+      <Column start="25" width="30" translatable="_orderCustomer" />
+      <Column start="55" width="20" translatable="_orderDate" alignment="RIGHT" />
+      <Column start="75" width="25" translatable="_orderWorklistActionRequired" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="ORDER_WORKLIST_RESULT">
+    <RendererClass dtype="Class">dtv.pos.order.maint.OrderWorklistViewElement</RendererClass>
+    <FontRef fontSize="-1" fontKey="_fontListMedium" />
+    <Row>
+      <Column start="0" width="25" method="getOrderId" />
+      <Column start="25" width="30">
+        <AppendingFormattable separator="\u0020">
+          <EvaluatedFormattable method="getFirstName" />
+          <EvaluatedFormattable method="getLastName" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="55" width="20" method="getOrderDate" alignment="RIGHT" formatter="DateMedium" />
+      <Column start="75" width="25" alignment="RIGHT">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.maint.WorklistActionCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontSize="-3" fontKey="_fontListMedium" />
+      <Column start="0" width="25">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.maint.OrderTypeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="25" width="30" method="getTelephone" formatter="Phone" />
+      <Column start="55" width="20" alignment="RIGHT">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.maint.OrderAgeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <!-- ohernando This will display a list of fulffiling stores where a RESERVED item is picked/reserved -->
+	<Header name="ORDER_LINE_ITEM_FULFILLING_LOCATION_LIST">
+		<Row>
+			<Column start="0" width="45" translatable="_orderDetailItemId" />
+			<Column start="45" width="25" translatable="_fulfillingStore" />
+			<Column start="70" width="30" translatable="_fulfillingStorePhoneNumber" />
+		</Row>
+		<Row>
+			<Column start="0" width="60" translatable="_orderDetailDescription" />
+		</Row>
+	</Header>
+  <Element name="ORDER_LINE_ITEM_FULFILLING_LOCATION_LIST">
+    <ColorGroup fgColor="0x000000" bgColor="0xFFFFFF" selectionFgColor="0xFFFFFF" selectionBgColor="0x7CAC89" selectionBgColor2="0x7CAC89" />
+    <Row>
+      <Column start="0" width="45" method="getItemId" />
+      <Column start="45" width="25" method="getFulfillingLocation" wrapText="true" />
+      <Column start="70" width="30" method="getFulfillingLocationPhoneNumber" wrapText="true"/>
+    </Row>
+    <Row>
+     <Column start="0" width="45" method="getItemDescription" wrapText="true" />
+    </Row>
+  </Element>
+  <!-- ohernando This will display a list of fulffiling stores where a RESERVED item is picked/reserved -->
+	<Header name="CANCELLABLE_ITEMS_LIST">
+		<Row>
+			<Column start="0" width="20" translatable="_orderDetailItemId" />
+			<Column start="20" width="35" translatable="_orderDetailDescription" />
+			<Column start="55" width="30" translatable="_orderStatus" />
+		</Row>
+	</Header>
+  <Element name="CANCELLABLE_ITEMS_LIST">
+   <ColorGroup fgColor="0x000000" bgColor="0xFFFFFF" selectionFgColor="0xFFFFFF" selectionBgColor="0x7CAC89"
+      selectionBgColor2="0x7CAC89" />
+    <Row>
+      <Column start="0" width="20" method="getItemId" />
+      <Column start="20" width="35" method="getItem.getDescription" wrapText="true" />
+      <Column start="55" width="30">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <Header name="ORDER_CANCEL_REASON_CODE_LIST">
+    <Row>
+      <Column start="10" width="80" translatable="_orderCancelReasonCode" />
+    </Row>
+  </Header>
+	<Element name="ORDER_CANCEL_REASON_CODE_LIST">
+		<Row>
+			<Column start="10" width="80" method="getDescription" />
+		</Row>
+	</Element>
+   
+</ListView>

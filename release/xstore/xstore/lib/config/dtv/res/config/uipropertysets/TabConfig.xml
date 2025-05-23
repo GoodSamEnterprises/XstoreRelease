@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ComponentPropertySets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DtvConfigLibrary.xsd">
+
+  <ComponentPropertySet name="TABBED_PANE_DEFAULT" >
+    <ComponentID dtype="String">MessageAreaTabs</ComponentID>
+    <ComponentProperty>
+      <Property dtype="String">tab1</Property>
+      <Value dtype="String">MESSAGE_AREA</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tab2</Property>
+      <Value dtype="String">ASSOCIATE_TASKS</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tab3</Property>
+      <Value dtype="String">SALES_GOAL</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tab4</Property>
+      <Value dtype="String">EMPLOYEE_MESSAGES</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tab5</Property>
+      <Value dtype="String">NUMERIC_KEYPAD</Value>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="TABBED_PANE_TRANSACTION" >
+    <ComponentID dtype="String">MessageAreaTabs</ComponentID>
+    <ComponentProperty>
+      <Property dtype="String">tab1</Property>
+      <Value dtype="String">MESSAGE_AREA</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tab2</Property>
+      <Value dtype="String">TRANSACTION_COUPONS</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tab3</Property>
+      <Value dtype="String">EMPLOYEE_MESSAGES</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tab4</Property>
+      <Value dtype="String">NUMERIC_KEYPAD</Value>
+    </ComponentProperty>    
+<!--     <ComponentProperty> -->
+<!--       <Property dtype="String">tab5</Property> -->
+<!--       <Value dtype="String">AIRSIDE_MESSAGES</Value> -->
+<!--     </ComponentProperty>     -->
+  </ComponentPropertySet>
+
+  <!-- =================================== -->
+  <!-- =   Tabs Component Property Sets  = -->
+  <!-- =================================== -->
+
+  <ComponentPropertySet name="MESSAGE_AREA" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+          <Name dtype="String">MESSAGE_AREA</Name>
+          <Type dtype="String">ItemMessageView</Type>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_infoTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageInfoTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="ASSOCIATE_TASKS" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">ASSOCIATE_TASKS</Name>
+        <Type dtype="String">ManagedHtmlContentView</Type>
+        <ComponentID dtype="String">ASSOCIATE_TASKS</ComponentID>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_tasksTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageTasksTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="SALES_GOAL" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">SALES_GOAL</Name>
+        <Type dtype="String">ManagedHtmlContentView</Type>
+        <ComponentID dtype="String">SALES_GOAL</ComponentID>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_goalsTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageSalesGoalTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+
+  <ComponentPropertySet name="EMPLOYEE_MESSAGES">
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">EMPLOYEE_MESSAGES</Name>
+        <Type dtype="String">EmployeeMessageView</Type>
+        <ComponentID dtype="String">EMPLOYEE_MESSAGES</ComponentID>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_messagesTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageMessagesTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="NUMERIC_KEYPAD" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">NUMERIC_KEYPAD</Name>
+        <Type dtype="String">NumericKeypad</Type>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_keypadTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageNumberTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="TRANSACTION_COUPONS" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">TRANSACTION_COUPONS</Name>
+        <Type dtype="String">ManagedHtmlContentView</Type>
+        <ComponentID dtype="String">TRANSACTION_COUPONS</ComponentID>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_couponsTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageCouponsTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="ACTIVITY_STREAM" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">ACTIVITY_STREAM</Name>
+        <Type dtype="String">ManagedHtmlContentView</Type>
+        <ComponentID dtype="String">ACTIVITY_STREAM</ComponentID>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_activityStreamTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageActivityStreamTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="WEATHER_FORECAST" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">WEATHER_FORECAST</Name>
+        <Type dtype="String">WeatherTabView</Type>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_weatherTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageWeatherTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="EMPLOYEE_SCHEDULE" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">EMPLOYEE_SCHEDULE</Name>
+        <Type dtype="String">ManagedHtmlContentView</Type>
+        <ComponentID dtype="String">EMPLOYEE_SCHEDULE</ComponentID>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_employeeScheduleTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageEmployeeScheduleTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="QUICK_LAUNCH" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">QUICK_LAUNCH</Name>
+        <Type dtype="String">QuickLaunchView</Type>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_quickLaunchTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageQuickLaunchTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="QUICK_ITEMS" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">QUICK_ITEMS</Name>
+        <Type dtype="String">QuickItemsView</Type>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_quickItemsTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageQuickItemsTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="URL_NAVIGATOR" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">URL_NAVIGATOR</Name>
+        <Type dtype="String">URLNavigatorView</Type>
+        <ComponentParameter name="setURL">
+          <param_value dtype="String">http://www.oracle.com</param_value>
+        </ComponentParameter>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_urlNavigatorTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageURLNavigatorTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="TWITTER" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">TWITTER</Name>
+        <Type dtype="String">TwitterTabView</Type>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_urlTwiterTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageTwitterTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+  <ComponentPropertySet name="AIRSIDE_MESSAGES" >
+    <ComponentProperty>
+      <Property dtype="String">tab</Property>
+      <ComplexValue dtype="Component">
+        <Name dtype="String">AIRSIDE_MESSAGES</Name>
+        <Type dtype="String">ManagedHtmlContentView</Type>
+        <ComponentID dtype="String">AIRSIDE_MESSAGES</ComponentID>
+      </ComplexValue>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabTitle</Property>
+      <Value dtype="Translatable">_airsideTabTitle</Value>
+    </ComponentProperty>
+    <ComponentProperty>
+      <Property dtype="String">tabIcon</Property>
+      <ComplexValue dtype="IconGroup">
+        <Icon dtype="String">_imageAirsideTab</Icon>
+        <Scale dtype="Boolean">false</Scale>
+      </ComplexValue>
+    </ComponentProperty>
+  </ComponentPropertySet>
+  
+</ComponentPropertySets>

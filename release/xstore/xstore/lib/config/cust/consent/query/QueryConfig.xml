@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns="http://micros.com/xstore/config/query" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../config-objects/schema/QueryConfig.xsd">
+  <Query name="CUSTOMER_CONSENT_INFO" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.crm.CustomerConsentInfoId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+      ]]></WhereClause>
+    <Parameter name="argOrganizationId" />
+    </SQL>
+    <Sort field="effective_date" order="DESC" />
+  </Query>
+</QuerySet>

@@ -1,0 +1,39 @@
+<dataTemplate name="itemTag5163" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+
+    <!-- Template-specific Text -->
+    <label name="MSRP" value="_rptItemTag5163Msrp"/>
+    <label name="YOUR_COST" value="_rptItemTag5163YourCost"/>
+    
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+  
+    <!-- User Parameters -->
+
+  </parameters>
+  
+  <dataSource>
+    <dataReference name="O_LABEL_ITEM">
+      <ResultFields>
+        <ResultField>Description</ResultField>
+        <ResultField>ItemId</ResultField>
+        <ResultField>ListPrice</ResultField>
+        <ResultField>ShelfPrice</ResultField>
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+  
+  <dataStructure>
+    <group name="G_DETAIL" source="O_LABEL_ITEM">
+      <element name="DESCRIPTION" value="Description" />
+      <element name="ITEM_ID" value="ItemId"/>
+      <element name="ITEM_ID_BARCODE" value="ItemId" barcode="Code93Below"/>
+      <element name="LIST_PRICE" value="ListPrice" formatter="Money"/>
+      <element name="SHELF_PRICE" value="ShelfPrice" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

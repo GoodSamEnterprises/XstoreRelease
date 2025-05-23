@@ -1,0 +1,1506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldLayoutSet xmlns="http://micros.com/xstore/config/form/fieldlayout" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FieldLayoutConfig.xsd">
+  
+  <FieldLayout name="customerMaintHeader" type="ListLayout">
+    <Row>
+      <Column start="0" width="20" fieldRef="customerName" verticalAlignment="Center" fontRef="whiteColorFont" />
+      <Column start="20" width="18" fieldRef="customerIdLabelFull" verticalAlignment="Center" horizontalAlignment="Right" fontRef="fullScreenFormHeaderLabel" />
+      <Column start="38" width="20" fieldRef="customerIdLabelValue" verticalAlignment="Center" fontRef="whiteColorFont" />
+      <Column start="58" width="17" fieldRef="customerSinceLabel" verticalAlignment="Center" horizontalAlignment="Right" fontRef="fullScreenFormHeaderLabel" />
+      <Column start="75" width="15" fieldRef="customerAnniversaryDateLabel" verticalAlignment="Center" horizontalAlignment="Left" fontRef="whiteColorFont" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custNumberLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="customerIdLabelFull" verticalAlignment="Center" />
+      <Column fieldRef="customerIdLabelValue" verticalAlignment="Center" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerBadgeLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="loyaltyBadgeImage" horizontalAlignment="Right" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custDashboradCustInfo" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="birthDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="birthDateValueLabel" />
+    </Row>
+    <Row>
+      <Column fieldRef="customerLastPurchaseDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="customerLastPurchaseDate" />
+    </Row>
+    <Row>
+      <Column fieldRef="address1Label" horizontalAlignment="Right" verticalAlignment="Top" />
+      <Column fieldRef="customerPrimaryAddress"  />
+    </Row>
+    <Row>
+      <Column fieldRef="emailAddressLabel" horizontalAlignment="Right" />
+      <Column fieldRef="emailAddressValueLabel" />
+    </Row>
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column fieldRef="telephone1ValueLabel" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerInfoImageLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="avatar" verticalAlignment="Top" horizontalAlignment="Left" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerNameLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="15" fieldRef="firstNameShortLabel" horizontalAlignment="Right" />
+      <Column start="15" width="25" fieldRef="firstName" />
+      <Column start="40" width="10" fieldRef="middleNameLabel" horizontalAlignment="Right" />
+      <Column start="50" width="10" fieldRef="middleName" />
+      <Column start="60" width="10" fieldRef="lastNameShortLabel" horizontalAlignment="Right" />
+      <Column start="70" width="30" fieldRef="lastName" required="true" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerAddressInformationLayout" type="ListLayout">    
+    <Row>
+      <Column start="0" width="15" fieldRef="organizationNameLabel" horizontalAlignment="Right" />
+      <Column start="15" width="49" fieldRef="organizationName" refreshOnChange="true" fieldSubmitPriority="2" />
+      <Column start="64" width="12" fieldRef="organizationTypeCodeLabel" horizontalAlignment="Right" />
+      <Column start="76" width="24" fieldRef="organizationTypeCode" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column start="15" width="49" fieldRef="address1" />
+      <Column start="64" width="12" fieldRef="apartmentLabel" visibilityGroup="apartmentVisibility" horizontalAlignment="Right" />
+      <Column start="76" width="24" fieldRef="apartment" visibilityGroup="apartmentVisibility" />
+    </Row>
+    <Row>
+      <Column start="15" width="49" fieldRef="address2" />  
+      <Column start="64" width="12" fieldRef="countryLabel" horizontalAlignment="Right" />
+      <Column start="76" width="24" fieldRef="country" />    
+    </Row>
+    <Row>      
+      <Column start="0" width="15" fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column start="15" width="13" fieldRef="postalCode" refreshOnChange="true" />
+      <Column start="28" width="13" fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column start="41" width="23" fieldRef="city" />
+      <Column start="64" width="12" fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column start="76" width="24" fieldRef="stateCustMaint" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="countyLabel" visibilityGroup="countyVisibility" horizontalAlignment="Right" />
+      <Column start="15" width="13" fieldRef="county" visibilityGroup="countyVisibility" />
+      <Column start="28" width="13" fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility" horizontalAlignment="Right" />
+      <Column start="41" width="23" fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" />
+    </Row> 
+  </FieldLayout>
+  
+  <FieldLayout name="customerInfoSubHeaders" type="ListLayout">
+    <Row>
+      <Column start="0" width="45" fieldRef="customerPersonalInformationLabel" />
+      <Column start="45" width="55" fieldRef="customerContactInformationLabel" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custPersonalInformationLayout" type="SimpleLayout">
+    <Row>
+      <Column start="0" width="30" fieldRef="anniversaryDateLabel" horizontalAlignment="Right" />
+      <Column start="30" width="50" fieldRef="anniversaryDate" />
+    </Row>
+    <Row>
+      <Column start="0" width="30" fieldRef="birthDateLabel" horizontalAlignment="Right" />
+      <Column start="30" width="50" fieldRef="birthDate" />
+    </Row>
+    <Row>
+      <Column start="0" width="30" fieldRef="genderLabel" horizontalAlignment="Right" />
+      <Column start="30" width="50" fieldRef="gender" />
+    </Row>
+    <Row>
+      <Column start="0" width="30" fieldRef="personalTaxIdLabel" visibilityGroup="fiscalCodeVisibility"
+              horizontalAlignment="Right" />
+      <Column start="30" width="50" fieldRef="personalTaxId" visibilityGroup="fiscalCodeVisibility" />
+    </Row>
+    <Row>
+      <Column start="0" width="30" fieldRef="nationalTaxIdLabel" visibilityGroup="taxCodeVisibility"
+              horizontalAlignment="Right" />
+      <Column start="30" width="50" fieldRef="nationalTaxId" visibilityGroup="taxCodeVisibility" />
+    </Row>    
+  </FieldLayout>
+  
+  <FieldLayout name="custContactInformationLayout" type="ListLayout">
+   <Row>      
+      <Column start="0" width="60" fieldRef="customerContactInformationLabel" fontRef="formContentHeader" />
+      <Column start="60" width="40" fieldRef="customerPersonalInformationLabel" fontRef="formContentHeader" />
+    </Row>
+   <Row>
+      <Column start="48" width="12" fieldRef="okToContact" horizontalAlignment="Center"/>
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="telephone1Label" horizontalAlignment="Right" />
+      <Column start="18" width="30" fieldRef="telephone1" refreshOnChange="true" required="true" />
+      <Column start="48" width="12" fieldRef="telephone1Contact" horizontalAlignment="Center" />
+      <Column start="60" width="17" fieldRef="anniversaryDateLabel" horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="anniversaryDate" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="telephone2Label" horizontalAlignment="Right" />
+      <Column start="18" width="30" fieldRef="telephone2" refreshOnChange="true" />
+      <Column start="48" width="12" fieldRef="telephone2Contact" horizontalAlignment="Center" />  
+      <Column start="60" width="17" fieldRef="birthDateLabel" horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="birthDate" />    
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="telephone3Label" horizontalAlignment="Right" />
+      <Column start="18" width="30" fieldRef="telephone3" refreshOnChange="true" />
+      <Column start="48" width="12" fieldRef="telephone3Contact" horizontalAlignment="Center" />   
+      <Column start="60" width="17" fieldRef="genderLabel" horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="gender" />   
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="emailAddressLabel" horizontalAlignment="Right" />
+      <Column start="18" width="30" fieldRef="emailAddress" refreshOnChange="true" />
+      <Column start="48" width="12" fieldRef="emailContact" horizontalAlignment="Center" />
+      <Column start="60" width="17" fieldRef="preferredLocaleLabel" horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="preferredLocale" />        
+    </Row>    
+    <Row>
+      <Column start="0" width="48" fieldRef="emailRcptsLabel" horizontalAlignment="Right" />
+      <Column start="48" width="12" fieldRef="emailRcpts" horizontalAlignment="Center" />
+      <Column start="60" width="17" fieldRef="personalTaxIdLabel" visibilityGroup="fiscalCodeVisibility"
+              horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="personalTaxId" visibilityGroup="fiscalCodeVisibility" /> 
+    </Row>
+    <Row>
+      <Column start="60" width="17" fieldRef="nationalTaxIdLabel" visibilityGroup="taxCodeVisibility"
+              horizontalAlignment="Right" />
+      <Column start="77" width="23" fieldRef="nationalTaxId" visibilityGroup="taxCodeVisibility" />
+    </Row>
+  </FieldLayout>
+  
+  
+  <FieldLayout name="activityStreamDetail" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="activityStream" />
+    </Row>
+  </FieldLayout>
+    
+  <FieldLayout name="custPurchHistListLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerPurchaseHistoryList" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerGroupLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="customerGroupsLabel" />      
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerGroups" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="taxExemptionListLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="taxExemptInformationListLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="taxExemptInformationList" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerAttributesLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="customerAttributeLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerAttributeList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="customerSegmentsLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="customerSegmentsLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerSegmentsList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="custAccountHistoryLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="50" fieldRef="customerAccountHistoryLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerAccountHistoryList" />
+    </Row>    
+  </FieldLayout>
+  
+  <FieldLayout name="custTaskLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerTaskList" />
+    </Row>
+  </FieldLayout>  
+  
+  <FieldLayout name="custCommentsLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerCommentsList" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custAddressListLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerAddressList" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custHouseAcctDetailLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="houseAccountDetails" />
+    </Row>
+    <Row>
+      <Column start="0" width="17" fieldRef="houseAcctNoLabel" horizontalAlignment="Right" />
+      <Column start="17" width="17" fieldRef="houseAcctNo" />
+      <Column start="34" width="20" fieldRef="houseAcctSetupDateLabel" horizontalAlignment="Right" />
+      <Column start="54" width="15" fieldRef="houseAcctSetupDate" />
+      <Column start="69" width="15" fieldRef="houseAcctCreditLimitLabel" horizontalAlignment="Right" />
+      <Column start="84" width="16" fieldRef="houseAcctCreditLimit" />
+    </Row>    
+    <Row>
+      <Column start="0" width="17" fieldRef="houseAcctStatusLabel" horizontalAlignment="Right" />
+      <Column start="17" width="17" fieldRef="houseAcctStatus" />    
+      <Column start="34" width="20" fieldRef="houseAcctLastActivityDateLabel" horizontalAlignment="Right" />
+      <Column start="54" width="15" fieldRef="houseAcctLastActivityDate" />  
+      <Column start="69" width="15" fieldRef="houseAcctBalanceLabel" horizontalAlignment="Right" />
+      <Column start="84" width="16" fieldRef="houseAcctBalance"/>
+    </Row>
+    <Row>
+      <Column start="0" width="17" fieldRef="houseAcctCorpAcctLabel" horizontalAlignment="Right" />
+      <Column start="17" width="17" fieldRef="houseAcctCorpAcct" />
+      <Column start="34" width="20" fieldRef="houseAcctLastPaymentDateLabel" horizontalAlignment="Right" />
+      <Column start="54" width="15" fieldRef="houseAcctLastPaymentDate" />
+      <Column start="69" width="15" fieldRef="houseAcctAvailableCreditLabel" horizontalAlignment="Right" />
+      <Column start="84" width="16" fieldRef="houseAcctAvailableCredit" />
+    </Row>
+    <Row>
+      <Column start="0" width="17" fieldRef="houseAcctOnHoldLabel" horizontalAlignment="Right" />
+      <Column start="17" width="17" fieldRef="houseAcctOnHold" />
+      <Column start="34" width="20" fieldRef="houseAcctLastPaymentAmountLabel" horizontalAlignment="Right" />
+      <Column start="54" width="15" fieldRef="houseAcctLastPaymentAmount" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custHouseAcctLists" type="ListLayout">
+    <Row>
+      <Column start="0" width="50" fieldRef="houseAcctAuthorizedBuyers" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="houseAcctAuthorizedBuyersList" />
+    </Row>
+    <Row>
+      <Column start="0" width="50" fieldRef="houseAcctJournalLabel"/>
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="houseAcctJournalList" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custWishList" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="custWishListLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="custWishList" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custWishListDashboard" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="custWishListDashboardLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="custWishListDashboard" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custWishListItemImage" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100"  fieldRef="custWishListItemImage" horizontalAlignment="Left" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custPurchHistItemImage" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100"  fieldRef="custPurchHistItemImage" horizontalAlignment="Center" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custWishListItemInfo" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="custItemInfoLabel" />
+      <Column />
+    </Row>
+    <Row>
+      <Column fieldRef="priceColonLabel" horizontalAlignment="Right" />
+      <Column fieldRef="wishListItemPrice" />
+    </Row>
+    <Row>
+      <Column fieldRef="wishListItemStyleLabel" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="wishListItemStyle" />
+    </Row>
+    <Row>
+      <Column fieldRef="wishListItemDimension1Label" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="wishListItemDimension1" />
+    </Row>
+    <Row>
+      <Column fieldRef="wishListItemDimension2Label" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="wishListItemDimension2" />
+    </Row>
+    <Row>
+      <Column fieldRef="wishListItemDimension3Label" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="wishListItemDimension3" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custPurchHistItemInfo" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="custItemInfoLabel" />
+      <Column />
+    </Row>
+    <Row>
+      <Column fieldRef="priceColonLabel" horizontalAlignment="Right"  />
+      <Column fieldRef="purchHistItemPrice" />
+    </Row>
+    <Row>
+      <Column fieldRef="purchHistItemStyleLabel" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="purchHistItemStyle" />
+    </Row>
+    <Row>
+      <Column fieldRef="purchHistItemDimension1Label" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="purchHistItemDimension1" />
+    </Row>
+    <Row>
+      <Column fieldRef="purchHistItemDimension2Label" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="purchHistItemDimension2" />
+    </Row>
+    <Row>
+      <Column fieldRef="purchHistItemDimension3Label" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="purchHistItemDimension3" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerSearchLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="telephoneSearch" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="lastName" />
+    </Row>
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="firstName" />
+    </Row>
+    <Row>
+      <Column fieldRef="cityLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="city" />
+    </Row>
+    <Row>
+      <Column fieldRef="stateLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="state" />
+    </Row>
+    <Row>   
+      <Column />   
+      <Column fieldRef="country" horizontalAlignment="Right" />      
+    </Row>
+    <Row>
+      <Column fieldRef="postalCodeLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="postalCode" refreshOnChange="true"/>
+    </Row>
+    <Row>
+      <Column fieldRef="customerIdInputLabel" horizontalAlignment="Right"/>
+      <Column fieldRef="customerIdInput" />
+    </Row>
+    <Row>
+      <Column fieldRef="countyLabel" visibilityGroup="countyVisibility" horizontalAlignment="Right"/>
+      <Column fieldRef="county" visibilityGroup="countyVisibility" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custHistoryStatTabLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerPurchaseSummaryList" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custHistoryInfoTabLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="customerHistoryItemPicture" horizontalAlignment="Center" />
+    </Row> 
+    <Row>
+      <Column start="0" width="100" fieldRef="customerHistoryItemDescription" horizontalAlignment="Center" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="blueLineSeparatorShort" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="customerHistoryDatePurchased" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="grayLineSeparator" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="customerHistoryPrice" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="grayLineSeparator" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="customerHistoryRegisterId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="grayLineSeparator" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="customerHistoryAssociateId" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custHistoryGraphTabLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="customerHistoryItemTimeSeries" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="itemResultsHeaderLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="30" fieldRef="itemDescriptionValueLabel" fontRef="whiteColorFont" />
+      <Column start="30" width="10" fieldRef="itemLabel" horizontalAlignment="Right" fontRef="fullScreenFormHeaderLabel" />
+      <Column start="40" width="20" fieldRef="itemIdValueLabel" fontRef="whiteColorFont" />
+      <Column start="60" width="10" fieldRef="itemResultsPriceLabel" horizontalAlignment="Right" fontRef="fullScreenFormHeaderLabel" />
+      <Column start="70" width="10" fieldRef="itemResultsPrice" fontRef="whiteColorFont" />
+      <Column start="80" width="10" fieldRef="itemResultsInventoryCount" horizontalAlignment="Right" fontRef="whiteColorFont" />
+      <Column start="90" width="10" fieldRef="itemResultsInventoryCountLabel"  fontRef="fullScreenFormHeaderLabel" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="itemGridLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="itemGrid" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="productMerchHierarchyLabelLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="merchInfoLabel" fontRef="formContentHeader" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="grayLineSeparator" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productMerchHierarchyLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="merchLevel1Label" />
+      <Column fieldRef="itemMerchLevel1" />
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel2Label" visibilityGroup="merchLevel2Visibility" />
+      <Column fieldRef="itemMerchLevel2" visibilityGroup="merchLevel2Visibility" />
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel3Label" visibilityGroup="merchLevel3Visibility" />
+      <Column fieldRef="itemMerchLevel3" visibilityGroup="merchLevel3Visibility" />
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel4Label" visibilityGroup="merchLevel4Visibility" />
+      <Column fieldRef="itemMerchLevel4" visibilityGroup="merchLevel4Visibility" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productStyleInfoLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="styleIdLabel" />
+      <Column fieldRef="styleValueLabel" />
+    </Row>
+    <Row>
+      <Column fieldRef="dimension1Desc" fontRef="formDiminishedFont" />
+      <Column fieldRef="dimension1" />
+    </Row>
+    <Row>
+      <Column fieldRef="dimension2Desc" fontRef="formDiminishedFont" />
+      <Column fieldRef="dimension2" />
+    </Row>
+    <Row>
+      <Column fieldRef="dimension3Desc" fontRef="formDiminishedFont" />
+      <Column fieldRef="dimension3" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productVendorInfoLabelLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="vendorInfoLabel" fontRef="formContentHeader" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="grayLineSeparator" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productVendorInfoLayout1" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="vendorLabel" />
+      <Column fieldRef="vendorName" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderFlagLabel" />
+      <Column fieldRef="orderFlag" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productVendorInfoLayout2" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="partNbrLabel" />
+      <Column fieldRef="partNbr" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderDayLabel" />
+      <Column fieldRef="orderDay" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productAttributeLabelLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="prodAttributesLabel" fontRef="formContentHeader" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="grayLineSeparator" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productAttributeLayout1" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="itemTypeLabel" />
+      <Column fieldRef="itemType" />
+    </Row>
+    <Row>
+      <Column fieldRef="seasonCodeLabel" />
+      <Column fieldRef="itemSeasonCode" />
+    </Row>
+    <Row>
+      <Column fieldRef="stockStatusLabel" />
+      <Column fieldRef="stockStatus" />
+    </Row>
+    <Row>
+      <Column fieldRef="returnFlagLabel" />
+      <Column fieldRef="returnFlag" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productAttributeLayout2" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="unitOfMeasureLabel" />
+      <Column fieldRef="unitOfMeasure" />
+    </Row>
+    <Row>
+      <Column fieldRef="restockingFeeLabel" />
+      <Column fieldRef="restockingFee" />
+    </Row>
+    <Row>
+      <Column fieldRef="taxGroupLabel" />
+      <Column fieldRef="taxGroup" />
+    </Row>
+    <Row>
+      <Column fieldRef="itemResultsTaxAmountLabel" />
+      <Column fieldRef="itemResultsTaxAmount" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productSalesLabelLayout" type="ListLayout" >
+    <Row>
+      <Column start="0" width="100" fieldRef="itemSalesLabel" fontRef="formContentHeader" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="grayLineSeparator" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productSalesLayout1" type="SimpleLayout" >
+    <Row>
+      <Column fieldRef="netSalesLabel" />
+      <Column fieldRef="netSales" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productSalesLayout2" type="SimpleLayout" >
+    <Row>
+      <Column fieldRef="salesQtyLabel" />
+      <Column fieldRef="salesQty" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productImageHeaderLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="itemResultsImage" horizontalAlignment="Center" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productImageDetailLayout" type="ListLayout" >
+    <Row>
+      <Column start="0" width="100" fieldRef="productDetailsUrl" visibilityGroup="itemURLInfoVisibility" horizontalAlignment="Center" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productWeeklySalesLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="weeklySalesLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="weeklySalesList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productYearlySalesLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="yearlySalesLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="yearlySalesList" />
+    </Row>  
+  </FieldLayout>
+  <FieldLayout name="productSalesTrendLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="salesChartLabel" fontRef="formDiminishedFont" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="salesTrendGraph" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productPriceInfoLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="itemPriceHistoryList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productInventoryStockLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="stockLedgerLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="stockLedgerList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productKitComponentsLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="kitComponentLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="kitComponentList" />
+    </Row>  
+  </FieldLayout>
+  <FieldLayout name="productSerialNumbersLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="serialInventoryLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="serialInventoryList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productInStyleLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="inStyleLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="inStyleList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productCrossReferenceItemsLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="crossReferenceLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="crossReferenceList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productSubstituteItemsLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="subItemsLabel" />
+    </Row>
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="subItemsList" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="itemLookupLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="itemIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="itemId" />
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel1Label" horizontalAlignment="Right" />
+      <Column fieldRef="merchLevel1" refreshOnChange="true" fieldSubmitPriority="4"/>
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel2Label" visibilityGroup="merchLevel2Visibility"
+              horizontalAlignment="Right" />
+      <Column fieldRef="merchLevel2" refreshOnChange="true" visibilityGroup="merchLevel2Visibility" fieldSubmitPriority="3" />
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel3Label" visibilityGroup="merchLevel3Visibility"
+              horizontalAlignment="Right" />
+      <Column fieldRef="merchLevel3" refreshOnChange="true" visibilityGroup="merchLevel3Visibility" fieldSubmitPriority="2" />
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel4Label" visibilityGroup="merchLevel4Visibility"
+              horizontalAlignment="Right" />
+      <Column fieldRef="merchLevel4" visibilityGroup="merchLevel4Visibility" fieldSubmitPriority="1" />
+    </Row>
+    <Row>
+      <Column fieldRef="styleIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="styleId" />
+    </Row>
+    <Row>
+      <Column fieldRef="descriptionLabel" horizontalAlignment="Right" />
+      <Column fieldRef="description" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="inventoryDocumentSearchLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="documentIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="documentId" />  
+    </Row>      
+    <Row>
+      <Column fieldRef="invDocSearchCustAcctIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invDocSearchCustAcctId" />
+    </Row>
+    <Row>
+      <Column fieldRef="invDocSearchDocumentTypeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invDocSearchDocumentType" refreshOnChange="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="invDocSearchDocumentStatusLabel" horizontalAlignment="Right" verticalAlignment="Top"/>
+      <Column fieldRef="invDocSearchDocumentStatus" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="invLocSelectionLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="invLocationSearchLocationIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invLocationSearchLocationId" refreshOnChange="true" fieldSubmitPriority="1" />
+    </Row>
+    <Row>
+      <Column fieldRef="invLocationSearchBucketLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invLocationSearchBucket" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="invCountLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="invCountIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invCountId" />
+    </Row>
+    <Row>
+      <Column fieldRef="invCountBeginDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invCountBeginDate" />
+    </Row>
+    <Row>
+      <Column fieldRef="invCountTypeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invCountType" />
+    </Row>
+    <Row>
+      <Column fieldRef="invCountStatusLabel" horizontalAlignment="Right" verticalAlignment="Top" />
+      <Column fieldRef="invCountStatus" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="newInvCountCreateLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="invCountBeginDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invCountBeginDate" />
+    </Row>
+    <Row>
+      <Column fieldRef="invCountTypeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="invCountType" />
+    </Row>
+    <Row>
+      <Column fieldRef="descriptionLabel" horizontalAlignment="Right" verticalAlignment="Top" />
+      <Column fieldRef="invCountDescription" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="authFailureMessageLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="authResponseMessage" horizontalAlignment="Center" fontRef="promptMessageFont" />      
+    </Row>    
+  </FieldLayout>
+  
+  <FieldLayout name="createNewReceivingDocLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="24" fieldRef="documentIdLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="documentId" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="invDocSearchDocumentTypeLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="invDocSearchDocumentType" refreshOnChange="true" required="true" fieldSubmitPriority="3" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="documentDateLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="documentDate" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="receivingShipperLabel" horizontalAlignment="Right" />
+      <Column start="24" width="27" fieldRef="shipper" />
+      <Column start="51" width="20" fieldRef="trackingNumberLabel" horizontalAlignment="Right" />
+      <Column start="71" width="29" fieldRef="trackingNumber" /> 
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="receivedDateLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="receivedDate" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="receivedFromLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="receivedFrom" required="true" refreshOnChange="true" fieldSubmitPriority="2"/>
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="invDocumentSRPersonName" horizontalAlignment="Right" />
+      <Column start="24" width="35" fieldRef="firstName" />
+      <Column start="59" width="9" fieldRef="middleName" />
+      <Column start="68" width="32" fieldRef="lastName" />
+    </Row>
+    <Row>
+      <Column start="24" width="35" fieldRef="firstNameLabel" horizontalAlignment="Center" />
+      <Column start="59" width="9" fieldRef="invDocumentMILabel" horizontalAlignment="Center" />
+      <Column start="68" width="32" fieldRef="lastNameLabel" horizontalAlignment="Center" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="address1" required="true" />
+    </Row>
+    <Row>
+      <Column start="24" width="76" fieldRef="address2" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column start="24" width="27" fieldRef="receivingPostalCode" required="true" refreshOnChange="true" fieldSubmitPriority="1"/>
+      <Column start="51" width="20" fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column start="71" width="29" fieldRef="receivingFromCity" required="true" />
+    </Row> 
+    <Row>
+      <Column start="0" width="24" fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column start="24" width="27" fieldRef="receivingFromState" required="true" refreshOnChange="true" />
+      <Column start="51" width="20" fieldRef="shipToPostalCountryLabel" horizontalAlignment="Right" />
+      <Column start="71" width="29" fieldRef="receivingFromCountry" required="true" refreshOnChange="true" />
+    </Row> 
+    <Row>
+      <Column start="0" width="24" fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility"
+              horizontalAlignment="Right" />
+      <Column start="24" width="27" fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" />
+      <Column start="51" width="20" fieldRef="countyLabel" visibilityGroup="countyVisibility"
+              horizontalAlignment="Right" />
+      <Column start="71" width="29" fieldRef="county" visibilityGroup="countyVisibility" />
+    </Row>    
+  </FieldLayout>
+  
+  <FieldLayout name="createNewShippingDocLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="24" fieldRef="documentIdLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="documentId" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="invDocSearchDocumentTypeLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="invDocSearchDocumentType" refreshOnChange="true" fieldSubmitPriority="3" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="documentDateLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="createDateTime" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="shippngShipperLabel" horizontalAlignment="Right" />
+      <Column start="24" width="27" fieldRef="shipper" required="true" />
+      <Column start="51" width="20" fieldRef="trackingNumberLabel" horizontalAlignment="Right" />
+      <Column start="71" width="29" fieldRef="trackingNumber" /> 
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="shipToLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="shipTo" refreshOnChange="true" required="true" fieldSubmitPriority="2"/>
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="shipDateLabel" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="shipDate" />
+    </Row>    
+    <Row>
+      <Column start="0" width="24" fieldRef="invDocumentSRPersonName" horizontalAlignment="Right" />
+      <Column start="24" width="35" fieldRef="shipToFirstName" />
+      <Column start="59" width="9" fieldRef="shipToMiddleName" />
+      <Column start="68" width="32" fieldRef="shipToLastName" />
+    </Row>
+    <Row>
+      <Column start="24" width="35" fieldRef="firstNameLabel" horizontalAlignment="Center" />
+      <Column start="59" width="9" fieldRef="invDocumentMILabel" horizontalAlignment="Center" />
+      <Column start="68" width="32" fieldRef="lastNameLabel" horizontalAlignment="Center" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column start="24" width="76" fieldRef="shipToAddress1" required="true" />
+    </Row>
+    <Row>
+      <Column start="24" width="76" fieldRef="shipToAddress2" />
+    </Row>
+    <Row>
+      <Column start="0" width="24" fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column start="24" width="27" fieldRef="shipToPostalCode" required="true" refreshOnChange="true" fieldSubmitPriority="1"/>
+      <Column start="51" width="20" fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column start="71" width="29" fieldRef="shipToCity" required="true" />
+    </Row> 
+    <Row>
+      <Column start="0" width="24" fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column start="24" width="27" fieldRef="shipToState" required="true" refreshOnChange="true" />
+      <Column start="51" width="20" fieldRef="shipToPostalCountryLabel" horizontalAlignment="Right" />
+      <Column start="71" width="29" fieldRef="shipToPostalCountry" required="true" refreshOnChange="true" />
+    </Row> 
+    <Row>
+      <Column start="0" width="24" fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility"
+              horizontalAlignment="Right" />
+      <Column start="24" width="27" fieldRef="shipToNeighborhood" visibilityGroup="neighborhoodVisibility" />
+      <Column start="51" width="20" fieldRef="countyLabel" visibilityGroup="countyVisibility"
+              horizontalAlignment="Right" />
+      <Column start="71" width="29" fieldRef="shipToCounty" visibilityGroup="countyVisibility" />
+    </Row>    
+  </FieldLayout>
+  
+  <FieldLayout name="moreAuthInfoLayout" type="ListLayout">  
+    <Row fill="true">
+       <Column start="0" width="100" fieldRef="authResponseMessage" fontRef="promptMessageFont" horizontalAlignment="Center" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="moreAuthInfoFieldLayout" type="SimpleLayout">
+    <Row fill="true">
+      <Column fill="true" fieldRef="authResponseMessage" fontRef="promptMessageFont" horizontalAlignment="Center" />
+    </Row>
+    <Row>
+      <Column />
+      <Column fieldRef="moreAuthInfo" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerAccountSearchLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="customerAccountIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="customerAccountId" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lastName" />
+    </Row>
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="firstName" />
+    </Row>
+    <Row>
+      <Column fieldRef="customerIdInputLabel" horizontalAlignment="Right" />
+      <Column fieldRef="customerIdInput" />
+    </Row>
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column fieldRef="telephoneSearch" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="loyaltyCardFieldLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="loyaltyCardLabel" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="loyaltyNumber" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="orderSearchLayout" type="SimpleLayout">
+    <Row> 
+      <Column fieldRef="orderIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderId" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lastName" />
+    </Row>
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="firstName" />
+    </Row>
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column fieldRef="telephoneSearch" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderDate" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderStatusLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderStatus" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="orderSearchRegisterLayout" type="SimpleLayout">
+    <Row> 
+      <Column fieldRef="orderIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderId" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lastName" />
+    </Row>
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="firstName" />
+    </Row>
+    <Row>
+      <Column fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column fieldRef="telephoneSearch" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="orderDate" />
+    </Row>
+  </FieldLayout>
+
+  <FieldLayout name="customerEditAddressLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="15" fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column start="15" width="85" fieldRef="address1" required="true" />
+    </Row>
+    <Row>
+      <Column start="15" width="85" fieldRef="address2" />
+    </Row>
+    <Row>
+      <Column start="15" width="20" fieldRef="postalCode" required="true" refreshOnChange="true" />
+      <Column start="35" width="65" fieldRef="state" required="true" />
+    </Row>
+    <Row>
+      <Column start="15" width="20" fieldRef="postalCodeLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="35" width="65" fieldRef="stateLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+      <Column start="15" width="65" fieldRef="city" required="true" />
+      <Column start="80" width="20" fieldRef="apartment" visibilityGroup="apartmentVisibility" />
+    </Row>
+    <Row>
+      <Column start="15" width="65" fieldRef="cityLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="80" width="20" fieldRef="apartmentLabel" visibilityGroup="apartmentVisibility" 
+              horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+      <Column start="15" width="65" fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" />
+      <Column start="80" width="20" fieldRef="county" visibilityGroup="countyVisibility" />
+    </Row>
+    <Row>
+      <Column start="15" width="65" fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility"
+              horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="80" width="20" fieldRef="countyLabel" visibilityGroup="countyVisibility"
+              horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+      <Column start="15" width="85" fieldRef="country" horizontalAlignment="Right" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="commonTypeLabel" horizontalAlignment="Right" />
+      <Column start="15" width="85" fieldRef="addressType" required="true" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="taxExemptionLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="certificateNumberLabel" horizontalAlignment="Right" />
+      <Column fieldRef="certificateNbr" required="true"/>
+    </Row>      
+    <Row>
+      <Column fieldRef="certificateHolderNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="certificateHolderName" required="true"/>
+    </Row>
+    <Row>
+      <Column fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="certificateState" />
+    </Row>
+    <Row>
+      <Column fieldRef="taxExemptExpirationDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="taxExemptExpirationDate" />
+    </Row> 
+  </FieldLayout>
+  
+  <FieldLayout name="customerHouseAccountCreateLayout" type="ListLayout">
+    <Row>       
+      <Column start="0" width="100" fieldRef="houseAcctCreditLimitMessage" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="customerHouseAccountCreditLimit" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="createAssociateTaskLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="20" fieldRef="taskTypeLabel" horizontalAlignment="Right" />
+      <Column start="20" width="80" fieldRef="taskType" required="true" />
+    </Row>   
+    <Row>
+      <Column start="0" width="20" fieldRef="descriptionLabel" horizontalAlignment="Right" />
+      <Column start="20" width="80" fieldRef="description" required="true" />
+    </Row>  
+    <Row>
+      <Column start="0" width="20" fieldRef="taskPriorityLabel" horizontalAlignment="Right" />
+      <Column start="20" width="80" fieldRef="taskPriority" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="commonStartDateLabel" horizontalAlignment="Right" />
+      <Column start="20" width="30" fieldRef="commonStartDate" required="true" />
+      <Column start="50" width="20" fieldRef="associateTaskTimeLabel" horizontalAlignment="Right" />
+      <Column start="70" width="30" fieldRef="associateTaskStartTime" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="commonEndDateLabel" horizontalAlignment="Right" />
+      <Column start="20" width="30" fieldRef="commonEndDate" required="true" />
+      <Column start="50" width="20" fieldRef="associateTaskTimeLabel" horizontalAlignment="Right" />
+      <Column start="70" width="30" fieldRef="associateTaskEndTime" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="taskVisiblilityLabel" horizontalAlignment="Right" />
+      <Column start="20" width="80" fieldRef="taskVisibility" refreshOnChange="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="taskAssignedToLabel" horizontalAlignment="Right" />
+      <Column start="20" width="80" fieldRef="taskAssignedTo" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="houseAccountAddEditBuyer" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="firstName" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lastName" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="commonStartDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="houseAccountEffectiveDate" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="commonEndDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="houseAccountExpirationDate" />
+    </Row>
+  </FieldLayout>
+
+  <FieldLayout name="itemSummaryInfoLayout" type="SimpleLayout">
+    <Row fill="true">
+      <Column fill="true" fieldRef="itemResultsImage" horizontalAlignment="Center" verticalAlignment="Center" />
+    </Row>
+    <Row>
+      <Column fieldRef="priceLabel" horizontalAlignment="Right" />
+      <Column fieldRef="itemResultsPrice" />
+    </Row>
+    <Row>
+      <Column fieldRef="itemIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="itemIdValueLabel" />
+    </Row>
+    <Row>
+      <Column fieldRef="styleIdLabelResource" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="styleValueLabel" />
+    </Row>
+    <Row>
+      <Column fieldRef="dimension1Desc" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="dimension1" />
+    </Row>
+    <Row>
+      <Column fieldRef="dimension2Desc" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="dimension2" />
+    </Row>
+    <Row>
+      <Column fieldRef="dimension3Desc" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="dimension3" />
+    </Row>
+  </FieldLayout>
+
+  <FieldLayout name="inventoryLocatorLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="itemIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="itemId" />
+    </Row>
+    <Row>
+      <Column />
+      <Column fieldRef="orLabel" horizontalAlignment="Center" />
+    </Row>
+    <Row>
+      <Column fieldRef="styleIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="styleId" />
+    </Row>
+    <Row>
+      <Column />
+      <Column fieldRef="additionalOptionsLabel" horizontalAlignment="Center" />
+    </Row>
+    <Row>
+      <Column fieldRef="distanceLabelValue" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="distanceMagnitude" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="quantityLabel" horizontalAlignment="Right" />
+      <Column fieldRef="minimumQuantity" />
+    </Row>
+  </FieldLayout>
+
+  <FieldLayout name="inventoryLocatorKnownItemLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="distanceLabelValue" horizontalAlignment="Right" fontRef="formDiminishedFont" />
+      <Column fieldRef="distanceMagnitude" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="quantityLabel" horizontalAlignment="Right" />
+      <Column fieldRef="minimumQuantity" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="postVoidTransSearchLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="origTransBarCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTransBarCode" />
+    </Row>
+    <Row>
+      <Column fieldRef="orLabel"  horizontalAlignment="Right" />
+      <Column/>
+    </Row>
+    <Row>
+      <Column fieldRef="origTransSeqNbrLabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTransSeqNbr" required="true"/>
+    </Row>
+    <Row>
+      <Column fieldRef="origTransBusinessDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTransBusinessDate" required="true"/>
+    </Row>
+     <Row>
+      <Column fieldRef="origTranlocationIdlabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTranlocationId" required="true"/>
+    </Row>
+     <Row>
+      <Column fieldRef="origTranworkstationIdlabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTranworkstationId" required="true"/>
+    </Row>
+     <Row>
+      <Column fieldRef="origTranamountLabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTranamount" required="true"/>
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="specialOrderShipToLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="15" fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column start="15" width="35" fieldRef="telephone1" />
+      <Column start="50" width="15" fieldRef="shipViaLabel" horizontalAlignment="Right" />
+      <Column start="65" width="35" fieldRef="shippingMethod" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="shipToLabel" horizontalAlignment="Right" />
+      <Column start="15" width="35" fieldRef="firstName" required="true" />
+      <Column start="50" width="15" fieldRef="middleName" />
+      <Column start="65" width="35" fieldRef="lastName" required="true" />
+    </Row>
+    <Row>
+      <Column start="15" width="35" fieldRef="firstNameLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="50" width="15" fieldRef="middleNameLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="65" width="35" fieldRef="lastNameLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column start="15" width="85" fieldRef="address1" required="true" />
+    </Row>
+    <Row>
+      <Column start="15" width="85" fieldRef="address2" />
+    </Row>
+    <Row>
+      <Column start="15" width="35" fieldRef="postalCode" required="true" refreshOnChange="true" />
+      <Column start="50" width="50" fieldRef="state" required="true" />
+    </Row>
+    <Row>
+      <Column start="15" width="35" fieldRef="postalCodeLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="50" width="50" fieldRef="stateLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+      <Column start="15" width="50" fieldRef="city" required="true" />
+      <Column start="65" width="35" fieldRef="apartment" visibilityGroup="apartmentVisibility" />
+    </Row>
+    <Row>
+      <Column start="15" width="50" fieldRef="cityLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="65" width="35" fieldRef="apartmentLabel" visibilityGroup="apartmentVisibility" horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+     <Column start="15" width="50" fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" />
+     <Column start="65" width="35" fieldRef="county" visibilityGroup="countyVisibility" />
+    </Row>
+    <Row>
+      <Column start="15" width="50" fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility" horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="65" width="35" fieldRef="countyLabel" visibilityGroup="countyVisibility" horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="countryLabel" horizontalAlignment="Right" />
+      <Column start="15" width="85" fieldRef="country" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="securityMessageLayout" type="ListLayout" location="Center">
+    <Row>
+      <Column start="0" width="100" fieldRef="securityPromptMessage" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="userIdPasswordLayout" type="SimpleLayout">
+    <Row>
+      <Column fill="true" fieldRef="securityPromptMessage" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+    <Row>
+      <Column fieldRef="userIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="userId" />
+    </Row>
+    <Row>
+      <Column fieldRef="passwordLabel" horizontalAlignment="Right" />
+      <Column fieldRef="password" />
+    </Row>
+  </FieldLayout>
+    
+  <FieldLayout name="changePasswordLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="enterNewPasswordMessage" horizontalAlignment="Right" />
+      <Column fieldRef="password" required="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="reenterNewPasswordMessage" horizontalAlignment="Right" />
+      <Column fieldRef="passwordConfirmed" required="true" />
+    </Row>
+  </FieldLayout>
+    
+  <FieldLayout name="originalReceiptInformationLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="giftReceiptLabel" horizontalAlignment="Right" />
+      <Column fieldRef="giftReceiptCheck" required="true"/>
+    </Row>
+    <Row>
+      <Column fieldRef="externalOrderIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="externalOrderId" />
+    </Row>
+    <Row>
+      <Column/>
+      <Column fieldRef="orExternalOrderIdLabel" horizontalAlignment="Center" />      
+    </Row>
+    <Row>
+      <Column fieldRef="origTransBarCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTransBarCode" />
+    </Row>
+    <Row>
+      <Column/>
+      <Column fieldRef="orLabel" horizontalAlignment="Center" />      
+    </Row>
+    <Row>
+      <Column fieldRef="origTransSeqNbrLabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTransSeqNbr" required="true"/>
+    </Row>
+    <Row>
+      <Column fieldRef="origTransBusinessDateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTransBusinessDate" required="true"/>
+    </Row>
+     <Row>
+      <Column fieldRef="origTranlocationIdlabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTranlocationId" required="true"/>
+    </Row>
+     <Row>
+      <Column fieldRef="origTranworkstationIdlabel" horizontalAlignment="Right" />
+      <Column fieldRef="origTranworkstationId" required="true"/>
+    </Row>
+    <Row>
+      <Column/>
+      <Column fieldRef="orLabel" horizontalAlignment="Center" visibilityGroup="hideOnlyInHandHeldCreditCardRule"/>      
+    </Row>
+    <Row>
+      <Column fieldRef="creditCardNumberLabel" horizontalAlignment="Right" visibilityGroup="hideOnlyInHandHeldCreditCardRule"/>
+      <Column fieldRef="creditCardNumber" visibilityGroup="hideOnlyInHandHeldCreditCardRule" />
+    </Row>
+    <Row>
+      <Column/>
+      <Column fieldRef="orLabel" horizontalAlignment="Center" visibilityGroup="hideOnlyInHandHeldRule" />      
+    </Row>
+    <Row>
+      <Column fieldRef="serialNumberLabel" horizontalAlignment="Right" visibilityGroup="hideOnlyInHandHeldRule" />
+      <Column fieldRef="serialNumber" visibilityGroup="hideOnlyInHandHeldRule" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="merchLevelSelectLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="merchLevel1Label" horizontalAlignment="Right" />
+      <Column fieldRef="merchLevel1" refreshOnChange="true" fieldSubmitPriority="4"/>
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel2Label" visibilityGroup="merchLevel2Visibility" horizontalAlignment="Right" />
+      <Column fieldRef="merchLevel2" refreshOnChange="true" visibilityGroup="merchLevel2Visibility" fieldSubmitPriority="3" />
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel3Label" visibilityGroup="merchLevel3Visibility" horizontalAlignment="Right" />
+      <Column fieldRef="merchLevel3" refreshOnChange="true" visibilityGroup="merchLevel3Visibility" fieldSubmitPriority="2" />
+    </Row>
+    <Row>
+      <Column fieldRef="merchLevel4Label" visibilityGroup="merchLevel4Visibility" horizontalAlignment="Right" />
+      <Column fieldRef="merchLevel4" visibilityGroup="merchLevel4Visibility" fieldSubmitPriority="1" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerEmailLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="emailAddressReceiptLabel" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="emailAddress" />
+    </Row>
+  </FieldLayout>
+
+  <FieldLayout name="itemSerialNumberLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="itemSerialNumberLabel" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="itemSerialNumber" />
+    </Row>
+  </FieldLayout>
+
+  <FieldLayout name="inventoryShipTrackingLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="inventoryShippingTrackingNumberLabel" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" fieldRef="trackingNumber" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="authorizationInProgressLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="authResponseMessage" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="authProgressLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="authorizationProgressBar" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="verifySignatureLabelLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="100" fieldRef="verifySignatureLabel" horizontalAlignment="Center" fontRef="promptMessageFont" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="verifySignaturelayout" type="ListLayout">    
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="signature" horizontalAlignment="Center" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="customerConsentLayout" type="SimpleLayout">
+    <Row fill="true">
+      <Column fieldRef="customerInfoTermsAndConditions" fill="true" />
+    </Row>
+    <Row>
+      <Column fieldRef="customerInfoConsent1" required="true" />
+      <Column fieldRef="customerInfoConsent1Text" />
+    </Row>
+    <Row>
+      <Column fieldRef="customerInfoConsent2" />
+      <Column fieldRef="customerInfoConsent2Text" />
+    </Row>
+    <Row>
+      <Column fieldRef="customerInfoConsent3" />
+      <Column fieldRef="customerInfoConsent3Text" />
+    </Row>
+  </FieldLayout>
+</FieldLayoutSet> 

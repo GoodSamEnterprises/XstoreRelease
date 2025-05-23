@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+  default-init-method="init">
+
+  <bean id="frSignTransactionWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrSignTransactionWorker" scope="prototype" />
+  <bean id="frSetDocumentTypeWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrSetDocumentTypeWorker" scope="prototype" />
+  <bean id="frUpdateTotalsWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrSalesSummaryUpdateWorker" scope="prototype" />
+  <bean id="frVoidTotalsWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrVoidSummaryUpdateWorker" scope="prototype" />
+  <bean id="frCreateTotalsWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrCreateSummaryDayWorker" scope="prototype" />
+  <bean id="frAssignFiscalYearWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrAssignFiscalYearWorker" scope="prototype" />
+  <bean id="frCreateDataInitializationWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrCreateDataInitializationWorker" scope="prototype" />
+  <bean id="frCreateListenersWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrCreateListenersWorker" scope="prototype" />
+
+  <bean id="frStoreOpenArchiveWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrArchiveClosureWorker" scope="prototype" >
+    <property name="handleInvoices" value="true" />
+  </bean>
+
+  <bean id="frWkstnOpenArchiveWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrArchiveClosureWorker" scope="prototype" >
+    <property name="handleInvoices" value="false" />
+  </bean>
+
+  <bean id="frWriteEventWorkstationCloseWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="WORKSTATION_CLOSE" />
+  </bean>
+  <bean id="frWriteEventWorkstationOpenWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="WORKSTATION_OPEN" />
+  </bean>
+  <bean id="frWriteEventTrainingInWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="TRAINING_MODE_IN" />
+  </bean>
+  <bean id="frWriteEventTrainingOutWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="TRAINING_MODE_OUT" />
+  </bean>
+  <bean id="frWriteEventTransCancelledWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="TICKET_CANCEL" />
+  </bean>
+  <bean id="frWriteEventJETReportCreateWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="JET_REPORT_CREATE" />
+  </bean>
+  <bean id="frWriteEventSystemStartupWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="SYSTEM_STARTUP" />
+  </bean>
+  <bean id="frWriteEventStoreOpenWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="STORE_OPEN" />
+  </bean>
+  <bean id="frWriteEventStoreCloseWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="STORE_CLOSE" />
+  </bean>
+  <bean id="frWriteEventSystemShutdownWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="SYSTEM_SHUTDOWN" />
+  </bean>
+  <bean id="frWriteEventApplVersionWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="VERSION_CHANGE" />
+  </bean>
+  <bean id="frWriteEventTransVoidedWorker" class="oracle.retail.xstore.countrypack.fr.worker.FrWriteLogEntryWorker" scope="prototype" >
+    <property name="eventCode" value="TICKET_VOID" />
+  </bean>
+
+  <bean id="frSignTransactionWorkers" parent="workerList" >
+    <property name="workers">
+      <list>
+        <ref bean="frSignTransactionWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frSetDocumentTypeWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frSetDocumentTypeWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frUpdateTotalsWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frUpdateTotalsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frVoidTotalsWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frVoidTotalsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frStoreOpenArchiveWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frStoreOpenArchiveWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWkstnOpenWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWkstnOpenArchiveWorker" />
+        <ref bean="frCreateTotalsWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventWorkstationCloseWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventWorkstationCloseWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventWorkstationOpenWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventWorkstationOpenWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventTrainingInWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventTrainingInWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventTrainingOutWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventTrainingOutWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventTransCancelledWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventTransCancelledWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventTransVoidedWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventTransVoidedWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frRegisterStartupWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frCreateListenersWorker" />
+        <ref bean="frCreateDataInitializationWorker" />
+        <ref bean="frWriteEventSystemStartupWorker" />
+        <ref bean="frWriteEventApplVersionWorker" />
+        <ref bean="frAssignFiscalYearWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventJETReportCreateWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventJETReportCreateWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventStoreOpenWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventStoreOpenWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventStoreCloseWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventStoreCloseWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="frWriteEventSystemShutdownWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="frWriteEventSystemShutdownWorker" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

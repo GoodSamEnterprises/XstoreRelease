@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed May 24 09:34:01 EDT 2006 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/form/FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">MANUAL_REGISTER_CLOSE</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <IconGroup icon="_imagePromptCustomerSearch" />
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--MINIMUM, FILL -->
+          <param_value dtype="DoubleArray">-3.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, FILL -->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="IntegerArray">30, 0, 30, 0</param_value>
+        </Parameter>
+        <Parameter name="addRowOffset">
+          <param_value dtype="Integer">8</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+
+      <FormViewCell layoutLocation="0, 0, 1, 1, F, F" type="FormLabel" textKey="_countrypack.dailyreport.IncomeValue">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 0, 1, 1, F, F" type="FormTextField" resource="incomeValue">
+        <TabOrder dtype="Integer">0</TabOrder>
+        <FormatterType dtype="String">Money</FormatterType>
+        <DataField ref="Money" />
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+
+      <FormViewCell layoutLocation="0, 1, 1, 1, F, F" type="FormLabel" textKey="_countrypack.dailyreport.ReturnValue">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 1, 1, 1, F, F" type="FormTextField" resource="returnValue">
+        <TabOrder dtype="Integer">1</TabOrder>
+        <FormatterType dtype="String">Money</FormatterType>
+        <DataField ref="Money" />
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+
+      <FormViewCell layoutLocation="0, 2, 1, 1, F, F" type="FormLabel" textKey="_countrypack.dailyreport.ManualIncomeValue">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 2, 1, 1, F, F" type="FormTextField" resource="manualIncomeValue">
+        <TabOrder dtype="Integer">2</TabOrder>
+        <FormatterType dtype="String">Money</FormatterType>
+        <DataField ref="MoneyNegative" />
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+
+      <FormViewCell layoutLocation="0, 3, 1, 1, F, F" type="FormLabel" textKey="_countrypack.dailyreport.ManualReturnValue">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 3, 1, 1, F, F" type="FormTextField" resource="manualReturnValue">
+        <TabOrder dtype="Integer">3</TabOrder>
+        <FormatterType dtype="String">Money</FormatterType>
+        <DataField ref="MoneyNegative" />
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+
+      <FormViewCell layoutLocation="0, 4, 1, 1, F, F" type="FormLabel" textKey="_countrypack.dailyreport.ManualVoidIncomeValue">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 4, 1, 1, F, F" type="FormTextField" resource="manualVoidIncomeValue">
+        <TabOrder dtype="Integer">4</TabOrder>
+        <FormatterType dtype="String">Money</FormatterType>
+        <DataField ref="MoneyNegative" />
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+
+      <FormViewCell layoutLocation="0, 5, 1, 1, F, F" type="FormLabel" textKey="_countrypack.dailyreport.ManualVoidReturnValue">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 5, 1, 1, F, F" type="FormTextField" resource="manualVoidReturnValue">
+        <TabOrder dtype="Integer">5</TabOrder>
+        <FormatterType dtype="String">Money</FormatterType>
+        <DataField ref="MoneyNegative" />
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+
+      <FormViewCell layoutLocation="0, 6, 1, 1, L, T" type="FormLabel" textKey="_countrypack.dailyreport.Note">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 6, 1, 1, F, F" type="FormLongTextField" resource="note">
+        <TabOrder dtype="Integer">6</TabOrder>
+        <Font fontSize="-2" />
+        <DataField>
+          <MaxCharacters dtype="Integer">254</MaxCharacters>
+          <DisplayEndOfValue dtype="Boolean">true</DisplayEndOfValue>
+          <!--
+          <EntryDisabled dtype="Boolean">true</EntryDisabled>
+           -->
+        </DataField>
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      
+    </FormViewPanel>
+    <!--********************************** -->
+    <!--** DEFAULT action keys ** -->
+    <!--********************************** -->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/ListViewConfig.xsd">
+  <Header name="BR::CARD_NETWORK">
+    <Row>
+      <Column start="0" width="100" alignment="CENTER" translatable="_countrypack.br.fiscal.tender.cardNetwork.list" />
+    </Row>
+  </Header>
+  <Element name="BR::CARD_NETWORK">
+    <Row>
+      <Column start="0" width="100" alignment="CENTER" method="getNetworkName" />
+    </Row>
+  </Element>
+  <Header name="NFE_CFOP">
+    <Row>
+      <Column start="0" width="15" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.cfop" />
+      <Column start="15" width="65" alignment="CENTER" translatable="_countrypack.br.nfe.list.cfopDescription"  />
+    </Row>
+  </Header>
+  <Element name="NFE_CFOP">
+    <Row>
+      <Column start="0" width="14" method="getCfopSameUf" searchOn="true" />
+<!--       <Column start="10" width="9" method="getCfopOtherUf" /> -->
+<!--       <Column start="20" width="9" method="getCfopForeign" /> -->
+      <Column start="15" width="85" alignment="LEFT" method="getDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <Column start="5" width="90" alignment="LEFT" method="getNotes" wrapText="true" />
+    </Row>
+  </Element> 
+  <Header name="NFE_MAINTENANCE_SUMMARY" />
+  <Element name="NFE_MAINTENANCE_SUMMARY">
+    <!-- ROW 1 -->
+    <Row>
+      <Font fontStyle="PLAIN" />
+      <Column start="0" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.summary.workstationid</Translatable>
+          <EvaluatedFormattable method="getWorkstationId" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="20" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.summary.saiDate</Translatable>
+          <EvaluatedFormattable method="getSaiEntDatetime" formatter="DateShort"/>
+        </AppendingFormattable>
+      </Column>
+      <Column start="40" width="30">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.summary.usageType</Translatable>
+          <EvaluatedFormattable method="getUsageType" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="70" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.summary.status</Translatable>
+          <EvaluatedFormattable method="getStatusCode" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <!-- ROW 2 -->
+    <Row>
+      <Font fontStyle="PLAIN" />
+      <Column start="0" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.summary.queueSeq</Translatable>
+          <EvaluatedFormattable method="getQueueSequence" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="20" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.summary.transtype</Translatable>
+          <EvaluatedFormattable method="getTransTypeCode" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="40" width="30">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.summary.cfop_natop</Translatable>
+          <EvaluatedFormattable method="getCfop"/>
+          <EvaluatedFormattable method="getNatop"/>
+        </AppendingFormattable>
+      </Column>
+      <Column start="70" width="30">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.summary.chavenfe</Translatable>
+          <EvaluatedFormattable method="getChaveNfe" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <!-- ROW 3 -->
+    <Row>
+      <Font fontStyle="PLAIN" />
+      <Column start="0" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.summary.total</Translatable>
+          <EvaluatedFormattable method="getTotalAmount" formatter="Money"/>
+        </AppendingFormattable>
+      </Column>
+      <Column start="20" width="80">
+        <CellDataHandlerFactoryClass dtype="Class">oracle.retail.xstore.countrypack.br.nfe.maintenance.NfeMaintenanceInfCplCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="separator" value="\u00A0"/>
+        <Parameter name="translationKey" value="_countrypack.br.nfe.maintenance.summary.infcpl"/>
+      </Column>
+    </Row>
+  </Element>
+  <!-- ............................................................................................................. -->
+  <Header name="NFE_MAINTENANCE_TRANSACTION_SUMMARY" />
+  <Element name="NFE_MAINTENANCE_TRANSACTION_SUMMARY">
+    <!-- ROW 1 -->
+    <Row>
+      <Column start="10" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.detail.trans.seq</Translatable>
+          <EvaluatedFormattable method="getTransactionSequence" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="30" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.detail.trans.wkstn</Translatable>
+          <EvaluatedFormattable method="getWorkstationId" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="50" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.detail.trans.businessDate</Translatable>
+          <EvaluatedFormattable method="getBusinessDate" formatter="DateShort"/>
+        </AppendingFormattable>
+      </Column>      
+     </Row>
+  </Element>
+  <!-- ............................................................................................................. -->
+  <Header name="NFE_MAINTENANCE_LOG_SUMMARY">
+    <Row>
+      <Font><FontSize dtype="String">-1</FontSize></Font>
+      <Column start="0" width="5" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.log.seq" />
+      <Column start="5" width="10" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.log.status" />
+      <Column start="15" width="5" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.log.respose.code" />
+      <Column start="22" width="60" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.log.respose.text" />
+      <Column start="77" width="10" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.log.date.create" />
+      <Column start="90" width="10" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.log.date.update" />
+    </Row>
+  </Header>
+  <Element name="NFE_MAINTENANCE_LOG_SUMMARY">
+    <!-- ROW 1 -->
+    <Row>
+    <Font><FontSize dtype="String">-1</FontSize></Font>
+      <Column start="0" width="5" alignment="CENTER" method="getSequence" />
+      <Column start="5" width="10" alignment="CENTER" method="getStatusCode" />
+      <Column start="15" width="5" alignment="CENTER" method="getResponseCode" />
+      <Column start="20" width="60" alignment="CENTER" method="getResponseText" />
+      <Column start="77" width="12" alignment="CENTER" method="getCreateDate" formatter="DateTimeMedium"/>
+      <Column start="90" width="10" alignment="CENTER" method="getUpdateDate" formatter="DateTimeMedium"/>
+    </Row>
+  </Element>
+  <!-- ............................................................................................................. -->
+  <Header name="NFE_MAINTENANCE_ITEM_SUMMARY" >
+    <Row >
+      <Font><FontSize dtype="String">-3</FontSize></Font>
+      <Column start="0" width="6" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.id"/>
+      <Column start="7" width="22" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.des"/>
+      <Column start="28" width="4" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.ncm"/>
+      <Column start="34" width="4" alignment="LEFT" translatable="_countrypack.br.nfe.maintenance.detail.items.cst"/>
+      <Column start="38" width="4" alignment="LEFT" translatable="_countrypack.br.nfe.maintenance.detail.items.cfop"/>
+      <Column start="43" width="3" alignment="LEFT" translatable="_countrypack.br.nfe.maintenance.detail.items.unid"/>
+      <Column start="47" width="3" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.qty"/>
+      <Column start="52" width="4" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.amount.unit" wrapText="true"/>
+      <Column start="58" width="6" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.amount.total" wrapText="true"/>
+      <Column start="65" width="6" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.amount.discount" wrapText="true"/>
+      <Column start="72" width="6" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.amount.icmsBasis" wrapText="true"/>
+      <Column start="80" width="6" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.amount.icms" wrapText="true"/>
+      <Column start="86" width="4" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.amount.ipi" wrapText="true"/>
+      <Column start="92" width="4" alignment="CENTER" translatable="_countrypack.br.nfe.maintenance.detail.items.rate.icms"/>
+      <Column start="97" width="3" alignment="LEFT" translatable="_countrypack.br.nfe.maintenance.detail.items.rate.ipi"/>
+    </Row>
+  </Header>
+  <Element name="NFE_MAINTENANCE_ITEM_SUMMARY">
+  <!-- ROW 1 -->
+   <Row>
+      <Font><FontSize dtype="String">-1</FontSize></Font>
+      <Column start="0" width="6" alignment="CENTER" method="getItemId"/>
+      <Column start="6" width="22" alignment="CENTER" method="getItemDescription"/>
+      <Column start="27" width="6" alignment="CENTER" method="getNcm"/>
+      <Column start="34" width="4" alignment="LEFT" method="getIcmsCst"/>
+      <Column start="38" width="4" alignment="CENTER" method="getCfop"/>
+      <Column start="43" width="2" alignment="LEFT" method="getUnitOfMeasureCode"/>
+      <Column start="46" width="6" alignment="CENTER" method="getQuantity" formatter="Decimal"/>
+      <Column start="52" width="6" alignment="LEFT" method="getUnitPrice" formatter="Money"/>
+      <Column start="58" width="6" alignment="LEFT" method="getExtendedAmount" formatter="Money"/>
+      <Column start="65" width="6" alignment="CENTER" method="getDiscountAmount" formatter="Money"/>
+      <Column start="72" width="6" alignment="CENTER" method="getIcmsBasis" formatter="Money"/>
+      <Column start="80" width="6" alignment="CENTER" method="getIcmsAmount" formatter="Money"/>
+      <Column start="85" width="6" alignment="CENTER" method="getIpiAmount" formatter="Money"/>
+      <Column start="92" width="5" alignment="CENTER" method="getIcmsRate"/>
+      <Column start="97" width="5" alignment="LEFT" method="getIpiRate"/>
+   </Row>    
+  </Element>
+  <!-- ............................................................................................................. -->
+  <Header name="NFE_MAINTENANCE_TENDER_SUMMARY" />
+  <Element name="NFE_MAINTENANCE_TENDER_SUMMARY">
+    <!-- ROW 1 -->
+    <Row>
+      <Column start="10" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.detail.tenders.tenderID</Translatable>
+          <EvaluatedFormattable method="getDescription" />
+          <!-- <EvaluatedFormattable method="getTenderId" /> -->
+        </AppendingFormattable>
+      </Column>
+      <Column start="40" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.detail.tenders.fiscal.tenderID</Translatable>
+          <EvaluatedFormattable method="getFiscalTenderId" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="70" width="20">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_countrypack.br.nfe.maintenance.detail.tenders.amount</Translatable>
+          <EvaluatedFormattable method="getAmount" formatter="Money"/>
+        </AppendingFormattable>
+      </Column>
+     </Row>
+  </Element>
+  <Header name="SAT_MAINTENANCE_LOG_SUMMARY">
+    <Row>
+      <FontRef fontKey="_fontListSmall" />
+      <Column start="20" width="60" alignment="CENTER" translatable="_countrypack.br.sat.maintenance.detail.log.text" />
+    </Row>
+  </Header>
+  <Element name="SAT_MAINTENANCE_LOG_SUMMARY">
+    <Row>
+      <FontRef fontKey="_fontListSmall" />
+      <Column start="1" width="99" alignment="LEFT" method="getLog"/>
+    </Row>
+  </Element>
+</ListView>

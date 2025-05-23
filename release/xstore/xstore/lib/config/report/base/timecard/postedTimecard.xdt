@@ -1,0 +1,101 @@
+<dataTemplate name="PostedTimecard" xmlns="http://micros.com/xstore/config/report">
+    <labels>
+        <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+        <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+        <label name="HEADER_STORE" value="_rptStore"/>
+        <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+        <label name="FOOTER_PAGE" value="_rptPage"/>
+        <label name="FOOTER_OF" value="_rptof"/>
+       <label name="SELECTION_DATE_RANGE" value="_rptSelectionDateRange"/>
+        <label name="CRITERIA_EMPLOYEE" value="_rptEmployeeColon" />
+        <label name="SELECTION_ALL_EMPLOYEES" value="_rptDefaultAll" />
+    
+        <!-- Timecard Report labels -->
+        <label name="PAY_PERIOD" value="_rptDateRange" />
+        <label name="DATE" value="_rptTimeCardDate" />
+        <label name="COMMA" value="_rptComma" />
+        <label name="HOUR_CATEGORY" value="_rptTimeCardCategory"/>
+        <label name="DAY_TOT" value="_rptTimeCardDayTotal" />
+        <label name="WK_TOT" value="_rptTimeCardWeekTotal" />
+        <label name="CLK_IN" value="_rptTimeCardIn" />
+        <label name="CLK_OUT" value="_rptTimeCardOut" />
+        <label name="CARD_HRS" value="_rptTimeCardHours" />
+        <label name="CARD_MSG" value="_rptTimeCardTextMessage" />
+        <label name="EMP_SIG" value="_rptTimeCardAssociateSignature" />
+        <label name="MGR_SIG" value="_rptTimeCardManagerSignature" />
+        <label name="EMP_SIG_MSG" value="_rptTimeCardAssociateSignatureMessage" />
+        <label name="MGR_SIG_MSG" value="_rptTimeCardManagerSignatureMessage" />
+        <label name="ST_DATE" value="_rptTimecardStartDate" />
+    </labels>
+  
+    <parameters>
+        <!-- System Parameters -->
+        <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+        <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+        <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+        <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+        <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+        <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+     
+        <!-- REPORT PARAMS -->
+
+        <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange">
+            <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+            <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+        </parameter>
+
+        <parameter name="employeeId" class="java.lang.String"  isForPrompting="true" include_in_output="true" >
+            <parameterDescription><![CDATA[_rptPayrollEmployeePayrollEmployeeId;Text;Simple;maxCharacters=20]]></parameterDescription>
+        </parameter>
+
+        <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+            <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+            <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+        </parameter>    
+    </parameters>
+
+    <dataSource>
+        <queryReference name="Q_TIMECARD" key="TIMECARD_REPORT" > 
+            <Parameters>
+                <Parameter>organizationId</Parameter>
+                <Parameter>retailLocationId</Parameter>
+                <Parameter>startDate</Parameter>
+                <Parameter>endDate</Parameter>
+                <Parameter>employeeId</Parameter>
+            </Parameters>
+      
+            <ResultFields>
+                <ResultField>employee_id</ResultField>
+                <ResultField>last_name</ResultField>
+                <ResultField>first_name</ResultField>
+                <ResultField>business_date</ResultField>
+                <ResultField>description</ResultField>
+                <ResultField>duration</ResultField>
+                <ResultField>clock_in</ResultField>
+                <ResultField>clock_out</ResultField>
+            </ResultFields>
+        </queryReference>
+    </dataSource>
+
+    <dataStructure>
+        <group name="G_CLOCKED" source="Q_TIMECARD">
+            <element name="EMP_ID" value="employee_id" />
+            <element name="LN" value="last_name" />
+            <element name="FN" value="first_name" />
+            <element name="BD" value="business_date" formatter="DateMedium" />
+            <element name="DSC" value="description" />
+            <element name="DUR" value="duration" formatter="Accounting" />
+            <element name="IN" value="clock_in" formatter="TimeMedium" />
+            <element name="OUT" value="clock_out" formatter="TimeMedium" />
+        </group>
+        <group name="G_DAILY" source="Q_TIMECARD">
+            <element name="EMP_ID" group-by="true" value="employee_id" />
+            <element name="BD" value="business_date" group-by="true" formatter="DateMedium" />
+            <element name="DHR" value="duration" function="SUM" formatter="Accounting" />    
+        </group>
+        <group name="G_PERIOD" source="Q_TIMECARD">
+            <element name="EMP_ID" group-by="true" value="employee_id" />
+            <element name="PHR" value="duration" function="SUM" formatter="Accounting" />
+        </group>
+    </dataStructure>
+</dataTemplate>

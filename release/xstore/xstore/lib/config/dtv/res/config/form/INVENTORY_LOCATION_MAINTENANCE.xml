@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Thu May 25 11:00:18 EDT 2006 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">INVENTORY_LOCATION_MAINTENANCE</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0, -1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 4, 2, F, F</LayoutLocation>
+        <Type dtype="String">InventoryBucketView</Type>
+        <TextKey dtype="Literal">invalid type [InventoryBucketView]</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+<!--      <CustomView dtype="Class">dtv.pos.inventory.locationmaint.InventoryBucketView</CustomView> -->
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="VIEW">
+      <Action ref="CANCEL_BACK" />
+      <Action dataKey="EDIT" text="_inventoryLocationMaintEditAction" keyStroke="F2">
+        <VisibilityRule class="dtv.pos.inventory.locationmaint.SystemInventoryLocationVisibilityRule" />
+      </Action>
+      <Action chainKey="DELETE_INVENTORY_LOCATION" text="_inventoryLocationMaintDeleteAction" keyStroke="F3">
+        <VisibilityRule class="dtv.pos.inventory.locationmaint.SystemInventoryLocationVisibilityRule" />
+      </Action>
+      <Action chainKey="PRINT_ITEM_LIST_REPORT" text="_inventoryLocationMaintPrintAction" keyStroke="F4" />
+    </ActionGroup>
+    <ActionGroup key="EDIT">
+      <Action ref="ABORT_CHANGES" text="_undoChanges" />
+      <Action dataKey="SAVE" text="_saveChanges" keyStroke="F2" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

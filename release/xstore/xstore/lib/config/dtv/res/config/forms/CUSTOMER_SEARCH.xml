@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+
+  <Form name="CUSTOMER_SEARCH" type="POPUP_VIEW_PANEL">
+    <Page name="CustomerSearch">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="customerSearchLayout"  />      
+
+    </Page>
+    
+    <ActionGroup name="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action dataKey="CONTINUE" text="_skip" keyStroke="F4" />
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ACCEPT" privilege="VIEW_CUSTOMER" />
+    </ActionGroup>
+    
+    <ActionGroup name="NO_SKIP">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ACCEPT" privilege="VIEW_CUSTOMER" />
+    </ActionGroup>
+    
+    <ActionGroup name="AUDIT">
+      <Action ref="CANCEL_BACK" />
+      <Action dataKey="CONTINUE" text="_skip" keyStroke="F4" />
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ACCEPT" privilege="VIEW_CUSTOMER" />
+    </ActionGroup>
+  </Form>
+  
+</FormSet>

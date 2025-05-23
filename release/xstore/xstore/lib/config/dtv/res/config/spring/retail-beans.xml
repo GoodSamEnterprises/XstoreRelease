@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="retail"
+  default-init-method="init"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config />
+
+  <bean id="customScopes" class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+    <property name="scopes">
+      <map>
+        <entry key="applicationMode">
+          <bean class="dtv.pos.spring.ApplicationModeScope">
+            <property name="eventManager" ref="eventManager" />
+          </bean>
+        </entry>
+        <!-- maybeTraininmode is defined in services.xml -->
+        <!-- <entry key="maybeTrainingMode">
+          <bean class="dtv.pos.spring.MaybeTrainingModeScope" />
+        </entry> -->
+        <entry key="transaction" value-ref="springTransactionScope" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="springTransactionScope" class="dtv.pos.spring.SpringTransactionScope">
+    <property name="eventManager" ref="eventManager" />
+  </bean>
+
+  <bean id="modeController" class="dtv.pos.framework.ModeController" scope="applicationMode">
+    <property name="flowEventListeners" ref="applicationFlowEventListeners" />
+    <property name="eventRouter">
+      <bean class="dtv.pos.framework.event.XstEventRouter" />
+    </property>
+    <property name="UIController">
+      <bean class="dtv.pos.framework.ui.UIControllerImplAnimated" />
+    </property>
+    <property name="contextManager">
+      <bean class="dtv.ui.context.ContextManager" />
+    </property>
+    <property name="stationModel">
+      <bean class="dtv.pos.framework.ui.model.DefaultStationModel" init-method="create" destroy-method="destroy">
+        <property name="listPromptModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultListPromptModel" />
+        </property>
+        <property name="notifyPromptModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultNotifyPromptModel" />
+        </property>
+        <property name="promptActionModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultPromptActionModel" />
+        </property>
+        <property name="textPromptModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultTextPromptModel" />
+        </property>
+        <property name="longTextPromptModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultTextPromptModel" />
+        </property>
+        <property name="messageModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultMessageModel" />
+        </property>
+        <property name="helpModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultHelpModel" />
+        </property>
+        <property name="menuModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultMenuModel" />
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="accountManager" class="dtv.pos.customer.account.AccountManager" scope="applicationMode" />
+  <bean id="loyaltyMgr" class="dtv.pos.customer.loyalty.LoyaltyMgr" scope="applicationMode" />
+  <bean id="priceCodeProvider" class="dtv.pos.pricing.CustomerBasedPriceCodeProvider" scope="applicationMode" />
+  <bean id="itemRestrictionHelper" class="dtv.pos.item.restriction.ItemRestrictionHelper" scope="applicationMode" />
+  <!-- End applicationMode-scoped bean definitions -->
+
+  <bean id="rtlTransactionMgr" class="dtv.pos.register.RetailTransactionMgrImpl" scope="transaction">
+    <property name="calculators" ref="calculators" />
+  </bean>
+
+  <bean id="pricingHelper" class="dtv.pos.pricing.PricingHelper" init-method="create" scope="transaction" />
+  <bean id="returnManager" class="dtv.pos.register.returns.ReturnManager" scope="transaction" />
+  <bean id="warrantyManager" class="dtv.pos.warranty.WarrantyManager" scope="transaction" />
+  <bean id="exchangeManager" class="dtv.pos.inventory.serialexchange.ExchangeSerialNumberManager" scope="transaction" />
+  <bean id="warrantyHistoricalAddHelper" class="dtv.pos.warranty.WarrantyHistoricalAddHelper" scope="transaction" />
+  <bean id="airportManager" class="dtv.pos.flight.AirportHelper" scope="transaction" />
+  <bean id="xstKeyEventDispatcher" class="dtv.pos.framework.event.XstKeyEventDispatcher" />
+
+  <bean id="gatedMainKeyEventDispatcher" class="dtv.hardware.keyboard.GatedMainKeyEventDispatcher" primary="true">
+    <constructor-arg>
+      <bean class="dtv.hardware.keyboard.GatedEventQueue" />
+    </constructor-arg>
+  </bean>
+
+  <bean id="hotKeyEventDispatcher" class="dtv.pos.framework.keycommands.HotKeyEventDispatcher" />
+
+  <bean id="commandKeyEventDispatcher" class="dtv.pos.framework.keycommands.CommandKeyEventDispatcher">
+    <constructor-arg>
+      <list value-type="dtv.pos.framework.keycommands.IKeyCommand">
+        <bean class="dtv.pos.framework.keycommands.ShutdownCommand" />
+        <bean class="dtv.pos.framework.keycommands.KillCommand" />
+        <bean class="dtv.pos.framework.keycommands.ThreadDebugger" />
+        <bean class="dtv.pos.framework.keycommands.FocusDebugger" />
+        <bean class="dtv.pos.framework.keycommands.LocaleToggler" />
+        <bean class="dtv.pos.framework.keycommands.BusyDebugger" />
+        <bean class="dtv.pos.framework.keycommands.MessageDebugger" />
+        <bean class="dtv.pos.framework.keycommands.ResetCommand" />
+        <bean class="dtv.pos.framework.keycommands.TestCommand" />
+        <ref bean="transactionDebugger" />
+        <ref bean="menuDebugger" />
+        <ref bean="opChainDebugger" />
+        <ref bean="versionDebugger" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="versionDebugger" class="dtv.pos.framework.keycommands.VersionDebugger" />
+  <bean id="opChainDebugger" class="dtv.pos.framework.keycommands.OpChainDebugger" />
+  <bean id="menuDebugger" class="dtv.pos.framework.keycommands.MenuDebugger" />
+  <bean id="transactionDebugger" class="dtv.pos.common.TransactionDebugger" />
+
+  <bean id="userOpChainProcessor" class="dtv.pos.framework.op.OpChainProcessor" scope="prototype">
+    <constructor-arg value="USER" />
+  </bean>
+
+  <bean id="systemOpChainProcessor" class="dtv.pos.framework.op.OpChainProcessor" scope="prototype">
+    <constructor-arg value="SYSTEM" />
+  </bean>
+
+  <bean id="applicationFlowEventListeners" class="org.springframework.beans.factory.config.ListFactoryBean" scope="prototype">
+    <property name="sourceList">
+      <list value-type="dtv.pos.framework.IHasFlowEventListener">
+        <ref bean="transactionScope" />
+        <ref bean="springTransactionScope" />
+        <ref bean="defaultScope" />
+        <ref bean="loyaltyMgr" />
+        <ref bean="inventoryStockAdjuster" />
+        <ref bean="orderMgr" />
+        <ref bean="cheetahBridge" />
+        <ref bean="transactionActivityTracker" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="configurableEventHandler" class="dtv.pos.framework.event.ConfigurableEventHandler" scope="prototype" />
+
+  <bean id="cheetahBridge" class="dtv.cheetah.CheetahXstoreBridgeStub" />
+
+  <bean id="actionFactory" class="dtv.pos.framework.action.XstActionFactory" depends-on="formatterFactory">
+    <constructor-arg>
+      <bean class="com.micros.xstore.config.impl.ActionConfigMgr">
+        <constructor-arg ref="actionCascader" />
+      </bean>
+    </constructor-arg>
+    <property name="actionCascader" ref="actionCascader" />
+  </bean>
+
+  <bean id="opChainFactory" class="dtv.pos.framework.op.OpChainFactory">
+    <constructor-arg>
+      <bean class="com.micros.xstore.config.impl.OpChainConfigMgr" />
+    </constructor-arg>
+  </bean>
+
+  <bean id="opClassReplacement" class="dtv.pos.framework.op.OpClassReplacement" scope="prototype" />
+
+  <bean id="defaultOpChain" class="dtv.pos.framework.op.DefaultOpChain" scope="prototype">
+    <constructor-arg name="forward">
+      <bean class="dtv.pos.framework.op.ForwardTraversalStrategy" />
+    </constructor-arg>
+    <constructor-arg name="reverse">
+      <bean class="dtv.pos.framework.op.ReverseTraversalStrategy" />
+    </constructor-arg>
+    <constructor-arg name="breakpoint">
+      <bean class="dtv.pos.framework.op.FindBreakpointTraversalStrategy" />
+    </constructor-arg>
+  </bean>
+
+  <bean id="storeCloseDialogOpLimiter" class="dtv.pos.register.StoreCloseDialogOpLimiter" />
+
+  <bean id="opResponseHelper" class="dtv.pos.framework.op.OpResponseHelper" />
+
+  <bean id="formAssembler" class="dtv.pos.framework.form.FormAssembler" init-method="initialize">
+    <constructor-arg>
+      <bean class="com.micros.xstore.config.impl.FormConfigMgr" />
+    </constructor-arg>
+    <constructor-arg>
+      <bean class="com.micros.xstore.config.impl.FieldLayoutConfigMgr" />
+    </constructor-arg>
+    <constructor-arg>
+      <bean class="com.micros.xstore.config.impl.FieldDefinitionConfigMgr" />
+    </constructor-arg>   
+    <constructor-arg>
+      <bean class="com.micros.xstore.config.impl.FontConfigMgr">
+        <constructor-arg ref="fontTypeCascader" />
+      </bean>
+    </constructor-arg>  
+  </bean>
+
+  <bean id="skipTypeRegistry" class="dtv.pos.util.field.SkipTypeRegistry">
+    <property name="registry">
+      <list>
+        <value>LABEL_LAYOUT_CALCULATING</value>
+        <value>REPORT_RUNNING</value>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Form/field selection beans -->
+  <bean id="fieldHandlerRegistry" class="dtv.pos.util.field.FieldHandlerRegistry" />
+
+  <bean id="fieldHandlerFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pos.util.field.FieldHandlerFactory" />
+    <property name="serviceMappings">
+      <props>
+        <prop key="default">defaultFieldHandler</prop>
+        <prop key="AUTH_MORE_INFO">moreAuthInfoFieldHandler</prop>
+        <prop key="INVENTORY_COUNT_SHEET">inventoryCountFieldHandler</prop>
+        <prop key="PAYROLL_SUMMARY">tableCellFieldHandler</prop>
+        <prop key="SCHED_SUMMARY">tableCellFieldHandler</prop>
+        <prop key="TILL_COUNT_SUMMARY">countSummaryFieldHandler</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!-- Prototype field handler beans -->
+  <bean id="defaultFieldHandler" class="dtv.pos.util.field.DefaultFieldHandler" scope="prototype">
+    <property name="methodRegistry">
+      <map>
+        <entry key="dtv.util.ICode" value="getCode" />
+        <entry key="dtv.pos.employee.SecurityGroupWrapper" value="getGroupId" />
+        <entry key="dtv.xst.dao.crm.impl.CustomerAffiliationModel" value="getCustomerGroupId" />
+        <entry key="dtv.xst.dao.inv.impl.InventoryLocationBucketModel" value="getBucketId" />
+        <entry key="dtv.xst.dao.inv.impl.InventoryLocationModel" value="getName" />
+        <entry key="dtv.xst.dao.inv.impl.InventoryValidDestinationsModel" value="getDestinationId" />
+        <entry key="dtv.xst.dao.sec.impl.GroupModel" value="getGroupId" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="countSummaryFieldHandler" class="dtv.pos.util.field.CountSummaryFieldHandler" scope="prototype" />
+  <bean id="inventoryCountFieldHandler" class="dtv.pos.util.field.InventoryCountSheetHandler" scope="prototype" />
+  <bean id="moreAuthInfoFieldHandler" class="dtv.pos.util.field.MoreAuthInfoFieldHandler" scope="prototype" />
+  <bean id="tableCellFieldHandler" class="dtv.pos.util.field.TableCellFieldHandler" scope="prototype" />
+
+  <!-- define an action logger -->
+  <bean id="actionLogger" class="dtv.pos.framework.action.ActionLogger" />
+
+  <bean id="eventConfigHelper" class="dtv.pos.framework.event.EventConfigHelper" init-method="initialize" />
+</beans>

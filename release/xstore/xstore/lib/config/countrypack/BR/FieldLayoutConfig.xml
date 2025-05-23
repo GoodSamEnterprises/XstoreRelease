@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldLayoutSet xmlns="http://micros.com/xstore/config/form/fieldlayout" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FieldLayoutConfig.xsd">
+ 
+  <FieldLayout name="customerAddressInformationLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="15" fieldRef="organizationNameLabel" horizontalAlignment="Right" />
+      <Column start="15" width="55" fieldRef="organizationName" refreshOnChange="true" fieldSubmitPriority="2" />
+      <Column start="68" width="12" fieldRef="organizationTypeCodeLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="organizationTypeCode" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column start="15" width="55" fieldRef="address1" required="true" />
+      <Column start="68" width="12" fieldRef="apartmentLabel" visibilityGroup="apartmentVisibility"
+              horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="apartment" visibilityGroup="apartmentVisibility" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="address2Label" horizontalAlignment="Right" />
+      <Column start="15" width="55" fieldRef="address2" />  
+      <Column start="68" width="12" fieldRef="countryLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="country" />    
+    </Row>
+    <Row>      
+      <Column start="0" width="15" fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column start="15" width="20" fieldRef="city" required="true" />
+      <Column start="35" width="10" fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column start="45" width="25" fieldRef="stateCustMaint" required="true"/>
+      <Column start="68" width="12" fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="postalCode" refreshOnChange="true" required="true"/>
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="countyLabel" visibilityGroup="countyVisibility"
+              horizontalAlignment="Right" />
+      <Column start="15" width="20" fieldRef="county" visibilityGroup="countyVisibility" required="true" />
+      <Column start="35" width="10" fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility"
+              horizontalAlignment="Right" />
+      <Column start="45" width="25" fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility"
+              required="true" />
+    </Row> 
+  </FieldLayout>
+  
+  <!-- The only change is making required the neighborhood and county -->
+  <FieldLayout name="customerEditAddressLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="15" fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column start="15" width="85" fieldRef="address1" required="true" />
+    </Row>
+    <Row>
+      <Column start="15" width="85" fieldRef="address2" />
+    </Row>
+    <Row>
+      <Column start="15" width="20" fieldRef="postalCode" required="true" refreshOnChange="true" />
+      <Column start="35" width="65" fieldRef="state" required="true" />
+    </Row>
+    <Row>
+      <Column start="15" width="20" fieldRef="postalCodeLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="35" width="65" fieldRef="stateLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+      <Column start="15" width="65" fieldRef="city" required="true" />
+      <Column start="80" width="20" fieldRef="apartment" visibilityGroup="apartmentVisibility" />
+    </Row>
+    <Row>
+      <Column start="15" width="65" fieldRef="cityLabel" horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="80" width="20" fieldRef="apartmentLabel" visibilityGroup="apartmentVisibility" 
+              horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+      <Column start="15" width="65" fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" required="true" />
+      <Column start="80" width="20" fieldRef="county" visibilityGroup="countyVisibility" required="true" />
+    </Row>
+    <Row>
+      <Column start="15" width="65" fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility"
+              horizontalAlignment="Center" fontRef="formFontSmall" />
+      <Column start="80" width="20" fieldRef="countyLabel" visibilityGroup="countyVisibility"
+              horizontalAlignment="Center" fontRef="formFontSmall" />
+    </Row>
+    <Row>
+      <Column start="15" width="85" fieldRef="country" horizontalAlignment="Right" />
+    </Row>
+    <Row>
+      <Column start="0" width="15" fieldRef="commonTypeLabel" horizontalAlignment="Right" />
+      <Column start="15" width="85" fieldRef="addressType" required="true" />
+    </Row>
+  </FieldLayout>
+  
+  <!-- ********************************************************* -->
+  <!-- Mobile Layouts -->
+  <!-- ********************************************************* -->
+  
+  <FieldLayout name="custMaintAddressInfo" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="address1Label" horizontalAlignment="Right" />
+      <Column fieldRef="address1" required="true"/>
+    </Row>
+    <Row>
+      <Column fieldRef="cityLabel" horizontalAlignment="Right" />
+      <Column fieldRef="city" required="true"/> 
+    </Row>
+    <Row>
+      <Column fieldRef="stateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="stateCustMaint" required="true"/>
+    </Row>
+    <Row>
+      <Column fieldRef="postalCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="postalCode" required="true" refreshOnChange="true"/>
+    </Row>
+    <Row>
+      <Column />
+      <Column fieldRef="country" />    
+    </Row>
+    <Row>
+      <Column fieldRef="countyLabel" visibilityGroup="countyVisibility" horizontalAlignment="Right" />
+      <Column fieldRef="county" visibilityGroup="countyVisibility" required="true"/>
+    </Row>
+    <Row>
+      <Column fieldRef="neighborhoodLabel" visibilityGroup="neighborhoodVisibility"
+              horizontalAlignment="Right" />
+      <Column fieldRef="neighborhood" visibilityGroup="neighborhoodVisibility" required="true"/>
+    </Row>
+    <Row>
+      <Column fieldRef="emailAddressLabel" horizontalAlignment="Right" />
+      <Column fieldRef="emailAddress" />
+    </Row>
+    <Row>      
+      <Column start="35" width="50" fieldRef="telephoneLabel" horizontalAlignment="Right" />
+      <Column start="35" width="50" fieldRef="telephone1" />
+    </Row>
+    <Row>
+      <Column fieldRef="personalTaxIdLabel" visibilityGroup="fiscalCodeVisibility" horizontalAlignment="Right" />
+      <Column fieldRef="personalTaxId" visibilityGroup="fiscalCodeVisibility" />
+    </Row>
+    <Row>
+      <Column fieldRef="nationalTaxIdLabel" visibilityGroup="taxCodeVisibility" horizontalAlignment="Right" />
+      <Column fieldRef="nationalTaxId" visibilityGroup="taxCodeVisibility" />
+    </Row> 
+  </FieldLayout>
+  <FieldLayout name="productAttributeLayout1" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="itemTypeLabel" />
+      <Column fieldRef="itemType" />
+    </Row>
+    <Row>
+      <Column fieldRef="stockStatusLabel" />
+      <Column fieldRef="stockStatus" />
+    </Row>
+    <Row>
+      <Column fieldRef="returnFlagLabel" />
+      <Column fieldRef="returnFlag" />
+    </Row>
+    <Row>
+      <Column fieldRef="iatLabel" />
+      <Column fieldRef="iat" />
+    </Row>
+    <Row>
+      <Column fieldRef="manufacturedLabel" />
+      <Column fieldRef="manufactured" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="productAttributeLayout2" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="unitOfMeasureLabel" />
+      <Column fieldRef="unitOfMeasure" />
+    </Row>
+    <Row>
+      <Column fieldRef="taxGroupLabel" />
+      <Column fieldRef="taxGroup" />
+    </Row>
+    <Row>
+      <Column fieldRef="restockingFeeLabel" />
+      <Column fieldRef="restockingFee" />
+    </Row>
+    <Row>
+      <Column fieldRef="ncmLabel" />
+      <Column fieldRef="ncm" />
+    </Row>
+    <Row>
+      <Column fieldRef="taxDetailsLabel" />
+      <Column fieldRef="taxDetails" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="satMaintenanceLogHeaderLayout" type="ListLayout">
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="satMaintenanceLogHeader" horizontalAlignment="Center" fontRef="whiteColorFont" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="satMaintenanceLists" type="ListLayout">    
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="satMaintenanceLogList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="nfeTotalEditLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="25" fieldRef="icmsBasisLabel" />
+      <Column start="25" width="25" fieldRef="icmsBasis" />
+      <Column start="50" width="25" fieldRef="icmsAmountLabel" />
+      <Column start="75" width="25" fieldRef="icmsAmount" />
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="issBasisLabel" />
+      <Column start="25" width="25" fieldRef="issBasis" />
+      <Column start="50" width="25" fieldRef="issAmountLabel" />
+      <Column start="75" width="25" fieldRef="issAmount" />
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="productAmountLabel" />
+      <Column start="25" width="25" fieldRef="productAmount" />
+      <Column start="50" width="25" fieldRef="serviceAmountLabel" />
+      <Column start="75" width="25" fieldRef="serviceAmount" />      
+    </Row>   
+    <Row>
+      <Column start="0" width="25" fieldRef="insuranceAmountLabel" />
+      <Column start="25" width="25" fieldRef="insuranceAmount" />
+      <Column start="50" width="25" fieldRef="freightAmountLabel" />
+      <Column start="75" width="25" fieldRef="freightAmount" />      
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="otherAmountLabel" />
+      <Column start="25" width="25" fieldRef="otherAmount" />
+      <Column start="50" width="25" fieldRef="iiAmountLabel" />
+      <Column start="75" width="25" fieldRef="iiAmount" />      
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="pisAmountLabel" />
+      <Column start="25" width="25" fieldRef="pisAmount" />
+      <Column start="50" width="25" fieldRef="cofinsAmountLabel" />
+      <Column start="75" width="25" fieldRef="cofinsAmount" />
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="discountAmountLabel" />
+      <Column start="25" width="25" fieldRef="edit_discountAmount" />
+      <Column start="50" width="25" fieldRef="detail_totalAmountLabel" />
+      <Column start="75" width="25" fieldRef="detail_totalAmount" />
+    </Row>        
+  </FieldLayout>
+  <FieldLayout name="nfeMaintenanceDetailHeaderLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="10" fieldRef="workstationIdLabel" fontRef="whiteColorFont" />
+      <Column start="10" width="6" fieldRef="workstationId" fontRef="whiteColorFont" />
+      <Column start="16" width="10" fieldRef="saiEntDatetimeLabel" fontRef="whiteColorFont" />
+      <Column start="26" width="10" fieldRef="saiEntDatetime" fontRef="whiteColorFont" />
+      <Column start="36" width="10" fieldRef="usageTypeCodeLabel" fontRef="whiteColorFont" />
+      <Column start="46" width="12" fieldRef="usageTypeCode" fontRef="whiteColorFont" />
+      <Column start="58" width="10" fieldRef="statusCodeLabel" fontRef="whiteColorFont" />
+      <Column start="68" width="32" fieldRef="statusCode" fontRef="whiteColorFont" />
+    </Row>        
+    <Row>
+      <Column start="0" width="10" fieldRef="queueSequenceLabel" fontRef="whiteColorFont" />
+      <Column start="10" width="6" fieldRef="queueSequence" fontRef="whiteColorFont" />
+      <Column start="16" width="10" fieldRef="transTypeCodeLabel" fontRef="whiteColorFont" />
+      <Column start="26" width="10" fieldRef="transTypeCode" fontRef="whiteColorFont" />
+      <Column start="36" width="10" fieldRef="nfeCfopNatopLabel" fontRef="whiteColorFont" />
+      <Column start="46" width="12" fieldRef="nfeCfopNatop" fontRef="whiteColorFont" />
+      <Column start="58" width="10" fieldRef="chaveNfeLabel" fontRef="whiteColorFont" />
+      <Column start="68" width="32" fieldRef="chaveNfe" fontRef="whiteColorFont" />
+    </Row>        
+    <Row>
+      <Column start="0" width="10" fieldRef="summary_totalAmountLabel" fontRef="whiteColorFont" />
+      <Column start="10" width="6" fieldRef="summary_totalAmount" fontRef="whiteColorFont" />
+      <Column start="16" width="10" fieldRef="nfeInfCplFilteredLabel" fontRef="whiteColorFont" />
+      <Column start="26" width="74" fieldRef="nfeInfCplFiltered" fontRef="whiteColorFont" />
+    </Row>        
+  </FieldLayout>
+  <FieldLayout name="nfeMaintenanceItemsLayout" type="ListLayout">    
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="nfeMaintenanceItemsList" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="nfeTransactionsLayout" type="ListLayout">    
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="nfeTransactionsList" />
+    </Row>
+  </FieldLayout>  
+  
+  
+  <FieldLayout name="nfeTotalLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="25" fieldRef="icmsBasisLabel" />
+      <Column start="25" width="15" fieldRef="icmsBasis" horizontalAlignment="Right" />
+      <Column start="50" width="25" fieldRef="icmsAmountLabel" />
+      <Column start="75" width="15" fieldRef="icmsAmount" horizontalAlignment="Right" />
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="issBasisLabel" />
+      <Column start="25" width="15" fieldRef="issBasis" horizontalAlignment="Right" />
+      <Column start="50" width="25" fieldRef="issAmountLabel" />
+      <Column start="75" width="15" fieldRef="issAmount" horizontalAlignment="Right" />
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="productAmountLabel" />
+      <Column start="25" width="15" fieldRef="productAmount" horizontalAlignment="Right" />
+      <Column start="50" width="25" fieldRef="serviceAmountLabel" />
+      <Column start="75" width="15" fieldRef="serviceAmount" horizontalAlignment="Right" />      
+    </Row>   
+    <Row>
+      <Column start="0" width="25" fieldRef="insuranceAmountLabel" />
+      <Column start="25" width="15" fieldRef="insuranceAmount" horizontalAlignment="Right" />
+      <Column start="50" width="25" fieldRef="freightAmountLabel" />
+      <Column start="75" width="15" fieldRef="freightAmount" horizontalAlignment="Right" />      
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="otherAmountLabel" />
+      <Column start="25" width="15" fieldRef="otherAmount" horizontalAlignment="Right" />
+      <Column start="50" width="25" fieldRef="iiAmountLabel" />
+      <Column start="75" width="15" fieldRef="iiAmount" horizontalAlignment="Right" />      
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="pisAmountLabel" />
+      <Column start="25" width="15" fieldRef="pisAmount" horizontalAlignment="Right" />
+      <Column start="50" width="25" fieldRef="cofinsAmountLabel" />
+      <Column start="75" width="15" fieldRef="cofinsAmount" horizontalAlignment="Right" />
+    </Row>
+    <Row>
+      <Column start="0" width="25" fieldRef="discountAmountLabel" />
+      <Column start="25" width="15" fieldRef="discountAmount" horizontalAlignment="Right" />
+      <Column start="50" width="25" fieldRef="detail_totalAmountLabel" />
+      <Column start="75" width="15" fieldRef="detail_totalAmount" horizontalAlignment="Right" />
+    </Row>        
+  </FieldLayout>
+  <FieldLayout name="nfeDestinationEditLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_federalTaxIdLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_federalTaxId" />
+      <Column start="60" width="20" fieldRef="nfe_stateTaxIdLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_stateTaxId" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_nameLabel" horizontalAlignment="Right" />
+      <Column start="20" width="80" fieldRef="nfe_name" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_streetNameLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_streetName" />
+      <Column start="60" width="20" fieldRef="nfe_streetNumberLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_streetNumber" />      
+    </Row>   
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_complementoLabel" horizontalAlignment="Right" />
+      <Column start="20" width="80" fieldRef="nfe_complemento" />  
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_cityLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_city" />
+      <Column start="60" width="20" fieldRef="nfe_neighborhoodLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_neighborhood" />      
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_cityCodeLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_cityCode" />
+      <Column start="60" width="20" fieldRef="nfe_postalCodeLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_postalCode" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_DestStateComboBoxLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_DestStateComboBox" />
+      <Column start="60" width="20" fieldRef="nfe_countryNameLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_countryName" />
+    </Row>  
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_emailAddressLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_emailAddress" />
+      <Column start="60" width="20" fieldRef="nfe_telephoneLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_telephone" />
+    </Row>             
+  </FieldLayout>
+  <FieldLayout name="nfeDestinationLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="nfe_federalTaxIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_federalTaxId_readonly" />
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_stateTaxIdLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_stateTaxId_readonly" />
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_nameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_name_readonly" />
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_streetNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_streetName_readonly" />
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_streetNumberLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_streetNumber_readonly" />      
+    </Row>   
+    <Row>
+      <Column fieldRef="nfe_complementoLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_complemento_readonly" />  
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_cityLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_city_readonly" />
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_neighborhoodLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_neighborhood_readonly" />      
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_cityCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_cityCode_readonly" />
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_postalCodeLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_postalCode_readonly" />
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_DestStateComboBoxLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_DestStateComboBox_readonly" />
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_countryNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_countryName" />
+    </Row>  
+    <Row>
+      <Column fieldRef="nfe_telephoneLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_telephone_readonly" />
+    </Row>
+    <Row>
+      <Column fieldRef="nfe_emailAddressLabel" horizontalAlignment="Right" />
+      <Column fieldRef="nfe_emailAddress_readonly" />
+    </Row>             
+  </FieldLayout>
+  <FieldLayout name="nfeDestinationLayout1" type="ListLayout">
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_federalTaxIdLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_federalTaxId_readonly" />
+      <Column start="60" width="20" fieldRef="nfe_stateTaxIdLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_stateTaxId_readonly" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_nameLabel" horizontalAlignment="Right" />
+      <Column start="20" width="80" fieldRef="nfe_name_readonly" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_streetNameLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_streetName_readonly" />
+      <Column start="60" width="20" fieldRef="nfe_streetNumberLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_streetNumber_readonly" />      
+    </Row>   
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_complementoLabel" horizontalAlignment="Right" />
+      <Column start="20" width="80" fieldRef="nfe_complemento_readonly" />  
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_cityLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_city_readonly" />
+      <Column start="60" width="20" fieldRef="nfe_neighborhoodLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_neighborhood_readonly" />      
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_cityCodeLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_cityCode_readonly" />
+      <Column start="60" width="20" fieldRef="nfe_postalCodeLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_postalCode_readonly" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_DestStateComboBoxLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_DestStateComboBox_readonly" />
+      <Column start="60" width="20" fieldRef="nfe_countryNameLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_countryName" />
+    </Row>  
+    <Row>
+      <Column start="0" width="20" fieldRef="nfe_telephoneLabel" horizontalAlignment="Right" />
+      <Column start="20" width="40" fieldRef="nfe_telephone_readonly" />
+      <Column start="60" width="20" fieldRef="nfe_emailAddressLabel" horizontalAlignment="Right" />
+      <Column start="80" width="20" fieldRef="nfe_emailAddress_readonly" />
+    </Row>             
+  </FieldLayout>
+  <FieldLayout name="nfeInfCplLayout" type="ListLayout">    
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="nfeInfCplList" />
+    </Row>
+  </FieldLayout>  
+  <FieldLayout name="nfeTendersLayout" type="ListLayout">    
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="nfeTendersList" />
+    </Row>
+  </FieldLayout>  
+  <FieldLayout name="nfeLogsLayout" type="ListLayout">    
+    <Row fill="true">
+      <Column start="0" width="100" fieldRef="nfeLogsList" />
+    </Row>
+  </FieldLayout> 
+  <FieldLayout name="nfeItemEditLayout1" type="ListLayout">
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_ItemIdLabel" horizontalAlignment="Right" />
+      <Column start="18" width="10" fieldRef="nfe_ItemId" />
+      <Column start="28" width="15" fieldRef="nfe_NcmLabel" horizontalAlignment="Right" />
+      <Column start="43" width="10" fieldRef="nfe_Ncm" />
+      <Column start="53" width="18" fieldRef="nfe_CestLabel" horizontalAlignment="Right" />
+      <Column start="71" width="10" fieldRef="nfe_Cest" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_EanLabel" horizontalAlignment="Right" />
+      <Column start="18" width="10" fieldRef="nfe_Ean" />
+      <Column start="28" width="15" fieldRef="nfe_IatLabel" horizontalAlignment="Right" />
+      <Column start="43" width="10" fieldRef="nfe_Iat" />
+      <Column start="53" width="18" fieldRef="nfe_IpptLabel" horizontalAlignment="Right" />
+      <Column start="71" width="10" fieldRef="nfe_Ippt" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_ItemDescriptionLabel" horizontalAlignment="Right" />
+      <Column start="18" width="63" fieldRef="nfe_ItemDescription" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_InfAdProdLabel" horizontalAlignment="Right" />
+      <Column start="18" width="63" fieldRef="nfe_InfAdProd" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_CfopLabel" horizontalAlignment="Right" />
+      <Column start="18" width="10" fieldRef="nfe_Cfop" />
+      <Column start="28" width="15" fieldRef="nfe_CstLabel" horizontalAlignment="Right" />
+      <Column start="43" width="5" fieldRef="nfe_ItemOrigim" />
+      <Column start="48" width="5" fieldRef="nfe_ItemCst" />
+      <Column start="53" width="18" fieldRef="nfe_TaxSituationCodeLabel" horizontalAlignment="Right" />
+      <Column start="71" width="6" fieldRef="nfe_TaxSituationCode" />
+    </Row>
+    <Row>
+      <Column start="43" width="5" fieldRef="nfe_OrigimLabel" horizontalAlignment="Center" />
+      <Column start="48" width="5" fieldRef="nfe_Cst2Label" horizontalAlignment="Center" />
+    </Row>
+  </FieldLayout> 
+  <FieldLayout name="nfeItemEditLayout2" type="ListLayout">
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_UnitOfMeasureCodeLabel" horizontalAlignment="Right" />
+      <Column start="18" width="10" fieldRef="nfe_UnitOfMeasureCode" />
+      <Column start="28" width="15" fieldRef="nfe_ExTipiLabel" horizontalAlignment="Right" />
+      <Column start="43" width="10" fieldRef="nfe_ExTipi" />
+    </Row>
+  </FieldLayout> 
+  <FieldLayout name="nfeItemEditLayout3" type="ListLayout">
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_FreightAmountLabel" horizontalAlignment="Right" />
+      <Column start="18" width="10" fieldRef="nfe_FreightAmount" />
+      <Column start="28" width="15" fieldRef="nfe_InsuranceAmountLabel" horizontalAlignment="Right" />
+      <Column start="43" width="10" fieldRef="nfe_InsuranceAmount" />
+      <Column start="53" width="18" fieldRef="nfe_OtherAmountLabel" horizontalAlignment="Right" />
+      <Column start="71" width="10" fieldRef="nfe_OtherAmount" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_ItemQuantityLabel" horizontalAlignment="Right" />
+      <Column start="18" width="10" fieldRef="nfe_ItemQuantity" />
+      <Column start="28" width="15" fieldRef="nfe_UnitPriceLabel" horizontalAlignment="Right" />
+      <Column start="43" width="10" fieldRef="nfe_UnitPrice" />
+      <Column start="53" width="18" fieldRef="nfe_ItemExtendedAmountLabel" horizontalAlignment="Right" />
+      <Column start="71" width="10" fieldRef="nfe_ItemExtendedAmount" />
+    </Row>
+  </FieldLayout> 
+  <FieldLayout name="nfeItemEditLayout4" type="ListLayout">
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_IcmsRateLabel" horizontalAlignment="Right" />
+      <Column start="18" width="10" fieldRef="nfe_IcmsRate" />
+      <Column start="28" width="15" fieldRef="nfe_IcmsBasisLabel" horizontalAlignment="Right" />
+      <Column start="43" width="10" fieldRef="nfe_IcmsBasis" />
+      <Column start="53" width="18" fieldRef="nfe_IcmsAmountLabel" horizontalAlignment="Right" />
+      <Column start="71" width="10" fieldRef="nfe_IcmsAmount" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_IcmsStRateLabel" horizontalAlignment="Right" />
+      <Column start="18" width="10" fieldRef="nfe_IcmsStRate" />
+      <Column start="28" width="15" fieldRef="nfe_IcmsStBasisLabel" horizontalAlignment="Right" />
+      <Column start="43" width="10" fieldRef="nfe_IcmsStBasis" />
+      <Column start="53" width="18" fieldRef="nfe_IcmsStAmountLabel" horizontalAlignment="Right" />
+      <Column start="71" width="10" fieldRef="nfe_IcmsStAmount" />
+    </Row>
+    <Row>
+      <Column start="0" width="18" fieldRef="nfe_ItemDiscountAmountLabel" horizontalAlignment="Right" />
+      <Column start="18" width="10" fieldRef="nfe_ItemDiscountAmount" />
+      <Column start="28" width="15" fieldRef="nfe_IpiRateLabel" horizontalAlignment="Right" />
+      <Column start="43" width="10" fieldRef="nfe_IpiRate" />
+      <Column start="53" width="18" fieldRef="nfe_IpiAmountLabel" horizontalAlignment="Right" />
+      <Column start="71" width="10" fieldRef="nfe_IpiAmount" />
+    </Row>
+  </FieldLayout>
+  
+  <FieldLayout name="custMaintNameInfoLayout" type="SimpleLayout">
+    <Row>
+      <Column fieldRef="firstNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="firstName" />
+    </Row>
+    <Row>
+      <Column fieldRef="lastNameLabel" horizontalAlignment="Right" />
+      <Column fieldRef="lastName" />
+    </Row>
+  </FieldLayout>
+</FieldLayoutSet>

@@ -1,0 +1,102 @@
+<dataTemplate name="InventoryMovement" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="MIN" value="_rptMin"/>
+    <label name="MAX" value="_rptMax"/>
+    <label name="DATE" value="_rptDate"/>
+    <label name="DATE_RANGE" value="_rptDateRange"/>
+    <label name="ITEM_RANGE" value="_rptInventoryMovementReportItemRange"/>
+    <label name="MOVEMENT_RANGE" value="_rptInventoryMovementReportMovementType"/>
+    <label name="ITEM_ID" value="_rptItem"/>
+    <label name="SNR_NBR" value="_rptSerialNum"/>
+    <label name="QTY" value="_rptQuantity"/>
+    <label name="ACTION" value="_rptInventoryMovementReportAction"/>
+    <label name="SRC" value="_rptInventoryMovementReportSrc"/>
+    <label name="LOC" value="_rptInventoryMovementReportLoc"/>
+    <label name="BKT" value="_rptInventoryMovementReportBkt"/>
+    <label name="DEST" value="_rptInventoryMovementReportDestination"/>
+    </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+   
+    <!-- User Parameters -->
+ <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange">
+    <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+    <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+  </parameter>
+  <parameter name="startItemId" class="java.lang.String" isForPrompting="true" include_in_output="true">
+    <parameterDescription><![CDATA[_rptParamStartItemId;Text;Simple;maxCharacters=20]]></parameterDescription>
+  </parameter>
+  <parameter name="endItemId" class="java.lang.String" isForPrompting="true" include_in_output="true">
+    <parameterDescription><![CDATA[_rptParamEndItemId;Text;Simple;maxCharacters=20]]></parameterDescription>
+  </parameter>
+  <parameter name="actionCodeFilter" class="java.lang.String">
+    <parameterDescription><![CDATA[_rptParamMoveType;Combo;dtv.pos.inventory.InventoryActionCodesLoader;all=_rptParamSelectionAll]]></parameterDescription>
+    <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+  </parameter>
+  <parameter name="transSeq" class="java.lang.String" isForPrompting="false">
+    <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+  </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+   </parameter> 
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_INVENTORY_MOVEMENT" key="INVENTORY_MOVEMENT_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>transSeq</Parameter>
+	      <Parameter>actionCodeFilter</Parameter>
+	      <Parameter>startItemId</Parameter>
+        <Parameter>endItemId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>inventory_item_id</ResultField>
+        <ResultField>item_serial_nbr</ResultField>
+        <ResultField>quantity</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>rtl_loc_id</ResultField>
+        <ResultField>source_location_id</ResultField>
+        <ResultField>source_bucket_id</ResultField>
+        <ResultField>dest_location_id</ResultField>
+        <ResultField>dest_bucket_id</ResultField>
+       </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_INV_MOV" source="Q_INVENTORY_MOVEMENT">
+      <element name="BUS_DATE" value="business_date" formatter="DateMedium"/>
+      <element name="ITEM_ID" value="inventory_item_id" />
+      <element name="SR_NBR" value="item_serial_nbr"/>
+      <element name="ACT" value="description" />
+      <element name="QTY" value="quantity"/>
+      <element name="SRC_LOC" value="source_location_id"/>
+      <element name="SRC_BUC" value="source_bucket_id"/>
+      <element name="DEST_LOC" value="dest_location_id"/>
+      <element name="DEST_BUC" value="dest_bucket_id"/>
+     </group>    
+  </dataStructure>
+</dataTemplate>

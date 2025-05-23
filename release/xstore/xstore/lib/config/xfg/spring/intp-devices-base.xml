@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="DEV_ODis" class="com.micros_retail.xfgclient.interpret.device.gserver.GServerCachingComponent">
+    <property name="idx" value="60" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_EDis" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="21" />
+    <property name="type" value="POPUP" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_IDis" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="22" />
+    <property name="type" value="POPUP" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_Choice3" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="26" />
+    <property name="type" value="POPUP" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_ScaleErrorChoice" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="23" />
+    <property name="type" value="POPUP" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_YesNo" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="24" />
+    <property name="type" value="POPUP" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_Echo" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="66" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="DEV_SysInfo" class="com.micros_retail.xfgclient.interpret.device.gserver.GserverComponent">
+    <property name="idx" value="800003" />
+    <property name="type" value="BUTTON" />
+    <property name="outputContext" ref="OC_Operator" />
+  </bean>
+
+</beans>

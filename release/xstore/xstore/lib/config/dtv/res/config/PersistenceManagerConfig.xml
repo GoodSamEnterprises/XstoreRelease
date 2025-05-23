@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PersistenceManagerTypeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="PersistenceManagerConfig.xsd">
+  
+  <!-- ************************************************* -->
+  <!-- DOMAIN TYPES -->
+  <!-- ************************************************* -->
+  <!-- **************************************************************** -->
+  <!-- REPLICATED ASYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+  <!-- These PMs should be enabled when writes to the relevant remote SOR should be processed through 
+      replication rather than done directly. -->
+  <!-- **************************************************************** -->
+  <PersistenceManagerType name="CUSTOMER" ref="XCENTER_STANDARD" sync="true" />
+  <PersistenceManagerType name="CUSTOMER_CRM" ref="XCENTER_STANDARD" sync="true" />
+  <PersistenceManagerType name="LOYALTY" ref="XCENTER_STANDARD" sync="true" />
+  <!-- **************************************************************** -->
+  <!-- /REPLICATED ASYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+  
+  <!-- **************************************************************** -->
+  <!-- CONCURRENT SYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+  <!-- These PMs should be enabled when writes to the relevant remote SOR should be processed directly 
+      rather than via replication.  It should be noted that, in cases where a given write is part of the same
+      persistence transaction (as is the case when a retail transaction and the party attached to its object
+      graph are both persisted), any failures encountered by any member of the transaction will result in the
+      rollback and aggregate failure of the entire transaction.  So, if when saving a retail transaaction,
+      the write to Relate and only the write to Relate fails, the POS may be left in an invalid state because
+      the retail transaction itself was committed (and replicated) but the aggregate commit failed and was 
+      rolled back.  -->
+  <!-- **************************************************************** -->
+  <!--
+  <PersistenceManagerType name="CUSTOMER" ref="XCENTER_STANDARD_NOW" sync="true" />
+  <PersistenceManagerType name="CUSTOMER_CRM" ref="XCENTER_STANDARD_NOW" sync="true" />
+  <PersistenceManagerType name="LOYALTY" ref="XCENTER_STANDARD_NOW" sync="true" />
+  -->
+  <!-- **************************************************************** -->
+  <!-- /CONCURRENT SYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+
+  <PersistenceManagerType name="HOUSE_ACCOUNT" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="CODES" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="CUSTOMER_ACCOUNT" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="DEALS" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="DEVICE_REGISTRATION" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="DISCOUNTING" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="STORE_REGISTRATION" ref="STORE_STANDARD" sync="true" />
+  <PersistenceManagerType name="EMPLOYEE" ref="XCENTER_SECONDARY" sync="true" />
+  <PersistenceManagerType name="EMPLOYEE_FINGERPRINT" ref="STORE_STANDARD" />  
+  <PersistenceManagerType name="EVENT_LOG_ENTRY" ref="XCENTER_STANDARD">
+    <Offline dtype="LocationGroup">
+      <LookupLocation dataSourceName="Local" />
+      <PersistenceLocation dataSourceName="Local" />
+    </Offline>
+  </PersistenceManagerType>  
+  <PersistenceManagerType name="HISTORICAL_TRANSACTION_LOOKUP" ref="XCENTER_STANDARD" />
+  <PersistenceManagerType name="INVENTORY" ref="XCENTER_SECONDARY" />
+  <PersistenceManagerType name="INVENTORY_COUNT" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="INVENTORY_CENTRAL" ref="XCENTER_STANDARD" />
+  <PersistenceManagerType name="ITEM" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="LOCATION" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="LOG_TRICKLE" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="PAYROLL" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="PREFLIGHT" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="PREFLIGHT_SEQUENCE" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="PREFLIGHT_SEQUENCE_DISASTER" ref="XCENTER_STANDARD" />
+  <PersistenceManagerType name="RAINCHECK" ref="XCENTER_STANDARD" sync="true" />
+  <PersistenceManagerType name="REGISTER_CORE" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="REPORTS" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="SAVED_REPORTS" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="SCHEDULING" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="SECURITY" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="AIRLINE_INFO" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="SESSIONS" sync="true">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="StorePrimary" />
+      <PersistenceLocation dataSourceName="ConcurrentStoreLocal" />
+    </Online>
+    <Offline dtype="LocationGroup">
+      <LookupLocation dataSourceName="Local" />
+      <PersistenceLocation dataSourceName="Local" />
+    </Offline>
+    <Training dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Training>
+  </PersistenceManagerType>
+  <PersistenceManagerType name="STATE_JOURNAL" ref="STORE_STANDARD" sync="true">
+    <Offline dtype="LocationGroup">
+      <LookupLocation dataSourceName="Local" />
+      <PersistenceLocation dataSourceName="Local" />
+    </Offline>
+  </PersistenceManagerType>
+  <PersistenceManagerType name="STOCK_LEDGER" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="SYNC_JOURNAL_LOCALLY" ref="LOCAL_THEN_PRIMARY" />
+  <PersistenceManagerType name="TENDER_AUTH_LOG" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="TIMECLOCK" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="TRANSACTION" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="TRANSACTION_LOOKUP" ref="XCENTER_STANDARD" />
+  <PersistenceManagerType name="WARRANTY" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="VOUCHERS" ref="XCENTER_STANDARD" />
+  <!-- ************************************************* -->
+  <!-- /DOMAIN TYPES -->
+  <!-- ************************************************* -->
+
+  <!-- ************************************************* -->
+  <!-- RESERVED -->
+  <!-- ************************************************* -->
+  <PersistenceManagerType name="RESERVED_CENTRAL">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Xcenter" />
+      <PersistenceLocation dataSourceName="StorePrimary" />
+    </Online>
+    <Offline dtype="LocationGroup" />
+    <Training dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Training>
+  </PersistenceManagerType>  
+  <PersistenceManagerType name="RESERVED_LOCAL" ref="LOCAL_ONLY">
+    <Offline dtype="LocationGroup" />
+  </PersistenceManagerType>
+  <PersistenceManagerType name="RESERVED_STORE" ref="STORE_STANDARD">
+    <Offline dtype="LocationGroup" />
+  </PersistenceManagerType>
+  
+    <!-- A PM type representing the entire Xstore-native "universe".  The data sources consulted/
+  targeted by this type should never include any third-party sources and should only change to
+  reflect differences in the hierarchy of Xstore data sources in an organization from the standard
+  Local/Store/Xcenter pyramid. -->
+  <PersistenceManagerType name="XSTORE" ref="XCENTER_STANDARD" sync="true" />
+  <!-- ************************************************* -->
+  <!-- /RESERVED -->
+  <!-- ************************************************* -->
+  
+  <!-- ************************************************* -->
+  <!-- TEMPLATES -->
+  <!-- ************************************************* -->
+  <PersistenceManagerType name="STORE_STANDARD">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="StorePrimary" />
+      <PersistenceLocation dataSourceName="StorePrimary" />
+    </Online>
+    <Offline dtype="LocationGroup">
+      <LookupLocation dataSourceName="StoreBackup" />
+      <LookupLocation dataSourceName="Local" />
+      <PersistenceLocation dataSourceName="Local" />
+    </Offline>
+    <Training dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Training>
+  </PersistenceManagerType>
+  <PersistenceManagerType name="STORE_STANDARD_NOW" ref="STORE_STANDARD">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="StorePrimary" />
+      <PersistenceLocation dataSourceName="ConcurrentStoreXcenter" />
+    </Online>
+  </PersistenceManagerType>
+  <PersistenceManagerType name="XCENTER_STANDARD" ref="STORE_STANDARD">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Xcenter" />
+      <LookupLocation dataSourceName="StorePrimary" />
+      <PersistenceLocation dataSourceName="StorePrimary" />
+    </Online>
+  </PersistenceManagerType>
+  <PersistenceManagerType name="XCENTER_STANDARD_NOW" ref="STORE_STANDARD">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Xcenter" />
+      <LookupLocation dataSourceName="StorePrimary" />
+      <PersistenceLocation dataSourceName="ConcurrentStoreXcenter" />
+    </Online>
+  </PersistenceManagerType>
+  <PersistenceManagerType name="XCENTER_SECONDARY" ref="STORE_STANDARD">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="StorePrimary" />
+      <LookupLocation dataSourceName="Xcenter" />
+      <PersistenceLocation dataSourceName="StorePrimary" />
+    </Online>
+  </PersistenceManagerType>
+  <PersistenceManagerType name="LOCAL_ONLY">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Local" />
+      <PersistenceLocation dataSourceName="Local" />
+    </Online>
+    <Offline dtype="LocationGroup">
+      <LookupLocation dataSourceName="Local" />
+      <PersistenceLocation dataSourceName="Local" />
+    </Offline>
+    <Training dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Training>
+  </PersistenceManagerType>
+  <PersistenceManagerType name="LOCAL_THEN_PRIMARY">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Local" />
+      <PersistenceLocation dataSourceName="Local" />
+    </Online>
+    <Offline dtype="LocationGroup">
+      <LookupLocation dataSourceName="StorePrimary" />
+      <PersistenceLocation dataSourceName="StorePrimary" />
+    </Offline>
+    <Training dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Training>
+  </PersistenceManagerType>
+  
+  <PersistenceManagerType name="COUNTRYPACK_SWEDEN_REPORT">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Online>
+    <Offline dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Offline>
+    <Training dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Training>
+  </PersistenceManagerType>
+  <!-- ************************************************* -->
+  <!-- /TEMPLATES -->
+  <!-- ************************************************* -->
+  
+  <!-- ************************************************* -->
+  <!-- COUNTRYPACK -->
+  <!-- ************************************************* -->
+  <PersistenceManagerType name="INVOICE" ref="STORE_STANDARD" />
+  <PersistenceManagerType name="DAILYREPORT" ref="RESERVED_STORE" />  
+  <PersistenceManagerType name="TAXFREE_CFG" ref="LOCAL_THEN_PRIMARY" />
+  <!-- ************************************************* -->
+  <!-- /COUNTRYPACK  -->
+  <!-- ************************************************* -->
+  
+</PersistenceManagerTypeSet>

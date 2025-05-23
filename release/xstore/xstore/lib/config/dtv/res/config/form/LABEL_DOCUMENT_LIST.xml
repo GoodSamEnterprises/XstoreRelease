@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Thu Sep 09 14:31:17 EDT 2004 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">LABEL_DOCUMENT_LIST</FormKey>
+    <FormLocation dtype="String">TRANSACTION_LIST_AREA</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">viewList</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Font fontStyle="BOLD" />
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">LABEL_ITEM_SELECTION</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">LABEL_ITEM_SELECTION</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <ActionGroup key="DEFAULT">
+      <Action formOptionsKey="LABEL_ITEM_OPTIONS" text="_menutextLabelChangeItem">
+        <VisibilityRule class="dtv.pos.reporting.label.ListNotEmptyVisibilityRule"/>
+      </Action>
+      <Action chainKey="ITEM_AND_SHELF_LABELS_PRINT" text="_process" keyStroke="F7" />
+      <Action ref="?SEARCH_FOR_ITEM?">
+        <Parameter name="AddItemChainKey" value="ITEM_AND_SHELF_LABELS_LOOKUP" />
+      </Action>
+      <Action ref="SHELF_LABELS::ITEM_MATRIX" />
+      <Action chainKey="LABEL_RECEIVING_LOOKUP" text="_menutextLabelReceivingLookup" />
+      <Action chainKey="LABEL_BATCH_LOOKUP" text="_menutextLabelBatchLookupMenu" >
+        <VisibilityRule class="dtv.pos.reporting.label.ZplPrinterVisibilityRule" />
+      </Action>
+      <Action chainKey="LABEL_BATCH_SAVE" text="_menutextLabelBatchSaveMenu" >
+        <VisibilityRule class="dtv.pos.reporting.label.SaveBatchPromptVisibilityRule" />
+        <VisibilityRule class="dtv.pos.reporting.label.ZplPrinterVisibilityRule" />
+        <VisibilityRule class="dtv.pos.reporting.label.ListNotEmptyVisibilityRule" />
+      </Action>
+      <Action chainKey="LABEL_BATCH_DELETE" text="_menutextLabelBatchDeleteMenu" >
+        <VisibilityRule class="dtv.pos.reporting.label.ZplPrinterVisibilityRule" />
+      </Action>
+    </ActionGroup>
+    <ActionGroup key="LABEL_ITEM_OPTIONS">
+      <Action chainKey="LABEL_ITEM_CHANGE_QUANTITY" chainType="STACK" text="_menutextChangeLabelQuantity" />
+      <Action chainKey="LABEL_ITEM_CHANGE_PRICE" chainType="STACK" text="_menutextChangeLabelPrice" />
+      <Action chainKey="LABEL_ITEM_CHANGE_STOCK" chainType="STACK" text="_menutextChangeLabelStock" >
+        <VisibilityRule class="dtv.pos.reporting.label.ZplPrinterVisibilityRule" />
+      </Action>
+      <Action chainKey="LABEL_ITEM_DELETE" chainType="STACK" text="_menutextDeleteLabelSelection" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

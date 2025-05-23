@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+   default-init-method="init">
+
+<!-- This Spring config file is for running Xstore as a multi-tenant Cheetah web server, capable of
+     serving multiple Cheetah client registers such as XstoreM.
+ -->
+  <beans profile="xstore" >
+    <bean id="eventManager" class="dtv.event.EventManager" scope="cheetahSessionScope">
+    <!--      <aop:scoped-proxy /> -->
+    </bean>
+  
+    <bean id="customScopes" class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+      <property name="scopes">
+        <map>
+          <entry key="transaction" value-ref="springTransactionScope" />
+          <entry key="cheetahSessionScope">
+            <bean class="dtv.cheetah.SessionBasedApplicationModeScope" />
+          </entry>
+        </map>
+      </property>
+    </bean>
+
+    <bean id="modeController" class="dtv.pos.framework.ModeController" scope="session"
+          destroy-method="shutdownController">
+      <property name="flowEventListeners" ref="applicationFlowEventListeners" />
+      <property name="eventRouter">
+        <bean class="dtv.pos.framework.event.XstEventRouter" />
+      </property>
+      <property name="UIController" ref="uiController" />
+      <property name="contextManager">
+        <bean class="dtv.ui.context.ContextManager" />
+      </property>
+      <property name="stationModel">
+        <bean class="dtv.pos.framework.ui.model.DefaultStationModel" init-method="create" destroy-method="destroy">
+          <property name="listPromptModel">
+            <bean class="dtv.pos.framework.ui.model.DefaultListPromptModel" />
+          </property>
+          <property name="notifyPromptModel">
+            <bean class="dtv.pos.framework.ui.model.DefaultNotifyPromptModel" />
+          </property>
+          <property name="promptActionModel">
+            <bean class="dtv.pos.framework.ui.model.DefaultPromptActionModel" />
+          </property>
+          <property name="textPromptModel">
+            <bean class="dtv.pos.framework.ui.model.DefaultTextPromptModel" />
+          </property>
+          <property name="longTextPromptModel">
+            <bean class="dtv.pos.framework.ui.model.DefaultTextPromptModel" />
+          </property>
+          <property name="messageModel">
+            <bean class="dtv.pos.framework.ui.model.DefaultMessageModel" />
+          </property>
+          <property name="helpModel">
+            <bean class="dtv.pos.framework.ui.model.DefaultHelpModel" />
+          </property>
+          <property name="menuModel">
+            <bean class="dtv.pos.framework.ui.model.DefaultMenuModel" />
+          </property>
+        </bean>
+      </property>
+    </bean>
+
+    <bean id="abstractPromptReqHandler" abstract="true">
+      <property name="specialActivityForPrompt" ref="cheetahSpecialActivityToPromptMappings" />
+    </bean>
+
+    <util:map id="cheetahSpecialActivityToPromptMappings" key-type="java.lang.String" value-type="com.micros_retail.xm.cheetah.data.Activity" scope="prototype" />
+
+    <util:map id="customCheetahListStyles" key-type="java.lang.String" value-type="com.micros_retail.xm.cheetah.data.ListPrompt.ListPromptStyle">
+      <entry key="CUSTOMER_LIST" value="CUSTOMER_SELECT_LIST" />
+    </util:map>
+
+    <bean id="listPromptOpRequestHandler" parent="abstractPromptReqHandler" class="dtv.cheetah.operations.req.ListPromptReqHandler" scope="prototype">
+      <property name="customListStyles" ref="customCheetahListStyles" />
+    </bean>
+
+    <bean id="textPromptOpRequestHandler" parent="abstractPromptReqHandler" class="dtv.cheetah.operations.req.TextPromptReqHandler" scope="prototype" />
+    <bean id="longTextPromptOpRequestHandler" parent="abstractPromptReqHandler" class="dtv.cheetah.operations.req.LongTextPromptReqHandler" scope="prototype" />
+    <bean id="notifyPromptOpRequestHandler" parent="abstractPromptReqHandler" class="dtv.cheetah.operations.req.NotifyPromptReqHandler" scope="prototype" />
+    <bean id="viewportPromptOpRequestHandler" parent="abstractPromptReqHandler" class="dtv.cheetah.operations.req.ViewportPromptReqHandler" scope="prototype" />
+    <bean id="menuPromptOpRequestHandler" parent="abstractPromptReqHandler" class="dtv.cheetah.operations.req.MenuPromptReqHandler" scope="prototype" />
+    <bean id="infoMessageOpRequestHandler" class="dtv.cheetah.operations.req.InfoMessageReqHandler" scope="prototype" />
+
+    <bean id="formOpRequestHandler" class="dtv.cheetah.operations.req.FormReqHandler" scope="prototype">
+      <constructor-arg ref="cheetahFormBuilderFactory" />
+    </bean>
+
+    <bean id="cheetahFormBuilderFactory" class="dtv.util.spring.DefaultProvidingServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.cheetah.operations.req.IFormBuilderFactory" />
+      <property name="defaultBeans">
+        <props>
+          <prop key="getActivityBuilder">defaultCheetahFormActivityBuilder</prop>
+          <prop key="getInteractionBuilder">defaultCheetahFormInteractionBuilder</prop>
+          <prop key="getInfoPageBuilder">defaultCheetahFormInfoPageBuilder</prop>
+        </props>
+      </property>
+      <property name="serviceMappings">
+        <props>
+          <prop key="TRANSACTION_LIST_PRIMARY">retailTransactionActivityBuilder</prop>
+          <prop key="ORDER_TRANSACTION_LIST">orderTransactionActivityBuilder</prop>
+          <prop key="LAYAWAY_LIST">customerAccountTransactionActivityBuilder</prop>
+          <prop key="CUSTOMER_ACCOUNT_LIST">customerAccountTransactionActivityBuilder</prop>
+          <prop key="SPECIAL_ORDER_LIST">customerAccountTransactionActivityBuilder</prop>
+          <prop key="CAPTURE_SIGNATURE">signatureCaptureInteractionBuilder</prop>
+        </props>
+      </property>
+    </bean>
+
+    <bean id="defaultCheetahFormInteractionBuilder" class="dtv.cheetah.operations.req.DelegatingFormInteractionBuilder" scope="prototype">
+      <property name="oldBuilder">
+        <bean class="dtv.cheetah.operations.req.SimpleFormBuilder" />
+      </property>
+      <property name="newBuilder">
+        <bean class="dtv.cheetah.operations.req.ConfigurableFormBuilder" />
+      </property>
+    </bean>
+    
+    <bean id="defaultCheetahFormActivityBuilder" class="dtv.cheetah.operations.req.SimpleActivityBuilder" scope="prototype" />
+    <bean id="defaultCheetahFormInfoPageBuilder" class="dtv.cheetah.operations.req.SimpleInfoPageBuilder" scope="prototype" />
+
+    <bean id="retailTransactionActivityBuilder" class="dtv.cheetah.CheetahTransactionActivityBuilder" scope="prototype">
+      <property name="listModelKey">
+        <util:constant static-field="dtv.pos.common.ModelKeys.CURRENT_TRANSACTION" />
+      </property>
+    </bean>
+    
+    <bean id="orderTransactionActivityBuilder" class="dtv.cheetah.CheetahTransactionActivityBuilder" scope="prototype">
+      <property name="listModelKey">
+        <util:constant static-field="dtv.pos.common.ModelKeys.ORDER_LIST_MODEL" />
+      </property>
+    </bean>
+        
+    <bean id="customerAccountTransactionActivityBuilder" class="dtv.cheetah.CheetahTransactionActivityBuilder" scope="prototype">
+      <property name="listModelKey" value="#{customerAccountModelKeyDiviner.getListModelKey()}">
+      </property>
+    </bean>
+    
+    <bean id="customerAccountModelKeyDiviner" class="dtv.pos.customer.account.AccountModelKeyDiviner" scope="prototype" />
+    
+    <bean id="itemDetailsInteractionBuilder" class="dtv.cheetah.operations.req.ItemResultsBuilder" scope="prototype" />
+    <bean id="signatureCaptureInteractionBuilder" class="dtv.cheetah.operations.req.SigCapInteractionBuilder" scope="prototype" />
+
+    <bean id="springTransactionScope" class="dtv.pos.spring.SpringTransactionScope" scope="session">
+      <aop:scoped-proxy />
+      <property name="eventManager" ref="eventManager" />
+    </bean>
+
+    <bean id="transactionScope" class="dtv.cheetah.XstoreMobileTransactionScope" scope="session" primary="true">
+      <aop:scoped-proxy />
+    </bean>
+
+    <bean id="defaultScope" class="dtv.pos.framework.scope.OpChainBasedScope" scope="session">
+      <aop:scoped-proxy />
+    </bean>
+
+    <bean id="stationState" class="dtv.pos.iframework.security.StationState" scope="session">
+      <aop:scoped-proxy />
+    </bean>
+    <bean id="transDateProvider" class="dtv.pos.framework.systemcycle.TransDateProvider" scope="session">
+      <aop:scoped-proxy />
+      <property name="useSystemDate" value="#{T(dtv.pos.common.ConfigurationMgr).useSystemDate()}" />
+    </bean>
+
+
+    <bean id="verifoneMSRSwipeProcessor" class="dtv.cheetah.hardware.VerifoneMSRSwipeProcessor" />
+    <bean id="defaultMSRSwipeProcessor" class="dtv.cheetah.hardware.DefaultMSRSwipeProcessor" />
+
+    <bean id="cheetahMSRServiceFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.cheetah.hardware.CheetahMSRSwipeProcessorServiceFactory" />
+      <property name="serviceMappings">
+        <props>
+          <prop key="MOTOROLA">defaultMSRSwipeProcessor</prop>
+          <prop key="PAYWare">verifoneMSRSwipeProcessor</prop>
+        </props>
+      </property>
+    </bean>
+
+    <bean id="cheetahHardware" class="dtv.cheetah.hardware.CheetahHardware" scope="session" />
+    <bean id="cheetahHasPinPad" class="dtv.cheetah.hardware.CheetahClientHasPinPad" scope="session" />
+    <bean id="cheetahPinpad" class="dtv.cheetah.hardware.CheetahPinPad" scope="session" />
+    <bean id="cheetahClientDeviceAccessHelper" class="dtv.cheetah.CheetahClientDeviceAccessHelper" />
+
+    <bean id="loyaltyMgr" class="dtv.pos.customer.loyalty.LoyaltyMgr" scope="session" />
+    <bean id="orderMgr" class="dtv.pos.order.OrderMgr" scope="session" />  
+    <bean id="inventoryStockAdjuster" class="oracle.retail.xstore.inv.impl.InventoryStockAdjuster" scope="session" />
+    <bean id="priceCodeProvider" class="dtv.pos.pricing.CustomerBasedPriceCodeProvider" scope="session" />
+
+    <bean id="accountManager" class="dtv.pos.customer.account.AccountManager" scope="session" />
+    <bean id="sessionManager" class="dtv.pos.till.SessionManager" init-method="initialize" scope="session" />
+    <bean id="uiController" class="dtv.pos.framework.ui.UIControllerImplHeadless" scope="prototype" />
+    <bean id="cheetahXstore" class="dtv.cheetah.CheetahXstoreImpl" scope="session" />
+    <bean id="cheetahBridge" class="dtv.cheetah.CheetahXstoreBridge" scope="session" init-method="init" />
+    <bean id="cheetahScreenBuilder" class="dtv.cheetah.CheetahScreenBuilder" scope="session" />
+
+    <bean id="cheetahFieldDataBuilder" class="dtv.cheetah.CheetahFieldDataBuilder" scope="prototype" />
+    <bean id="commandKeyEventDispatcher" class="dtv.cheetah.CommandKeyEventDispatcherHeadless" />
+    <bean id="infoTabHelper" class="dtv.pos.info.InfoTabHelperHeadless" />
+    <bean id="processLogger" class="dtv.pos.framework.logging.ProcessLogger" scope="session" />
+    <bean id="autoLogoutTimer" class="dtv.cheetah.CheetahAutoLogoutTimer" scope="session" />
+    <bean id="uiInvoker" class="dtv.cheetah.CheetahUIServicesExecutor" scope="session" destroy-method="destroy" />
+    <bean id="persistenceDefaults" class="dtv.cheetah.CheetahPersistenceDefaults" />
+    <bean id="fileBasedSequenceProvider" class="dtv.cheetah.CheetahFileBasedSequenceProvider" scope="prototype" />
+    <bean id="systemPropPartGen" class="dtv.cheetah.CheetahSystemParamSequencePartGenerator" scope="prototype" />
+    <bean id="localeManager" class="dtv.i18n.LocaleManager" scope="cheetahSessionScope" />
+    <bean id="actionLogger" class="dtv.pos.framework.action.ActionLogger" scope="session" />
+    <bean id="initPrintQueueWorker" class="dtv.cheetah.operations.InitPrintQueueWorker" scope="prototype" />
+    <bean id="initInventoryMovementWorker" class="dtv.cheetah.operations.InitInventoryMovementWorker" scope="prototype" />
+
+    <bean id="cheetahStartupWorkers" parent="workerList">
+      <property name="workers">
+        <list>
+          <ref bean="checkForOrphanedTransWorker" />
+          <ref bean="logVersionStatusInformationWorker" />
+          <ref bean="logFreeSpaceWarningWorker" />
+          <ref bean="logConfigVersionInformationWorker" />
+          <ref bean="checkSSLCertificatesWorker" />
+          <ref bean="healSessionTendersWorker" />
+          <ref bean="startDeviceRegistrationWorker" />
+          <ref bean="startSAFQueuesWorker" />
+          <ref bean="initPrintQueueWorker" />
+        </list>
+      </property>
+    </bean>
+    <bean id="startupWorkers" parent="workerList">
+      <property name="workers">
+        <list>
+          <ref bean="startHardwareWorker" />
+          <ref bean="initBarcodeTranslatorWorker" />
+          <ref bean="initInventoryMovementWorker" />
+        </list>
+      </property>
+    </bean>
+
+    <bean id="xstKeyEventDispatcher" class="dtv.pos.framework.event.XstKeyEventDispatcher" scope="session" />
+    <bean id="hotKeyEventDispatcher" class="dtv.cheetah.CommandKeyEventDispatcherHeadless" />
+    <bean id="testHarness" class="dtv.xunit.DummyTestHarness" />
+
+    <bean id="securityMgr" class="dtv.pos.framework.security.SecurityMgr" scope="session" lazy-init="true">
+      <constructor-arg>
+        <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+          <property name="serviceLocatorInterface" value="dtv.pos.iframework.security.IAuthenticationModuleFactory" />
+          <property name="serviceMappings">
+            <props>
+              <prop key="STANDARD">authenticationModules</prop>
+            </props>
+          </property>
+        </bean>
+      </constructor-arg>  
+    </bean>
+
+    <bean id="itemMixingHelper" class="dtv.pos.register.ItemMixingHelper" scope="session" />
+
+    <bean id="promptConfigHelper" class="dtv.pos.framework.ui.config.PromptConfigHelper" />
+
+    <bean id="swipeFactory" class="dtv.cheetah.SwipeFactoryHeadless" />
+    <bean id="glassPaneSwipeSource" class="dtv.cheetah.SwipeFactoryHeadless" />
+
+
+    <bean id="storeCloseDialogOpLimiter" class="dtv.pos.register.StoreCloseDialogOpLimiter" scope="session" />
+
+    <!--  External authorization beans -->
+
+    <!-- An external authorization service factory and associated service mappings. In the xstorem/externalauth/OpChainConfig.xml, 
+        you'll find CheetahPromptExternalPaymentOp.  This op is parameterized with an auth type, (e.g, CREDIT, DEBIT, GIFT CARD, etc). 
+        In order to configure an external auth handler for that auth type, define it here in the service mappings. The CREDIT type is provided
+        as a sample. -->  
+    <bean id="creditCardExtAuthHandler" class="dtv.cheetah.externalauth.DefaultCreditCardExtAuthHandler" scope="session" />
+
+    <bean id="extAuthHandlerServiceFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.cheetah.externalauth.ExternalAuthHandlerServiceFactory" />
+      <property name="serviceMappings">
+        <props>
+          <prop key="CREDIT">creditCardExtAuthHandler</prop>
+        </props>
+      </property>
+    </bean>
+
+    <bean id="xcommerceHandlerServiceFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.pos.customer.xcommerce.IXcommerceHandlerServiceFactory" />
+    </bean>
+    <bean id="xcommerceHandler" class="dtv.pos.customer.xcommerce.DefaultXcommerceHandler" scope="session" />
+
+    <bean id="bridgeData" class="dtv.cheetah.CheetahXstoreBridge$BridgeData" scope="prototype" />
+    <bean id="cheetahIdGenerator" class="dtv.cheetah.CheetahIdGenerator" scope="prototype" />
+
+    <bean id="itemRestrictionHelper" class="dtv.pos.item.restriction.ItemRestrictionHelper" scope="session" />
+
+    <bean id="uiBusyState" class="dtv.pos.framework.XstoreBusyState" scope="session">
+      <constructor-arg ref="applicationFrame" />
+    </bean>
+  </beans>
+
+  <beans profile="retail" >
+    <!-- Op class replacement beans. These will replace every occurence of the operation indicated by the bean 
+       id with the operation indicated by the constructor argument. -->  
+    <bean id="dtv.pos.hardware.op.CaptureSignatureOp" parent="opClassReplacement">
+      <constructor-arg value="dtv.cheetah.operations.CheetahCaptureSignatureOp" />
+    </bean>
+
+    <bean id="dtv.pos.hardware.op.VerifySignatureOp" parent="opClassReplacement">
+      <constructor-arg value="dtv.pos.framework.op.DoNothingAndCompleteOp" />
+    </bean>
+
+    <bean id="dtv.pos.reporting.label.PromptLabelPositionOp" parent="opClassReplacement">
+      <constructor-arg value="dtv.cheetah.operations.CheetahLabelPositionOp" />
+    </bean>
+
+    <bean id="dtv.pos.hardware.op.FrankTendersOp" parent="opClassReplacement">
+      <constructor-arg value="dtv.pos.framework.op.DoNothingAndCompleteOp" />
+    </bean>
+
+    <bean id="itemTransferListModel" class="dtv.pos.inventory.movement.InventoryItemTransferModel" scope="prototype" >
+      <property name="sortByUpdateDateDesc" value="true" />
+    </bean>
+    
+    <bean id="dtv.pos.hardware.op.DisplayChangeDueOp" parent="opClassReplacement">
+     <constructor-arg value="dtv.cheetah.operations.DisplayChangeDueForMobileOp" />
+    </bean>
+  
+    <bean id="dtv.pos.hardware.op.WaitForCashDrawerCloseOp" parent="opClassReplacement">
+     <constructor-arg value="dtv.cheetah.operations.WaitForCashDrawerCloseForMobileOp" />
+    </bean>
+    
+    <bean id="opResponseHelper" class="dtv.pos.framework.op.OpResponseHelper" scope="session" />
+
+    <bean id="transactionActivityTracker" class="dtv.pos.framework.systemcycle.TransactionActivityTracker" scope="session" />
+
+    <bean id="avsAddressLineVisibility" class="dtv.pos.address.search.AddressLineVisibilityRule">
+        <constructor-arg value="true" />
+    </bean>
+    
+    <bean id="avsAddressListVisibility" class="dtv.pos.address.search.AddressLineVisibilityRule">
+        <constructor-arg value="false" />
+    </bean>
+
+    <bean id="avsSelectedAddressVisibility" class="dtv.pos.address.search.AddressLineVisibilityRule">
+        <constructor-arg value="true" />
+    </bean>  
+    
+    <bean id="eftLinkDeviceEventHandler" class="dtv.tenderauth.impl.eftlink.EftLinkDeviceRequestEventHandler" scope="session" /> 
+    <bean id="eftLinkCustDispEventHandler" class="dtv.tenderauth.impl.eftlink.EftLinkSaleRequestEventHandler" scope="session" />
+    <bean id="eftLinkMessageHandler" class="dtv.tenderauth.impl.eftlink.EftLinkMessageListener" scope="session" />
+    <bean id="eftLinkAdminReqHandler" class="dtv.tenderauth.impl.eftlink.EftLinkAdminMessageHandler" scope="session">
+      <property name="TenderId" value="CREDIT_CARD" />
+      <property name="RequestType">
+        <util:constant static-field="manito.eft.opi.messages.OPIServiceSession.ADMINISTRATION" />
+      </property>
+    </bean>
+    <bean id="eftLinkGiftCardHandler" class="dtv.tenderauth.impl.eftlink.EftLinkGiftCardHandler" scope="session">
+      <property name="TenderId" value="CREDIT_CARD" />
+    </bean>
+  </beans>
+
+</beans>

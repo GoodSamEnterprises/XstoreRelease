@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <!-- TODO: SEE IF IT IS POSSIBLE TO GET RID OF DEPENDS-ON -->
+  <bean id="translationManager" class="com.micros_retail.xfgclient.interpret.TranslationManager" depends-on="localeManager" />
+
+  <bean id="interpreter" class="com.micros_retail.xfgclient.interpret.Interpreter">
+    <property name="vmLibraryPath" value="${xfgclient.macroLibrary}" />
+  </bean>
+
+  <bean id="interpreterAccessProvider" class="com.micros_retail.xfgclient.interpret.InterpreterAccessProvider" />
+  <bean id="localeHelper" class="dtv.i18n.LocaleHelper" factory-method="getInstance" />
+  <bean id="localeManager" class="dtv.i18n.LocaleManager" factory-method="getInstance" depends-on="outputContextManager" />
+
+  <!-- TODO: SEE IF IT IS POSSIBLE TO GET RID OF DEPENDS-ON -->
+  <bean id="xfgLocaleManager" class="com.micros_retail.xfgclient.interpret.i18n.LocaleManager" depends-on="localeManager" />
+
+  <bean id="virtualKeyboardManager" class="com.micros_retail.xfgclient.hardware.virtualkeyboard.VirtualKeyboardManager">
+    <property name="locales">
+      <list>
+        <value>de</value>
+        <value>en</value>
+        <value>fr</value>
+      </list>
+    </property>
+    <property name="virtualKeyboardRole" ref="HWRT_VirtualKeyboard" />
+  </bean>
+
+  <bean id="formattableFactory" class="com.micros_retail.xfgclient.interpret.i18n.XfgFormattableFactory">
+    <property name="locator" ref="formattableLocatorFactory" />
+  </bean>
+
+  <bean id="formattableLocatorFactory" class="dtv.i18n.FormattableLocatorFactoryBean">
+    <property name="serviceMappings">
+      <props>
+        <prop key="APPENDING">appendingFormattable</prop>
+        <prop key="CONDITIONAL">conditionalFormattable</prop>
+        <prop key="EVALUATED">evaluatedFormattable</prop>
+        <prop key="INTERPRETED">interpretedFormattable</prop>
+        <prop key="PARAMETERIZED">parametizedFormattable</prop>
+        <prop key="SIMPLE">simpleFormattable</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="evaluatedFormattable" class="com.micros_retail.xfgclient.interpret.i18n.formattable.InterpretedEvaluatedFormattable" scope="prototype" />
+  <bean id="interpretedFormattable" class="com.micros_retail.xfgclient.interpret.i18n.formattable.InterpretedFormattable" scope="prototype" />
+  <bean id="parametizedFormattable" class="com.micros_retail.xfgclient.interpret.i18n.formattable.InterpretedParameterizedFormattable" scope="prototype" />
+  <bean id="simpleFormattable" class="com.micros_retail.xfgclient.interpret.i18n.formattable.InterpretedSimpleFormattable" scope="prototype" />
+
+  <bean id="formatterLocatorServiceMappings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="properties">
+      <props>
+        <prop key="BooleanShort">booleanShortFormatter</prop>
+        <prop key="BooleanMedium">booleanMediumFormatter</prop>
+        <prop key="BooleanLong">booleanLongFormatter</prop>
+        <prop key="DateShort">dateShortFormatter</prop>
+        <prop key="DateMedium">dateMediumFormatter</prop>
+        <prop key="DateMediumShortYear">dateMediumShortYearFormatter</prop>
+        <prop key="DateLong">dateLongFormatter</prop>
+        <prop key="DateFull">dateFullFormatter</prop>
+        <prop key="DateIso">dateIsoFormatter</prop>
+        <prop key="DateMonthNameDay">dateMonthNameDayFormatter</prop>
+        <prop key="DateMonthNameDayYear">dateMonthNameDayYearFormatter</prop>
+        <prop key="DateYear">dateYearFormatter</prop>
+        <prop key="BirthDate">birthDateFormatter</prop>
+        <prop key="DateTimeShort">dateTimeShortFormatter</prop>
+        <prop key="DateTimeMedium">dateTimeMediumFormatter</prop>
+        <prop key="DateTimeLong">dateTimeLongFormatter</prop>
+        <prop key="DateTimeFull">dateTimeFullFormatter</prop>
+        <prop key="DateTimeIso">dateTimeIsoFormatter</prop>
+        <prop key="DateExpirationLong">dateExpirationLongFormatter</prop>
+        <prop key="DateExpirationShort">dateExpirationShortFormatter</prop>
+        <prop key="DayOfWeekShort">dayOfWeekShortFormatter</prop>
+        <prop key="DayOfWeekLong">dayOfWeekLongFormatter</prop>
+        <prop key="DayOfWeekTimeLong">dayOfWeekTimeLongFormatter</prop>
+        <prop key="MonthOfYearShort">monthOfYearShortFormatter</prop>
+        <prop key="MonthOfYearLong">monthOfYearLongFormatter</prop>
+        <prop key="Integer">integerFormatter</prop>
+        <prop key="Decimal">decimalFormatter</prop>
+        <prop key="Money">moneyFormatter</prop>
+        <prop key="MoneyBasic">moneyBasicFormatter</prop>
+        <prop key="MoneyBasicPositive">moneyBasicPositiveFormatter</prop>
+        <prop key="InverseMoney">inverseMoneyFormatter</prop>
+        <prop key="Accounting">accountingFormatter</prop>
+        <prop key="Percent">percentFormatter</prop>
+        <prop key="Simple">simpleFormatter</prop>
+        <prop key="CreditCard">creditCardFormatter</prop>
+        <prop key="Text">textFormatter</prop>
+        <prop key="KeyOrLiteral">keyOrLiteralFormatter</prop>
+        <prop key="TimeShort">timeShortFormatter</prop>
+        <prop key="TimeMedium">timeMediumFormatter</prop>
+        <prop key="TimeLong">timeLongFormatter</prop>
+        <prop key="TimeFull">timeFullFormatter</prop>
+        <prop key="Phone">phoneFormatter</prop>
+        <prop key="PostalCode">postalCodeFormatter</prop>
+        <prop key="InputDate">inputDateFormatter</prop>
+        <prop key="InputMonthDay">inputMonthDayFormatter</prop>
+        <prop key="InputTimeShort">inputTimeShortFormatter</prop>
+        <prop key="InputTimeMedium">inputTimeMediumFormatter</prop>
+        <prop key="InputTimeLong">inputTimeLongFormatter</prop>
+        <prop key="InputInteger">inputIntegerFormatter</prop>
+        <prop key="InputMoney">inputMoneyFormatter</prop>
+        <prop key="InputPercent">inputPercentFormatter</prop>
+        <prop key="InputDecimal">inputDecimalFormatter</prop>
+        <prop key="Description">descriptionFormatter</prop>
+        <prop key="DateCreditApp">dateCreditAppFormatter</prop>
+        <prop key="BasicAddress">basicAddressFormatter</prop>
+        <prop key="OneLineAddress">oneLineAddressFormatter</prop>
+        <prop key="CityLocation">cityLocationFormatter</prop>
+        <prop key="LabelAddress">labelAddressFormatter</prop>
+        <prop key="BasicName">basicNameFormatter</prop>
+        <prop key="LastFirstName">lastFirstNameFormatter</prop>
+        <prop key="Ssn">ssnFormatter</prop>
+        <prop key="UnitOfMeasureSymbol">unitOfMeasureSymbolFormatter</prop>
+        <prop key="UnitOfMeasureSymbolPerUnit">unitOfMeasureSymbolPerUnitFormatter</prop>
+        <prop key="UnitOfMeasureName">unitOfMeasureNameFormatter</prop>
+        <prop key="XfgQuantity">xfgQuantityFormatter</prop>
+        <prop key="Weight">decimalFormatter</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="unitOfMeasureSymbolFormatter" class="com.micros_retail.xfgclient.i18n.formatter.UnitOfMeasureSymbolFormatter" scope="prototype" />
+  <bean id="unitOfMeasureSymbolPerUnitFormatter" class="com.micros_retail.xfgclient.i18n.formatter.UnitOfMeasurePerUnitSymbolFormatter" scope="prototype" />
+  <bean id="unitOfMeasureNameFormatter" class="com.micros_retail.xfgclient.i18n.formatter.UnitOfMeasureNameFormatter" scope="prototype" />
+  <bean id="xfgQuantityFormatter" class="com.micros_retail.xfgclient.i18n.formatter.XfgQuantityFormatter" scope="prototype" />
+
+</beans>

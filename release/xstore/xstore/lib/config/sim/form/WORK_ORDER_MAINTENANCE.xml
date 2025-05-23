@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed Jul 13 15:43:42 EDT 2005 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">WORK_ORDER_MAINTENANCE</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+
+    <!--**********************************-->
+    <!--** VIEW action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="VIEW">
+      <Action chainKey="PRE_WORK_ORDER_MAINTENANCE" text="_back" keyStroke="Escape" />
+      <Action dataKey="EDIT" text="_workorderMenuItem40">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowEditWorkOrderAccountVisibilityRule" />
+      </Action>
+      <Action chainKey="COMPLETE_WORK_ORDER" text="_workorderMenuItem50" keyStroke="F3">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CompleteWorkOrderAccountVisibilityRule" />
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="VIEW" subKey="COMMENTS_SUB_GROUP">
+      <Action chainKey="PRE_WORK_ORDER_MAINTENANCE" text="_back" keyStroke="Escape" />
+      <Action chainKey="ADD_WORK_ORDER_COMMENT_BACK_OFFICE" text="_addComment" keyStroke="F2" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!--**********************************-->
+    <!--** EDIT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="EDIT" subKey="COMMENTS_SUB_GROUP">
+      <Action ref="ABORT_CHANGES" text="_workorderMenuItem44" />
+      <Action chainKey="ADD_WORK_ORDER_COMMENT_BACK_OFFICE" text="_addComment" keyStroke="F2" chainType="STACK" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

@@ -1,0 +1,122 @@
+<dataTemplate name="SalesByHour" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="MIN" value="_rptMin"/>
+    <label name="MAX" value="_rptMax"/>
+    <label name="NA_SYMBOL" value="_rptNotApplicableSymbol"/>
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="CRITERIA_REGISTER" value="_rptRegisterColon"/>
+    <label name="CRITERIA_EMPLOYEE" value="_rptSalesByHourReportEmployeeColon"/>
+    <label name="SUMMARY" value="_rptSummary"/>
+    <label name="DETAIL" value="_rptDetail"/>    
+    <label name="SUMMARY_AND_DETAIL" value="_rptSummaryAndDetailOption"/>
+    <label name="BUSINESS_DATE" value="_rptDate"/>
+    <label name="BUSINESS_DATE:" value="_rptDateColon"/>
+    <label name="REGISTER" value="_rptRegister"/>
+    <label name="REGISTER:" value="_rptRegisterColon"/>
+    <label name="HOURS" value="_rptSalesByHourReportHours"/>
+    <label name="TRANS" value="_rptTransactions"/>
+    <label name="ITEMS" value="_rptItems"/>
+    <label name="AVERAGE" value="_rptAverage"/>
+    <label name="PERCENT" value="_rptPercent"/>
+    <label name="NET_SALES" value="_rptNetSales"/>
+    <label name="COUNTS" value="_rptCounts"/>
+    <label name="AMOUNT" value="_rptAmount"/>
+    <label name="TOTAL" value="_rptTotal"/>
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="employeeId" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSalesByHourReportEmployee;Text;Simple;maxLength=20]]></parameterDescription>
+    </parameter>
+    <parameter name="startReg" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSalesByHourReportStartReg;Text;Numeric;maximumIntegerDigits=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endReg" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSalesByHourReportEndReg;Text;Numeric;maximumIntegerDigits=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[99999999]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="displayOption" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptDisplayOptions;Combo;dtv.pos.reporting.fill.SoftEnumFactory;SUMMARY=_rptSummaryOption|DETAIL=_rptDetailOption|SUMMARY_AND_DETAIL=_rptSummaryAndDetailOption]]></parameterDescription>
+       <defaultValueExpression><![CDATA["SUMMARY"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_SALES" key="SALE_BY_HOUR_BY_DAY_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>business_date</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>hour_start_key</ResultField>
+        <ResultField>hour_end_key</ResultField>
+        <ResultField>trans_count</ResultField>
+        <ResultField>item_count</ResultField>
+        <ResultField>amount</ResultField>
+        <ResultField>avg</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_SALES_BY_DAY" source="Q_SALES">
+      <element name="DATE" value="business_date" formatter="DateShort"/>
+      <element name="REG" value="wkstn_id" />
+      <element name="HOUR_START" value="hour_start_key"/>
+      <element name="HOUR_END" value="hour_end_key"/>
+      <element name="TRANS_CNT" value="trans_count" formatter="Decimal"/>
+      <element name="ITEM_CNT" value="item_count" formatter="Decimal"/>
+      <element name="NET_AVG" value="avg" formatter="Money"/>
+      <element name="NET_AMT_RAW" value="amount" />
+      <element name="NET_AMT" value="amount" formatter="Money"/>
+    </group>
+    <group name="G_SALES_BY_DAY_TOT" source="Q_SALES">
+      <element name="DATE" group-by="true" value="business_date" formatter="DateShort"/>
+      <element name="REG"  group-by="true" value="wkstn_id" />
+      <element name="TRANS_CNT" value="trans_count" formatter="Decimal" function="SUM"/>
+      <element name="ITEM_CNT" value="item_count" formatter="Decimal" function="SUM"/>
+      <element name="NET_AVG" value="avg" formatter="Money" function="SUM"/>
+      <element name="NET_AMT_RAW" value="amount" function="SUM"/>
+      <element name="NET_AMT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_SALES_RPT_TOT" source="Q_SALES">
+      <element name="TRANS_CNT" value="trans_count" formatter="Decimal" function="SUM"/>
+      <element name="ITEM_CNT" value="item_count" formatter="Decimal" function="SUM"/>
+      <element name="NET_AVG" value="avg" formatter="Money" function="SUM"/>
+      <element name="NET_AMT_RAW" value="amount" function="SUM"/>
+      <element name="NET_AMT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  default-init-method="init">
+
+  <context:annotation-config />
+
+  <beans profile="retail">
+
+    <!-- Op class replacement beans. These will replace every occurence of the operation indicated by the bean
+        id with the operation indicated by the constructor argument. -->
+    <bean id="dtv.pos.hardware.op.WaitForRcptPrintOp" parent="opClassReplacement">
+      <constructor-arg value="oracle.retail.xstore.countrypack.fr.op.FrWaitForRcptPrintOp" />
+    </bean>
+  
+  </beans>
+
+  <beans profile="xstore">
+
+    <!-- Fiscal documents for France -->
+    <util:constant id="FR_FISCAL_TYPE_STANDARD_SALE"
+          static-field="oracle.retail.xstore.countrypack.fr.FrFiscalDocumentType.FR_FISCAL_TYPE_SALES" />
+
+    <util:constant id="FR_FISCAL_TYPE_EVENT_LOG"
+          static-field="oracle.retail.xstore.countrypack.fr.FrFiscalDocumentType.FR_FISCAL_TYPE_EVENT_LOG" />
+
+    <!--Fiscal document types -->
+    <bean id="fr.fiscal.sale.standard" class="oracle.retail.xstore.countrypack.fr.FrFiscalDocumentType">
+      <constructor-arg index="0" value="STANDARD_SALE" />
+      <constructor-arg index="1" value="_countrypack.fr.documentType.sale" />
+      <constructor-arg index="2" value="10" />
+      <constructor-arg index="3" ref="FR_FISCAL_TYPE_STANDARD_SALE" />
+      <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+      <constructor-arg index="5" value="COUNTRYPACK.FR.SALES_SEQUENCE" />
+    </bean>
+
+    <bean id="fr.fiscal.log.entry" class="oracle.retail.xstore.countrypack.fr.FrFiscalDocumentType">
+      <constructor-arg index="0" value="EVENT_LOG_ENTRY" />
+      <constructor-arg index="1" value="_countrypack.fr.documentType.eventLog" />
+      <constructor-arg index="2" value="20" />
+      <constructor-arg index="3" ref="FR_FISCAL_TYPE_EVENT_LOG" />
+      <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+      <constructor-arg index="5" value="COUNTRYPACK.FR.EVENT_LOG_SEQUENCE" />
+    </bean>
+
+    <bean id="countyVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+        <constructor-arg value="false" />
+    </bean>
+    <bean id="neighborhoodVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+        <constructor-arg value="false" />
+    </bean>
+    <bean id="journalFiscalNumberVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+        <constructor-arg value="true" />
+    </bean>
+  
+    <bean id="frTransactionWrapper" class="oracle.retail.xstore.countrypack.fr.FrTransactionWrapper" />
+  
+    <bean id="frEventLogWriter" class="oracle.retail.xstore.countrypack.fr.eventlog.FrEventLogWriter" scope="prototype" />
+    <bean id="frPrimaryStateListener" class="oracle.retail.xstore.countrypack.fr.eventlog.FrDataSourceListener" scope="prototype" />
+    <bean id="frPrinterListener" class="oracle.retail.xstore.countrypack.fr.eventlog.FrPrinterEventsListener" scope="prototype"  />
+  
+    <bean id="transactionSignatureHandler" class="oracle.retail.xstore.countrypack.fr.signature.handler.FrTransactionSignatureHandler" lazy-init="true" />
+    <bean id="invoiceSignatureHandler" class="oracle.retail.xstore.countrypack.fr.signature.handler.FrInvoiceSignatureHandler" lazy-init="true" />
+    <bean id="closureSignatureHandler" class="oracle.retail.xstore.countrypack.fr.signature.handler.FrClosureSignatureHandler" lazy-init="true" />
+    <bean id="transClosureSignatureHandler" class="oracle.retail.xstore.countrypack.fr.signature.handler.FrTransClosureSignatureHandler" lazy-init="true" />
+    <bean id="eventLogSignatureHandler" class="oracle.retail.xstore.countrypack.fr.signature.handler.FrLogEntrySignatureHandler" lazy-init="true" >
+      <property name="terminalIdStoreLen" value="6" />
+      <property name="terminalIdTillLen" value="2" />
+    </bean>
+    <bean id="reprintReceiptSignatureHandler" class="oracle.retail.xstore.countrypack.fr.signature.handler.FrReprintReceiptSignatureHandler" lazy-init="true" />
+  
+    <bean id="frArchiveDataLoader" class="oracle.retail.xstore.countrypack.fr.archive.FrArchiveData" lazy-init="true" />
+    <bean id="frArchiveGenerator" class="oracle.retail.xstore.countrypack.fr.archive.FrArchiveGenerator" lazy-init="true" />
+  
+    <bean id="fiscalKeyStoreLoader" class="oracle.retail.xstore.countrypack.fr.signature.FrKeyStoreLoader" lazy-init="true" />
+  
+    <bean id="frSignatureHelper" class="oracle.retail.xstore.countrypack.fr.signature.FrSignatureHelper">
+      <property name="salesSequenceName" value="COUNTRYPACK.FR.SALES_SEQUENCE" />
+      <property name="eventLogSequenceName" value="COUNTRYPACK.FR.EVENT_LOG_SEQUENCE" />
+      <property name="reprintReceiptSequenceName" value="COUNTRYPACK.FR.REPRINT_RECEIPT_SEQUENCE" />
+    </bean>
+  
+    <bean id="frTotalsHelper" class="oracle.retail.xstore.countrypack.fr.FrTotalsHelper" />
+
+  </beans>
+
+</beans>

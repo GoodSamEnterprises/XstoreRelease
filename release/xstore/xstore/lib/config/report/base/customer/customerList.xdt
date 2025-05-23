@@ -1,0 +1,296 @@
+<dataTemplate name="customerList" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Report Titles. There are ten kinds of report, All, Special Order, Send Sale, etc -->
+    <label name="REPORT_TITLE" value="_rptCustomerListTitle"/>
+
+    <!-- Template-specific Text -->     
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="YES" value="_rptYes"/> 
+    <label name="NO"  value="_rptNo"/> 
+    
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="PURCHASE_RANGE" value="_rptCustListPurchaseRangeColon"/>
+    <label name="RETURN_RANGE" value="_rptCustListReturnedRangeColon"/>
+    <label name="ASSC_COLON" value="_rptAssignedAssocColon"/> 
+    <label name="SHOW_MERCH_LEVEL_COLON" value="_rptShowMerchLvColon"/>   
+    <label name="MERCH_LEVEL_COLON" value="_rptMerchandiseLevelColon"/>
+    <label name="CITY_COLON" value=" _rptCityColon"/>
+    <label name="STATE_COLON" value=" _rptStateColon"/>
+    <label name="POSTAL_CODE_COLON" value="_rptPostalCodeColon"/>
+    <label name="DISPLAY_OPTION" value="_rptDisplayOptionColon"/>
+    <label name="SORT_ORDER_COLON" value="_rptSortOrderColon"/>
+    <label name="NA" value="_rptNotAvailable"/>
+
+    
+    <label name="NAME_COLON" value="_rptNameColon"/>
+    <label name="ID" value="_rptID"/>   
+    <label name="WORK" value="_rptWork"/>
+    <label name="HOME" value="_rptHome"/>
+    <label name="BIRTH_DATE" value="_rptBirthDate"/>
+    <label name="EMAIL" value="_rptEmail"/>
+    <label name="ADDR" value="_rptAddress"/>
+    <label name="PRIMARY" value="_rptPrimary"/>
+    <label name="TYPE" value="_rptType"/>
+    <label name="MAILING_LIST_FLAG" value="_rptMailFlag"/>
+    
+    <label name="PURCHASE_HISTORY" value="_rptCustListPurchaseHistory"/>
+    <label name="PURCHASE_AMT" value="_rptSaleAmount"/>
+    <label name="PURCHASE_COUNT" value="_rptNumberOfSales"/> 
+    <label name="RETURN_AMT" value="_rptReturnAmount"/>
+    <label name="RETURN_COUNT" value="_rptNumberOfReturns"/>
+    
+    <label name="MERCH_LV" value="_rptMerchandise"/>
+    
+    <label name="LAST_ACT_DATE" value="_rptCustListLastActivity"/>
+    <label name="PURCHASE" value="_rptAmount"/>
+    <label name="COUNT"    value="_rptCount"/> 
+    
+    <label name="DEPT" value="_rptDepartment"/> 
+    <label name="DESC" value="_rptDescription"/>
+    <label name="UNITS" value="_rptUnits"/>
+    <label name="AMOUNT" value="_rptAmount"/>
+    <label name="TOTAL" value="_rptTotal"/>
+                 
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange">
+        <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+        <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="assignedAssoc" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptAssignedAssoc;Text;Simple;maxCharacters=20;all=_rptParamSelectionAll]]></parameterDescription>
+        <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>
+    <parameter name="city" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptSearchCustListCity;Text;CaseAllUpper;maxCharacters=20;all=_rptParamSelectionAll]]></parameterDescription>
+        <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>
+    <parameter name="state" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptSearchCustListState;Text;CaseAllUpper;maxCharacters=20;all=_rptParamSelectionAll]]></parameterDescription>
+        <defaultValueExpression><![CDATA[%]]></defaultValueExpression>      
+    </parameter>
+    <parameter name="postalCode" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptSearchPostalCodeLabel;Text;Simple;maxCharacters=20;all=_rptParamSelectionAll]]></parameterDescription>
+        <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showMerchandiseLevel" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowMerchandiseLevel;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter> 
+    <parameter name="merchandiseLevel" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptSearchMerchandiseLevel;Combo;dtv.pos.inventory.level.CustomerListReportMerchLevelLoader]]></parameterDescription>
+        <defaultValueExpression><![CDATA["MERCHLEVEL1"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startAmtPurchased" class="java.math.BigDecimal">
+        <parameterDescription><![CDATA[_rptSearchStartPurchaseRange;Text;Decimal;maximumIntegerDigits=15]]></parameterDescription>
+        <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endAmtPurchased" class="java.math.BigDecimal">
+        <parameterDescription><![CDATA[_rptSearchEndPurchaseRange;Text;Decimal;maximumIntegerDigits=15]]></parameterDescription>
+        <defaultValueExpression><![CDATA[9999999999]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startAmtReturned" class="java.math.BigDecimal">
+        <parameterDescription><![CDATA[_rptStartReturnRangeParameter;Text;Decimal;maximumIntegerDigits=15]]></parameterDescription>
+        <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endAmtReturned" class="java.math.BigDecimal">
+        <parameterDescription><![CDATA[_rptEndReturnRangeParameter;Text;Decimal;maximumIntegerDigits=15]]></parameterDescription>
+        <defaultValueExpression><![CDATA[9999999999]]></defaultValueExpression>
+    </parameter>
+    <parameter name="sortOrder" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptSortOrderParameter;Combo;dtv.pos.reporting.fill.SoftEnumFactory;2=_rptSortLastName|12,2=_rptSortPostalCode]]></parameterDescription>
+        <defaultValueExpression><![CDATA["2"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+    <!-- partyIdFilter is used when the URL report is executed at printing customer of CUSTOMER MAINTENANCE -->
+    <parameter name="partyIdFilter" class="java.lang.String" isForPrompting="false"/>    
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_CUSTOMER_LIST_SUMMARY" key="CUSTOMER_LIST_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>assignedAssoc</Parameter>
+        <Parameter>postalCode</Parameter>
+        <Parameter>city</Parameter>
+        <Parameter>state</Parameter>
+        <Parameter>merchandiseLevel</Parameter>
+        <Parameter>startAmtPurchased</Parameter>
+        <Parameter>endAmtPurchased</Parameter>
+        <Parameter>startAmtReturned</Parameter>
+        <Parameter>endAmtReturned</Parameter>
+        <Parameter>sortOrder</Parameter>
+        <Parameter>partyIdFilter</Parameter>
+      </Parameters>
+      <ResultFields>    
+        <ResultField>fullName</ResultField>
+        <ResultField>partyId</ResultField>
+        <ResultField>customerId</ResultField>
+        <ResultField>emailAddress</ResultField>
+        <ResultField>birthDate</ResultField>
+        <ResultField>mailingListFlag</ResultField>
+        <ResultField>telephone1</ResultField>
+        <ResultField>telephone2</ResultField>
+        <ResultField>employeeId</ResultField>
+        <ResultField>lastContactDate</ResultField>
+        <ResultField>purchaseAmount</ResultField>
+        <ResultField>returnAmount</ResultField>
+        <ResultField>purchaseCount</ResultField>
+        <ResultField>returnCount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_CUSTOMER_LIST_ADDRESSES_SUBREPORT" key="CUSTOMER_LIST_ADDRESSES_SUBREPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>assignedAssoc</Parameter>
+        <Parameter>postalCode</Parameter>
+        <Parameter>city</Parameter>
+        <Parameter>state</Parameter>
+        <Parameter>merchandiseLevel</Parameter>
+        <Parameter>startAmtPurchased</Parameter>
+        <Parameter>endAmtPurchased</Parameter>
+        <Parameter>startAmtReturned</Parameter>
+        <Parameter>endAmtReturned</Parameter>
+        <Parameter>sortOrder</Parameter>      
+      </Parameters>
+      <ResultFields>
+        <ResultField>partyId</ResultField>
+        <ResultField>address1</ResultField>
+        <ResultField>address2</ResultField>
+        <ResultField>address3</ResultField>
+        <ResultField>address4</ResultField>
+        <ResultField>apartment</ResultField>
+        <ResultField>city</ResultField>
+        <ResultField>state</ResultField>
+        <ResultField>postalCode</ResultField>
+        <ResultField>country</ResultField>
+        <ResultField>addressType</ResultField>
+        <ResultField>primaryFlag</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_CUSTOMER_LIST_MERCH_SUBREPORT" key="CUSTOMER_LIST_MERCH_SUBREPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>assignedAssoc</Parameter>
+        <Parameter>postalCode</Parameter>
+        <Parameter>city</Parameter>
+        <Parameter>state</Parameter>
+        <Parameter>merchandiseLevel</Parameter>
+        <Parameter>startAmtPurchased</Parameter>
+        <Parameter>endAmtPurchased</Parameter>
+        <Parameter>startAmtReturned</Parameter>
+        <Parameter>endAmtReturned</Parameter>
+        <Parameter>sortOrder</Parameter>      
+      </Parameters>
+      <ResultFields> 
+        <ResultField>partyId</ResultField>
+        <ResultField>merchLv</ResultField>
+        <ResultField>itemCount</ResultField>
+        <ResultField>totalAmount</ResultField>
+        <ResultField>description</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_CUSTOMER_LIST_MERCH_ITEM_SUBREPORT" key="CUSTOMER_LIST_MERCH_ITEM_SUBREPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>assignedAssoc</Parameter>
+        <Parameter>postalCode</Parameter>
+        <Parameter>city</Parameter>
+        <Parameter>state</Parameter>
+        <Parameter>merchandiseLevel</Parameter>
+        <Parameter>startAmtPurchased</Parameter>
+        <Parameter>endAmtPurchased</Parameter>
+        <Parameter>startAmtReturned</Parameter>
+        <Parameter>endAmtReturned</Parameter>
+        <Parameter>sortOrder</Parameter>      
+      </Parameters>
+      <ResultFields> 
+        <ResultField>partyId</ResultField>
+        <ResultField>merchLv</ResultField>
+        <ResultField>itemCount</ResultField>
+        <ResultField>totalAmount</ResultField>
+        <ResultField>returnFlag</ResultField>
+        <ResultField>description</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_CUSTOMER_LIST_SUMMARY" source="Q_CUSTOMER_LIST_SUMMARY">
+        <element name="PARTY_ID" value="partyId"/>
+        <element name="NAME"     value="fullName" formatter="LastFirstNameFromString"/>
+        <element name="CUST_ID"  value="customerId"/>
+        <element name="EMAIL"    value="emailAddress" />
+        <element name="HOME"     value="telephone1" formatter="Phone"/>
+        <element name="WORK"     value="telephone2" formatter="Phone"/>        
+        <element name="BIRTH"    value="birthDate"  formatter="DateShort"/>
+        <element name="MAIL_F"   value="mailingListFlag" />
+        <element name="LAST_D"   value="lastContactDate"   formatter="DateMedium" />
+        <element name="AMT"      value="purchaseAmount"    formatter="Money"/>
+        <element name="R_AMT"    value="returnAmount"      formatter="Money"/>
+        <element name="COUNT"    value="purchaseCount"     formatter="Integer"/>
+        <element name="R_COUNT"  value="returnCount"       formatter="Integer"/>
+    </group>
+    <group name="G_CUSTOMER_LIST_ADDRESSES_SUBREPORT" source="Q_CUSTOMER_LIST_ADDRESSES_SUBREPORT">
+        <element name="PARTY_ID" value="partyId"/>
+        <element name="ADDR_TY"  value="addressType" translation-prefix="_rptAddressType." translation-default="true"/>
+        <element name="PRMY_ADD" value="primaryFlag" />
+        <element name="ADDR1"    value="address1"/>
+        <element name="ADDR2"    value="address2"/>
+        <element name="ADDR3"    value="address3"/>
+        <element name="ADDR4"    value="address4"/>
+        <element name="APT"      value="apartment"/>
+        <element name="CITY"     value="city"/>
+        <element name="STATE"    value="state"/>
+        <element name="POSTAL"   value="postalCode"/> 
+        <element name="COUNTRY"  value="country"/> 
+    </group>
+    <group name="G_CUSTOMER_LIST_MERCH_DETAIL" source="Q_CUSTOMER_LIST_MERCH_SUBREPORT">
+        <element name="PARTY_ID"  value="partyId"/>
+        <element name="MERCH_LV"  value="merchLv"/>
+        <element name="COUNT"     value="itemCount"   formatter="Integer"/>
+        <element name="AMT"       value="totalAmount" formatter="Money"/>
+        <element name="DESC"      value="description"/>
+    </group>
+    <group name="G_CUSTOMER_LIST_MERCH_ITEM_DETAIL" source="Q_CUSTOMER_LIST_MERCH_ITEM_SUBREPORT">
+        <element name="PARTY_ID"  value="partyId"/>
+        <element name="MERCH_LV"  value="merchLv"/>
+        <element name="COUNT"     value="itemCount"   formatter="Integer"/>
+        <element name="AMT"       value="totalAmount" formatter="Money"/>
+        <element name="DESC"      value="description"/>
+    </group>
+    <group name="G_CUSTOMER_LIST_MERCH_DETAIL_TOTAL" source="Q_CUSTOMER_LIST_MERCH_SUBREPORT">
+        <element name="PARTY_ID"  group-by="true"     value="partyId"/>
+        <element name="COUNT"     function="SUM"      value="itemCount"   formatter="Integer"/>
+        <element name="AMT"       function="SUM"      value="totalAmount" formatter="Money"/>
+    </group>
+    <group name="G_CUSTOMER_LIST_MERCH_ITEM_DETAIL_TOTAL" source="Q_CUSTOMER_LIST_MERCH_ITEM_SUBREPORT">
+        <element name="PARTY_ID"  group-by="true"     value="partyId"/>
+        <element name="COUNT"     function="SUM"      value="itemCount"   formatter="Integer"/>
+        <element name="AMT"       function="SUM"      value="totalAmount" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

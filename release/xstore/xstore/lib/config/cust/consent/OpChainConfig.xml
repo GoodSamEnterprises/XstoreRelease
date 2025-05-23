@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/OpChainConfig.xsd">
+  <OpChain name="CUSTOMER.REVIEW_INFORMATION_CONSENT">
+    <Op class="dtv.pos.customer.consent.CustomerConsentOp" />
+    <Op class="dtv.pos.customer.consent.CaptureSignatureOp" />
+    <Op class="dtv.pos.customer.consent.BuildConsentRcptOp" />
+    <Op class="dtv.pos.hardware.op.PrintRcptsOp" />
+    <Op class="dtv.pos.hardware.op.WaitForRcptPrintOp" required="false" />
+    <PromptOp class="dtv.pos.customer.consent.VerifyCustomerConsentOp" />
+    <WorkerOp workersBean="processCustomerConsentWorkers" />
+    <PromptOp key="NOTIFY_CUSTOMER_CONSENT_UPDATED" />
+  </OpChain>
+</OpChainSet>

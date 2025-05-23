@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldSet xmlns="http://micros.com/xstore/config/form/field" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormFieldConfig.xsd">
+
+  <Field name="customerAwardHistoryLabel" type="Label" text="_currentAwards" />
+  
+  <Field name="customerAwardHistoryList" type="List" resource="custLoyaltyAwardListModel">
+    <Parameter name="ColumnHeaderType" value="AVAILABLE_AWARDS" />
+    <Parameter name="CellType" value="AVAILABLE_AWARDS" />
+    <!-- Possible values [SINGLE_SELECTION, MULTIPLE_SELECTION, NO_SELECTION] -->
+    <Parameter name="ListSelectionMode" value="SINGLE_SELECTION" />
+  </Field>
+  
+  <Field name="customerLoyaltyAndAwardsLabel" type="Label" text="_customerLoyaltyCards" />
+  
+  <Field name="customerLoyaltyHistoryLabel" type="Label" text="_customerAccountHistory" />
+
+  <Field name="customerLoyaltyCardSummary" type="List" resource="loyaltyCardsModel">
+    <Parameter name="ColumnHeaderType" value="LOYALTY_CARD_SUMMARY" />
+    <Parameter name="CellType" value="LOYALTY_CARD_SUMMARY" />
+    <!-- Possible values [SINGLE_SELECTION, MULTIPLE_SELECTION, NO_SELECTION] -->
+    <Parameter name="ListSelectionMode" value="SINGLE_SELECTION" />
+  </Field>
+  
+  <Field name="customerSinceLabel" type="Label" text="_custMasterHeader1" />
+  
+  <Field name="customerAnniversaryDateLabel" type="Label" resource="anniversaryDate" formatterRef="DateMedium" />
+  
+  <Field name="loyaltyPointsDescriptionLabel" type="Label" resource="loyaltyPointsDescription" />
+  
+  <Field name="primaryLoyaltyBalanceLabel" type="Label" resource="primaryLoyaltyBalance" formatterRef="Decimal" />
+  
+  <Field name="loyaltyBadgeIcon" type="Image" resource="loyaltyBadgeIcon" />
+
+</FieldSet>

@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/RcptConfig.xsd">
+  
+  <ReceiptCopyRules>
+    <!-- ensure a customer copy for special order accounts -->
+    <ReceiptCopyRule name="ORDER_ACCOUNT" document="ORDER_ACCOUNT">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.IsInstanceCopyRule" value="dtv.pos.order.OrderReceiptSource" />
+    </ReceiptCopyRule>
+    <ReceiptCopyRule name="ORDER_MAIN_STORE" document="ORDER_MAIN_STORE">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.IsInstanceCopyRule" value="dtv.pos.order.OrderReceiptSource" />
+    </ReceiptCopyRule>
+    <ReceiptCopyRule name="ORDER_PICK_TICKET" document="ORDER_PICK_TICKET">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.IsInstanceCopyRule" value="dtv.pos.order.maint.OrderPickTicketSource" />
+    </ReceiptCopyRule>
+  </ReceiptCopyRules>
+  
+  <receipts>
+    <receipt document="ORDER_ACCOUNT" sectionref="ORDER_ACCOUNT" email="true" />
+    <receipt document="ORDER_MAIN_STORE" sectionref="ORDER_MAIN_STORE" />
+    <receipt document="ORDER_CANCEL_STORE" sectionref="ORDER_CANCEL_STORE" />
+    <receipt document="ORDER_CANCEL_ACCOUNT" sectionref="ORDER_CANCEL_ACCOUNT" email="true" />
+    <receipt document="ORDER_PICK_TICKET" sectionref="ORDER_PICK_TICKET" />
+  </receipts>
+
+  <sections>
+    <section name="ORDER_ACCOUNT">
+      <sectionref>logo</sectionref>
+      <row />
+      <call impl="dtv.pos.order.RetailLocationCall">
+        <sectionref>cust_account_store_location</sectionref>
+      </call>
+      <sectionref>ORDER_HEADER_DB</sectionref>
+      <sectionref>ORDER_CANCEL</sectionref>
+      <sectionref>ORDER_TRANS_HEADER</sectionref>
+      <sectionref>ORDER_ID_BANNER</sectionref>
+      <sectionref>CUST_ACCT_ITEM_HEADER</sectionref>
+      <sectionref>ORDER_LINES</sectionref>
+      <sectionref>ORDER_SHIPPING_FEES</sectionref>
+      <sectionref>CUST_ACCT_PAYMENT_HEADER</sectionref>
+      <sectionref>ORDER_PAYMENTS</sectionref>
+      <sectionref>ORDER_SUMMARY</sectionref>
+      <sectionref>ORDER_TERMS_DB</sectionref>
+      <sectionref>ORDER_ID_BARCODE</sectionref>
+      <sectionref>ORDER_FOOTER</sectionref>
+      <sectionref>ORDER_FOOTER_DB</sectionref>
+      <sectionref>ORDER_CANCEL</sectionref>
+      <sectionref>CustomerCopyLabel</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <section name="ORDER_MAIN_STORE">
+      <sectionref>logo</sectionref>
+      <row />
+      <call impl="dtv.pos.order.RetailLocationCall">
+        <sectionref>cust_account_store_location</sectionref>
+      </call>
+      <sectionref>ORDER_CANCEL</sectionref>
+      <sectionref>ORDER_TRANS_HEADER</sectionref>
+      <sectionref>ORDER_ID_BANNER</sectionref>
+      <sectionref>CUST_ACCT_ITEM_HEADER</sectionref>
+      <sectionref>ORDER_LINES</sectionref>
+      <sectionref>ORDER_SHIPPING_FEES</sectionref>
+      <sectionref>CUST_ACCT_PAYMENT_HEADER</sectionref>
+      <sectionref>ORDER_PAYMENTS</sectionref>
+      <sectionref>ORDER_SUMMARY</sectionref>
+      <sectionref>ORDER_TERMS_DB</sectionref>
+      <sectionref>ORDER_SIGNATURE</sectionref>
+      <sectionref>ORDER_FOOTER</sectionref>
+      <sectionref>ORDER_CANCEL</sectionref>
+      <sectionref>StoreCopyLabel</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <section name="ORDER_PICK_TICKET">
+      <sectionref>logo</sectionref>
+      <row />
+      <call impl="dtv.pos.order.RetailLocationCall">
+        <sectionref>cust_account_store_location</sectionref>
+      </call>
+      <sectionref>ORDER_PICK_TICKET_HEADER_DB</sectionref>
+      <sectionref>ORDER_PICK_TICKET_HEADER</sectionref>
+      <sectionref>ORDER_ID_BANNER</sectionref>
+      <sectionref>ORDER_ID_BARCODE</sectionref>
+      <row />
+      <sectionref>CUST_ACCT_ITEM_HEADER</sectionref>
+      <sectionref>ORDER_PICK_TICKET_ITEMS</sectionref>
+      <sectionref>ORDER_PICK_TICKET_FOOTER</sectionref>
+      <sectionref>ORDER_PICK_TICKET_FOOTER_DB</sectionref>
+      <sectionref>PickTicketLabel</sectionref>
+      <sectionref>page_break</sectionref>
+    </section>
+
+    <section name="ORDER_TRANS_HEADER">
+      <call method="getTransaction">
+        <sectionref>transaction_header_info</sectionref>
+        <sectionref>transaction_cashier</sectionref>
+      </call>
+      <row>
+        <field text="_rcptCustomerLabel" /><sp/>
+        <field method="getOrder.getCustomer" formatter="BasicName" />
+      </row>
+      <row />
+      <sectionref>reprint</sectionref>
+      <sectionref>training</sectionref>
+      <sectionref>suspended_tran</sectionref>
+    </section>
+
+    <section name="ORDER_CANCEL">
+      <condition class="dtv.pos.order.CancelledOrderCondition" />
+      <row align="C" charsize="X2HW"><field text="*******************" style="BOLD" /></row>
+      <row align="C" charsize="X2HW"><field text="_rcptCancel" style="BOLD" /></row>
+      <row align="C" charsize="X2HW"><field text="*******************" style="BOLD" /></row>
+      <row />
+    </section>
+
+    <section name="ORDER_ID_BANNER">
+      <row align="C" charsize="X2HW"><field text="_orderId" style="BOLD" /></row>
+      <row align="C" charsize="X2HW"><field method="getOrder.getOrderId" style="BOLD" /></row>
+      <row />
+    </section>
+
+    <section name="ORDER_LINES">
+      <iterator method="getOrder.getOrderLines">
+        <condition method="getVoid" comparison="FALSE" />
+        
+        <row><field method="getItem.getDescription" style="BOLD" /></row>
+        <row>
+          <field method="getItemId" />
+          <field method="getQuantity" formatter="QUANTITY" loc="14" />
+          <field method="getUnitPrice" formatter="MONEY" loc="-15" />
+          <field method="getExtendedPrice" formatter="MONEY" loc="-3" />
+        </row>
+        <row>
+	        <field><aggregate class="dtv.pos.order.OrderLineStatusDocField" /></field>
+        </row>
+        <sectionref>ORDER_LINE_DISCOUNTS</sectionref>
+        <row />
+        <sectionref>ORDER_LINE_FULFILLMENT</sectionref>
+        <sectionref>ORDER_LINE_SHIPPING_INFO</sectionref>
+        <row />
+      </iterator>
+    </section>
+
+    <section name="ORDER_LINE_DISCOUNTS">
+      <condition method="getShadowedSaleItem" comparison="NOT_NULL" />
+      <call method="getShadowedSaleItem">
+        <sectionref>item_discounts</sectionref>
+      </call>
+    </section>
+
+    <section name="ORDER_LINE_FULFILLMENT">
+      <row><field><aggregate class="dtv.pos.order.FulfillmentMethodDocField" /></field></row>
+      <row>
+        <condition method="getFulfillmentType" comparison="NOT_EQUAL" value="DELIVERY" />
+        <field method="getFulfillmentModifier.getLocationId" /><sp/>
+        <field method="getFulfillmentModifier.getLocationName1" /><sp/>
+        <field method="getFulfillmentModifier.getLocationName2" />
+      </row>
+      <row>
+        <condition method="getFulfillmentType" comparison="EQUAL" value="DELIVERY" />
+        <field method="getFulfillmentModifier" formatter="BasicName"/>
+      </row> 
+      <region>
+        <condition method="getFulfillmentModifier.getAddress" comparison="NOT_NULL" />
+        <field method="getFulfillmentModifier.getAddress" formatter="BasicAddress" />
+      </region>
+    </section>
+
+    <section name="ORDER_LINE_SHIPPING_INFO">
+      <condition method="getSelectedShipMethodObject" comparison="NOT_NULL" />
+      <row />
+      <row><field text="_orderRcptShipVia" /></row>
+      <row><field method="getSelectedShipMethodObject.getShipperMethodDesc" /></row>
+    </section>
+
+    <section name="ORDER_SHIPPING_FEES">
+      <sectionref>ORDER_SHIPPING_FEE_DELIVERY</sectionref>
+      <sectionref>ORDER_SHIPPING_FEE_DELAYED_PICKUP</sectionref>
+    </section>
+
+    <section name="ORDER_SHIPPING_FEE_DELIVERY">
+      <condition method="getOrder.getOrderType" comparison="EQUAL" value="STANDARD_DELIVERY" />
+      <iterator method="getOrder.getFees">
+        <condition method="getTypeCode" comparison="EQUAL" value="SHIPPING" />
+        <condition method="getVoid" comparison="FALSE" />
+        <row>
+          <field><aggregate class="dtv.pos.order.OrderFeeDocField" /></field>
+          <field method="getAmount" formatter="MONEY" loc="-3" />
+        </row>
+        <row />
+      </iterator>
+    </section>
+
+    <section name="ORDER_SHIPPING_FEE_DELAYED_PICKUP">
+      <condition method="getOrder.getOrderType" comparison="EQUAL" value="DELAYED_PICKUP" />
+      <iterator method="getOrder.getFees">
+        <condition method="getTypeCode" comparison="EQUAL" value="SHIPPING" />
+        <condition method="getVoid" comparison="FALSE" />
+        <row>
+          <field><aggregate class="dtv.pos.order.OrderFeeDocField" /></field>
+          <field method="getAmount" formatter="MONEY" loc="-3" />
+        </row>
+        <row />
+      </iterator>
+    </section>
+
+    <section name="ORDER_PAYMENTS">
+      <iterator method="getOrder.getPayments">
+        <method dtype="String">getOrder.getPayments</method>
+        <condition method="getVoid" comparison="FALSE" />
+        <row>
+          <field style="BOLD"><aggregate class="dtv.pos.order.OrderPaymentDocField" /></field>
+          <field method="getAmount" formatter="MONEY" loc="-3" />
+        </row>
+      </iterator>
+      <row />
+    </section>
+
+    <section name="ORDER_SUMMARY">
+      <horizontal_rule />
+      <row>
+        <field text="_orderRcptSubtotalColon" loc="-14" />
+        <field method="getOrder.getSubtotal" formatter="MONEY" loc="-3" />      
+      </row>
+      <row>
+        <field text="_orderFeeColon" loc="-14" />
+        <field formatter="MONEY" loc="-3"><aggregate class="dtv.pos.order.OrderFeesDocField" /></field>      
+      </row>
+      <row>
+        <field text="_orderRcptTaxColon" loc="-14" />
+        <field method="getOrder.getTaxAmount" formatter="MONEY" loc="-3" />
+      </row>
+      <row>
+        <field text="_orderRcptTotalColon" loc="-14" />
+        <field method="getOrder.getTotal" formatter="MONEY" loc="-3" />
+      </row>
+      <row>
+        <condition method="getOrder.getOrderType" comparison="NOT_EQUAL" value="STANDARD_DELIVERY" />
+        <field text="_orderRcptPaymentsColon" loc="-14" />
+        <field formatter="MONEY" loc="-3"><aggregate class="dtv.pos.order.TotalPaymentAmountDocField" /></field>
+      </row>
+      <row>
+        <field text="_orderRcptBalanceDueColon" loc="-14" />
+        <field method="getOrder.getBalanceDue" formatter="MONEY" loc="-3" />
+      </row>
+      <row />
+    </section>
+
+    <section name="ORDER_ID_BARCODE">
+      <row />
+      <barcode symbology="Code 93"><field method="getOrder.getOrderId" /></barcode>
+    </section>
+
+    <section name="ORDER_FOOTER">
+      <row />
+      <sectionref>training</sectionref>
+      <sectionref>reprint</sectionref>
+    </section>
+
+    <section name="ORDER_SIGNATURE">
+      <row n="6" />
+      <sectionref>signature_line</sectionref>
+      <row>
+        <field method="getOrder.getCustomer" formatter="BasicName" />
+      </row>
+    </section>
+
+    <section name="ORDER_PICK_TICKET_HEADER">
+      <call method="getTransaction">
+        <sectionref>transaction_header_info</sectionref>
+        <sectionref>transaction_cashier</sectionref>
+      </call>
+      <row />
+      <row align="C"><field text="_rcptCustomerLabel" /></row>
+      <row align="C" charsize="X2HW">
+        <field method="getOrder.getCustomer" formatter="BasicName" />
+      </row>
+      <row />
+      <row align="C"><field><aggregate class="dtv.pos.order.maint.OrderTypeDocField" /></field></row>
+      <row />
+      <sectionref>reprint</sectionref>
+      <sectionref>training</sectionref>
+    </section>
+
+    <section name="ORDER_PICK_TICKET_ITEMS">
+      <iterator method="getOrder.getOrderLines">
+        <condition method="getVoid" comparison="FALSE" />
+         <condition method="getStatusCode" comparison="NOT_EQUAL" value="CANCELLED" />
+        <row><field method="getItem.getDescription" style="BOLD" /></row>
+        <row>
+          <field method="getItemId" />
+          <field method="getQuantity" formatter="QUANTITY" loc="18" />
+          <field method="getExtendedPrice" formatter="MONEY" loc="-3" />
+        </row>
+      </iterator>
+    </section>
+
+    <section name="ORDER_PICK_TICKET_FOOTER">
+      <row />
+      <horizontal_rule />
+      <row />
+      <row align="C">
+        <field text="_orderRcptBalanceDueColon" /><sp/>
+        <field method="getOrder.getBalanceDue" formatter="MONEY" />
+      </row>
+      <sectionref>ORDER_FOOTER</sectionref>
+    </section>
+
+    <section name="PickTicketLabel">
+      <row align="C"><field text="_orderRcptPickTicketLabel" style="BOLD" /></row>
+    </section>
+
+    <section name="ORDER_HEADER_DB" dbRef="ORDER_HEADER::DEFAULT::getTransaction.getBusinessDate" />
+    <section name="ORDER_FOOTER_DB" dbRef="ORDER_FOOTER::DEFAULT::getTransaction.getBusinessDate" />
+    <section name="ORDER_TERMS_DB" dbRef="ORDER_TERMS::DEFAULT::getTransaction.getBusinessDate" />
+    <section name="ORDER_PICK_TICKET_HEADER_DB" dbRef="ORDER_PICK_TICKET_HEADER::DEFAULT::getTransaction.getBusinessDate" />
+    <section name="ORDER_PICK_TICKET_FOOTER_DB" dbRef="ORDER_PICK_TICKET_HEADER::DEFAULT::getTransaction.getBusinessDate" />
+  </sections>
+</ReceiptDefinitions>

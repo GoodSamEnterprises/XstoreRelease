@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <SystemConfig dtype="Default">
+    <TrainingMode dtype="Default">
+      <TrainingModeRestrictReceiptPrinting dtype="Boolean">false</TrainingModeRestrictReceiptPrinting>
+    </TrainingMode>
+    <MixedTransactionSettings dtype="Default">
+      <AllowSaleItemTypeInMixedTransaction dtype="Default">
+        <!-- What this section really means is the inverse of "Must this item type be exclusive in a transaction?"
+      For example, if SALE is set to false, then SALE type items only can be added to transactions with no items or with
+      other SALE type items. -->
+        <SALE dtype="Boolean">false</SALE>
+        <RETURN dtype="Boolean">false</RETURN>
+        <LAYAWAY dtype="Boolean">true</LAYAWAY>
+        <SPECIALORDER dtype="Boolean">true</SPECIALORDER>
+        <SENDSALE dtype="Boolean">true</SENDSALE>
+        <WORKORDER dtype="Boolean">true</WORKORDER>
+        <REMOTESEND dtype="Boolean">true</REMOTESEND>
+      </AllowSaleItemTypeInMixedTransaction>
+    </MixedTransactionSettings>
+    <Tax dtype="Default">
+      <EnableVatTaxSummaryPrint dtype="Boolean">true</EnableVatTaxSummaryPrint>
+      <DisableChangeTaxAmount dtype="Boolean">true</DisableChangeTaxAmount>
+      <SelectTaxPercentFromList dtype="Boolean">true</SelectTaxPercentFromList>
+      <IgnoreTaxGroups dtype="String"></IgnoreTaxGroups>
+    </Tax>
+    <OnScreenKeyboard dtype="Default">
+      <Layout dtype="String">qwerty_pt</Layout>
+    </OnScreenKeyboard>
+    <MeasurementUnits dtype="Default">
+      <!-- VALUES: CELSIUS, FAHRENHEIT, KELVIN -->
+      <Temperature dtype="String">CELSIUS</Temperature>
+      <!-- VALUES: IMPERIAL, METRIC -->
+      <Length dtype="String">METRIC</Length>
+    </MeasurementUnits>
+    <LocalCurrencyId dtype="String">EUR</LocalCurrencyId>
+    <InvoiceConfig dtype="Default">
+      <EnableInvoicing dtype="Boolean">false</EnableInvoicing>
+    </InvoiceConfig>
+    <TaxFreeConfig dtype="Default">
+      <FintraxConfig dtype="Default">
+        <CheckNetAmount dtype="Boolean">true</CheckNetAmount>
+        <ShopCountryCode dtype="String">620</ShopCountryCode>
+        <MinAmountThreshold dtype="BigDecimal">49.88</MinAmountThreshold>
+        <MandatoryFields dtype="String">lastName,firstName,countryCode</MandatoryFields>
+        <OptionalFields dtype="String">street,city,postalCode,birthDate,identityDocumentType,identityDocumentNumber,identityDocumentCountryCode,emailAddress,finalDestination,arrivalDate,departureDate</OptionalFields>
+        <AvailableIdentificationDocumentType dtype="String">Passport,IdentityCard</AvailableIdentificationDocumentType>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">day</TimeUnit>
+          <UnitLimit dtype="String">90</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </FintraxConfig>
+      <GlobalBlueConfig dtype="Default">
+        <IsZeroVATItemAllowed dtype="Boolean">true</IsZeroVATItemAllowed>
+        <GoodCustomsClassificationPropertyCode dtype="String">PT_TAXFREE_CUSTOMS_CODE</GoodCustomsClassificationPropertyCode>
+        <SendReceiptNumberAsInvoiceNumber dtype="Boolean">true</SendReceiptNumberAsInvoiceNumber>
+        <MandatoryFields dtype="String">identityDocumentType,identityDocumentNumber,identityDocumentCountryCode,lastName,firstName,countryCode,birthDate</MandatoryFields>
+        <OptionalFields dtype="String">taxRegistrationNumber,mobileNumber,street,postalCode,city,emailAddress,departureDate</OptionalFields>
+        <AvailableIdentificationDocumentType dtype="String">Passport,Other</AvailableIdentificationDocumentType>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">day</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">false</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">allAboveMinimumOrSameDay</AmountRule>
+        </ConsolidateInvoiceLimit>
+        <BitmapAndQrCode dtype="Default">
+          <BitmapPath dtype="String">res/graphics/taxfree/globalblue/PRT_ETFS_LOGO_BW_210x213x1.bmp</BitmapPath>
+          <TotalWidth dtype="PositiveInteger">500</TotalWidth>
+          <QrCodePositionOffset dtype="Integer">15</QrCodePositionOffset>
+          <QrCodeSizeOffset dtype="Integer">5</QrCodeSizeOffset>
+        </BitmapAndQrCode>
+      </GlobalBlueConfig>
+    </TaxFreeConfig>
+    <FiscalConfig dtype="Default">
+      <CashLimits dtype="Default">
+        <OverridableLimit dtype="BigDecimal">999.99</OverridableLimit>
+        <NotOverridableLimit dtype="BigDecimal">14999.99</NotOverridableLimit>
+      </CashLimits>
+      <Country dtype="Default">
+        <Pt dtype="Default">
+          <!-- This represents the threshold for issuing a "Factura Simplificata" (below this limit) or
+            a "Factura Completa" (from this value on) -->
+          <InvoiceLimit dtype="BigDecimal">1000</InvoiceLimit>
+          <Sequence dtype="Default">
+            <ResetDay dtype="PositiveInteger">1</ResetDay>
+            <ResetMonth dtype="PositiveInteger">1</ResetMonth>
+          </Sequence>
+          <DeafultTaxExemptionReasonCode dtype="String">M99</DeafultTaxExemptionReasonCode>
+          <Saft dtype="Default">
+            <ExportPath dtype="String">/xstore/export/</ExportPath>
+            <ExportFilePrefix dtype="String">Saft</ExportFilePrefix>
+            <!-- SAF-T company detail -->
+            <CompanyId dtype="String"></CompanyId>
+            <CompanyName dtype="String"></CompanyName>
+            <CompanyAddressDetail dtype="String"></CompanyAddressDetail>
+            <CompanyBuildingNumber dtype="String"></CompanyBuildingNumber>
+            <CompanyStreetName dtype="String"></CompanyStreetName>
+            <CompanyCityName dtype="String"></CompanyCityName>
+            <CompanyPostalCode dtype="String"></CompanyPostalCode>
+            <CompanyRegion dtype="String"></CompanyRegion>
+            <CompanyCountry dtype="String">PT</CompanyCountry>
+            <TaxRegistrationNumber dtype="String"></TaxRegistrationNumber>
+            <BusinessName dtype="String"></BusinessName>
+            <HeaderComment dtype="String"></HeaderComment>
+            <Telephone dtype="String"></Telephone>
+            <Fax dtype="String"></Fax>
+            <Email dtype="String"></Email>
+            <Website dtype="String"></Website>
+            <!-- Key should be replaced with the real tax group id from the database, value should be one of
+            NOR, INT, RED, ISE (see SAFT documentation for details) -->
+            <TaxList dtype="List">
+              <!-- For example -->
+              <!-- <Entry dtype="MapEntry" key="0" value="ISE" /> -->
+              <!-- <Entry dtype="MapEntry" key="1" value="NOR" /> -->
+            </TaxList>
+            <!-- This should be filled with:
+            1. PT-AC for Fiscal area in Azores
+            2. PT-MA for fiscal are in Madeira
+            3. PT otherwise -->
+            <TaxCountry dtype="String">PT</TaxCountry>
+          </Saft>
+          <Shipping dtype="Default">
+            <!-- If set to true, this option allows to make a new call to the web service in case it was not available -->
+            <ATCodeRetryOnError dtype="Boolean">true</ATCodeRetryOnError>
+            <!-- If the web service is not available, this options allows to close the document. If false, the document will not be closed. -->
+            <ATCodeErrorIgnore dtype="Boolean">false</ATCodeErrorIgnore>
+            <!-- This option allows to manually ask for an AT code, in case the WS call previously failed -->
+            <ATManualEnabled dtype="Boolean">true</ATManualEnabled>
+            <ServiceUsername dtype="String"></ServiceUsername>
+            <ServicePassword dtype="String"></ServicePassword>
+          </Shipping>
+        </Pt>
+      </Country>
+    </FiscalConfig>
+  </SystemConfig>
+</Store>

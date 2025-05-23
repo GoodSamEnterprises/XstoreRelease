@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+
+	<!-- Gift Registry -->
+	<OpChain name="GIFT_REGISTRY_SEARCH" rollbackLevel="30">
+		<Op class="dtv.pos.giftregistry.op.GiftRegistrySearchOp" breakpoint="true">
+      <Parameter name="NoResultsPromptKey" value="GIFT_REGISTRY_NO_RESULTS" />
+		  <Parameter name="SearchResultsPromptKey" value="GIFT_REGISTRY_LIST" />
+      <Parameter name="AllowCreateNew" value="true" />
+		</Op>
+    <PromptOp class="dtv.pos.giftregistry.op.PromptGiftRegistryAccessSecurityOp" />
+		<Op class="dtv.pos.giftregistry.op.SetupGiftRegistryMaintModelOp" />
+    <OpChainRoute chainKey="GIFT_REGISTRY_MAINTENANCE" chainType="START" />
+	</OpChain>
+
+  <OpChain name="ASSIGN_GIFT_REGISTRY" signal="TransactionModified">
+    <Op class="dtv.pos.giftregistry.op.GiftRegistrySearchOp" breakpoint="true">
+      <Parameter name="NoResultsPromptKey" value="GIFT_REGISTRY_NO_RESULTS_REGISTER" />
+      <Parameter name="SearchResultsPromptKey" value="GIFT_REGISTRY_LIST_REGISTER" />
+    </Op>
+    <Op class="dtv.pos.common.op.CreateTransactionAsNeededOp">
+      <Parameter name="TransactionType" value="RETAIL_SALE"/>
+    </Op>
+    <Op class="dtv.pos.giftregistry.op.AddGiftRegistryToTransactionOp" />
+    <WorkerOp workersBean="updateTransactionForRegistryWorkers" />
+    <Op class="dtv.pos.register.UpdateCurrentTransListOp" />
+    <OpChainRoute chainKey="BACKTO_SALE_ITEM" chainType="START" />
+  </OpChain>
+  <OpChain name="REMOVE_GIFT_REGISTRY" signal="TransactionModified">
+    <Op class="dtv.pos.giftregistry.op.RemoveGiftRegistryFromTransactionOp" />
+    <WorkerOp workersBean="updateTransactionForRegistryWorkers" />
+    <Op class="dtv.pos.register.UpdateCurrentTransListOp" />
+    <OpChainRoute chainKey="BACKTO_SALE_ITEM" chainType="START" />
+  </OpChain>
+  <OpChain name="SALE_COMPLETE_FINISH.registry.1">
+    <Op class="dtv.pos.giftregistry.op.SellOrReturnRegistryItemsOp" />
+  </OpChain>
+
+  <OpChain name="CREATE_NEW_GIFT_REGISTRY">
+    <Op class="dtv.pos.customer.CustomerSearchOp" required="true" breakpoint="true">
+      <Parameter name="RESULTS_PROMPT" value="CUSTOMER_LIST_REGISTER" />
+      <Parameter name="PrimaryOnly" value="true" />
+      <Parameter name="AddCustomerChain" value="ADD_NEW_CUST_ASSOC" />
+      <Parameter name="EditCustomerChain" value="CUST_ASSOCIATION_EDIT" />
+    </Op>
+    <PromptOp class="dtv.pos.customer.PromptGiftRegistryNoWriteAccessOp" />
+    <Op class="dtv.pos.giftregistry.op.PromptNoCustomerSelectedOp" />
+    <Op class="dtv.pos.giftregistry.op.CreateGiftRegistryDataModelOp" />
+    <Op class="dtv.pos.giftregistry.op.UpdateGiftRegistryOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp">
+      <Parameter name="ErrorTranslationKey" value="_giftRegistryCreateRegistryFailed" />
+    </Op>
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="CREATE_REGISTRY" />
+    </Op>
+    <OpChainRoute chainKey="GIFT_REGISTRY_MAINTENANCE" chainType="START" />
+  </OpChain>
+
+  <OpChain name="UPDATE_GIFT_REGISTRY">
+    <Op class="dtv.pos.giftregistry.op.UpdateGiftRegistryOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="UPDATE_DETAILS" />
+    </Op>
+  </OpChain>
+
+	<OpChain name="GIFT_REGISTRY_MAINTENANCE" rollbackLevel="50" contextKey="GIFT_REGISTRY">
+    <Op class="dtv.pos.giftregistry.op.DisplayGiftRegistryFeatureOp">
+      <Parameter name="headerFormKey" value="GIFT_REGISTRY_MAINT_HEADER" />
+      <Parameter name="primaryFormKey" value="GIFT_REGISTRY_MAINT_LIST" />
+      <Parameter name="modelKey" value="GIFT_REGISTRY" />
+    </Op> 	    
+		<PromptOp class="dtv.pos.giftregistry.op.PromptGiftRegistryItemScanOp" breakpoint="true" />
+		<ValidationOp class="dtv.pos.giftregistry.op.CheckRegistryItemNotOnFileOp" validationsBean="itemNotOnFileRules" />
+    <PromptOp class="dtv.pos.giftregistry.op.PromptRegistryItemQuantityOp" validationsBean="giftRegistryItemQuantityRules">
+      <Parameter name="aggregate" value="true" />
+    </PromptOp>
+    <!-- This op makes the Web service call and updates the working data model if successful. -->
+    <Op class="dtv.pos.giftregistry.op.AddGiftRegistryItemOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="ADD_ITEM" />
+    </Op>
+	</OpChain>
+
+  <OpChain name="GIFT_REGISTRY_ITEM_CHANGE_QTY">
+    <PromptOp class="dtv.pos.giftregistry.op.GetSelectedRegistryItemOp" />
+    <OpChainRoute chainKey="GIFT_REGISTRY_ITEM_CHANGE_QTY_IMPL" />
+  </OpChain>
+  
+  <OpChain name="GIFT_REGISTRY_ITEM_CHANGE_QTY_TOUCH">
+    <Op class="dtv.pos.giftregistry.op.SetSelectedRegistryItemOp" />
+    <OpChainRoute chainKey="GIFT_REGISTRY_ITEM_CHANGE_QTY_IMPL" />
+  </OpChain>
+
+  <OpChain name="GIFT_REGISTRY_ITEM_CHANGE_QTY_IMPL">
+    <PromptOp class="dtv.pos.giftregistry.op.PromptRegistryItemQuantityOp" validationsBean="giftRegistryItemQuantityRules">
+      <Parameter name="aggregate" value="false" />
+    </PromptOp>
+    <!-- This op makes the Web service call and updates the working data model if successful. -->
+    <Op class="dtv.pos.giftregistry.op.AddGiftRegistryItemOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="CHANGE_ITEM_QUANTITY" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="GIFT_REGISTRY_ITEM_VOID">
+    <PromptOp class="dtv.pos.giftregistry.op.GetSelectedRegistryItemOp" />
+    <OpChainRoute chainKey="GIFT_REGISTRY_ITEM_VOID_IMPL" />
+  </OpChain>
+  
+  <OpChain name="GIFT_REGISTRY_ITEM_VOID_TOUCH">
+    <Op class="dtv.pos.giftregistry.op.SetSelectedRegistryItemOp" />
+    <OpChainRoute chainKey="GIFT_REGISTRY_ITEM_VOID_IMPL" />
+  </OpChain>
+
+  <OpChain name="GIFT_REGISTRY_ITEM_VOID_IMPL">
+    <!-- This op makes the Web service call and updates the working data model if successful. -->
+    <Op class="dtv.pos.giftregistry.op.DeleteGiftRegistryItemOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="DELETE_ITEM" />
+    </Op>
+  </OpChain>
+
+  <!-- Attrbibute chains -->
+  <OpChain name="GIFT_REGISTRY_VIEW_ATTRIBUTES">
+    <PromptOp class="dtv.pos.giftregistry.op.PromptGiftRegistryAttributeListOp" breakpoint="true">
+      <Parameter name="ChainKey.NEW" value="NEW_GIFT_REGISTRY_ATTRIBUTE" />
+      <Parameter name="ChainKey.EDIT" value="EDIT_GIFT_REGISTRY_ATTRIBUTE" />
+      <Parameter name="ChainKey.DELETE" value="DELETE_GIFT_REGISTRY_ATTRIBUTE" />
+    </PromptOp>
+  </OpChain>
+  <OpChain name="NEW_GIFT_REGISTRY_ATTRIBUTE">
+    <PromptOp class="dtv.pos.giftregistry.op.PromptAttributeGroupOp" breakpoint="true" />
+    <PromptOp class="dtv.pos.giftregistry.op.PromptAttributeNameOp" breakpoint="true" />
+    <PromptOp class="dtv.pos.giftregistry.op.PromptAttributeValueOp" validationsBean="relateAttributeValueRules" />
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="ATTRIBUTE_ADD" />
+    </Op>
+  </OpChain>
+  <OpChain name="EDIT_GIFT_REGISTRY_ATTRIBUTE">
+    <Op class="dtv.pos.giftregistry.op.GetAttributeModelOp" />
+    <PromptOp class="dtv.pos.giftregistry.op.PromptAttributeValueOp" validationsBean="relateAttributeValueRules" />
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="ATTRIBUTE_MODIFY" />
+    </Op>
+  </OpChain>
+  <OpChain name="DELETE_GIFT_REGISTRY_ATTRIBUTE">
+    <Op class="dtv.pos.giftregistry.op.DeleteSelectedAttributeOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="ATTRIBUTE_DELETE" />
+    </Op>
+  </OpChain>
+  
+  <!-- Address chains -->
+  <OpChain name="GIFT_REGISTRY_VIEW_ADDRESSES">
+    <PromptOp class="dtv.pos.giftregistry.op.PromptGiftRegistryAddressListOp" breakpoint="true">
+      <Parameter name="ChainKey.NEW" value="NEW_GIFT_REGISTRY_ADDRESS" />
+      <Parameter name="ChainKey.EDIT" value="EDIT_GIFT_REGISTRY_ADDRESS" />
+      <Parameter name="ChainKey.DELETE" value="DELETE_GIFT_REGISTRY_ADDRESS" />
+    </PromptOp>
+  </OpChain>
+  <OpChain name="NEW_GIFT_REGISTRY_ADDRESS">
+    <Op class="dtv.pos.giftregistry.op.PromptRegistryAddressInfoOp" breakpoint="true">
+      <Parameter name="NewAddress" value="true" />
+    </Op>
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="ADDRESS_ADD" />
+    </Op>
+  </OpChain>
+  <OpChain name="EDIT_GIFT_REGISTRY_ADDRESS">
+    <Op class="dtv.pos.giftregistry.op.PromptRegistryAddressInfoOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="ADDRESS_MODIFY" />
+    </Op>
+  </OpChain>
+  <OpChain name="DELETE_GIFT_REGISTRY_ADDRESS">
+    <PromptOp class="dtv.pos.giftregistry.op.PromptDeleteRegistryAddressOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="ADDRESS_DELETE" />
+    </Op>
+  </OpChain>
+  
+  <!-- Owner chains -->
+  <OpChain name="GIFT_REGISTRY_VIEW_OWNERS">
+    <PromptOp class="dtv.pos.giftregistry.op.PromptGiftRegistryOwnerListOp" breakpoint="true">
+      <Parameter name="ChainKey.NEW" value="NEW_GIFT_REGISTRY_OWNER" />
+      <Parameter name="ChainKey.EDIT" value="EDIT_GIFT_REGISTRY_OWNER" />
+      <Parameter name="ChainKey.DELETE" value="DELETE_GIFT_REGISTRY_OWNER" />
+      <Parameter name="ChainKey.MAKE_PRIMARY" value="CHANGE_PRIMARY_REGISTRY_OWNER" />
+    </PromptOp>
+  </OpChain>
+  <OpChain name="NEW_GIFT_REGISTRY_OWNER">
+    <Op class="dtv.pos.customer.CustomerSearchOp" required="true" breakpoint="true">
+      <Parameter name="RESULTS_PROMPT" value="CUSTOMER_LIST_REGISTER" />
+      <Parameter name="PrimaryOnly" value="true" />
+      <Parameter name="AddCustomerChain" value="ADD_NEW_CUST_ASSOC" />
+      <Parameter name="EditCustomerChain" value="CUST_ASSOCIATION_EDIT" />
+    </Op>
+    <Op class="dtv.pos.giftregistry.op.PromptNoCustomerSelectedOp" />
+    <Op class="dtv.pos.giftregistry.op.PromptDuplicateCustomerSelectedOp" />
+    <Op class="dtv.pos.giftregistry.op.PromptRegistryOwnerInfoOp" breakpoint="true">
+      <Parameter name="NewOwner" value="true" />
+    </Op>
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="OWNER_ADD" />
+    </Op>
+  </OpChain>
+  <OpChain name="EDIT_GIFT_REGISTRY_OWNER">
+    <Op class="dtv.pos.giftregistry.op.PromptRegistryOwnerInfoOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="OWNER_MODIFY" />
+    </Op>
+  </OpChain>
+  <OpChain name="DELETE_GIFT_REGISTRY_OWNER">
+    <PromptOp class="dtv.pos.giftregistry.op.PromptDeletePrimaryOwnerOp" />
+    <PromptOp class="dtv.pos.giftregistry.op.PromptDeleteRegistryOwnerOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="OWNER_DELETE" />
+    </Op>
+  </OpChain>
+  <OpChain name="CHANGE_PRIMARY_REGISTRY_OWNER">
+    <PromptOp class="dtv.pos.giftregistry.op.PromptAlreadyPrimaryOwnerOp">
+      <Parameter name="PromptKey" value="ALREADY_PRIMARY_REGISTRY_OWNER" />
+    </PromptOp>
+    <PromptOp class="dtv.pos.giftregistry.op.PromptChangePrimaryOwnerOp">
+      <Parameter name="PromptKey" value="CHANGE_PRIMARY_REGISTRY_OWNER" />
+    </PromptOp>
+    <Op class="dtv.pos.giftregistry.op.PersistRegistryUpdatesOp" />
+    <Op class="dtv.pos.giftregistry.op.PersistGiftRegistryJournalOp">
+      <Parameter name="ActionCode" value="OWNER_CHANGE_PRIMARY" />
+    </Op>
+  </OpChain>
+  
+  <!-- Report -->
+  <OpChain name="GIFT_REGISTRY_REPORT">
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="GIFT_REGISTRY_REPORT" />
+    </Op>
+    <Op class="dtv.pos.giftregistry.report.op.SetGiftRegistryReportDataSourceOp" />
+    <Op class="dtv.pos.reporting.fill.FillReportOp" />
+    <Op class="dtv.pos.reporting.DisplayReportOp" />
+  </OpChain>
+
+</OpChainSet>

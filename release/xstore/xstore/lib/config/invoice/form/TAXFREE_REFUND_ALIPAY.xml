@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri Feb 19 12:33:38 CET 2016 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner. ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet>
+  <FormView formKey="TAXFREE_REFUND_ALIPAY" formLocation="POPUP_VIEW_PANEL" formLayout="LEFT_TO_RIGHT">
+    <FormViewPanel panelType="DETAIL" formTabKey="DEFAULT">
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">-2.0, 5.0, 100.0, 5.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="IntegerArray">1, 0, 1, 0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell layoutLocation="0, 1, 1, 1, L, F" type="FormLabel" textKey="_countrypack.taxfree.refund.form.phone" resourceLink="phoneNumber">
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="2, 1, 3, 1, F, F" type="FormTextField" resource="alipayNumber">
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <param_value dtype="DimensionRef"><![CDATA[_sizePreferredFormViewField]]></param_value>
+        </ComponentParameter>
+        <DataField EditFormat="Numeric">
+          <Parameter name="maximumIntegerDigits">
+            <param_value dtype="Integer"><![CDATA[11]]></param_value>
+          </Parameter>
+        </DataField>>
+      </FormViewCell>
+      <FormViewPanel layoutLocation="0, 2, 5, 1, F, F">
+        <ComponentParameter name="setPreferredSize">
+          <param_value dtype="DimensionRef"><![CDATA[_sizePreferredCustomerMaintananceSpacing]]></param_value>
+        </ComponentParameter>
+      </FormViewPanel>
+      <FormViewCell layoutLocation="0, 10, 5, 1, F, F" type="FormIcon" textKey="_imageBlueSeparator2">
+        <ComponentParameter name="setIsHorizontallyStretched">
+          <param_value dtype="Boolean">true</param_value>
+        </ComponentParameter>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT_OK" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

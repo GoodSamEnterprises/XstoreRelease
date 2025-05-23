@@ -1,0 +1,57 @@
+<dataTemplate name="StoreLayout" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+      <!-- Template-specific Text -->
+    <label name="SECTION" value="_storeLayoutMaintSectionName"/>
+    <label name="SORT_ORDER" value="_storeLayoutMaintSectionNumber"/>
+    <label name="MERC_LEVEL" value="_storeLayoutReportMerchLevel"/>
+    <label name="MERC_ID" value="_storeLayoutMaintMercId"/>
+    <label name="DESC" value="_storeLayoutMaintItemDescription"/>
+    <label name="INV_MAIN_BKT" value="_storeLayoutMaintBucket"/>
+    <label name="TITLE" value="_storeLayoutReportTitle"/>
+ </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+   </parameters>
+    
+  <!--Data source and data Structure-->
+    <dataSource>
+    <dataReference name="Q_STORE_LAYOUT"> 
+      <ResultFields>
+          <ResultField>InventoryBucketId</ResultField>
+          <ResultField>SectionId</ResultField>          
+          <ResultField>MerchandiseHierarchyLevel</ResultField>
+          <ResultField>MerchandiseHierarchyId</ResultField>
+          <ResultField>ParentSection.getInventoryBucketName</ResultField>
+          <ResultField>ParentSection.getSortOrder</ResultField>
+          <ResultField>Description</ResultField>
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+  <dataStructure>
+    <group name="STORE_LAYOUT" source="Q_STORE_LAYOUT">
+      <element name="BKT_ID" value="InventoryBucketId"/> 
+      <element name="SECTION_ID" value="SectionId"/>
+      <element name="MERC_LEVEL" value="MerchandiseHierarchyLevel"/>
+      <element name="MERC_ID" value="MerchandiseHierarchyId"/>
+      <element name="INV_BKT_NAME" value="ParentSection.getInventoryBucketName"/>
+      <element name="SORT_ORDER" value="ParentSection.getSortOrder"/>
+      <element name="DESC" value="Description"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

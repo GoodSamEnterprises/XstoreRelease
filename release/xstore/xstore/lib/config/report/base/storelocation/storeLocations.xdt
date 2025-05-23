@@ -1,0 +1,83 @@
+<dataTemplate name="StoreLocations" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+	
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="CRITERI_CITY" value="_rptCityColon"/>
+    <label name="CRITERI_STATE" value="_rptStateColon"/>
+    
+    <label name="STORE_ID" value="_rptStoreNumber"/>
+    <label name="STORE_NAME" value="_rptStoreName"/>
+    <label name="ADDRESS" value="_rptAddress"/>
+    <label name="CITY" value="_rptCity"/>
+    <label name="STATE" value="_rptState"/>
+    <label name="POSTAL" value="_rptPostalCode"/>
+    <label name="COUNTRY" value="_rptCountry"/>
+    <label name="TELE" value="_rptPhoneNumber"/>
+    <label name="STORE_MGR" value="_rptStoreLocationsStoreManger"/>
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>    
+
+    <!-- User Parameters -->
+	  <parameter name="storeState" class="java.lang.String" isForPrompting="true" include_in_output="true">
+		  <parameterDescription><![CDATA[_rptState;Combo;dtv.pos.framework.location.StateEnum;all=_rptParamSelectionAll]]></parameterDescription>
+	  </parameter>
+	  <parameter name="storeCity" class="java.lang.String" isForPrompting="true" include_in_output="true">
+		  <parameterDescription><![CDATA[_rptCity;Text;CaseAllUpper;maxCharacters=20]]></parameterDescription>
+	  </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_STORE_LOC" key="STORE_LOCATIONS_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>storeNbr</Parameter>
+        <Parameter>storeState</Parameter>
+        <Parameter>storeCity</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>store_nbr</ResultField>
+        <ResultField>store_name</ResultField>
+        <ResultField>address1</ResultField>
+		    <ResultField>city</ResultField>
+		    <ResultField>state</ResultField>
+		    <ResultField>postal_code</ResultField>
+		    <ResultField>country</ResultField>
+		    <ResultField>telephone1</ResultField>
+		    <ResultField>store_manager</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_STORE_LOC" source="Q_STORE_LOC">
+      <element name="STORE_ID" value="store_nbr"/>    
+      <element name="STORE_NAME" value="store_name"/>
+      <element name="ADDRESS" value="address1"/>
+      <element name="CITY" value="city"/>
+      <element name="STATE" value="state"/>
+      <element name="POSTAL" value="postal_code"/>
+      <element name="COUNTRY" value="country"/>
+      <element name="TELE" value="telephone1" formatter="Phone"/>
+      <element name="STORE_MGR" value="store_manager"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

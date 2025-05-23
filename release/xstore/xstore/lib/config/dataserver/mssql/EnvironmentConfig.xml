@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Environment xmlns="http://com.micros-retail/common"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://com.micros-retail/common ../dtv/res/config/EnvironmentConfig.xsd">
+  <Instruction name="BACKUP">
+    <Query order="1" value="BACKUP_DATABASE">
+      <Parameters dtype="Map">
+        <DirectReplacement dtype="String">backupName</DirectReplacement>
+      </Parameters>
+    </Query>
+  </Instruction>
+  <Instruction name="RESTORE">
+    <Query order="1" value="PRE_RESTORE_DATABASE">
+      <Parameters dtype="Map">
+        <DirectReplacement dtype="String">restoreName</DirectReplacement>
+      </Parameters>
+    </Query>
+    <Query order="2" value="RESTORE_DATABASE">
+      <Parameters dtype="Map">
+        <DirectReplacement dtype="String">restoreName</DirectReplacement>
+      </Parameters>
+    </Query>
+    <Query order="3" value="POST_RESTORE_DATABASE">
+      <Parameters dtype="Map">
+        <DirectReplacement dtype="String">restoreName</DirectReplacement>
+      </Parameters>
+    </Query>
+  </Instruction>
+  <Instruction name="REPLACE_TRAINING_ID">
+    <!-- The procedure to update all of the training DB's organization_id columns to a different 
+    value is costly both in terms of time and memory consumption.  In the standard 
+    Xstore/Xenvironment setup, the training and production DBs will always be separate, and data
+    written to the training DB will never replicate.  It is therefore unnecessary in this 
+    configuration to differentiate the production and training organizations.  We will leave this
+    instruction around for backwards compatibility with the environment AND for configurations in 
+    which the training and production DBs are one and the same. -->
+    <!--<Query order="1" value="REPLACE_TRAINING_ID" />-->
+  </Instruction>
+  <Instruction name="TEST_CONNECTION_ACTIVE">
+    <Query order="1" value="TEST_CONNECTION_ACTIVE" />
+  </Instruction>
+</Environment>

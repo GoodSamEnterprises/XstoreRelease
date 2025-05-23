@@ -1,0 +1,175 @@
+<dataTemplate name="WACStockValuation" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text 
+    <label name="CRITERIA_DATE_RANGE" value="_rptWACValuationDateColumn"/>
+    <label name="START_TIME_COLON" value="_rptStartTimeColon"/>
+    <label name="END_TIME_COLON" value="_rptEndTimeColon"/>
+    <label name="DEPARTMENT_COLON" value="_rptDepartmentColon"/>
+    <label name="ID" value="_rptID"/>
+    <label name="DEPARTMENT" value="_rptDepartment"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="QTY" value="_rptRestockReportQuantitySold"/>
+    <label name="TOTAL" value="_rptTotal"/>
+    <label name="TOTAL_COLON" value="_rptTotalColon"/>-->
+    
+    <label name="VALUDATE" value="_rptWACValuationDateColumn"/>
+    <label name="DEPT"     value="_rptPWACDepartmentColon"/>
+    <label name="SUBDEPT"  value="_rptPWACSubDepartmentColon"/>
+    <label name="CLASS"    value="_rptPWACClassColon"/>
+    <label name="SUBCLASS" value="_rptPWACSubClassColon"/>   
+    <label name="ALL"      value="_rptDefaultAll"/>
+    <label name="STYLE"    value="_rptStyleColon"/>
+
+    <label name="ITEM"         value="_rptItem"/> 
+    <!--<label name="STYLE"        value="_rptStyle"/>       -->
+    <label name="FINAL_QTY"    value="_rptPWACFinalStockQty"/>
+    <label name="FINAL_VALUE"  value="_rptPWACFinalStockValuation"/>
+    <label name="UNIT_COST"    value="_rptPWACUnitCost"/>     
+    <label name="TOTAL"        value="_rptTotal"/>
+    
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    
+    <!-- User Parameters -->   
+    <parameter name="HELPER" class="dtv.pos.iframework.reporting.IReportHelper" isForPrompting="false"/>
+    <parameter name="stockVal" class="java.util.Map" isForPrompting="false"/>
+    <parameter name="organizationNode" class="java.lang.String">
+        <parameterDescription><![CDATA[_stockValLocHierarchy;Text]]></parameterDescription>
+    </parameter>
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate">
+        <parameterDescription><![CDATA[_rptStockValDate;Date]]></parameterDescription>
+        <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startDate" class="java.util.Date" isForPrompting="false">
+        <defaultValueExpression><![CDATA[$P{dtvStartDate}.getDate()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="svDeptToSubClass" class="java.lang.String">
+        <parameterDescription><![CDATA[_stockValDept;Text]]></parameterDescription>
+    </parameter>
+    <parameter name="svStyleItemIdSelection" class="java.lang.String">
+        <parameterDescription><![CDATA[_stockValItemRadio;Text]]></parameterDescription>
+    </parameter>
+    
+    <parameter name="merchLevel1ForLayout" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="merchLevel2ForLayout" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="merchLevel3ForLayout" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="merchLevel4ForLayout" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  
+  <dataSource>
+    <queryReference name="Q_WAC_STOCK_VALUATION_REPORT" key="WAC_STOCK_VALUATION_REPORT">
+      <Parameters>
+        <Parameter>startDate</Parameter>
+        <Parameter>organizationId</Parameter>
+        <Parameter>@userRtlLocIdList</Parameter>
+        <Parameter>@retailLocationIdList</Parameter>
+        <Parameter>merchLevel1</Parameter>
+        <Parameter>merchLevel2</Parameter>
+        <Parameter>merchLevel3</Parameter>
+        <Parameter>merchLevel4</Parameter>
+        <Parameter>itemId</Parameter>
+        <Parameter>styleId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>storeId</ResultField>
+        <ResultField>storeName</ResultField>
+        <ResultField>styleId</ResultField>
+        <ResultField>styleDesc</ResultField>
+        <ResultField>itemId</ResultField>
+        <ResultField>itemDesc</ResultField>
+        <ResultField>quantity</ResultField>
+        <ResultField>ucost</ResultField>
+        <ResultField>valuationTotal</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_WAC_STOCK_VALUATION_UCOST_REPORT" key="WAC_STOCK_VALUATION_UCOST_REPORT">
+      <Parameters>
+        <Parameter>startDate</Parameter>
+        <Parameter>organizationId</Parameter>
+        <Parameter>organizationNode</Parameter>
+        <Parameter>svDeptToSubClass</Parameter>
+        <Parameter>svStyleItemIdSelection</Parameter>
+        <Parameter>@userRtlLocIdList</Parameter>
+        <Parameter>@retailLocationIdList</Parameter>
+        <Parameter>merchLevel1</Parameter>
+        <Parameter>merchLevel2</Parameter>
+        <Parameter>merchLevel3</Parameter>
+        <Parameter>merchLevel4</Parameter>
+        <Parameter>itemId</Parameter>
+        <Parameter>styleId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>storeId</ResultField>
+        <ResultField>quantity</ResultField>
+        <ResultField>value</ResultField>
+        <ResultField>ucost</ResultField>
+      </ResultFields>
+    </queryReference>  
+    <queryReference name="Q_WAC_STOCK_VALUATION_UCOST_TOTAL_REPORT" key="WAC_STOCK_VALUATION_UCOST_TOTAL_REPORT">
+      <Parameters>
+        <Parameter>startDate</Parameter>
+        <Parameter>organizationId</Parameter>
+        <Parameter>organizationNode</Parameter>
+        <Parameter>svDeptToSubClass</Parameter>
+        <Parameter>svStyleItemIdSelection</Parameter>
+        <Parameter>@userRtlLocIdList</Parameter>
+        <Parameter>@retailLocationIdList</Parameter>
+        <Parameter>merchLevel1</Parameter>
+        <Parameter>merchLevel2</Parameter>
+        <Parameter>merchLevel3</Parameter>
+        <Parameter>merchLevel4</Parameter>
+        <Parameter>itemId</Parameter>
+        <Parameter>styleId</Parameter>       
+      </Parameters>
+      <ResultFields>
+        <ResultField>quantity</ResultField>
+        <ResultField>value</ResultField>
+        <ResultField>ucost</ResultField>
+      </ResultFields>
+    </queryReference>   
+  </dataSource>
+  <dataStructure>
+    <group name="G_WAC_STOCK_VALUATION" source="Q_WAC_STOCK_VALUATION_REPORT">
+        <element name="LOC"         value="storeId"/>
+        <element name="STNM"        value="storeName"/>
+        <element name="STYLE"       value="styleId"/>
+        <element name="SDESC"       value="styleDesc"/>
+        <element name="ITM"         value="itemId"/>
+        <element name="IDESC"       value="itemDesc"/>
+        <element name="QTY"         value="quantity"/>
+        <element name="UCST"        value="ucost"          formatter="Money"/>
+        <element name="VAL"         value="valuationTotal" formatter="Money"/>
+    </group>
+    <group name="G_WAC_STOCK_VALUATION_UCOST" source="Q_WAC_STOCK_VALUATION_UCOST_REPORT">
+        <element name="LOC"        value="storeId"  />
+        <element name="TOTAL_Q"    value="quantity"  />
+        <element name="TOTAL_V"    value="value"     formatter="Money"/>
+        <element name="TOTAL_U"    value="ucost"     formatter="Money"/>
+    </group>
+    <group name="G_WAC_STOCK_VALUATION_TOTAL" source="Q_WAC_STOCK_VALUATION_UCOST_TOTAL_REPORT">
+        <element name="TOTAL_Q"    value="quantity"  />
+        <element name="TOTAL_V"    value="value"     formatter="Money"/>
+        <element name="TOTAL_U"    value="ucost"     formatter="Money"/>>
+    </group>        
+  </dataStructure>
+</dataTemplate>

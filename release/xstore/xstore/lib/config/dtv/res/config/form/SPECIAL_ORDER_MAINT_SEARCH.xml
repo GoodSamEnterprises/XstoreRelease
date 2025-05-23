@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Sat Feb 24 13:33:15 EST 2007 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">SPECIAL_ORDER_MAINT_SEARCH</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <IconGroup icon="_imagePromptCustomerSearch" />
+      <TextKey dtype="Translatable">_specOrderSearchMsg</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0
+          </param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="IntegerArray">30, 0, 30, 0</param_value>
+        </Parameter>
+        <Parameter name="addRowOffset">
+          <param_value dtype="Integer">10</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_specOrderId</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">custAccountId</Resource>
+        <DataField ref="IDLong" />
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_specOrderLName</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">lastName</Resource>
+        <DataField ref="Name" />
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 3, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_specOrderFName</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">firstName</Resource>
+        <DataField ref="Name" />
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_specOrderAcctDisplayStatus</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">status</Resource>
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 5, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_specOrderDateRange</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">1, 5, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">-1.0</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">fromSetupDate</Resource>
+          <DataField ref="Date" />
+          <Font fontSize="+5" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">toSetupDate</Resource>
+          <DataField ref="Date" />
+          <Font fontSize="+5" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">1, 6, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">-1.0</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, C, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+          <TextKey dtype="Translatable">_specOrderSetupDateFrom</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, C, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+          <TextKey dtype="Translatable">_specOrderSetupDateTo</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 7, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_specOrderLastActDateRange</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">1, 7, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">-1.0</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">fromLastActDate</Resource>
+          <DataField ref="Date" />
+          <Font fontSize="+5" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">toLastActDate</Resource>
+          <DataField ref="Date" />
+          <Font fontSize="+5" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">1, 8, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">-1.0</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, C, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+          <TextKey dtype="Translatable">_specOrderSetupDateFrom</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, C, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+          <TextKey dtype="Translatable">_specOrderSetupDateTo</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 9, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_specOrderSortSequence</TextKey>
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 9, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">sortBy</Resource>
+        <Font fontSize="+5" />
+      </FormViewCell>
+    </FormViewPanel>
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" text="_specOrderSearchContinue" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

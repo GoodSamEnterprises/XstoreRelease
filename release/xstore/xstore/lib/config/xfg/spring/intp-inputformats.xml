@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="INPFMTTR_None" class="com.micros_retail.xfgclient.input.format.NoInputFormatter" />
+
+  <bean id="INPFMTTR_Text" class="com.micros_retail.xfgclient.input.format.BasicInputFormatter">
+    <property name="maxLength" value="16" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_LongText" class="com.micros_retail.xfgclient.input.format.BasicInputFormatter">
+    <property name="maxLength" value="29" /> <!-- input field can display 29 chars at a time (gserver layout) -->
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_ExtraLongText" class="com.micros_retail.xfgclient.input.format.BasicInputFormatter">
+    <property name="maxLength" value="40" /> <!-- this is more than input field can display (29 chars) -->
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_MultiLine" class="com.micros_retail.xfgclient.input.format.BasicInputFormatter">
+    <property name="maxLength" value="254" /> <!-- multiline textentry with variable width font: the ui component does the wrapping -->
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_InputMultiLineText" class="com.micros_retail.xfgclient.interpret.i18n.formatter.MultilineInputTextFormatter" />
+
+  <bean id="INPFMTTR_MultiLineFWF" class="com.micros_retail.xfgclient.input.format.MultiLineInputFormatter">
+    <property name="maxLength" value="254" />
+    <property name="maxLineNumber" value="8" />
+    <property name="lineWidth" value="40" />
+    <property name="formatter" ref="FMTTR_InputMultiLineText" />
+    <property name="returnFormattedData" value="true" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_InputPassword" class="com.micros_retail.xfgclient.interpret.i18n.formatter.PasswordFormatter">
+    <property name="patternKey" value="Password" />
+  </bean>
+
+  <bean id="INPFMTTR_Password" class="com.micros_retail.xfgclient.input.format.BasicInputFormatter">
+    <property name="formatter" ref="FMTTR_InputPassword" />
+    <property name="maxLength" value="16" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_Integer" class="com.micros_retail.xfgclient.input.format.NumericInputFormatter">
+    <property name="maxLength" value="16" />
+    <property name="allowNegative" value="true" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_Recorder" class="com.micros_retail.xfgclient.interpret.i18n.formatter.NumberFormatter">
+    <property name="patternKey" value="RecorderFile" />
+  </bean>
+
+  <bean id="INPFMTTR_Recorder" class="com.micros_retail.xfgclient.input.format.NumericInputFormatter">
+    <property name="maxLength" value="4" />
+    <property name="allowNegative" value="false" />
+    <property name="returnFormattedData" value="true" />
+    <property name="formatter" ref="FMTTR_Recorder" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_PosInteger" class="com.micros_retail.xfgclient.input.format.NumericInputFormatter">
+    <property name="maxLength" value="16" />
+    <property name="allowNegative" value="false" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_InputPercent" class="com.micros_retail.xfgclient.interpret.i18n.formatter.NumberFormatter">
+    <property name="patternKey" value="XfgPercent" />
+  </bean>
+
+  <bean id="INPFMTTR_Percent" class="com.micros_retail.xfgclient.input.format.NumericInputFormatter">
+    <property name="maxLength" value="2" />
+    <property name="allowNegative" value="false" />
+    <property name="formatter" ref="FMTTR_InputPercent" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_InputDateMedium" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateMedium" />
+  </bean>
+
+  <bean id="INPFMTTR_Date" class="com.micros_retail.xfgclient.input.format.DateInputFormatter">
+    <property name="formatter" ref="FMTTR_InputDateMedium" />
+    <property name="displayPatternKey" value="DateMedium_DisplayMask" />
+    <!-- KEEP IN MIND THAT MSSQL SERVER DATETIME TYPE CANNOT STORE DATES BEFORE 1753/01/01 -->
+    <property name="minimumDate" value="#{T(dtv.util.DateUtils).parseDate(&quot;1901-01-01&quot;)}" />
+    <property name="maximumDate" value="#{T(dtv.util.DateUtils).parseDate(&quot;9999-12-31 23:59:59&quot;)}" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_InputDateTimeMedium" class="com.micros_retail.xfgclient.interpret.i18n.formatter.DateFormatter">
+    <property name="patternKey" value="DateTimeMedium" />
+  </bean>
+
+  <bean id="INPFMTTR_DateTime" class="com.micros_retail.xfgclient.input.format.DateInputFormatter">
+    <property name="formatter" ref="FMTTR_InputDateTimeMedium" />
+    <property name="displayPatternKey" value="DateTimeMedium_DisplayMask" />
+    <!-- KEEP IN MIND THAT MSSQL SERVER DATETIME TYPE CANNOT STORE DATES BEFORE 1753/01/01 -->
+    <property name="minimumDate" value="#{T(dtv.util.DateUtils).parseDate(&quot;1901-01-01&quot;)}" />
+    <property name="maximumDate" value="#{T(dtv.util.DateUtils).parseDate(&quot;9999-12-31 23:59:59&quot;)}" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_Decimal" class="com.micros_retail.xfgclient.input.format.DecimalInputFormatter">
+    <property name="maxLength" value="16" />
+    <property name="allowNegative" value="true" />
+    <property name="maximumFractionDigits" value="3" />
+    <property name="maximumIntegerDigits" value="16" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_StringDecimal" class="com.micros_retail.xfgclient.input.format.StringDecimalInputFormatter">
+    <property name="maxLength" value="22" />
+    <property name="allowNegative" value="true" />
+    <property name="maximumFractionDigits" value="3" />
+    <property name="maximumIntegerDigits" value="22" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_StringDecimalExtended" parent="INPFMTTR_StringDecimal">
+    <property name="maxLength" value="35" />
+  </bean>
+
+  <bean id="FMTTR_InputDecimal2" class="com.micros_retail.xfgclient.interpret.i18n.formatter.NumberFormatter">
+    <property name="patternKey" value="InputDecimal2" />
+  </bean>
+
+  <bean id="INPFMTTR_FixedDecimal" class="com.micros_retail.xfgclient.input.format.FixedDecimalInputFormatter">
+    <property name="maxLength" value="16" />
+    <property name="allowNegative" value="true" />
+    <property name="fractionDigits" value="2" />
+    <property name="maximumIntegerDigits" value="10" />
+    <property name="formatter" ref="FMTTR_InputDecimal2" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_TotalAmount" class="com.micros_retail.xfgclient.input.format.TotalAmountInputFormatter">
+    <property name="maxLength" value="16" />
+    <property name="allowNegative" value="true" />
+    <property name="fractionDigits" value="2" />
+    <property name="maximumIntegerDigits" value="10" />
+    <property name="formatter" ref="FMTTR_InputDecimal2" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_InputMoney" class="com.micros_retail.xfgclient.interpret.i18n.formatter.MoneyFormatter">
+    <property name="patternKey" value="Money" />
+    <property name="ignoreLocalCurrency" value="false" />
+  </bean>
+
+  <bean id="INPFMTTR_Money" class="com.micros_retail.xfgclient.input.format.MoneyInputFormatter">
+    <property name="maxLength" value="10" />
+    <property name="allowNegative" value="true" />
+    <!-- <property name="fractionDigits" value="2" /> -->
+    <property name="maximumIntegerDigits" value="7" />
+    <property name="formatter" ref="FMTTR_InputMoney" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_Mask" class="com.micros_retail.xfgclient.input.format.MaskInputFormatter">
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_InputItemQuantityUnitSymbol" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemUnitFormatter">
+    <property name="mode" value="SYMBOL" />
+    <property name="separator" value=" " />
+  </bean>
+
+  <bean id="INPFMTTR_QuantitySymbol" class="com.micros_retail.xfgclient.input.format.ItemQuantityInputFormatter">
+    <property name="maxLength" value="10" />
+    <property name="allowNegative" value="false" />
+    <property name="maximumIntegerDigits" value="10" />
+    <property name="formatter" ref="FMTTR_InputItemQuantityUnitSymbol" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_FixedInputItemQuantityUnitSymbol" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemQuantityFormatter">
+    <property name="mode" value="SYMBOL" />
+    <property name="separator" value=" " />
+    <property name="patternKey" value="InputDecimal2" />
+  </bean>
+
+  <bean id="INPFMTTR_FixedQuantitySymbol" class="com.micros_retail.xfgclient.input.format.FixedItemQuantityInputFormatter">
+    <property name="maxLength" value="10" />
+    <property name="allowNegative" value="false" />
+    <property name="maximumIntegerDigits" value="10" />
+    <property name="formatter" ref="FMTTR_FixedInputItemQuantityUnitSymbol" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_InputItemQuantityUnitName" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemUnitFormatter">
+    <property name="mode" value="NAME" />
+    <property name="separator" value=" " />
+  </bean>
+
+  <bean id="INPFMTTR_QuantityName" class="com.micros_retail.xfgclient.input.format.ItemQuantityInputFormatter">
+    <property name="maxLength" value="10" />
+    <property name="allowNegative" value="false" />
+    <property name="maximumIntegerDigits" value="10" />
+    <property name="formatter" ref="FMTTR_InputItemQuantityUnitName" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="FMTTR_FixedInputItemQuantityUnitName" class="com.micros_retail.xfgclient.interpret.i18n.formatter.ItemQuantityFormatter">
+    <property name="mode" value="NAME" />
+    <property name="separator" value=" " />
+    <property name="patternKey" value="InputDecimal2" />
+  </bean>
+
+  <bean id="INPFMTTR_FixedQuantityName" class="com.micros_retail.xfgclient.input.format.FixedItemQuantityInputFormatter">
+    <property name="maxLength" value="10" />
+    <property name="allowNegative" value="false" />
+    <property name="maximumIntegerDigits" value="10" />
+    <property name="formatter" ref="FMTTR_FixedInputItemQuantityUnitName" />
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+  <bean id="INPFMTTR_GS1Entry" class="com.micros_retail.xfgclient.input.format.GS1EntryFormatter">
+    <property name="inputContext" ref="OC_Operator" />
+  </bean>
+
+</beans>

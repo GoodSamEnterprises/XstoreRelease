@@ -1,0 +1,164 @@
+<dataTemplate name="PWACStockValuationSummary" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    <label name="SELECTION_ALL" value="_rptDefaultAll" />
+
+
+    <label name="LOCATIONS" value="_rptPWACStockLocationsColon" />
+    <label name="UNIT_COST" value="_rptPWACUnitCost" />
+    <label name="FINAL_QTY" value="_rptPWACFinalStockQty" />
+    <label name="FINAL_VALUE" value="_rptPWACFinalStockValuation" />
+    <label name="ITEM" value="_rptStockValuationItemId" />
+    <label name="VALUDATE" value="_rptPWACValuationDateColon" />
+    <label name="DEPT" value="_rptPWACDepartmentColon" /> 
+    <label name="SUBDEPT" value="_rptPWACSubDepartmentColon" />
+    <label name="CLASS" value="_rptPWACClassColon" />
+    <label name="SUBCLASS" value="_rptPWACSubClassColon" />
+    <label name="TOTALS" value="_rptTotal" />
+    <label name="COLON" value="_rptColon" />
+ 
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    
+    <parameter name="merchLevel1" class="java.lang.String" isForPrompting="false" include_in_output="true" />
+    <parameter name="merchLevel2" class="java.lang.String" isForPrompting="false" include_in_output="true" />
+    <parameter name="merchLevel3" class="java.lang.String" isForPrompting="false" include_in_output="true" />
+    <parameter name="merchLevel4" class="java.lang.String" isForPrompting="false" include_in_output="true" />
+    <parameter name="merchLevel1ForLayout" class="java.lang.String" isForPrompting="false" />
+    <parameter name="merchLevel2ForLayout" class="java.lang.String" isForPrompting="false" />
+    <parameter name="merchLevel3ForLayout" class="java.lang.String" isForPrompting="false" />
+    <parameter name="merchLevel4ForLayout" class="java.lang.String" isForPrompting="false" />
+
+    <!-- User Parameters -->   
+
+    <parameter name="HELPER" class="dtv.pos.iframework.reporting.IReportHelper" isForPrompting="false"/>
+    <parameter name="stockVal" class="java.util.Map" isForPrompting="false"/>
+    <parameter name="organizationNode" class="java.lang.String">
+        <parameterDescription><![CDATA[_stockValLocHierarchy;Text]]></parameterDescription>
+    </parameter>
+
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate">
+        <parameterDescription><![CDATA[_rptStockValDate;Date]]></parameterDescription>
+        <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startDate" class="java.util.Date" isForPrompting="false">
+        <defaultValueExpression><![CDATA[$P{dtvStartDate}.getDate()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="svDeptToSubClass" class="java.lang.String">
+        <parameterDescription><![CDATA[_stockValDept;Text]]></parameterDescription>
+    </parameter>
+    <parameter name="svStyleItemIdSelection" class="java.lang.String">
+        <parameterDescription><![CDATA[_stockValItemRadio;Text]]></parameterDescription>
+    </parameter>
+
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+        <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+        <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>    
+
+  </parameters>
+
+   <dataSource>
+        <queryReference name="Q_PWAC" key="PWAC_STOCK_VALUATION_REPORT" > 
+            <Parameters>
+                <Parameter>dtvStartDate</Parameter>
+                <Parameter>organizationId</Parameter>
+                <Parameter>@retailLocationIdList</Parameter>
+                <Parameter>merchLevel1</Parameter>
+                <Parameter>merchLevel2</Parameter>
+                <Parameter>merchLevel3</Parameter>
+                <Parameter>merchLevel4</Parameter>
+                <Parameter>itemId</Parameter>
+                <Parameter>styleId</Parameter>
+            </Parameters>
+         
+            <ResultFields>
+               <ResultField>itemId</ResultField>
+                <ResultField>itemDesc</ResultField>
+                <ResultField>rtlLocId</ResultField>
+                <ResultField>storeName</ResultField>
+                <ResultField>quantity</ResultField>
+                <ResultField>value</ResultField>
+                <ResultField>pwac</ResultField>
+            </ResultFields>
+        </queryReference>
+       <queryReference name="Q_PWAC_LOC" key="PWAC_REPORT_STORES_LOC_TOTALS" > 
+            <Parameters>
+                <Parameter>dtvStartDate</Parameter>
+                <Parameter>organizationId</Parameter>
+                <Parameter>@retailLocationIdList</Parameter>
+                <Parameter>merchLevel1</Parameter>
+                <Parameter>merchLevel2</Parameter>
+                <Parameter>merchLevel3</Parameter>
+                <Parameter>merchLevel4</Parameter>
+                <Parameter>itemId</Parameter>
+                <Parameter>styleId</Parameter>
+            </Parameters>
+         
+            <ResultFields>
+                <ResultField>rtlLocId</ResultField>
+                <ResultField>itemDesc</ResultField>
+                <ResultField>quantity</ResultField>
+                <ResultField>value</ResultField>
+                <ResultField>pwac</ResultField>
+            </ResultFields>
+        </queryReference>
+
+       <queryReference name="Q_PWAC_TOT" key="PWAC_REPORT_STORES_TOTALS" > 
+            <Parameters>
+                <Parameter>dtvStartDate</Parameter>
+                <Parameter>organizationId</Parameter>
+                <Parameter>@retailLocationIdList</Parameter>
+                <Parameter>merchLevel1</Parameter>
+                <Parameter>merchLevel2</Parameter>
+                <Parameter>merchLevel3</Parameter>
+                <Parameter>merchLevel4</Parameter>
+                <Parameter>itemId</Parameter>
+                <Parameter>styleId</Parameter>
+            </Parameters>
+         
+            <ResultFields>
+                <ResultField>quantity</ResultField>
+                <ResultField>value</ResultField>
+                <ResultField>pwac</ResultField>
+            </ResultFields>
+        </queryReference>
+    </dataSource>
+
+    <dataStructure>
+         <group name="G_DET" source="Q_PWAC">
+            <element name="LOC" value="rtlLocId" />
+            <element name="STNM" value="storeName" />
+            <element name="ITM" value="itemId" />
+            <element name="DSC" value="itemDesc" />
+            <element name="QTY" value="quantity" formatter="Decimal" />
+            <element name="VAL" value="value" formatter="Accounting" />
+            <element name="UCST" value="pwac" formatter="Accounting" />
+        </group>
+
+         <group name="G_LOCTOT" source="Q_PWAC_LOC">
+            <element name="LOC" value="rtlLocId" group-by="true" />
+            <element name="QTY" value="quantity" formatter="Decimal" />
+            <element name="VAL" value="value" formatter="Accounting" />
+            <element name="UCST" value="pwac" formatter="Accounting" />
+        </group>
+    
+         <group name="G_TOT" source="Q_PWAC_TOT">
+            <element name="QTY" value="quantity" formatter="Decimal" />
+            <element name="VAL" value="value" formatter="Accounting" />
+            <element name="UCST" value="pwac" formatter="Accounting" />
+        </group>
+    </dataStructure>
+</dataTemplate>

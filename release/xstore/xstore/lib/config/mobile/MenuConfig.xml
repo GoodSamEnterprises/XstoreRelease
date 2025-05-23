@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+    
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       SALE
+       These menus contain items pertaining to the Sale of merchandise for XstoreM
+       *****************************************************************************************
+       ***************************************************************************************** -->  
+  <MenuItem name="RETAIL::REGISTER_OPTIONS" text="_registerOptionsMenuText" category="Retail" keywords="universal,sale,register_extended,register_all">
+    <SubMenu ref="BALANCE_INQUIRY::REGISTER_OPTIONS" />
+      
+    <SubMenu actionRef="RETAIL::MENU.MODIFY_TRANS_TAX">
+      <MenuOption ref="RETAIL::TAX.CHANGE_TRAN_LOCATION" />
+      <MenuOption ref="RETAIL::TAX.EXEMPT_TRANS" />
+      <MenuOption ref="RETAIL::TAX.CHANGE_TRAN_AMOUNT" />
+      <MenuOption ref="RETAIL::TAX.CHANGE_TRAN_PERCENT" />
+    </SubMenu>
+      
+    <MenuOption ref="SALE::ADD_COUPON" />
+    <MenuOption ref="SALE::REDEEM_RAINCHECK" />
+  </MenuItem>
+  
+  <MenuItem name="BALANCE_INQUIRY::REGISTER_OPTIONS" text="_BI_menu" category="Admin" keywords="universal">
+    <MenuOption ref="BALANCE_INQUIRY::GIFT_CARD" />
+    <!-- Removing the gift certificate since XStore Mobile doesnt support this -->
+    <!-- <MenuOption ref="BALANCE_INQUIRY::GIFT_CERTIFICATE" /> -->
+    <MenuOption ref="BALANCE_INQUIRY::STORE_CREDIT" />
+    <MenuOption ref="BALANCE_INQUIRY::LOYALTY" />
+    <MenuOption ref="BALANCE_INQUIRY::GIFT_RECEIPT" />
+  </MenuItem>
+
+  <MenuItem name="RETAIL::ADD_DISCOUNT" actionRef="RETAIL::MENU.ADD_DISCOUNT" sticky="false" 
+            displayType="LIST" category="Retail" keywords="universal,register_extended,sale">
+    <!-- <MenuOption ref="RETAIL::ADD_LINE_DISCOUNT" />  ... this was moved to RETAIL::CHANGE_LINE -->
+    <MenuOption ref="RETAIL::ADD_TRAN_DISCOUNT" />
+    <MenuOption ref="RETAIL::ADD_GROUP_DISCOUNT" />
+    <MenuOption ref="RETAIL::ADD_AWARD_DISCOUNT" />
+  </MenuItem>
+
+  <MenuItem name="RETAIL::CHANGE_LINE" actionRef="RETAIL::MENU.MODIFY_LINE" sticky="false" category="Retail" keywords="universal,register_extended">
+    <MenuOption ref="RETAIL::CHANGE_LINE_QUANTITY" />
+    <MenuOption ref="RETAIL::CHANGE_LINE_PRICE" />
+    <MenuOption ref="RETAIL::ADD_LINE_DISCOUNT" /><!-- ...this was originally under RETAIL::ADD_DISCOUNT -->
+
+    <SubMenu actionRef="RETAIL::MENU.MODIFY_LINE_TAX">
+      <MenuOption ref="RETAIL::TAX.CHANGE_LINE_LOCATION" />
+      <MenuOption ref="RETAIL::TAX.EXEMPT_LINE" />
+      <MenuOption ref="RETAIL::TAX.CHANGE_LINE_AMOUNT" />
+      <MenuOption ref="RETAIL::TAX.CHANGE_LINE_PERCENT" />
+    </SubMenu>
+
+    <MenuOption ref="RETAIL::VOID_LINE" />
+    <MenuOption ref="RETAIL::CHANGE_DISCOUNT" />
+    <MenuOption ref="XSTOREM::REMOVE_PRICEMOD" />
+    <MenuOption ref="RETAIL::CHANGE_COMMISSIONED_ASSOCIATES" />
+    <MenuOption ref="RETAIL::CHANGE_SERAIL_NUMBER" />
+  </MenuItem>
+
+  <MenuItem name="SALE::TENDER_OPTIONS" text="_menuSaleTender" displayType="ICON_LIST" category="Tender" keywords="sale_tender">
+    <MenuOption ref="SALE::TENDER_LOCAL_CURRENCY" />
+    <MenuOption ref="SALE::TENDER_CREDIT_CARD" />
+    <MenuOption ref="SALE::TENDER_MANUAL_CREDIT" />
+    <MenuOption ref="SALE::TENDER_MANUAL_DEBIT" />
+    <MenuOption ref="SALE::TENDER_GIFT_CARD" />
+    <MenuOption ref="SALE::TENDER_GIFT_CERTIFICATE" />
+    <MenuOption ref="SALE::TENDER_STORE_CREDIT" />
+    <MenuOption ref="SALE::TENDER_STORE_CREDIT_CARD" />    
+    <MenuOption ref="SALE::TENDER_TRAVELERS_CHECK" />
+    <MenuOption ref="SALE::TENDER_FOREIGN_CURRENCY" />
+    <MenuOption ref="SALE::TENDER_COUPON" />
+   
+<!-- TODO: it would be nice in Cheetah/XstoreMobile if Tender LineItems could work the same way as
+           Sale LineItems with respect to menu actions that are associated with LineItems.  Until
+           we can support this in Xstore, we must NOT use the 'keywords="isLineItemsSubMenuXstoreM"'
+           hint; instead, SALE::CHANGE_TENDER_AMOUNT and SALE::VOID_TENDER must appear in the
+           main menu of the tendering screen in XstoreM.  And if you select VOID or MODIFY, you
+           must then be presented with a specific list of tender line items to choose from.  This
+           is the way Xstore naturally works, but this is at odds with how we would prefer XstoreMobile
+           to work.  If we had our way, in XstoreMobile, you would FIRST touch a Tender LineItem,
+           and then be presented with a menu of options (Void and Modify) related to that Tender LineItem.
+           This is how it works on the Sale LineItems screen. -->
+<!--
+     <SubMenu actionRef="SALE::MENU.MODIFY_TENDER" keywords="isLineItemsSubMenuXstoreM">
+ -->
+    <MenuOption ref="SALE::VOID_TENDER" /> 
+    <MenuOption ref="SALE::CHANGE_TENDER_AMOUNT" />
+    <MenuOption ref="RETAIL::CHECK_SALE_COMPLETE" />
+  </MenuItem>
+  
+  <MenuItem name="RETURN::TENDER_OPTIONS" text="_menuReturnTender" displayType="ICON_LIST" category="Tender" keywords="return_tender">
+    <MenuOption ref="RETURN::TENDER_LOCAL_CURRENCY" />
+    <MenuOption ref="RETURN::TENDER_CREDIT_CARD" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT_CARD.ISSUE" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT_CARD.RELOAD" />
+    <MenuOption ref="RETURN::TENDER_GIFT_CARD.ISSUE" />
+    <MenuOption ref="RETURN::TENDER_GIFT_CARD.RELOAD" />
+    <MenuOption ref="RETURN::VOID_TENDER" />
+    <MenuOption ref="RETAIL::CHECK_SALE_COMPLETE" />
+  </MenuItem>
+
+  <MenuItem name="INVENTORY::OPTIONS" text="_menuTextInventory" displayType="LIST" category="Back Office" keywords="universal,inventory,report_inventory">
+    <MenuOption ref="RECEIVING" />
+    <MenuOption ref="SHIPPING" />
+    <MenuOption ref="INVENTORY_ADJUSTMENT" />
+    <MenuOption ref="INVENTORY::ITEM_TRANSFER" />
+    <MenuOption ref="INVENTORY::SEARCH_FOR_ITEM" />
+    <MenuOption ref="INVENTORY_COUNT::SEARCH" />
+  </MenuItem>
+
+  <MenuItem name="INVENTORY_COUNT::MAIN" text="_invCountMenuText" keywords="inventoryCount" displayType="BUTTON">
+    <MenuOption ref="SELECT_FROM_LIST" text="_invCountCount" />
+    <MenuOption ref="INVENTORY_COUNT::GENERATE_SHEETS" />
+    <MenuOption ref="INVENTORY_COUNT::INITIATE" />
+    <MenuOption ref="INVENTORY_COUNT::COMPLETE_COUNT" />
+    <MenuOption ref="INVENTORY_COUNT::SUBMIT_SHEET" />
+    <MenuOption ref="INVENTORY_COUNT::CANCEL_COUNT" />
+  </MenuItem>
+
+  <MenuItem name="INVENTORY_COUNT::SHEET" text="_invCountSheetMenuText" keywords="inventoryCountSheet" displayType="BUTTON">
+    <MenuOption ref="INVENTORY_COUNT_SHEET::SAVE" />
+    <MenuOption ref="INVENTORY_COUNT_SHEET::ADD_ITEM" />
+    <MenuOption ref="INVENTORY_COUNT_SHEET::CHANGE_QUANTITY" />
+  </MenuItem>
+    
+  <MenuItem name="RECEIVING::DOCUMENT" text="_receivingDocument" displayType="BUTTON" category="Receiving" keywords="receivingDocument">
+    <MenuOption ref="SELECT_FROM_LIST" />
+    <MenuOption ref="RECEIVING_DOC::SAVE" />
+    <MenuOption ref="RECEIVING_DOC::ENTIRE_DOCUMENT" />
+    <MenuOption ref="RECEIVING_DOC::COMMENT" />
+  </MenuItem>
+      
+  <MenuItem name="LOGIN::BACK_OFFICE" text="_menuLoginBackOffice" displayType="BUTTON" category="Login" keywords="exclude" />
+  
+  <MenuItem name="TILL::OPTIONS" actionRef="MOBILE::TILL.OPTIONS" displayType="LIST" category="Admin" keywords="back_office">
+    <MenuOption ref="ADMIN::POST_VOID" />
+    <MenuOption ref="TILL::NO_SALE" />
+    <MenuOption ref="TILL::CASH_PICKUP" />
+    <MenuOption ref="TILL::CASH_TRANSFER" />
+    <MenuOption ref="TILL::ATTACH_CASHDRAWER_TILL" />
+    <MenuOption ref="TILL::REMOVE_CASHDRAWER_TILL" />
+  </MenuItem>
+</MenuSet>

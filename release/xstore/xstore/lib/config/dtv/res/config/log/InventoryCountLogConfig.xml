@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <RoutingRules>
+    <RoutingRule name="INVENTORY_COUNT" document="INVENTORY_COUNT" file="INVENTORY_COUNT">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.pos.inventory.count.IInventoryCountLogModel" />
+    </RoutingRule>
+  </RoutingRules>
+
+  <LogTypes>
+    <LogType document="INVENTORY_COUNT" sectionref="TRANSACTION" argContent="INVENTORY_COUNT" />
+  </LogTypes>
+  
+  <sections>
+    <section name="INVENTORY_COUNT">
+      <xml><![CDATA[
+        <InventoryTransaction>
+          <InventoryCount>
+            <CountID>#{getDocumentId}</CountID>
+            <DueDate>#{getDocumentDate}</DueDate>
+            <CountType>#{getReasonCode}</CountType>
+            <CountStatus>#{getNewStatusCode}</CountStatus>
+            
+            <dtv:VariancesAdjusted>#{getVariancesAdjusted}</dtv:VariancesAdjusted>
+            
+            <?iterator method="getCountResults"?>
+            <ItemCount>
+              <ItemID>#{getItemId}</ItemID>
+              <Quantity>#{getCountedQuantity}</Quantity>
+              <dtv:SnapshotQuantity>#{getControlQuantity}</dtv:SnapshotQuantity>
+              <dtv:UnitVariance>!{dtv.pos.inventory.count.UnitVarianceDocBuilderField}[decimal]</dtv:UnitVariance>
+              <dtv:InventoryBucketId>#{getBucketId}</dtv:InventoryBucketId>
+            </ItemCount>
+            <?_iterator?>
+          </InventoryCount>
+        </InventoryTransaction>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>

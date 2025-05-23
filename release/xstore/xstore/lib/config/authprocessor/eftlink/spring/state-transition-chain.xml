@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <!--  Transition Chain Configuration -->
+
+  <bean id="eftLinkCommunicationTN_Template" class= "com.micros_retail.xfgclient.transition.tenderauth.eftlink.SendEftLinkAdminRequestWithResponseTN" abstract="true" >
+    <property name="listInitKeyword" ref="KW_GS_SelectListInit" />
+    <property name="listAddKeyword" ref="KW_GS_SelectListAdd" />
+    <property name="informationPrompt" ref="PROMPT_EFTLINK_AdminInProgress" />
+    <property name="choice2Prompt" ref="PROMPT_EFTLINK_YesNoEntry" />
+    <property name="confirmationPrompt" ref="PROMPT_EFTLINK_Notification" />
+    <property name="listPrompt" ref="PROMPT_EFTLINK_ListEntry" />
+    <property name="numericPrompt" ref="PROMPT_EFTLINK_BigDecimalEntry" />
+    <property name="textPrompt" ref="PROMPT_EFTLINK_StringEntry" />
+    <property name="printChain">
+      <bean name="TCN_EFTLinkPrint" class="com.micros_retail.xfgclient.transition.TransitionChainTN" >
+        <property name="transitions">
+          <list>
+            <bean parent="listPromptTemplateTN" class="com.micros_retail.xfgclient.transition.hardware.printing.PrintRcptsTN" >
+              <property name="showSelection" value="false" />
+              <property name="promptParameters" value="_xfgclient.PrintRcptsTN.title" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="TCN_Login_AfterCompletion" class="com.micros_retail.xfgclient.transition.TransitionChainTN" >
+    <property name="transitions">
+      <list>
+        <bean parent="eftLinkCommunicationTN_Template" >
+          <property name="requestType" value="LOGIN" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_Logout_AfterCompletion" class="com.micros_retail.xfgclient.transition.TransitionChainTN" >
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.tenderauth.eftlink.SendEftLinkAdminRequestTN" >
+          <property name="requestType" value="LOGOFF" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_StartupRecovery_AfterCompletion" class="com.micros_retail.xfgclient.transition.TransitionChainTN" >
+    <property name="transitions">
+      <list>
+        <bean parent="eftLinkCommunicationTN_Template" class="com.micros_retail.xfgclient.transition.tenderauth.eftlink.RestoreEftLinkAdminRequestTN" >
+          <property name="requestType" value="LOGIN" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_EFTLINK_Administration" class="com.micros_retail.xfgclient.transition.TransitionChainTN" >
+    <property name="transitions">
+      <list>
+        <bean parent="eftLinkCommunicationTN_Template" >
+          <property name="requestType" value="ADMINISTRATION" />
+        </bean>
+        <!-- to handle printer errors and wait for print completion -->
+        <ref bean="printReceiptsNoPrinterSelectionTN" />
+      </list>
+    </property>
+  </bean>
+
+  <!--  Transition Chain Configuration End -->
+</beans>

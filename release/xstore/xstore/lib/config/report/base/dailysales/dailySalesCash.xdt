@@ -1,0 +1,205 @@
+<dataTemplate name="DailySalesCash" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_REPORT_DATE" value="_rptRetailPeriodColon"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="AMOUNT" value="_rptAmount"/>
+    <label name="COUNT" value="_rptCount"/>
+    <label name="TOTAL" value="_rptTotal"/>
+
+    <label name="SUMMARY" value="_rptDailySalesCashSummary"/>
+    <label name="SALES_SUMMARY" value="_rptDailySalesCashSalesSummary"/>
+    <label name="TENDERS_SUMMARY" value="_rptDailySalesCashTendersSummary"/>
+
+    <label name="SALES_DETAIL" value="_rptDailySalesCashSales"/>
+    <label name="RETURNS_DETAIL" value="_rptDailySalesCashReturns"/>
+    <label name="TAX_DETAIL" value="_rptDailySalesCashTax"/>
+    <label name="TENDERS_DETAIL" value="_rptDailySalesCashTenders"/>
+
+    <label name="COUNTS_SUMMARY" value="_rptDailySalesCashCounts"/>
+
+    <label name="SALES" value="_rptDailySalesCashSales"/>
+    <label name="RETURNS" value="_rptDailySalesCashReturns"/>
+    <label name="MERCH" value="_rptDailySalesCashMerchandise"/>
+    <label name="PETTY_CASH" value="_rptDailySalesCashPettyCash"/>
+
+    <label name="NON_MERCH" value="_rptDailySalesCashNonMerchandise"/>
+    <label name="MARKDOWNS" value="_rptDailySalesCashMarkdowns"/>
+    <label name="REFUNDS" value="_rptDailySalesCashRefunds"/>
+
+    <label name="TAX" value="_rptDailySalesCashTax"/>
+    <label name="TAXABLE" value="_rptDailySalesCashTaxable"/>
+    <label name="NON_TAXABLE" value="_rptDailySalesCashNonTaxable"/>
+
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriod;Date]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+
+  <dataSource>
+    <queryReference name="Q_SALES_SUMMARY" key="DAILY_SALES_SALES_SUMMARY_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startDate</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>description</ResultField>
+        <ResultField>amount</ResultField>
+      </ResultFields>
+     </queryReference>
+    <queryReference name="Q_TENDERS_SUMMARY" key="DAILY_SALES_TENDERS_SUMMARY_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startDate</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>description</ResultField>
+        <ResultField>amount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_COUNTS_SUMMARY" key="DAILY_SALES_COUNTS_SUMMARY_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startDate</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>description</ResultField>
+        <ResultField>count</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_SALES_DETAIL" key="DAILY_SALES_SALES_DETAIL_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startDate</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group_key</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>amount</ResultField>
+      </ResultFields>
+     </queryReference>
+    <queryReference name="Q_RETURNS_DETAIL" key="DAILY_SALES_RETURNS_DETAIL_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startDate</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group_key</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>amount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TAX_DETAIL" key="DAILY_SALES_TAX_DETAIL_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startDate</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group_key</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>amount</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TENDERS_DETAIL" key="DAILY_SALES_TENDERS_DETAIL_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startDate</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group_key</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>amount</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_SALES_SUMMARY" source="Q_SALES_SUMMARY">
+      <element name="DESC" value="description" />
+      <element name="AMT" value="amount" formatter="Money" />
+      <element name="AMT_RAW" value="amount" />
+    </group>
+    <group name="G_SALES_SUMMARY_TOTAL" source="Q_SALES_SUMMARY">
+      <element name="AMT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_TENDERS_SUMMARY" source="Q_TENDERS_SUMMARY">
+      <element name="DESC" value="description" />
+      <element name="AMT" value="amount" formatter="Money" />
+    </group>
+    <group name="G_TENDERS_SUMMARY_TOTAL" source="Q_TENDERS_SUMMARY">
+      <element name="AMT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_COUNTS_SUMMARY" source="Q_COUNTS_SUMMARY">
+      <element name="DESC" value="description" />
+      <element name="CNT" value="count" />
+    </group>
+    <group name="G_COUNTS_SUMMARY_TOTAL" source="Q_COUNTS_SUMMARY">
+      <element name="CNT" value="count" function="SUM"/>
+    </group>
+    <group name="G_SALES_DETAIL" source="Q_SALES_DETAIL">
+      <element name="GROUP" value="group_key" />
+      <element name="DESC" value="description" />
+      <element name="AMT" value="amount" formatter="Money" />
+    </group>
+    <group name="G_SALES_DETAIL_TOTAL" source="Q_SALES_DETAIL">
+      <element name="AMT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_RETURNS_DETAIL" source="Q_RETURNS_DETAIL">
+      <element name="GROUP" value="group_key" />
+      <element name="DESC" value="description" />
+      <element name="AMT" value="amount" formatter="Money" />
+    </group>
+    <group name="G_RETURNS_DETAIL_TOTAL" source="Q_RETURNS_DETAIL">
+      <element name="AMT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_TAX_DETAIL" source="Q_TAX_DETAIL">
+      <element name="GROUP" value="group_key" />
+      <element name="DESC" value="description" />
+      <element name="AMT" value="amount" formatter="Money" />
+    </group>
+    <group name="G_TAX_DETAIL_TOTAL" source="Q_TAX_DETAIL">
+      <element name="AMT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+    
+    <group name="G_TENDERS_DETAIL" source="Q_TENDERS_DETAIL">
+      <element name="GROUP" value="group_key" />
+      <element name="DESC" value="description" />
+      <element name="AMT" value="amount" formatter="Money" />
+    </group>
+    <group name="G_TENDERS_DETAIL_TOTAL" source="Q_TENDERS_DETAIL">
+      <element name="GROUP" value="group_key" group-by="true"/>
+      <element name="AMT" value="amount" formatter="Money" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

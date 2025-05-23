@@ -1,0 +1,1538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../res/config/query/QueryConfig.xsd">
+  <Query name="INVENTORY_MOVEMENT_HISTORY_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="sort_order" type="Integer" />
+    <ResultField name="item_id" type="String" />
+    <ResultField name="source_bucket" type="String" />
+    <ResultField name="source_location" type="String" />
+    <ResultField name="dest_bucket" type="String" />
+    <ResultField name="dest_location" type="String" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="description" type="String" />
+    <ResultField name="action_code" type="String" />
+    <ResultField name="business_date" type="String" />
+    <ResultField name="trans_seq" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+select 1 as sort_order,stock.item_id,buc.name as source_bucket,loc.name as source_location,
+' ' as dest_bucket, ' ' as dest_location,sum(stock.unitcount)as quantity,
+item.description, ' ' as action_code, 'On Stock' as business_date, ' ' as trans_seq
+from  itm_item item,
+inv_stock_ledger_acct stock left outer join inv_location loc on
+stock.inv_location_id = loc.inv_location_id
+and stock.organization_id = loc.organization_id
+and stock.rtl_loc_id = loc.rtl_loc_id
+left outer join inv_bucket buc on
+stock.bucket_id = buc.bucket_id
+and stock.organization_id = buc.organization_id
+and stock.rtl_loc_id = buc.rtl_loc_id
+where stock.organization_id = item.organization_id
+and stock.item_id= item.item_id
+and stock.unitcount <> 0
+and stock.organization_id = ?
+and (stock.rtl_loc_id = ?) ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Expression trigger="itemId"><![CDATA[stock.item_id=?]]></Expression>
+    </SQL>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+group by stock.item_id,buc.name,loc.name,item.description
+union all
+SELECT 2 as sort_order, ITJ.inventory_item_id,sbuc.name as source_bucket,sloc.name as source_location,
+dbuc.name as dest_bucket,dloc.name as dest_location,
+ITJ.quantity, ' ' as description, coalesce(ITJ.action_code, ' ') as action_code,convert(varchar(10), ITJ.business_date, 101) ,convert(varchar(12), ITJ.trans_seq)
+FROM inv_inventory_journal ITJ
+left outer join inv_location sloc on
+ITJ.organization_id = sloc.organization_id
+and ITJ.rtl_loc_id = sloc.rtl_loc_id
+and ITJ.source_location_id = sloc.inv_location_id
+left outer join inv_bucket sbuc on
+ITJ.source_bucket_id = sbuc.bucket_id
+and ITJ.organization_id = sbuc.organization_id
+and ITJ.rtl_loc_id = sbuc.rtl_loc_id
+left outer join inv_location dloc on
+ITJ.dest_location_id = dloc.inv_location_id
+and ITJ.organization_id = dloc.organization_id
+and ITJ.rtl_loc_id = dloc.rtl_loc_id
+left outer join inv_bucket dbuc on
+ITJ.dest_bucket_id = dbuc.bucket_id
+and ITJ.organization_id = dbuc.organization_id
+and ITJ.rtl_loc_id = dbuc.rtl_loc_id
+where ITJ.organization_id = ?
+and ITJ.rtl_loc_id = ?]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Expression trigger="itemId"><![CDATA[ITJ.inventory_item_id=?]]></Expression>
+      <Expression trigger="argBusinessDateStart" parameters="argBusinessDateStart, argBusinessDateEnd"><![CDATA[ITJ.business_date between ? AND ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[order by 2,1,10 desc]]></Suffix>
+  </Query> 
+   <Query name="PAYROLL_CATEGORY_HOURS_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="employee_id" type="String" />
+	<ResultField name="first_name" type="String" />
+	<ResultField name="last_name" type="String" />
+    <ResultField name="business_date" type="Date" />
+	<ResultField name="dayOfWeek" type="String" />
+	<ResultField name="Bereavement" type="BigDecimal" />
+	<ResultField name="DT" type="BigDecimal" />
+	<ResultField name="Funeral" type="BigDecimal" />
+	<ResultField name="Holiday" type="BigDecimal" />
+	<ResultField name="Jury" type="BigDecimal" />
+	<ResultField name="Overtime" type="BigDecimal" />
+	<ResultField name="Personal" type="BigDecimal" />
+	<ResultField name="Regular" type="BigDecimal" />
+	<ResultField name="Sick" type="BigDecimal" />
+	<ResultField name="Vacation" type="BigDecimal" />
+	<ResultField name="Other" type="BigDecimal" />
+	<ResultField name="DailyTotal" type="BigDecimal" />
+	<ResultField name="NonWorking" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+	SELECT 
+	    employee_id, 
+		first_name, 
+		last_name, 
+		business_date, 
+        Upper(datename(dw, business_date)) as dayOfWeek, 
+        coalesce(BEREAVEMENT,0) as Bereavement, 
+        coalesce(DT,0) as DT, 
+        coalesce(FUNERAL, 0) as Funeral, 
+        coalesce(HOLIDAY, 0) AS Holiday, 
+        coalesce(JURY, 0) as Jury, 
+        coalesce(OT, 0) as Overtime, 
+        coalesce(PERSONAL, 0) as Personal, 
+        coalesce(REGULAR, 0) as Regular, 
+        coalesce(SICK, 0) as Sick, 
+        coalesce(VACATION, 0) as Vacation, 
+        coalesce(BEREAVEMENT,0) + coalesce(JURY,0) + coalesce(HOLIDAY,0) as Other, 
+        coalesce(BEREAVEMENT,0) + coalesce(DT,0) + coalesce(FUNERAL, 0) + 
+        coalesce(HOLIDAY, 0) + coalesce(JURY, 0) + coalesce(OT, 0) + 
+        coalesce(PERSONAL, 0) + coalesce(REGULAR, 0) + coalesce(SICK, 0) + coalesce(VACATION, 0) as DailyTotal, 
+        coalesce(BEREAVEMENT,0)+ coalesce(FUNERAL, 0) + coalesce(HOLIDAY, 0)+ coalesce(JURY, 0) + coalesce(PERSONAL, 0) + coalesce(SICK, 0) + coalesce(VACATION, 0) as NonWorking  
+
+	FROM   (
+		SELECT EMP.employee_id, PRTY.first_name, PRTY.last_name, HRS.business_date, payroll_category, hours_count
+		FROM   thr_payroll HRS
+		INNER JOIN crm_party PRTY
+			ON PRTY.party_id = HRS.party_id
+		INNER JOIN hrs_employee EMP
+			ON PRTY.party_id = EMP.party_id 
+			AND PRTY.ORGANIZATION_ID = EMP.ORGANIZATION_ID      
+	WHERE 
+       HRS.organization_id=? 
+       AND HRS.rtl_loc_id=?
+       AND HRS.posted_date IS NOT NULL
+          ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+	  <Expression trigger="argBusinessDateStart" parameters="argBusinessDateStart,argBusinessDateEnd"><![CDATA[business_date BETWEEN ? AND ?]]></Expression>
+      <Expression trigger="employeeId"><![CDATA[EMP.employee_id = ?]]></Expression>
+     </SQL>
+    <Suffix dtype="String"><![CDATA[
+    ) AS SRCTBL
+
+ PIVOT  
+(
+    SUM(hours_count)FOR payroll_category IN 
+    (
+        [BEREAVEMENT],
+        [DT],
+        [FUNERAL],
+        [HOLIDAY],
+        [JURY],
+        [OT],
+        [OTHER],
+        [PERSONAL],
+        [REGULAR],
+        [SICK],
+        [VACATION]
+    )) AS XTAB
+    ORDER by employee_id, business_date;
+        ]]></Suffix>
+  </Query>
+  <Query name="PWAC_STOCK_VALUATION_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="rtlLocId" type="Integer" />
+    <ResultField name="storeName" type="String" />
+    <ResultField name="itemId" type="String" />
+    <ResultField name="itemDesc" type="String" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="value" type="BigDecimal" />
+    <ResultField name="pwac" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+         SELECT 
+           t0.rtl_loc_id, 
+           loc.store_name, 
+           COALESCE(style.item_id, t0.item_id,' ') as rpt_item_id,
+           COALESCE(style.description, itm.description, ' ' ) as rpt_item_desc,
+           COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) AS quantity, 
+           (COALESCE(unitcount,0) + COALESCE(ts.quantity,0)) * b.pwac as value,
+           COALESCE(b.pwac, -99999) AS pwac
+      FROM loc_rtl_loc loc, inv_stock_ledger_acct t0
+        LEFT OUTER JOIN
+          (SELECT itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id,
+                SUM(COALESCE(quantity,0) * CASE WHEN adjustment_flag = 1 THEN 1 ELSE -1 END) AS quantity
+           FROM rpt_trl_stock_movement_view itm_mov
+           WHERE business_date > ? 
+           GROUP BY itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id) ts
+        ON t0.organization_id = ts.organization_id
+           AND t0.rtl_loc_id = ts.rtl_loc_id
+             AND t0.item_id = ts.item_id
+
+        INNER JOIN
+           (SELECT a.organization_id, a.item_id, SUM(pwac_qty_onhand_endofyear * pwac_value_onhand_endofyear)/SUM(pwac_qty_onhand_endofyear) AS pwac
+            FROM
+               (SELECT organization_id, item_id, SUM(COALESCE(pwac_qty_onhand_endofyear,0)) AS pwac_qty_onhand_endofyear,
+                     SUM(COALESCE(pwac_value_onhand_endofyear,0)*COALESCE(pwac_qty_onhand_endofyear,0))/SUM(COALESCE(pwac_qty_onhand_endofyear,0)) AS pwac_value_onhand_endofyear
+              FROM inv_cst_item_yearend inv_yearend
+              WHERE fiscal_year = (SELECT MAX(fiscal_year)
+                                 FROM inv_cst_item_yearend inv_yearend2
+                                     WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                                     inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                                   inv_yearend2.item_id = inv_yearend.item_id AND
+                                         fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                             rtl_loc_id IN ? AND
+                               organization_id = ?
+                GROUP BY organization_id, item_id
+              HAVING SUM(pwac_qty_onhand_endofyear) <> 0
+
+                UNION ALL
+
+              SELECT inv_doc.organization_id, inv_indl.inventory_item_id, inv_indl.unit_count, (COALESCE(inv_indl.unit_count,0)*COALESCE(inv_indl.unit_cost,0))/COALESCE(inv_indl.unit_count,0)
+                FROM inv_invctl_document inv_doc
+                INNER JOIN
+                inv_invctl_document_lineitm inv_indl
+                ON inv_doc.organization_id = inv_indl.organization_id AND
+                 inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+               inv_doc.document_typcode = inv_indl.document_typcode AND
+                 inv_doc.invctl_document_id = inv_indl.invctl_document_id
+
+             LEFT OUTER JOIN
+              (SELECT organization_id, end_date + 1 as startDateDetail
+          FROM inv_stock_fiscal_year inv_fiscal
+              WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                                   FROM inv_cst_item_yearend inv_yrend2
+                                   WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                                      fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                                          organization_id = ?) fy
+             ON fy.organization_id = inv_doc.organization_id
+
+             WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                   inv_doc.document_subtypcode = 'ASN' AND
+                   inv_doc.organization_id = ? AND
+                   inv_indl.rtl_loc_id IN ? AND
+                   inv_indl.unit_count > 0 AND
+                   inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS')) a
+
+             GROUP BY a.organization_id, a.item_id
+           HAVING SUM(pwac_qty_onhand_endofyear) <> 0) b
+
+         ON t0.item_id = b.item_id
+          AND t0.organization_id = b.organization_id
+
+       INNER JOIN itm_item itm
+         ON t0.item_id = itm.item_id
+            AND t0.organization_id = itm.organization_id
+
+         LEFT OUTER JOIN itm_item style
+         ON itm.parent_item_id = style.item_id
+          AND itm.organization_id = style.organization_id
+         WHERE t0.rtl_loc_id = loc.rtl_loc_id
+           AND t0.rtl_loc_id IN ?
+           AND t0.bucket_id = 'ON_HAND'
+           AND COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) <> 0 ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@retailLocationIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@retailLocationIdList" />
+      <Parameter name="@retailLocationIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+      <Expression trigger="itemId"><![CDATA[COALESCE(itm.item_id, '') LIKE ?]]></Expression>
+      <Expression trigger="styleId"><![CDATA[COALESCE(itm.parent_item_id, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY  t0.rtl_loc_id , t0.item_id  ASC]]></Suffix>
+  </Query>
+  <Query name="PWAC_REPORT_STORES_LOC_TOTALS" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="rtlLocId" type="Integer" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="value" type="BigDecimal" />
+    <ResultField name="pwac" type="BigDecimal" />
+     <SQL>
+      <Statement dtype="String"><![CDATA[
+   SELECT rtl_loc_id, sum(quantity) as tot_qty, sum(value) as tot_value, sum(value)/sum(quantity) as tot_unitcost FROM (
+
+         SELECT 
+           t0.rtl_loc_id as rtl_loc_id, 
+           loc.store_name, 
+           COALESCE(style.item_id, t0.item_id,' ') as rpt_item_id,
+           COALESCE(style.description, itm.description, ' ' ) as rpt_item_desc,
+           COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) AS quantity, 
+           (COALESCE(unitcount,0) + COALESCE(ts.quantity,0)) * b.pwac as value,
+           b.pwac AS pwac
+      FROM loc_rtl_loc loc, inv_stock_ledger_acct t0
+        LEFT OUTER JOIN
+          (SELECT itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id,
+                SUM(COALESCE(quantity,0) * CASE WHEN adjustment_flag = 1 THEN 1 ELSE -1 END) AS quantity
+           FROM rpt_trl_stock_movement_view itm_mov
+           WHERE business_date > ?
+           GROUP BY itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id) ts
+        ON t0.organization_id = ts.organization_id
+           AND t0.rtl_loc_id = ts.rtl_loc_id
+             AND t0.item_id = ts.item_id
+
+        INNER JOIN
+           (SELECT a.organization_id, a.item_id, SUM(pwac_qty_onhand_endofyear * pwac_value_onhand_endofyear)/SUM(pwac_qty_onhand_endofyear) AS pwac
+            FROM
+               (SELECT organization_id, item_id, SUM(COALESCE(pwac_qty_onhand_endofyear,0)) AS pwac_qty_onhand_endofyear,
+                     SUM(COALESCE(pwac_value_onhand_endofyear,0)*COALESCE(pwac_qty_onhand_endofyear,0))/SUM(COALESCE(pwac_qty_onhand_endofyear,0)) AS pwac_value_onhand_endofyear
+              FROM inv_cst_item_yearend inv_yearend
+              WHERE fiscal_year = (SELECT MAX(fiscal_year)
+                                 FROM inv_cst_item_yearend inv_yearend2
+                                     WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                                     inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                                   inv_yearend2.item_id = inv_yearend.item_id AND
+                                         fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                             rtl_loc_id IN ? AND
+                               organization_id = ?
+                GROUP BY organization_id, item_id
+              HAVING SUM(pwac_qty_onhand_endofyear) <> 0
+
+                UNION ALL
+
+              SELECT inv_doc.organization_id, inv_indl.inventory_item_id, inv_indl.unit_count, (COALESCE(inv_indl.unit_count,0)*COALESCE(inv_indl.unit_cost,0))/COALESCE(inv_indl.unit_count,0)
+                FROM inv_invctl_document inv_doc
+                INNER JOIN
+                inv_invctl_document_lineitm inv_indl
+                ON inv_doc.organization_id = inv_indl.organization_id AND
+                 inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+               inv_doc.document_typcode = inv_indl.document_typcode AND
+                 inv_doc.invctl_document_id = inv_indl.invctl_document_id
+
+             LEFT OUTER JOIN
+              (SELECT organization_id, end_date + 1 as startDateDetail
+          FROM inv_stock_fiscal_year inv_fiscal
+              WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                                   FROM inv_cst_item_yearend inv_yrend2
+                                   WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                                      fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                                          organization_id = ?) fy
+             ON fy.organization_id = inv_doc.organization_id
+
+             WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                   inv_doc.document_subtypcode = 'ASN' AND
+                   inv_doc.organization_id = ? AND
+                   inv_indl.rtl_loc_id IN ? AND
+                   inv_indl.unit_count > 0 AND
+                   inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS')) a
+
+             GROUP BY a.organization_id, a.item_id
+           HAVING SUM(pwac_qty_onhand_endofyear) <> 0) b
+
+         ON t0.item_id = b.item_id
+          AND t0.organization_id = b.organization_id
+
+       INNER JOIN itm_item itm
+         ON t0.item_id = itm.item_id
+            AND t0.organization_id = itm.organization_id
+
+         LEFT OUTER JOIN itm_item style
+         ON itm.parent_item_id = style.item_id
+          AND itm.organization_id = style.organization_id
+         WHERE t0.rtl_loc_id = loc.rtl_loc_id
+           AND t0.rtl_loc_id IN ?
+           AND t0.bucket_id = 'ON_HAND'
+           AND COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) <> 0 
+      ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@retailLocationIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@retailLocationIdList" />
+      <Parameter name="@retailLocationIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+      <Expression trigger="itemId"><![CDATA[COALESCE(itm.item_id, '') LIKE ?]]></Expression>
+      <Expression trigger="styleId"><![CDATA[COALESCE(itm.parent_item_id, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[) loc_tots GROUP BY rtl_loc_id ORDER BY rtl_loc_id ASC]]></Suffix>
+  </Query>
+  <Query name="PWAC_REPORT_STORES_TOTALS" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="value" type="BigDecimal" />
+    <ResultField name="pwac" type="BigDecimal" />
+     <SQL>
+      <Statement dtype="String"><![CDATA[
+       SELECT sum(quantity) as tot_qty, sum(value) as tot_value, sum(value)/sum(quantity) as tot_unitcost FROM (
+
+         SELECT 
+           t0.rtl_loc_id as rtl_loc_id, 
+           loc.store_name, 
+           COALESCE(style.item_id, t0.item_id,' ') as rpt_item_id,
+           COALESCE(style.description, itm.description, ' ' ) as rpt_item_desc,
+           COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) AS quantity, 
+           (COALESCE(unitcount,0) + COALESCE(ts.quantity,0)) * b.pwac as value,
+           b.pwac AS pwac
+      FROM loc_rtl_loc loc, inv_stock_ledger_acct t0
+        LEFT OUTER JOIN
+          (SELECT itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id,
+                SUM(COALESCE(quantity,0) * CASE WHEN adjustment_flag = 1 THEN 1 ELSE -1 END) AS quantity
+           FROM rpt_trl_stock_movement_view itm_mov
+           WHERE business_date > ?
+           GROUP BY itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id) ts
+        ON t0.organization_id = ts.organization_id
+           AND t0.rtl_loc_id = ts.rtl_loc_id
+             AND t0.item_id = ts.item_id
+
+        INNER JOIN
+           (SELECT a.organization_id, a.item_id, SUM(pwac_qty_onhand_endofyear * pwac_value_onhand_endofyear)/SUM(pwac_qty_onhand_endofyear) AS pwac
+            FROM
+               (SELECT organization_id, item_id, SUM(COALESCE(pwac_qty_onhand_endofyear,0)) AS pwac_qty_onhand_endofyear,
+                     SUM(COALESCE(pwac_value_onhand_endofyear,0)*COALESCE(pwac_qty_onhand_endofyear,0))/SUM(COALESCE(pwac_qty_onhand_endofyear,0)) AS pwac_value_onhand_endofyear
+              FROM inv_cst_item_yearend inv_yearend
+              WHERE fiscal_year = (SELECT MAX(fiscal_year)
+                                 FROM inv_cst_item_yearend inv_yearend2
+                                     WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                                     inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                                   inv_yearend2.item_id = inv_yearend.item_id AND
+                                         fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                             rtl_loc_id IN ? AND
+                               organization_id = ?
+                GROUP BY organization_id, item_id
+              HAVING SUM(pwac_qty_onhand_endofyear) <> 0
+
+                UNION ALL
+
+              SELECT inv_doc.organization_id, inv_indl.inventory_item_id, inv_indl.unit_count, (COALESCE(inv_indl.unit_count,0)*COALESCE(inv_indl.unit_cost,0))/COALESCE(inv_indl.unit_count,0)
+                FROM inv_invctl_document inv_doc
+                INNER JOIN
+                inv_invctl_document_lineitm inv_indl
+                ON inv_doc.organization_id = inv_indl.organization_id AND
+                 inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+               inv_doc.document_typcode = inv_indl.document_typcode AND
+                 inv_doc.invctl_document_id = inv_indl.invctl_document_id
+
+             LEFT OUTER JOIN
+              (SELECT organization_id, end_date + 1 as startDateDetail
+          FROM inv_stock_fiscal_year inv_fiscal
+              WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                                   FROM inv_cst_item_yearend inv_yrend2
+                                   WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                                      fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                                          organization_id = ?) fy
+             ON fy.organization_id = inv_doc.organization_id
+
+             WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                   inv_doc.document_subtypcode = 'ASN' AND
+                   inv_doc.organization_id = ? AND
+                   inv_indl.rtl_loc_id IN ? AND
+                   inv_indl.unit_count > 0 AND
+                   inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS')) a
+
+             GROUP BY a.organization_id, a.item_id
+           HAVING SUM(pwac_qty_onhand_endofyear) <> 0) b
+
+         ON t0.item_id = b.item_id
+          AND t0.organization_id = b.organization_id
+
+       INNER JOIN itm_item itm
+         ON t0.item_id = itm.item_id
+            AND t0.organization_id = itm.organization_id
+
+         LEFT OUTER JOIN itm_item style
+         ON itm.parent_item_id = style.item_id
+          AND itm.organization_id = style.organization_id
+         WHERE t0.rtl_loc_id = loc.rtl_loc_id
+           AND t0.rtl_loc_id IN ?
+           AND t0.bucket_id = 'ON_HAND'
+           AND COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) <> 0
+      ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@retailLocationIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@retailLocationIdList" />
+      <Parameter name="@retailLocationIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+      <Expression trigger="itemId"><![CDATA[COALESCE(itm.item_id, '') LIKE ?]]></Expression>
+      <Expression trigger="styleId"><![CDATA[COALESCE(itm.parent_item_id, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[) locs_tot GROUP BY rtl_loc_id ORDER BY rtl_loc_id ASC]]></Suffix>
+  </Query>
+ <Query name="PWAC_DETAIL_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="itemId" type="String" />
+    <ResultField name="rtlLocId" type="String" />
+    <ResultField name="itemDesc" type="String" />
+    <ResultField name="detailSeq" type="Integer" />
+    <ResultField name="docId" type="String" />
+    <ResultField name="docLineNbr" type="String" />
+    <ResultField name="createDate" type="Date" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="value" type="BigDecimal" />
+    <ResultField name="unitCost" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT 
+    COALESCE(CAST(style.item_id as varchar), CAST(a.item_id as varchar),' ') as rpt_item_id, 
+    COALESCE(CAST(rtl_loc_id as varchar),' ') as rpt_loc_id, 
+    COALESCE(style.description, itm.description,' ') as rpt_desc,
+    SEQ as rpt_seq,
+    (COALESCE(CAST(a.inv_doc_id as varchar),'Initial Value')) as inv_doc_id,
+    COALESCE(CAST(a.inv_doc_id_lineNbr as varchar),' ') as inv_doc_id_linenbr, 
+    a.inv_create_date as inv_create_date, 
+    a.pwac_qty_onhand_endofyear, 
+    a.pwac_qty_onhand_endofyear * a.pwac_unit_cost_endofyear as pwac_value_onhand_endofyear,
+    a.pwac_unit_cost_endofyear
+     FROM
+        (SELECT organization_id, item_id, rtl_loc_id as rtl_loc_id, null as inv_doc_id, null as inv_doc_id_lineNbr, GETDATE() as inv_create_date,
+                COALESCE(SUM(pwac_qty_onhand_endofyear),0) as pwac_qty_onhand_endofyear,
+                SUM(COALESCE(pwac_value_onhand_endofyear,0)*COALESCE(pwac_qty_onhand_endofyear,0))/SUM(COALESCE(pwac_qty_onhand_endofyear,0)) as pwac_unit_cost_endofyear, 
+                1 as SEQ
+         FROM inv_cst_item_yearend inv_yearend
+         WHERE fiscal_year = (SELECT MAX(fiscal_year)
+               FROM inv_cst_item_yearend inv_yearend2
+               WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                     inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                     inv_yearend2.item_id = inv_yearend.item_id AND
+                     fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                     rtl_loc_id IN ? AND
+                     organization_id = ?
+         GROUP BY organization_id, rtl_loc_id, item_id
+         HAVING SUM(pwac_qty_onhand_endofyear) <> 0
+
+       UNION ALL
+
+         SELECT inv_doc.organization_id, inv_indl.inventory_item_id, inv_doc.rtl_loc_id, inv_indl.invctl_document_id,
+                inv_indl.invctl_document_line_nbr, inv_indl.create_date,
+                COALESCE(inv_indl.unit_count,0), COALESCE(inv_indl.unit_cost,0), 2 as SEQ
+         FROM inv_invctl_document inv_doc
+         INNER JOIN inv_invctl_document_lineitm inv_indl
+             ON inv_doc.organization_id = inv_indl.organization_id AND
+                inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+                inv_doc.document_typcode = inv_indl.document_typcode AND
+                inv_doc.invctl_document_id = inv_indl.invctl_document_id
+         LEFT OUTER JOIN
+              (SELECT organization_id, end_date + 1 as startDateDetail
+              FROM inv_stock_fiscal_year inv_fiscal
+              WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                  FROM inv_cst_item_yearend inv_yrend2
+                  WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                       fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                       organization_id = ?) fy
+             ON fy.organization_id = inv_doc.organization_id
+             WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                   inv_doc.document_subtypcode = 'ASN' AND
+                   inv_doc.organization_id = ? AND
+                   inv_indl.rtl_loc_id IN ? AND
+                   inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS') AND
+                   inv_indl.unit_count <> 0) a
+         INNER JOIN itm_item itm
+             ON a.item_id = itm.item_id
+                AND a.organization_id = itm.organization_id
+         LEFT OUTER JOIN itm_item style
+             ON itm.parent_item_id = style.item_id
+                AND itm.organization_id = style.organization_id
+         WHERE a.item_id is NOT NULL ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@retailLocationIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@retailLocationIdList" />
+
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY rpt_item_id, rpt_loc_id, rpt_seq, inv_create_date, inv_doc_id, a.inv_doc_id_lineNbr ASC]]></Suffix>
+  </Query>
+  <Query name="PWAC_DETAIL_REPORT_ITEMLOC_TOTALS" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="itemId" type="String" />
+    <ResultField name="rtlLocId" type="String" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="value" type="BigDecimal" />
+    <ResultField name="unitCost" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT rpt_item_id, rpt_loc_id, sum(qty_on_hand) as tot_qty, sum(value_onhand) as tot_value, sum(value_onhand)/sum(qty_on_hand) as pwac_unitcost 
+         FROM (SELECT 
+            COALESCE(CAST(style.item_id as varchar), CAST(a.item_id as varchar),' ') as rpt_item_id, 
+            COALESCE(CAST(rtl_loc_id as varchar),' ') as rpt_loc_id, 
+            (a.pwac_qty_onhand_endofyear) as qty_on_hand, 
+            (a.pwac_qty_onhand_endofyear * a.pwac_unit_cost_endofyear) as value_onhand
+            FROM
+            (SELECT organization_id, item_id, rtl_loc_id as rtl_loc_id, null as inv_doc_id, null as inv_doc_id_lineNbr, GETDATE() as inv_create_date,
+                COALESCE(SUM(pwac_qty_onhand_endofyear),0) as pwac_qty_onhand_endofyear,
+                SUM(COALESCE(pwac_value_onhand_endofyear,0)*COALESCE(pwac_qty_onhand_endofyear,0))/SUM(COALESCE(pwac_qty_onhand_endofyear,0)) as pwac_unit_cost_endofyear, 
+                1 as SEQ
+                FROM inv_cst_item_yearend inv_yearend
+                WHERE fiscal_year = (SELECT MAX(fiscal_year)
+                FROM inv_cst_item_yearend inv_yearend2
+                WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                     inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                     inv_yearend2.item_id = inv_yearend.item_id AND
+                     fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                     rtl_loc_id IN ? AND
+                     organization_id = ?
+            GROUP BY organization_id, rtl_loc_id, item_id
+            HAVING SUM(pwac_qty_onhand_endofyear) <> 0
+
+    UNION ALL
+
+        SELECT inv_doc.organization_id, 
+               inv_indl.inventory_item_id, 
+                inv_doc.rtl_loc_id, 
+                inv_indl.invctl_document_id,
+                inv_indl.invctl_document_line_nbr, 
+                inv_indl.create_date,
+                COALESCE(inv_indl.unit_count,0), 
+                COALESCE(inv_indl.unit_cost,0), 
+                2 as SEQ
+        FROM inv_invctl_document inv_doc
+        INNER JOIN inv_invctl_document_lineitm inv_indl
+            ON inv_doc.organization_id = inv_indl.organization_id AND
+               inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+               inv_doc.document_typcode = inv_indl.document_typcode AND
+               inv_doc.invctl_document_id = inv_indl.invctl_document_id
+        LEFT OUTER JOIN
+              (SELECT organization_id, end_date + 1 as startDateDetail
+              FROM inv_stock_fiscal_year inv_fiscal
+              WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                  FROM inv_cst_item_yearend inv_yrend2
+                  WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                        fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                       organization_id = ?) fy
+             ON fy.organization_id = inv_doc.organization_id
+             WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                   inv_doc.document_subtypcode = 'ASN' AND
+                   inv_doc.organization_id = ? AND
+                   inv_indl.rtl_loc_id IN ? AND
+                   inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS') AND
+                   inv_indl.unit_count <> 0) a
+         INNER JOIN itm_item itm
+             ON a.item_id = itm.item_id
+                AND a.organization_id = itm.organization_id
+         LEFT OUTER JOIN itm_item style
+             ON itm.parent_item_id = style.item_id
+                AND itm.organization_id = style.organization_id
+         WHERE a.item_id is NOT NULL ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@retailLocationIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@retailLocationIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[) lot_tots GROUP BY rpt_item_id, rpt_loc_id]]></Suffix>
+  </Query>
+  <Query name="PWAC_DETAIL_REPORT_ITEM_TOTALS" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="itemId" type="String" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="value" type="BigDecimal" />
+    <ResultField name="unitCost" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT rpt_item_id, sum(qty_on_hand) as tot_qty, sum(value_onhand) as tot_value, sum(value_onhand)/sum(qty_on_hand) as pwac_unitcost 
+        FROM (SELECT COALESCE(CAST(style.item_id as varchar), CAST(a.item_id as varchar),' ') as rpt_item_id, 
+            COALESCE(CAST(rtl_loc_id as varchar),' ') as rpt_loc_id, 
+            (a.pwac_qty_onhand_endofyear) as qty_on_hand, 
+            (a.pwac_qty_onhand_endofyear * a.pwac_unit_cost_endofyear) as value_onhand
+        FROM
+        (SELECT organization_id, item_id, rtl_loc_id as rtl_loc_id, null as inv_doc_id, null as inv_doc_id_lineNbr, GETDATE() as inv_create_date,
+                COALESCE(SUM(pwac_qty_onhand_endofyear),0) as pwac_qty_onhand_endofyear,
+                SUM(COALESCE(pwac_value_onhand_endofyear,0)*COALESCE(pwac_qty_onhand_endofyear,0))/SUM(COALESCE(pwac_qty_onhand_endofyear,0)) as pwac_unit_cost_endofyear, 
+                1 as SEQ
+         FROM inv_cst_item_yearend inv_yearend
+         WHERE fiscal_year = (SELECT MAX(fiscal_year)
+               FROM inv_cst_item_yearend inv_yearend2
+               WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                     inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                     inv_yearend2.item_id = inv_yearend.item_id AND
+                     fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                     rtl_loc_id IN ? AND
+                     organization_id = ?
+         GROUP BY organization_id, rtl_loc_id, item_id
+         HAVING SUM(pwac_qty_onhand_endofyear) <> 0
+
+       UNION ALL
+
+         SELECT inv_doc.organization_id, 
+                inv_indl.inventory_item_id, 
+                inv_doc.rtl_loc_id, 
+                inv_indl.invctl_document_id,
+                inv_indl.invctl_document_line_nbr, 
+                inv_indl.create_date,
+                COALESCE(inv_indl.unit_count,0), 
+                COALESCE(inv_indl.unit_cost,0), 
+                2 as SEQ
+         FROM inv_invctl_document inv_doc
+         INNER JOIN inv_invctl_document_lineitm inv_indl
+             ON inv_doc.organization_id = inv_indl.organization_id AND
+                inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+                inv_doc.document_typcode = inv_indl.document_typcode AND
+                inv_doc.invctl_document_id = inv_indl.invctl_document_id
+         LEFT OUTER JOIN
+              (SELECT organization_id, end_date + 1 as startDateDetail
+              FROM inv_stock_fiscal_year inv_fiscal
+              WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                  FROM inv_cst_item_yearend inv_yrend2
+                  WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                       fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                       organization_id = ?) fy
+             ON fy.organization_id = inv_doc.organization_id
+             WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                   inv_doc.document_subtypcode = 'ASN' AND
+                   inv_doc.organization_id = ? AND
+                   inv_indl.rtl_loc_id IN ? AND
+                   inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS') AND
+                   inv_indl.unit_count <> 0) a
+         INNER JOIN itm_item itm
+             ON a.item_id = itm.item_id
+                AND a.organization_id = itm.organization_id
+         LEFT OUTER JOIN itm_item style
+             ON itm.parent_item_id = style.item_id
+                AND itm.organization_id = style.organization_id
+         WHERE a.item_id is NOT NULL ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@retailLocationIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@retailLocationIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[) totals GROUP BY rpt_item_id ]]></Suffix>
+  </Query>
+  <Query name="PRICE_CHANGE_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="merch_level_1" type="String" />
+    <ResultField name="trans_key" type="String" />
+    <ResultField name="item_id" type="String" />
+    <ResultField name="description" type="String" />
+    <ResultField name="style_id" type="String" />
+    <ResultField name="effective_date" type="Date" />
+    <ResultField name="expiration_date" type="Date" />
+    <ResultField name="old_price" type="BigDecimal" />
+    <ResultField name="current_price" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT DISTINCT
+            merch_level_1,
+            case when (translation_key is NULL) 
+              then CONCAT('_dtv.pos.common.PriceTypes.', itm_price_property_code)
+              else translation_key 
+            end as trans_key,
+            item_id,
+            description,
+            COALESCE(style_id, '_rptNotAvailable') as style_id,
+            effective_date,
+            expiration_date,
+            old_price,
+            current_price
+          FROM
+            (
+              SELECT
+                item.organization_id,
+                item.merch_level_1,
+                a.itm_price_property_code,
+                t.translation_key,
+                a.item_id,
+                item.description,
+                item.parent_item_id AS style_id,
+                a.effective_date,
+                a.expiration_date,
+                (
+                  SELECT
+                    price
+                  FROM
+                    itm_item_prices
+                  WHERE
+                    item_id = a.item_id
+                    AND organization_id = a.organization_id
+                    AND itm_price_property_code = a.itm_price_property_code
+                    AND level_code = a.level_code
+                    AND level_value = a.level_value
+                    AND effective_date = (
+                      SELECT
+                        MAX(effective_date)
+                      FROM
+                        itm_item_prices
+                      WHERE
+                        item_id = a.item_id
+                        AND organization_id = a.organization_id
+                        AND effective_date < a.effective_date
+                        AND itm_price_property_code = a.itm_price_property_code
+                        AND level_code = a.level_code
+                        AND level_value = a.level_value
+                    )
+                ) AS old_price,
+                a.price AS current_price
+              FROM
+                itm_item_prices a
+                              
+              LEFT OUTER JOIN 
+                 com_translations t
+              ON
+                 t.translation_key = '+CODE_VALUE.CUSTOMER_GROUPS.' + a.itm_price_property_code + '.DESCRIPTION'
+                 
+              LEFT OUTER JOIN
+                itm_item item
+              ON
+                a.organization_id = item.organization_id
+                AND a.item_id = item.item_id
+              WHERE
+                level_code + ':' + level_value in (select node from fn_nodesInHierarchy(?,'STORE',?))
+            ) d
+          WHERE
+            organization_id = ?
+            AND COALESCE(old_price ,0) <> COALESCE(current_price,0)
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="organizationId" />
+      <Expression trigger="argBusinessDateStart" parameters="argBusinessDateStart, argBusinessDateEnd"><![CDATA[effective_date BETWEEN ? AND ?]]></Expression>
+      <Expression trigger="priceChangeType"><![CDATA[itm_price_property_code LIKE ?]]></Expression>
+      <Expression trigger="merchLevel1"><![CDATA[merch_level_1 = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY effective_date DESC, item_id ASC]]></Suffix>
+  </Query>
+  <Query name="SALE_BY_HOUR_ANALYSIS_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="hour_period" type="Integer" />
+    <ResultField name="trans_count" type="BigDecimal" />
+    <ResultField name="net_amount" type="BigDecimal" />
+    <ResultField name="dow1" type="BigDecimal" />
+    <ResultField name="dow2" type="BigDecimal" />
+    <ResultField name="dow3" type="BigDecimal" />
+    <ResultField name="dow4" type="BigDecimal" />
+    <ResultField name="dow5" type="BigDecimal" />
+    <ResultField name="dow6" type="BigDecimal" />
+    <ResultField name="dow7" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT 
+        hour_period,
+        SUM(trans_count) AS trans_count,
+        SUM(net_amount) AS net_amount,
+        SUM(COALESCE(dow1,0)) AS dow1, 
+        SUM(COALESCE(dow2,0)) AS dow2, 
+        SUM(COALESCE(dow3,0)) AS dow3, 
+        SUM(COALESCE(dow4,0)) AS dow4, 
+        SUM(COALESCE(dow5,0)) AS dow5, 
+        SUM(COALESCE(dow6,0)) AS dow6, 
+        SUM(COALESCE(dow7,0)) AS dow7
+
+        FROM 
+        ( SELECT 
+            CONCAT('DOW', CONVERT(varchar(1), DATEPART (WEEKDAY, tsl.trans_date))) AS dow,
+            FLOOR(tsl.begin_time_int /10000000) AS hour_period,
+            COUNT(DISTINCT tsl.trans_seq) AS trans_count,
+            SUM(COALESCE(tsl.unit_price,0) * COALESCE(tsl.quantity,0)) AS net_amount,
+            SUM(COALESCE(tsl.unit_price,0) * COALESCE(tsl.quantity,0)) AS amount
+          FROM rpt_sale_line tsl
+          JOIN trn_trans trans
+          ON tsl.organization_id = trans.organization_id
+          AND tsl.rtl_loc_id     = trans.rtl_loc_id
+          AND tsl.wkstn_id       = trans.wkstn_id
+          AND tsl.business_date  = trans.business_date
+          AND tsl.trans_seq      = trans.trans_seq
+          WHERE /*UPPER*/ tsl.trans_statcode = 'COMPLETE'
+         ]]></Statement>
+      <Expression trigger="employeeId"><![CDATA[
+          tsl.trans_seq       IN
+            ( SELECT DISTINCT trans_seq
+              FROM trl_commission_mod tcm, crm_party crm
+              WHERE tsl.organization_id  = tcm.organization_id
+              AND tsl.rtl_loc_id         = tcm.rtl_loc_id
+              AND tsl.wkstn_id           = tcm.wkstn_id
+              AND tsl.business_date      = tcm.business_date
+              AND tsl.trans_seq          = tcm.trans_seq
+              AND tsl.rtrans_lineitm_seq = tcm.rtrans_lineitm_seq
+              AND tcm.organization_id    = crm.organization_id
+              AND tcm.employee_party_id  = crm.party_id    
+              AND coalesce(/*UPPER*/ crm.employee_id,'') = ?)]]></Expression>
+    </SQL>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+            AND tsl.organization_id = ?
+            AND tsl.rtl_loc_id = ?
+            AND tsl.QUANTITY <> 0
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Expression trigger="argBusinessDateStart" parameters="argBusinessDateStart, argBusinessDateEnd"><![CDATA[tsl.trans_date between ? AND ?]]></Expression>
+      <Expression trigger="registerId"><![CDATA[tsl.wkstn_id = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY tsl.trans_date, FLOOR(tsl.begin_time_int /10000000)
+          ) wklySlsByHr
+          PIVOT (
+            SUM(wklySlsByHr.amount)
+          FOR wklySlsByHr.dow IN (DOW1, DOW2, DOW3, DOW4, DOW5, DOW6, DOW7)
+          ) AS dowPivot
+            GROUP BY hour_period
+            ORDER BY hour_period]]></Suffix>
+  </Query>
+  <Query name="TIMECARD_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="employee_id" type="String" />
+    <ResultField name="last_name" type="String" />
+    <ResultField name="first_name" type="String" />
+    <ResultField name="business_date" type="Date" />
+    <ResultField name="description" type="String" />
+    <ResultField name="duration" type="BigDecimal" />
+    <ResultField name="clock_in" type="Timestamp" />
+    <ResultField name="clock_out" type="Timestamp" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+         SELECT
+            HRE.employee_id as employee_id,
+            CRP.last_name as last_name,
+            CRP.first_name as first_name,
+            TTE.business_date as business_date,
+            HWC.description as description,
+            CAST(TTE.duration as float)/3600000 AS duration,
+            clock_in_timestamp as clock_in,
+            clock_out_timestamp as clock_out
+
+          FROM
+            hrs_employee HRE
+
+          INNER JOIN
+            crm_party CRP
+          ON
+            HRE.organization_id = CRP.organization_id
+            AND HRE.employee_id = CRP.employee_id
+
+          INNER JOIN
+            thr_timecard_entry TTE
+          ON
+            CRP.organization_id = TTE.organization_id
+            AND CRP.party_id = TTE.party_id
+
+          INNER JOIN
+            hrs_work_codes HWC
+          ON
+            TTE.organization_id = HWC.organization_id AND TTE.work_code = HWC.work_code
+          WHERE
+            COALESCE(TTE.duration, 1)> 0
+            AND HRE.employee_statcode = 'A'
+            AND TTE.delete_flag <> '1'
+            AND HRE.organization_id = ?
+            AND TTE.rtl_loc_id = ?
+          ]]></Statement>
+           <Parameter name="organizationId" />
+           <Parameter name="retailLocationId" />
+           <Expression trigger="argBusinessDateStart" parameters="argBusinessDateStart,argBusinessDateEnd"><![CDATA[business_date BETWEEN ? AND ?]]></Expression>
+           <Expression trigger="employeeId"><![CDATA[HRE.employee_id = ?]]></Expression>
+     </SQL>
+   <Suffix dtype="String"><![CDATA[
+            AND EXISTS (
+              SELECT
+                0
+              FROM
+                thr_payroll PY
+              WHERE
+                PY.organization_id = HRE.organization_id
+                AND PY.rtl_loc_id = TTE.rtl_loc_id
+                AND PY.business_date = TTE.business_date
+                AND posted_date IS NOT NULL
+                AND party_id = hre.party_id
+            )
+            ORDER BY HRE.employee_id, business_date, clock_in_timestamp
+  ]]></Suffix>
+  </Query>
+  <Query name="FLASH_SALES_BY_HOUR_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="group" type="String" />
+    <ResultField name="hour" type="Integer" />
+    <ResultField name="hour_start_key" type="String" />
+    <ResultField name="hour_end_key" type="String" />
+    <ResultField name="trans_count" type="BigDecimal" />
+    <ResultField name="item_count" type="BigDecimal" />
+    <ResultField name="net_sales" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT '_rptHourFlashStoreHours',
+          hour,
+          '_rptHourStart'+CAST(hour as varchar) AS hour_start_key,
+          '_rptHourEnd'+CAST(hour as varchar) AS hour_end_key,
+          SUM(trans_count) AS trans_count,
+          SUM(qty) AS item_count,
+          SUM(net_sales)
+        FROM rpt_sales_by_hour
+        WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND business_date = ?
+          AND 'HOUR' = ?
+        GROUP BY hour
+        ORDER BY hour ASC 
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="displayOption" />
+    </SQL>
+  </Query>
+  <Query name="WAC_DETAIL_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="styleId" type="String" />
+    <ResultField name="styleDesc" type="String" />
+    <ResultField name="itemId" type="String" />
+    <ResultField name="itemDesc" type="String" />
+    <ResultField name="rtlLocId"   type="Integer" />
+    <ResultField name="docInfo"    type="String" />
+    <ResultField name="createDate" type="Date" />
+    <ResultField name="quantity"   type="BigDecimal" />
+    <ResultField name="unitCost"   type="BigDecimal" />
+    <ResultField name="valuationTotal" type="BigDecimal" />
+    <ResultField name="infoType"   type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT 
+         style.item_id AS styleId, 
+         style.description AS styleDesc,
+         a.item_id AS itemId, 
+         itm.description AS itemDesc,        
+         a.rtl_loc_id, 
+         CONCAT(a.inv_doc_id, CONCAT(' - ', a.inv_doc_id_lineNbr)) as docInfo,
+         a.inv_create_date, 
+         a.wac_qty_rcvd, 
+         a.wac_value_rcvd, 
+         COALESCE(a.wac_qty_rcvd, 0) * a.wac_value_rcvd as valuationTotal,
+         a.infoType              
+     FROM
+        (SELECT organization_id, item_id, null as rtl_loc_id, null as inv_doc_id, null as inv_doc_id_lineNbr, null as inv_create_date,
+                COALESCE(SUM(wac_qty_rcvd),0) as wac_qty_rcvd,
+                SUM(COALESCE(wac_value_rcvd,0))/SUM(COALESCE(wac_qty_rcvd,0)) as wac_value_rcvd, 
+                '_rptInitialValue' as infoType
+         FROM inv_cst_item_yearend inv_yearend
+       WHERE fiscal_year = (SELECT MAX(fiscal_year)
+                     FROM inv_cst_item_yearend inv_yearend2
+                         WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                             inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                           inv_yearend2.item_id = inv_yearend.item_id AND
+                                 fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                 rtl_loc_id IN ? AND
+                 organization_id = ?
+       GROUP BY organization_id, item_id
+       HAVING SUM(wac_qty_rcvd) <> 0
+
+         UNION ALL
+
+         SELECT inv_doc.organization_id, inv_indl.inventory_item_id, inv_doc.rtl_loc_id, inv_indl.invctl_document_id,
+                inv_indl.invctl_document_line_nbr, inv_indl.create_date,
+                COALESCE(inv_indl.unit_count,0), COALESCE(inv_indl.unit_cost,0), null as infoType
+         FROM inv_invctl_document inv_doc
+         INNER JOIN
+                inv_invctl_document_lineitm inv_indl
+         ON inv_doc.organization_id = inv_indl.organization_id AND
+            inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+            inv_doc.document_typcode = inv_indl.document_typcode AND
+            inv_doc.invctl_document_id = inv_indl.invctl_document_id
+         LEFT OUTER JOIN
+          (SELECT organization_id, end_date + 1 as startDateDetail
+          FROM inv_stock_fiscal_year inv_fiscal
+          WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                               FROM inv_cst_item_yearend inv_yrend2
+                               WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                                     fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                                     organization_id = ?) fy
+          ON fy.organization_id = inv_doc.organization_id
+            WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                  inv_doc.document_subtypcode = 'ASN' AND
+                  inv_doc.organization_id = ? AND
+                  inv_indl.rtl_loc_id IN ? AND
+                  inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS') AND
+                  inv_indl.unit_count <> 0) a
+     INNER JOIN itm_item itm
+     ON a.item_id = itm.item_id
+     AND a.organization_id = itm.organization_id
+     LEFT OUTER JOIN itm_item style
+     ON itm.parent_item_id = style.item_id
+     AND itm.organization_id = style.organization_id
+     WHERE a.item_id is NOT NULL
+      ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@userRtlLocIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@userRtlLocIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+      <Expression trigger="itemId"><![CDATA[COALESCE(itm.item_id, '') LIKE ?]]></Expression>
+      <Expression trigger="styleId"><![CDATA[COALESCE(itm.parent_item_id, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY a.infoType, a.inv_create_date, style.item_id, a.item_id, a.rtl_loc_id, a.inv_doc_id, a.inv_doc_id_lineNbr ASC]]></Suffix>
+  </Query>
+  <Query name="WAC_DETAIL_UCOST_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="itemId"   type="String" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="value"    type="BigDecimal" />
+    <ResultField name="ucost"    type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT 
+         a.item_id AS itemId, 
+         sum(a.wac_qty_rcvd) as quantity, 
+         sum(COALESCE(a.wac_qty_rcvd, 0) * a.wac_value_rcvd) as value,
+         sum(COALESCE(a.wac_qty_rcvd, 0) * a.wac_value_rcvd)/sum(a.wac_qty_rcvd) as ucost             
+     FROM
+        (SELECT organization_id, item_id, null as rtl_loc_id, null as inv_doc_id, null as inv_doc_id_lineNbr, null as inv_create_date,
+                COALESCE(SUM(wac_qty_rcvd),0) as wac_qty_rcvd,
+                SUM(COALESCE(wac_value_rcvd,0))/SUM(COALESCE(wac_qty_rcvd,0)) as wac_value_rcvd, 
+                '_rptInitialValue' as infoType
+         FROM inv_cst_item_yearend inv_yearend
+       WHERE fiscal_year = (SELECT MAX(fiscal_year)
+                     FROM inv_cst_item_yearend inv_yearend2
+                         WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                             inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                           inv_yearend2.item_id = inv_yearend.item_id AND
+                                 fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                 rtl_loc_id IN ? AND
+                 organization_id = ?
+       GROUP BY organization_id, item_id
+       HAVING SUM(wac_qty_rcvd) <> 0
+
+         UNION ALL
+
+         SELECT inv_doc.organization_id, inv_indl.inventory_item_id, inv_doc.rtl_loc_id, inv_indl.invctl_document_id,
+                inv_indl.invctl_document_line_nbr, inv_indl.create_date,
+                COALESCE(inv_indl.unit_count,0), COALESCE(inv_indl.unit_cost,0), null as infoType
+         FROM inv_invctl_document inv_doc
+         INNER JOIN
+                inv_invctl_document_lineitm inv_indl
+         ON inv_doc.organization_id = inv_indl.organization_id AND
+            inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+            inv_doc.document_typcode = inv_indl.document_typcode AND
+            inv_doc.invctl_document_id = inv_indl.invctl_document_id
+         LEFT OUTER JOIN
+          (SELECT organization_id, end_date + 1 as startDateDetail
+          FROM inv_stock_fiscal_year inv_fiscal
+          WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                               FROM inv_cst_item_yearend inv_yrend2
+                               WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                                     fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                                     organization_id = ?) fy
+          ON fy.organization_id = inv_doc.organization_id
+            WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                  inv_doc.document_subtypcode = 'ASN' AND
+                  inv_doc.organization_id = ? AND
+                  inv_indl.rtl_loc_id IN ? AND
+                  inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS') AND
+                  inv_indl.unit_count <> 0) a
+     INNER JOIN itm_item itm
+     ON a.item_id = itm.item_id
+     AND a.organization_id = itm.organization_id
+     LEFT OUTER JOIN itm_item style
+     ON itm.parent_item_id = style.item_id
+     AND itm.organization_id = style.organization_id
+     WHERE a.item_id is NOT NULL
+      ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@userRtlLocIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@userRtlLocIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+      <Expression trigger="itemId"><![CDATA[COALESCE(itm.item_id, '') LIKE ?]]></Expression>
+      <Expression trigger="styleId"><![CDATA[COALESCE(itm.parent_item_id, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY a.item_id ORDER BY a.item_id ASC]]></Suffix>
+  </Query>  
+  <Query name="WAC_STOCK_VALUATION_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="storeId" type="Integer" />
+    <ResultField name="storeName" type="String" />    
+    <ResultField name="styleId" type="String" />
+    <ResultField name="styleDesc" type="String" />
+    <ResultField name="itemId" type="String" />
+    <ResultField name="itemDesc" type="String" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="ucost" type="BigDecimal" />
+    <ResultField name="valuationTotal" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+         SELECT t0.rtl_loc_id AS storeId,
+                loc.store_name AS storeName, 
+                style.item_id AS styleId, 
+                style.description AS styleDesc,
+                t0.item_id AS itemId, 
+                itm.description AS itemDesc,
+                COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) AS quantity, 
+                b.wac AS ucost, 
+                (COALESCE(unitcount,0) + COALESCE(ts.quantity, 0)) * b.wac as valuationTotal
+        FROM loc_rtl_loc loc, inv_stock_ledger_acct t0
+        LEFT OUTER JOIN
+          (SELECT itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id,
+                SUM(COALESCE(quantity,0) * CASE WHEN adjustment_flag = 1 THEN 1 ELSE -1 END) AS quantity
+           FROM rpt_trl_stock_movement_view itm_mov
+           WHERE business_date > ?
+           GROUP BY itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id) ts
+        ON t0.organization_id = ts.organization_id
+           AND t0.rtl_loc_id = ts.rtl_loc_id
+             AND t0.item_id = ts.item_id
+
+        INNER JOIN
+           (SELECT a.organization_id, a.item_id, SUM(wac_value_rcvd)/SUM(wac_qty_rcvd) AS wac
+            FROM
+               (SELECT organization_id, item_id, SUM(COALESCE(wac_qty_rcvd,0)) AS wac_qty_rcvd,
+                     SUM(COALESCE(wac_value_rcvd,0)) AS wac_value_rcvd
+              FROM inv_cst_item_yearend inv_yearend
+              WHERE fiscal_year = (SELECT MAX(fiscal_year)
+                                 FROM inv_cst_item_yearend inv_yearend2
+                                     WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                                     inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                                   inv_yearend2.item_id = inv_yearend.item_id AND
+                                         fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                             rtl_loc_id IN ? AND
+                               organization_id = ?
+                GROUP BY organization_id, item_id
+              HAVING SUM(wac_qty_rcvd) <> 0
+
+                UNION ALL
+
+              SELECT inv_doc.organization_id, inv_indl.inventory_item_id, inv_indl.unit_count, COALESCE(inv_indl.unit_count,0)*COALESCE(inv_indl.unit_cost,0)
+                FROM inv_invctl_document inv_doc
+                INNER JOIN
+                inv_invctl_document_lineitm inv_indl
+                ON inv_doc.organization_id = inv_indl.organization_id AND
+                 inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+               inv_doc.document_typcode = inv_indl.document_typcode AND
+                 inv_doc.invctl_document_id = inv_indl.invctl_document_id
+
+             LEFT OUTER JOIN
+              (SELECT organization_id, end_date + 1 as startDateDetail
+          FROM inv_stock_fiscal_year inv_fiscal
+              WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                                   FROM inv_cst_item_yearend inv_yrend2
+                                   WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                                      fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                                          organization_id = ?) fy
+             ON fy.organization_id = inv_doc.organization_id
+
+               WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                  inv_doc.document_subtypcode = 'ASN' AND
+                  inv_doc.organization_id = ? AND
+                  inv_indl.rtl_loc_id IN ? AND
+                  inv_indl.unit_count > 0 AND
+                  inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS')) a
+
+             GROUP BY a.organization_id, a.item_id
+           HAVING SUM(wac_qty_rcvd) <> 0) b
+
+         ON t0.item_id = b.item_id
+          AND t0.organization_id = b.organization_id
+
+       INNER JOIN itm_item itm
+         ON t0.item_id = itm.item_id
+            AND t0.organization_id = itm.organization_id
+
+         LEFT OUTER JOIN itm_item style
+         ON itm.parent_item_id = style.item_id
+          AND itm.organization_id = style.organization_id
+         WHERE t0.rtl_loc_id = loc.rtl_loc_id
+           AND t0.rtl_loc_id IN ?
+           AND t0.bucket_id = 'ON_HAND'
+           AND COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) <> 0
+      ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@userRtlLocIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@userRtlLocIdList" />
+      <Parameter name="@retailLocationIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+      <Expression trigger="itemId"><![CDATA[COALESCE(itm.item_id, '') LIKE ?]]></Expression>
+      <Expression trigger="styleId"><![CDATA[COALESCE(itm.parent_item_id, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t0.rtl_loc_id, t0.item_id ASC]]></Suffix>
+  </Query>
+  <Query name="WAC_STOCK_VALUATION_UCOST_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="storeId"  type="Integer" />
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="value"    type="BigDecimal" />
+    <ResultField name="ucost"    type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+         SELECT t0.rtl_loc_id AS storeId,
+                SUM(COALESCE(unitcount,0) + COALESCE(ts.quantity, 0)) AS quantity,
+                SUM((COALESCE(unitcount,0) + COALESCE(ts.quantity, 0)) * b.wac) AS value,
+                SUM((COALESCE(unitcount,0) + COALESCE(ts.quantity, 0)) * b.wac)/SUM(COALESCE(unitcount,0) + COALESCE(ts.quantity, 0)) as ucost
+        FROM loc_rtl_loc loc, inv_stock_ledger_acct t0
+        LEFT OUTER JOIN
+          (SELECT itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id,
+                SUM(COALESCE(quantity,0) * CASE WHEN adjustment_flag = 1 THEN 1 ELSE -1 END) AS quantity
+           FROM rpt_trl_stock_movement_view itm_mov
+           WHERE business_date > ?
+           GROUP BY itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id) ts
+        ON t0.organization_id = ts.organization_id
+           AND t0.rtl_loc_id = ts.rtl_loc_id
+             AND t0.item_id = ts.item_id
+
+        INNER JOIN
+           (SELECT a.organization_id, a.item_id, SUM(wac_value_rcvd)/SUM(wac_qty_rcvd) AS wac
+            FROM
+               (SELECT organization_id, item_id, SUM(COALESCE(wac_qty_rcvd,0)) AS wac_qty_rcvd,
+                     SUM(COALESCE(wac_value_rcvd,0)) AS wac_value_rcvd
+              FROM inv_cst_item_yearend inv_yearend
+              WHERE fiscal_year = (SELECT MAX(fiscal_year)
+                                 FROM inv_cst_item_yearend inv_yearend2
+                                     WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                                     inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                                   inv_yearend2.item_id = inv_yearend.item_id AND
+                                         fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                             rtl_loc_id IN ? AND
+                               organization_id = ?
+                GROUP BY organization_id, item_id
+              HAVING SUM(wac_qty_rcvd) <> 0
+
+                UNION ALL
+
+              SELECT inv_doc.organization_id, inv_indl.inventory_item_id, inv_indl.unit_count, COALESCE(inv_indl.unit_count,0)*COALESCE(inv_indl.unit_cost,0)
+                FROM inv_invctl_document inv_doc
+                INNER JOIN
+                inv_invctl_document_lineitm inv_indl
+                ON inv_doc.organization_id = inv_indl.organization_id AND
+                 inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+               inv_doc.document_typcode = inv_indl.document_typcode AND
+                 inv_doc.invctl_document_id = inv_indl.invctl_document_id
+
+             LEFT OUTER JOIN
+              (SELECT organization_id, end_date + 1 as startDateDetail
+          FROM inv_stock_fiscal_year inv_fiscal
+              WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                                   FROM inv_cst_item_yearend inv_yrend2
+                                   WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                                      fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                                          organization_id = ?) fy
+             ON fy.organization_id = inv_doc.organization_id
+
+               WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                  inv_doc.document_subtypcode = 'ASN' AND
+                  inv_doc.organization_id = ? AND
+                  inv_indl.rtl_loc_id IN ? AND
+                  inv_indl.unit_count > 0 AND
+                  inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS')) a
+
+             GROUP BY a.organization_id, a.item_id
+           HAVING SUM(wac_qty_rcvd) <> 0) b
+
+         ON t0.item_id = b.item_id
+          AND t0.organization_id = b.organization_id
+
+       INNER JOIN itm_item itm
+         ON t0.item_id = itm.item_id
+            AND t0.organization_id = itm.organization_id
+
+         LEFT OUTER JOIN itm_item style
+         ON itm.parent_item_id = style.item_id
+          AND itm.organization_id = style.organization_id
+         WHERE t0.rtl_loc_id = loc.rtl_loc_id
+           AND t0.rtl_loc_id IN ?
+           AND t0.bucket_id = 'ON_HAND'
+           AND COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) <> 0
+      ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@userRtlLocIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@userRtlLocIdList" />
+      <Parameter name="@retailLocationIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+      <Expression trigger="itemId"><![CDATA[COALESCE(itm.item_id, '') LIKE ?]]></Expression>
+      <Expression trigger="styleId"><![CDATA[COALESCE(itm.parent_item_id, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY t0.rtl_loc_id ORDER BY t0.rtl_loc_id ASC]]></Suffix>
+  </Query>  
+  <Query name="WAC_STOCK_VALUATION_UCOST_TOTAL_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="quantity" type="BigDecimal" />
+    <ResultField name="value" type="BigDecimal" />
+    <ResultField name="ucost" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT
+            SUM(COALESCE(unitcount,0) + COALESCE(ts.quantity, 0)) AS quantity,
+            SUM((COALESCE(unitcount,0) + COALESCE(ts.quantity, 0)) * b.wac) AS value,
+            SUM((COALESCE(unitcount,0) + COALESCE(ts.quantity, 0)) * b.wac)/SUM(COALESCE(unitcount,0) + COALESCE(ts.quantity, 0)) AS ucost
+        FROM loc_rtl_loc loc, inv_stock_ledger_acct t0
+        LEFT OUTER JOIN
+          (SELECT itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id,
+                SUM(COALESCE(quantity,0) * CASE WHEN adjustment_flag = 1 THEN 1 ELSE -1 END) AS quantity
+           FROM rpt_trl_stock_movement_view itm_mov
+           WHERE business_date > ?
+           GROUP BY itm_mov.organization_id, itm_mov.rtl_loc_id, itm_mov.item_id) ts
+        ON t0.organization_id = ts.organization_id
+           AND t0.rtl_loc_id = ts.rtl_loc_id
+             AND t0.item_id = ts.item_id
+
+        INNER JOIN
+           (SELECT a.organization_id, a.item_id, SUM(wac_value_rcvd)/SUM(wac_qty_rcvd) AS wac
+            FROM
+               (SELECT organization_id, item_id, SUM(COALESCE(wac_qty_rcvd,0)) AS wac_qty_rcvd,
+                     SUM(COALESCE(wac_value_rcvd,0)) AS wac_value_rcvd
+              FROM inv_cst_item_yearend inv_yearend
+              WHERE fiscal_year = (SELECT MAX(fiscal_year)
+                                 FROM inv_cst_item_yearend inv_yearend2
+                                     WHERE inv_yearend2.organization_id =  inv_yearend.organization_id AND
+                                     inv_yearend2.rtl_loc_id = inv_yearend.rtl_loc_id AND
+                                   inv_yearend2.item_id = inv_yearend.item_id AND
+                                         fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                             rtl_loc_id IN ? AND
+                               organization_id = ?
+                GROUP BY organization_id, item_id
+              HAVING SUM(wac_qty_rcvd) <> 0
+
+                UNION ALL
+
+              SELECT inv_doc.organization_id, inv_indl.inventory_item_id, inv_indl.unit_count, COALESCE(inv_indl.unit_count,0)*COALESCE(inv_indl.unit_cost,0)
+                FROM inv_invctl_document inv_doc
+                INNER JOIN
+                inv_invctl_document_lineitm inv_indl
+                ON inv_doc.organization_id = inv_indl.organization_id AND
+                 inv_doc.rtl_loc_id = inv_indl.rtl_loc_id AND
+               inv_doc.document_typcode = inv_indl.document_typcode AND
+                 inv_doc.invctl_document_id = inv_indl.invctl_document_id
+
+             LEFT OUTER JOIN
+              (SELECT organization_id, end_date + 1 as startDateDetail
+          FROM inv_stock_fiscal_year inv_fiscal
+              WHERE fiscal_year = (SELECT COALESCE(MAX(fiscal_year),0)
+                                   FROM inv_cst_item_yearend inv_yrend2
+                                   WHERE inv_yrend2.organization_id =  inv_fiscal.organization_id AND
+                                      fiscal_year <= YEAR(DATEADD(YYYY, -1, ?))) AND
+                                          organization_id = ?) fy
+             ON fy.organization_id = inv_doc.organization_id
+
+               WHERE inv_indl.create_date BETWEEN startDateDetail AND ? AND
+                  inv_doc.document_subtypcode = 'ASN' AND
+                  inv_doc.organization_id = ? AND
+                  inv_indl.rtl_loc_id IN ? AND
+                  inv_indl.unit_count > 0 AND
+                  inv_doc.status_code IN ('CLOSED', 'OPEN', 'IN_PROCESS')) a
+
+             GROUP BY a.organization_id, a.item_id
+           HAVING SUM(wac_qty_rcvd) <> 0) b
+
+         ON t0.item_id = b.item_id
+          AND t0.organization_id = b.organization_id
+
+       INNER JOIN itm_item itm
+         ON t0.item_id = itm.item_id
+            AND t0.organization_id = itm.organization_id
+
+         LEFT OUTER JOIN itm_item style
+         ON itm.parent_item_id = style.item_id
+          AND itm.organization_id = style.organization_id
+         WHERE t0.rtl_loc_id = loc.rtl_loc_id
+           AND t0.rtl_loc_id IN ?
+           AND t0.bucket_id = 'ON_HAND'
+           AND COALESCE(unitcount,0) + COALESCE(ts.quantity, 0) <> 0
+      ]]></Statement>
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="@userRtlLocIdList" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="argBusinessDateStart" />
+      <Parameter name="organizationId" />
+      <Parameter name="@userRtlLocIdList" />
+      <Parameter name="@retailLocationIdList" />
+      <Expression trigger="merchLevel1"><![CDATA[COALESCE(itm.merch_level_1, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel2"><![CDATA[COALESCE(itm.merch_level_2, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel3"><![CDATA[COALESCE(itm.merch_level_3, '') LIKE ?]]></Expression>
+      <Expression trigger="merchLevel4"><![CDATA[COALESCE(itm.merch_level_4, '') LIKE ?]]></Expression>
+      <Expression trigger="itemId"><![CDATA[COALESCE(itm.item_id, '') LIKE ?]]></Expression>
+      <Expression trigger="styleId"><![CDATA[COALESCE(itm.parent_item_id, '') LIKE ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY t0.rtl_loc_id ORDER BY t0.rtl_loc_id ASC]]></Suffix>
+  </Query>        
+</QuerySet>

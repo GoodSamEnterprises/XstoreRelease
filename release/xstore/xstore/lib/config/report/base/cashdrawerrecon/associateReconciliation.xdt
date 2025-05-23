@@ -1,0 +1,94 @@
+<dataTemplate name="AssociateReconciliation" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE" value="_rptRetailPeriodColon"/>
+    <label name="CRITERIA_ASSOCIATE" value="_rptAssociatesColon"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="MIN" value="_rptMin"/>
+    <label name="MAX" value="_rptMax"/>
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="TENDER" value="_rptAssociateReconciliationReportTender"/>
+    <label name="QTY" value="_rptQuantity"/>
+    <label name="ASSC_COUNT" value="_rptAssociateReconciliationReportAssociateCount"/>
+    <label name="SYS_COUNT" value="_rptAssociateReconciliationReportSystemCount"/>
+    <label name="OVER/SHORT" value="_rptAssociateReconciliationReportOverShort"/>
+    <label name="ASSC_NO" value="_rptAssociateReconciliationReportAssociateNo"/>
+    <label name="ASSC_SIG" value="_rptAssociateReconciliationReportAssociateSign"/>
+    <label name="MGR_SIG" value="_rptAssociateReconciliationReportManagerSign"/>
+    <label name="TOTAL" value="_rptTotal"/>
+ </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+
+    <!-- User Parameters -->
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate">
+      <parameterDescription><![CDATA[_rptRetailPeriod;Date]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startEmp" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptParamStartAssociate;Text;Simple;maxLength=20]]></parameterDescription>
+    </parameter>
+    <parameter name="endEmp" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptParamEndAssociate;Text;Simple;maxLength=20]]></parameterDescription>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+
+  <!--Data source and data Structure-->
+    <dataSource>
+    <queryReference name="Q_ASSC_RECON" key="ASSOCIATE_RECONCILIATION_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>dtvStartDate</Parameter>
+        <Parameter>startEmp</Parameter>
+        <Parameter>endEmp</Parameter>
+      </Parameters>
+      <ResultFields>
+          <ResultField>description</ResultField>
+          <ResultField>drawer_total</ResultField>
+          <ResultField>declared_amount</ResultField>
+          <ResultField>over_short</ResultField>
+          <ResultField>employee_id</ResultField>
+          <ResultField>quantity</ResultField>
+          <ResultField>assc_name</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_ASSC_RECON" source="Q_ASSC_RECON">
+      <element name="DESC" value="description"/>
+      <element name="QTY" value="quantity" formatter="Decimal"/>
+      <element name="DWR_TOT" value="drawer_total" formatter="Accounting"/>
+      <element name="DEC_AMT" value="declared_amount" formatter="Accounting"/>
+      <element name="OVR_SHRT" value="over_short" formatter="Accounting"/>
+      <element name="EMP_ID" value="employee_id"/>
+      <element name="ASSC" value="assc_name" formatter="LastFirstNameFromString"/>
+    </group>
+    <group name="G_ASSC_RECON_TOTL" source="Q_ASSC_RECON">
+      <element name="EMP_ID" value="employee_id" group-by="true"/>
+      <element name="DWR_TOT" value="drawer_total" formatter="Accounting" function="SUM"/>
+      <element name="DEC_AMT" value="declared_amount" formatter="Accounting" function="SUM"/>
+      <element name="OVR_SHRT" value="over_short" formatter="Accounting" function="SUM"/>
+    </group>
+  </dataStructure>
+
+</dataTemplate>

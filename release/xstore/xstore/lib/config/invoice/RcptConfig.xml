@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+  <FormatterMap>
+    
+  </FormatterMap>
+
+  <ReceiptCopyRules>    
+    <!-- ensure a customer copy for retail transactions -->
+    <ReceiptCopyRule name="RETAIL_SALE" document="CUSTOMER">
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.TransactionTypeRule" type="RETAIL_SALE" />
+      <Rule class="dtv.pos.hardware.rcptbuilding.copyrules.CanceledTransactionReceiptEnabledRule" />
+      <Rule class="oracle.retail.xstore.countrypack.common.invoice.docbuilding.conditions.InvoiceIssuedCopyRule" />      
+    </ReceiptCopyRule>    
+    <ReceiptCopyRule name="COUNTRYPACK.TAXFREE" document="COUNTRYPACK.TAXFREE">
+      <Rule class="oracle.retail.xstore.countrypack.common.taxfree.copyrules.TaxFreeReceiptRule" />
+    </ReceiptCopyRule>
+  </ReceiptCopyRules>
+
+  <receipts>
+    <receipt document="COUNTRYPACK.TAXFREE" sectionref="COUNTRYPACK.TAXFREE" />
+  </receipts>
+
+  <FrankTenders>
+  </FrankTenders>
+
+  <sections>
+    <section name="COUNTRYPACK.TAXFREE">
+      <!-- Rcpt without element are normally discarded
+      in addition is not possible to reprint the receipt, the "%END_IF%" field is added by the code,
+      see oracle.retail.xstore.countrypack.common.taxfree.AbstractTaxFreeRcptBuilder -->
+      <row>
+        <field text="%IF_ORIGINAL%" />
+      </row>
+    </section>
+  </sections>
+
+
+</ReceiptDefinitions>

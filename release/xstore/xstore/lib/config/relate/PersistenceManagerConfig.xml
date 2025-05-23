@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PersistenceManagerTypeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/PersistenceManagerConfig.xsd">
+  
+  <!-- ************************************************* -->
+  <!-- DOMAIN TYPES -->
+  <!-- ************************************************* -->
+  <PersistenceManagerType name="CUSTOMER_CRM" ref="STORE_STANDARD" sync="true">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Relate" />
+      <LookupLocation dataSourceName="Xcenter" />
+      <LookupLocation dataSourceName="StorePrimary" />
+      
+      <!-- REPLICATED ASYNCHRONOUS WRITES -->
+      <!-- WARNING: asynchronous, replication based customer writes to Relate will cause a race condition if a new customer is 
+           added and a loyalty operation (which goes directly to Relate) is performed immediately after saving the customer.
+           In such a scenario, the customer may not replicate to Relate in time for the loyalty operation, and Relate will reject 
+           the loyalty request. --> 
+      <!-- <PersistenceLocation dataSourceName="StorePrimary" /> -->
+      <!-- CONCURRENT SYNCHRONOUS WRITES -->
+      <PersistenceLocation dataSourceName="ConcurrentStoreRelate" />
+    </Online>
+  </PersistenceManagerType>
+  
+  <PersistenceManagerType name="HISTORICAL_TRANSACTION_LOOKUP" ref="STORE_STANDARD">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Relate" />
+      <LookupLocation dataSourceName="Xcenter" />
+      <LookupLocation dataSourceName="StorePrimary" />
+      <PersistenceLocation dataSourceName="StorePrimary" />
+    </Online>
+  </PersistenceManagerType>
+  
+  <PersistenceManagerType name="LOYALTY" ref="STORE_STANDARD" sync="true">
+    <PersistenceManagerRules dtype="PersistenceRules">
+      <PersistenceRule beanName="dataRedundancyRule">
+        <Parameter name="SourceDataSourceExpression" value="Relate*" />
+        <Parameter name="TargetDataSource" value="StorePrimary" />
+      </PersistenceRule>
+    </PersistenceManagerRules>
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Relate" />
+      <LookupLocation dataSourceName="StorePrimary" />
+      <PersistenceLocation dataSourceName="ConcurrentStoreRelate" />
+    </Online>
+  </PersistenceManagerType>
+  <!-- ************************************************* -->
+  <!-- /DOMAIN TYPES -->
+  <!-- ************************************************* -->
+</PersistenceManagerTypeSet>

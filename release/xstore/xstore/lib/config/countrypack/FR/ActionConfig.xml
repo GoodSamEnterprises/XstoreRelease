@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+
+  <Action name="COUNTRYPACK::FR::DISPLAY_CERT_INFORMATION" category="Anywhere" keywords="back_office,hideFromXstoreM" text="_countrypack.fr.displayCertInfo" chainKey="SHOW_CERTIFICATION_INFORMATION" />
+
+  <Action name="COUNTRYPACK::FR::CHECK_DATABASE_TAMPERING" category="Anywhere" keywords="back_office,hideFromXstoreM" text="_countrypack.fr.checkdatabasetampering" chainKey="CHECK_DATABASE_TAMPERING" privilege="FR_DATABASE_TAMPERING_CHECK_ERROR" >
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.NoAvailableInTrainingModeRule" />
+  </Action>
+
+  <Action name="COUNTRYPACK::FR::REPORT.TECHNICAL_EVENT_LOG" category="Reports" keywords="report_fiscal,hideFromXstoreM" text="_countrypack.fr.technicalEventLogReport" chainKey="TECHNICAL_EVENT_LOG_REPORT" />
+
+  <Action name="COUNTRYPACK::FR::ENTER_JET_COMMENT" category="Anywhere" keywords="back_office,hideFromXstoreM" text="_countrypack.fr.insertJetComment" chainKey="COUNTRYPACK.FR.JET_COMMENT" privilege="FR_INSERT_JET_COMMENT" />
+
+</ActionSet>

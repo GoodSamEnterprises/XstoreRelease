@@ -1,0 +1,36 @@
+<dataTemplate name="taxFree" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+
+    <!-- Template-specific Text -->
+    
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+  
+    <!-- User Parameters -->
+
+  </parameters>
+  
+  <dataSource>
+    <dataReference name="O_TAXFREE_HEADER">
+      <ResultFields>        
+      </ResultFields>
+    </dataReference>
+    <dataReference name="O_TAXFREE_DETAIL" key="PageContents">
+      <ResultFields>
+      	<ResultField>PageContent</ResultField>
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+  
+  <dataStructure>
+    <group name="G_HEADER" source="O_TAXFREE_HEADER">
+    </group>
+    <group name="G_DETAIL" source="O_TAXFREE_DETAIL">
+      <element name="PAGE_CONTENT" value="PageContent"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

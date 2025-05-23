@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApplicationSet dtype="ApplicationSet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ApplicationConfig.xsd">
+  <Application dtype="Application" name="REGISTER">
+    <StartupOpChainKey dtype="String">REGISTER_STARTUP</StartupOpChainKey>
+    <NewUserOpChainKey dtype="String">PRE_SALE_TRANSACTION</NewUserOpChainKey>
+    <LoginOpChainKey dtype="String">TO_REGISTER_LOGIN</LoginOpChainKey>
+    <Action ref="LOGIN::REGISTER.FROM_OTHER" />
+  </Application>
+  <Application dtype="Application" name="BACK_OFFICE">
+    <StartupOpChainKey dtype="String">BACK_OFFICE_STARTUP</StartupOpChainKey>
+    <NewUserOpChainKey dtype="String">BACK_OFFICE_MAIN_MENU</NewUserOpChainKey>
+    <LoginOpChainKey dtype="String">TO_BACK_OFFICE_LOGIN</LoginOpChainKey>
+    <Action ref="LOGIN::BACK_OFFICE.FROM_OTHER" />
+    <ApplicationLink dtype="String">REGISTER</ApplicationLink>
+  </Application>
+</ApplicationSet>

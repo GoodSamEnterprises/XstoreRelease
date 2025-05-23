@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomerAccounts dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CustomerAccountConfig.xsd">
+  <Account name="PRESALE">
+    <Text dtype="Translatable">_ccaPreSale</Text>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsg_cca_Presale</HelpKey>
+    <ColorGroup bgColor="0x50A2C7" bgColor2="0x378AB0" />
+    <ComponentGroup ref="LIGHT_BLUE" />
+    <!-- deposit fee type "TRANSACTION" or "ITEM" -->
+    <DepositFeeType dtype="String">TRANSACTION</DepositFeeType>
+    <DepositFixedAmount dtype="BigDecimal">0</DepositFixedAmount>
+    <DepositPercentage dtype="BigDecimal">100</DepositPercentage>
+    <AllowItemNotOnFile dtype="Boolean">false</AllowItemNotOnFile>
+    <ItemNotOnFileDefaultId dtype="String">9999999</ItemNotOnFileDefaultId>
+    <NotifyForItemNotOnFile dtype="Boolean">true</NotifyForItemNotOnFile>
+    <AllowPartialPickups dtype="Boolean">false</AllowPartialPickups>
+    <AllowInventoryBucketMovement dtype="Boolean">true</AllowInventoryBucketMovement>
+    <InventoryBucketId dtype="String">PRESALE</InventoryBucketId>
+  </Account>
+  
+  <Account name="ONHOLD">
+    <Text dtype="Translatable">_ccaOnHold</Text>
+    <HelpKey dtype="Translatable" bundle="dtv.pos.i18n.help">_helpMsg_cca_OnHold</HelpKey>
+    <ColorGroup bgColor="0x5C5C30" bgColor2="0x7A7A2B" />
+    <ComponentGroup ref="OLIVE" />
+    <!-- deposit fee type "TRANSACTION" or "ITEM" -->
+    <DepositFeeType dtype="String">TRANSACTION</DepositFeeType>
+    <DepositFixedAmount dtype="BigDecimal">0</DepositFixedAmount>
+    <DepositPercentage dtype="BigDecimal">0</DepositPercentage>
+    <AllowItemNotOnFile dtype="Boolean">false</AllowItemNotOnFile>
+    <ItemNotOnFileDefaultId dtype="String">9999999</ItemNotOnFileDefaultId>
+    <NotifyForItemNotOnFile dtype="Boolean">true</NotifyForItemNotOnFile>
+    <AllowPartialPickups dtype="Boolean">false</AllowPartialPickups>
+    <AllowInventoryBucketMovement dtype="Boolean">true</AllowInventoryBucketMovement>
+    <InventoryBucketId dtype="String">ONHOLD</InventoryBucketId>
+  </Account>  
+</CustomerAccounts>

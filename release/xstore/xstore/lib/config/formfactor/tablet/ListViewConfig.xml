@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ListViewConfig.xsd">
+  <Header name="TRANSACTION_LIST_FOOTER">
+    <Row>
+      <Column start="0" width="33" alignment="RIGHT">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getTaxAmountLabel1" />
+          <EvaluatedFormattable method="getTaxAmount1" formatter="Money" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="33" width="33" alignment="RIGHT">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getTotalFeesLabel" />
+          <EvaluatedFormattable method="getTotalFees" formatter="Money" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="66" width="34" alignment="RIGHT">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getSubtotalLabel" />
+          <EvaluatedFormattable method="getSubtotal" formatter="Money" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="33" alignment="RIGHT">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getTaxAmountLabel2" />
+          <EvaluatedFormattable method="getTaxAmount2" formatter="Money" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="33" width="33" alignment="RIGHT">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getRoundedAmountDueLabel" />
+          <EvaluatedFormattable method="getRoundedAmountDue" formatter="Money" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="33" alignment="RIGHT">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getTaxAmountLabel3" />
+          <EvaluatedFormattable method="getTaxAmount3" formatter="Money" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+  </Header>
+  <Element name="EMPLOYEE_MESSAGE_SUMMARY">
+    <Row>
+      <Column start="0" width="6" method="getPriority">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.framework.ui.listview.NamedIconColumnDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="HIGH">
+          <param_value dtype="IconRef">_imageListAttention</param_value>
+        </Parameter>
+        <Parameter name="LOW">
+          <param_value dtype="IconRef">_imageListLowPriority</param_value>
+        </Parameter>
+      </Column>
+      <Column start="6" width="94" wrapText="true" method="getDescription" />
+    </Row>
+    <Row>
+      <Column start="6" width="94" method="getMessageURL">
+        <RendererClass dtype="Class">dtv.pos.html.HtmlAnchorRenderer</RendererClass>
+      </Column>
+    </Row>
+  </Element>
+</ListView>

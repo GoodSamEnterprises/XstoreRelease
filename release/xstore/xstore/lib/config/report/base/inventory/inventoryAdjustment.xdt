@@ -1,0 +1,66 @@
+<dataTemplate name="InventoryAdjustment" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+
+  <!-- Template-specific Text -->
+  <label name="title" value="_rptInvAdjRepTitle" />
+
+  <label name="INV_ADJUST_DOCUMENT_NO" value="_rptInventoryAdjustmentDocumentId" />
+  <label name="INV_ADJUST_REASON_CODE" value="_rptInventoryAdjustmentReasonCode" />
+
+  <label name="INV_ADJUSTMENT_DATE" value="_rptDate" />
+  <label name="INV_ITM_ID_AND_DESC" value="_rptInventoryAdjustmentItemId" />
+  <label name="INV_ITM_QTY" value="_rptInventoryAdjustmentQty" />
+
+  <label name="INV_ITM_BUCKET" value="_rptInventoryAdjustmentBucket" />
+  <label name="INV_ITM_LOCATION" value="_rptInventoryAdjustmentLocation" />
+
+  <label name="INV_ADJUST_EMP_SIGN" value="_rptInvAdjRepEmpSig" />
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+    <parameter name="docId" class="java.lang.String" isForPrompting="true" include_in_output="true"/>
+    <parameter name="reasoncode" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+  </parameters>
+
+  <dataSource>
+  <dataReference name="O_INVENTORYADJUSTMENT">
+    <ResultFields>
+          <!-- <ResultField>DocumentId</ResultField> -->
+          <ResultField>DocumentInventoryLocationModifiers.get(0).getCreateDate</ResultField>
+      <ResultField>Item.getItemId</ResultField>
+      <ResultField>Item.getDescription</ResultField>
+      <ResultField>UnitCount</ResultField>
+      <ResultField>DocumentInventoryLocationModifiers.get(0).getDestinationBucketId</ResultField>
+      <ResultField>DocumentInventoryLocationModifiers.get(0).getDestinationLocationId</ResultField>
+    </ResultFields>
+  </dataReference>
+  </dataSource>
+  <dataStructure>
+  <group name="G_INV" source="O_INVENTORYADJUSTMENT">
+    <!-- <element name="DOC_ID" value="DocumentId"/> -->
+    <element name="ADJ_DATE" value="DocumentInventoryLocationModifiers.get(0).getCreateDate" formatter="DateShort"/>
+    <element name="ITM_ID" value="Item.getItemId"/>
+    <element name="ITM_DESC" value="Item.getDescription" />
+    <element name="UNIT_COUNT" value="UnitCount" formatter="Integer" />
+    <element name="DST_BKT_ID" value="DocumentInventoryLocationModifiers.get(0).getDestinationBucketId"/>
+    <element name="DST_LOC_ID" value="DocumentInventoryLocationModifiers.get(0).getDestinationLocationId"/>
+  </group>
+  </dataStructure>
+</dataTemplate>

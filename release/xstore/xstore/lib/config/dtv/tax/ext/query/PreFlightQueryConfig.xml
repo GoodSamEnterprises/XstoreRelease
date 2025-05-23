@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../res/config/query/QueryConfig.xsd">
+  <Query name="PREFLIGHT.TAX_TAX_AUTHORITY" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[SELECT DISTINCT tax_authority_id FROM tax_tax_authority WHERE organization_id = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.TAX_TAX_GROUP" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[SELECT DISTINCT tax_group_id FROM tax_tax_group WHERE organization_id = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.TAX_TAX_GROUP_MAPPING" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[SELECT DISTINCT tax_group_id FROM tax_tax_group_mapping WHERE organization_id = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.TAX_TAX_GROUP_RULE" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[SELECT DISTINCT tax_group_id FROM tax_tax_group_rule WHERE organization_id = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+</QuerySet>

@@ -1,0 +1,242 @@
+/*     */ package dtv.xst.dao.cwo.impl;
+/*     */ 
+/*     */ import dtv.data2.access.IDataAccessObject;
+/*     */ import dtv.data2.access.IObjectId;
+/*     */ import dtv.data2.access.impl.jdbc.IFiller;
+/*     */ import dtv.data2.access.impl.jdbc.IJDBCTableAdapter;
+/*     */ import dtv.util.DtvDate;
+/*     */ import dtv.util.ObjectUtils;
+/*     */ import dtv.xst.dao.cwo.WorkOrderCategoryId;
+/*     */ import java.math.BigDecimal;
+/*     */ import java.sql.PreparedStatement;
+/*     */ import java.sql.ResultSet;
+/*     */ import java.sql.SQLException;
+/*     */ import java.sql.Timestamp;
+/*     */ import java.util.Date;
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ public class WorkOrderCategoryDBA
+/*     */   implements IJDBCTableAdapter
+/*     */ {
+/*     */   private static final long serialVersionUID = 1116923579L;
+/*     */   private Long _organizationId;
+/*     */   private String _categoryId;
+/*     */   private Date _createDate;
+/*     */   private String _createUserId;
+/*     */   private Date _updateDate;
+/*     */   private String _updateUserId;
+/*     */   private String _orgCode;
+/*     */   private String _orgValue;
+/*     */   private Integer _sortOrder;
+/*     */   private String _description;
+/*     */   private Boolean _promptForPriceCode;
+/*     */   private BigDecimal _maxItemCount;
+/*     */   private static final String SELECT_OBJECT = "SELECT t.organization_id, t.category_id, t.create_date, t.create_user_id, t.update_date, t.update_user_id, t.org_code, t.org_value, t.sort_order, t.description, t.prompt_for_price_code_flag, t.max_item_count FROM cwo_work_order_category t";
+/*     */   private static final String SELECT_WHERE_OBJECT = " WHERE organization_id = ?  AND category_id = ?  ";
+/*     */   
+/*     */   public String getSelect() {
+/*  41 */     return getSelectImpl();
+/*     */   }
+/*     */   
+/*     */   private String getSelectImpl() {
+/*  45 */     return "SELECT t.organization_id, t.category_id, t.create_date, t.create_user_id, t.update_date, t.update_user_id, t.org_code, t.org_value, t.sort_order, t.description, t.prompt_for_price_code_flag, t.max_item_count FROM cwo_work_order_category t";
+/*     */   }
+/*     */ 
+/*     */ 
+/*     */   
+/*     */   public String getSelectWhere() {
+/*  51 */     return " WHERE organization_id = ?  AND category_id = ?  ";
+/*     */   }
+/*     */   
+/*  54 */   private static final String[] INSERT_OBJECT = new String[] { "INSERT INTO cwo_work_order_category(organization_id, category_id, create_date, create_user_id, update_date, update_user_id, org_code, org_value, sort_order, description, prompt_for_price_code_flag, max_item_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)" };
+/*     */   
+/*     */   public String[] getInsert() {
+/*  57 */     return INSERT_OBJECT;
+/*     */   }
+/*     */   
+/*     */   public Object[][] getInsertParameters() {
+/*  61 */     Object[][] insertParameterObject = { { this._organizationId, this._categoryId, this._createDate, this._createUserId, this._updateDate, this._updateUserId, ObjectUtils.coalesce((Object[])new String[] { this._orgCode, "*" }), ObjectUtils.coalesce((Object[])new String[] { this._orgValue, "*" }), this._sortOrder, this._description, this._promptForPriceCode, this._maxItemCount } };
+/*  62 */     return insertParameterObject;
+/*     */   }
+/*     */   
+/*  65 */   private static final int[][] INSERT_PARAMETER_TYPES_OBJECT = new int[][] { { -5, 12, 91, 12, 91, 12, 12, 12, 4, 12, -7, 3 } };
+/*     */   
+/*     */   public int[][] getInsertParameterTypes() {
+/*  68 */     return INSERT_PARAMETER_TYPES_OBJECT;
+/*     */   }
+/*     */   
+/*  71 */   private static final String[] UPDATE_OBJECT = new String[] { "UPDATE cwo_work_order_category SET update_date = ?, update_user_id = ?, org_code = ?, org_value = ?, sort_order = ?, description = ?, prompt_for_price_code_flag = ?, max_item_count = ?" };
+/*     */   
+/*     */   public String[] getUpdate() {
+/*  74 */     return UPDATE_OBJECT;
+/*     */   }
+/*     */   
+/*     */   public Object[][] getUpdateParameters() {
+/*  78 */     Object[][] updateParameterObject = { { this._updateDate, this._updateUserId, this._orgCode, this._orgValue, this._sortOrder, this._description, this._promptForPriceCode, this._maxItemCount } };
+/*  79 */     return updateParameterObject;
+/*     */   }
+/*     */   
+/*  82 */   private static final int[][] UPDATE_PARAMETER_TYPE_OBJECT = new int[][] { { 91, 12, 12, 12, 4, 12, -7, 3 } };
+/*     */   public int[][] getUpdateParameterTypes() {
+/*  84 */     return UPDATE_PARAMETER_TYPE_OBJECT;
+/*     */   }
+/*     */   
+/*  87 */   private static final String[] DELETE_OBJECT = new String[] { "DELETE FROM cwo_work_order_category" }; private static final String WHERE_OBJECT = " WHERE organization_id = ?  AND category_id = ?  ";
+/*     */   
+/*     */   public String[] getDelete() {
+/*  90 */     return DELETE_OBJECT;
+/*     */   }
+/*     */ 
+/*     */ 
+/*     */   
+/*     */   public String getWhere() {
+/*  96 */     return " WHERE organization_id = ?  AND category_id = ?  ";
+/*     */   }
+/*     */   public Object[] getWhereParameters() {
+/*  99 */     return new Object[] { this._organizationId, this._categoryId };
+/*     */   }
+/*     */   
+/* 102 */   private static final int[] WHERE_PARAMETER_OBJECT = new int[] { -5, 12 };
+/*     */   
+/*     */   public int[] getWhereParameterTypes() {
+/* 105 */     return WHERE_PARAMETER_OBJECT;
+/*     */   }
+/*     */   public String getTableName() {
+/* 108 */     return "cwo_work_order_category";
+/*     */   }
+/*     */   
+/*     */   public IFiller getFiller() {
+/* 112 */     return getFillerImpl();
+/*     */   }
+/*     */   
+/*     */   private IFiller getFillerImpl() {
+/* 116 */     return new WorkOrderCategoryFiller(this);
+/*     */   }
+/*     */   
+/*     */   private static class WorkOrderCategoryFiller
+/*     */     implements IFiller {
+/*     */     private WorkOrderCategoryDBA _parent;
+/*     */     
+/*     */     public WorkOrderCategoryFiller(WorkOrderCategoryDBA argParent) {
+/* 124 */       this._parent = argParent;
+/*     */     }
+/*     */ 
+/*     */     
+/*     */     public void fill(ResultSet argResultSet) throws SQLException {
+/* 129 */       long primitiveResult = argResultSet.getLong(1);
+/* 130 */       if (primitiveResult != 0L || argResultSet.getObject(1) != null) {
+/* 131 */         this._parent._organizationId = Long.valueOf(primitiveResult);
+/*     */       }
+/*     */ 
+/*     */       
+/* 135 */       this._parent._categoryId = argResultSet.getString(2);
+/*     */       
+/* 137 */       Timestamp t3 = argResultSet.getTimestamp(3);
+/* 138 */       if (t3 != null) {
+/* 139 */         this._parent._createDate = (Date)new DtvDate(t3.getTime());
+/*     */       } else {
+/*     */         
+/* 142 */         this._parent._createDate = null;
+/*     */       } 
+/*     */       
+/* 145 */       this._parent._createUserId = argResultSet.getString(4);
+/*     */       
+/* 147 */       Timestamp t5 = argResultSet.getTimestamp(5);
+/* 148 */       if (t5 != null) {
+/* 149 */         this._parent._updateDate = (Date)new DtvDate(t5.getTime());
+/*     */       } else {
+/*     */         
+/* 152 */         this._parent._updateDate = null;
+/*     */       } 
+/*     */       
+/* 155 */       this._parent._updateUserId = argResultSet.getString(6);
+/* 156 */       this._parent._orgCode = argResultSet.getString(7);
+/* 157 */       this._parent._orgValue = argResultSet.getString(8);
+/*     */ 
+/*     */       
+/* 160 */       int i = argResultSet.getInt(9);
+/* 161 */       if (i != 0 || argResultSet.getObject(9) != null) {
+/* 162 */         this._parent._sortOrder = Integer.valueOf(i);
+/*     */       }
+/*     */ 
+/*     */       
+/* 166 */       this._parent._description = argResultSet.getString(10);
+/* 167 */       this._parent._promptForPriceCode = Boolean.valueOf(argResultSet.getBoolean(11));
+/* 168 */       this._parent._maxItemCount = argResultSet.getBigDecimal(12);
+/*     */     }
+/*     */   }
+/*     */   
+/*     */   public IDataAccessObject loadDAO(IDataAccessObject argDAO) {
+/* 173 */     argDAO.suppressStateChanges(true);
+/* 174 */     WorkOrderCategoryDAO dao = (WorkOrderCategoryDAO)argDAO;
+/* 175 */     dao.setOrganizationId(this._organizationId);
+/* 176 */     dao.setCategoryId(this._categoryId);
+/* 177 */     dao.setCreateDate(this._createDate);
+/* 178 */     dao.setCreateUserId(this._createUserId);
+/* 179 */     dao.setUpdateDate(this._updateDate);
+/* 180 */     dao.setUpdateUserId(this._updateUserId);
+/* 181 */     dao.setOrgCode(this._orgCode);
+/* 182 */     dao.setOrgValue(this._orgValue);
+/* 183 */     dao.setSortOrder(this._sortOrder);
+/* 184 */     dao.setDescription(this._description);
+/* 185 */     dao.setPromptForPriceCode(this._promptForPriceCode);
+/* 186 */     dao.setMaxItemCount(this._maxItemCount);
+/* 187 */     argDAO.suppressStateChanges(false);
+/* 188 */     return (IDataAccessObject)dao;
+/*     */   }
+/*     */   
+/*     */   public IDataAccessObject loadDefaultDAO() {
+/* 192 */     return loadDAO((IDataAccessObject)new WorkOrderCategoryDAO());
+/*     */   }
+/*     */   
+/*     */   public void fill(IDataAccessObject argDAO) {
+/* 196 */     WorkOrderCategoryDAO dao = (WorkOrderCategoryDAO)argDAO;
+/* 197 */     this._organizationId = dao.getOrganizationId();
+/* 198 */     this._categoryId = dao.getCategoryId();
+/* 199 */     this._createDate = dao.getCreateDate();
+/* 200 */     this._createUserId = dao.getCreateUserId();
+/* 201 */     this._updateDate = dao.getUpdateDate();
+/* 202 */     this._updateUserId = dao.getUpdateUserId();
+/* 203 */     this._orgCode = dao.getOrgCode();
+/* 204 */     this._orgValue = dao.getOrgValue();
+/* 205 */     this._sortOrder = dao.getSortOrder();
+/* 206 */     this._description = dao.getDescription();
+/* 207 */     this._promptForPriceCode = (dao.getPromptForPriceCode() != null) ? dao.getPromptForPriceCode() : Boolean.valueOf(false);
+/* 208 */     this._maxItemCount = dao.getMaxItemCount();
+/*     */   }
+/*     */   
+/*     */   public PreparedStatement writeObjectId(IObjectId argId, PreparedStatement argStatement) throws SQLException {
+/* 212 */     WorkOrderCategoryId id = (WorkOrderCategoryId)argId;
+/* 213 */     argStatement.setLong(1, id.getOrganizationId().longValue());
+/* 214 */     argStatement.setString(2, id.getCategoryId());
+/* 215 */     return argStatement;
+/*     */   }
+/*     */   
+/*     */   public IObjectId getObjectId() {
+/* 219 */     WorkOrderCategoryId id = new WorkOrderCategoryId();
+/* 220 */     id.setOrganizationId(this._organizationId);
+/* 221 */     id.setCategoryId(this._categoryId);
+/* 222 */     return (IObjectId)id;
+/*     */   }
+/*     */ 
+/*     */   
+/*     */   public void fill(IJDBCTableAdapter argAdapter) {}
+/*     */ 
+/*     */   
+/*     */   public boolean isExtensible() {
+/* 230 */     return false;
+/*     */   }
+/*     */   
+/*     */   public String getImplementingClass() {
+/* 234 */     return null;
+/*     */   }
+/*     */ }
+
+
+/* Location:              C:\WIP-Xstore_Delta-main\release\xstore\xstore\lib\dtv-dtx.jar!\dtv\xst\dao\cwo\impl\WorkOrderCategoryDBA.class
+ * Java compiler version: 8 (52.0)
+ * JD-Core Version:       1.1.3
+ */

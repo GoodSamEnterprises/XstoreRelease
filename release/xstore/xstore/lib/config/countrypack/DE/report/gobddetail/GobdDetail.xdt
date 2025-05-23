@@ -1,0 +1,70 @@
+<dataTemplate name="GobdDetail" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="FILE_NAME" value="_countrypack.de.gobd.summaryReport.filename"/>
+    <label name="DATE_FROM" value="_toStartDate"/>
+    <label name="END_DATE" value="_toEndDate"/>
+    <label name="GENERATE_DATE" value="_countrypack.de.gobd.summaryReport.generatedOn"/>
+    <label name="DESCRIPTION" value="_rptDescription"/>
+    <label name="FIELD_NAME" value="_countrypack.de.gobd.detailReport.fieldName"/>
+    <label name="FIELD_TYPE" value="_countrypack.de.gobd.detailReport.fieldType"/>
+    <label name="FIELD_KEY" value="_countrypack.de.gobd.detailReport.fieldKey"/>
+    <label name="FIELD_CHILD" value="_countrypack.de.gobd.detailReport.fieldChild"/>
+
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <!-- User Parameters -->
+    <parameter name="startDate" class="java.util.Date" isForPrompting="false" include_in_output="true" formatter="DateMedium"/>
+    <parameter name="endDate" class="java.util.Date" isForPrompting="false" include_in_output="true" formatter="DateMedium" />
+    <parameter name="generateDate" class="java.util.Date" isForPrompting="false" include_in_output="true" formatter="DateMedium" />
+  </parameters>
+
+  <dataSource>
+    <dataReference name="CSV_TABLES" >
+      <ResultFields>
+        <ResultField>FileName</ResultField>
+      </ResultFields>
+    </dataReference>
+    <dataReference name="CSV_FIELDS" key="Fields" >
+      <ResultFields>
+        <ResultField>Parent.getFileName</ResultField>
+        <ResultField>Name</ResultField>
+        <ResultField>DataType.getGobdType</ResultField>
+        <ResultField>KeyString</ResultField>
+        <ResultField>ChildTable</ResultField>
+        <ResultField>Description</ResultField>
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+
+  <dataStructure>
+    <group name="G_CSV_TABLES" source="CSV_TABLES">
+     <element name="NAME_FLD" value="FileName"/>
+    </group>
+    <group name="G_CSV_FIELDS" source="CSV_FIELDS">
+     <element name="TABLE_NAME_FLD" value="Parent.getFileName"/>
+     <element name="FIELD_NAME_FLD" value="Name"/>
+     <element name="FIELD_TYPE_FLD" value="DataType.getGobdType"/>
+     <element name="FIELD_KEY_FLD" value="KeyString"/>
+     <element name="FIELD_CHILD_FLD" value="ChildTable"/>
+     <element name="FIELD_DESC_FLD" value="Description"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- all renderers must implement dtv.pos.ejournal.component.IEJDetailRenderer -->
+<!-- and ideally will extends dtv.pos.ejournal.component.AbstractEJDetailRenderer -->
+<EjournalConfig dtype="Ejournal" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://com.micros-retail/common" xsi:schemaLocation="http://com.micros-retail/common EjournalConfig.xsd">
+  <!-- this is the renderer used for a null transaction -->
+  <View dtype="EjournalView">
+    <Type dtype="String">::BLANK::</Type>
+    <EJDetailRenderer dtype="Class">dtv.pos.ejournal.component.BlankEJRenderer</EJDetailRenderer>
+  </View>
+  <!-- this is the renderer used if no custom view is defined -->
+  <View dtype="EjournalView">
+    <Type dtype="String">::DEFAULT::</Type>
+    <EJDetailRenderer dtype="Class">dtv.pos.ejournal.component.DefaultEJRenderer</EJDetailRenderer>
+  </View>
+  <!-- the rest are keyed from getTransactionTypeCode(), -->
+  <!-- or if an ITenderControlTransaction keyed from getTransactionTypeCode() + "::" + getTypeCode() -->
+  <View dtype="EjournalView">
+    <Type dtype="String">POST_VOID</Type>
+    <EJDetailRenderer dtype="Class">dtv.pos.ejournal.component.FormEJRenderer</EJDetailRenderer>
+    <parameter name="setFormKey" value="EJD_POSTVOID" />
+  </View>
+  <View dtype="EjournalView">
+    <Type dtype="String">NO_SALE</Type>
+    <EJDetailRenderer dtype="Class">dtv.pos.ejournal.component.FormEJRenderer</EJDetailRenderer>
+    <parameter name="setFormKey" value="EJD_NOSALE" />
+  </View>
+  <View dtype="EjournalView">
+    <Type dtype="String">TIMECLOCK</Type>
+    <EJDetailRenderer dtype="Class">dtv.pos.ejournal.component.FormEJRenderer</EJDetailRenderer>
+    <parameter name="setFormKey" value="EJD_TIMECLOCK" />
+  </View>
+  <View dtype="EjournalView">
+    <Type dtype="String">INVENTORY_CONTROL</Type>
+    <EJDetailRenderer dtype="Class">dtv.pos.ejournal.component.FormEJRenderer</EJDetailRenderer>
+    <parameter name="setFormKey" value="EJD_NODETAIL" />
+  </View>
+  <View dtype="EjournalView">
+    <Type dtype="String">TENDER_CONTROL</Type>
+    <EJDetailRenderer dtype="Class">dtv.pos.ejournal.component.FormEJRenderer</EJDetailRenderer>
+    <parameter name="setFormKey" value="EJD_NODETAIL" />
+  </View>
+  <View dtype="EjournalView">
+    <Type dtype="String">SESSION_CONTROL</Type>
+    <EJDetailRenderer dtype="Class">dtv.pos.ejournal.component.FormEJRenderer</EJDetailRenderer>
+    <parameter name="setFormKey" value="EJD_NODETAIL" />
+  </View>
+  <View dtype="EjournalView">
+    <Type dtype="String">ORDER</Type>
+    <EJDetailRenderer dtype="Class">dtv.pos.ejournal.component.FormEJRenderer</EJDetailRenderer>
+    <parameter name="setFormKey" value="EJD_NODETAIL" />
+  </View>
+</EjournalConfig>

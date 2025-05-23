@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+   <bean id="fraQasStateNameConversion" class="oracle.retail.avs.qas.impl.QASStateNameConversionBean">
+     <property name="countryISOCode" value="FR" />
+     <property name="nameToCodeMap">
+       <map>
+         <entry key="Ain"                             value="01"/>
+         <entry key="Aisne"                           value="02"/>
+         <entry key="Allier"                          value="03"/>
+         <entry key="Alpes-de-Haute-Provence"         value="04"/>
+         <entry key="Hautes-Alpes"                    value="05"/>
+         <entry key="Alpes-Maritimes"                 value="06"/>
+         <!-- &#232; =  Small Letter E with grave -->
+         <entry key="Ard&#232;che"                    value="07"/>
+         <entry key="Ardeche"                         value="07"/>
+         <entry key="Ardennes"                        value="08"/>
+         <!-- &#232; =  Small Letter E with grave -->
+         <entry key="Ari&#232;ge"                     value="09"/>
+         <entry key="Ariege"                          value="09"/>
+         <entry key="Aube"                            value="10"/>
+         <entry key="Aude"                            value="11"/>
+         <entry key="Aveyron"                         value="12"/>
+         <!-- &#244; =  Small Letter O with circumflex -->
+         <entry key="Bouches-du-Rh&#244;ne"           value="13"/>
+         <entry key="Bouches-du-Rhone"                value="13"/>
+         <entry key="Calvados"                        value="14"/>
+         <entry key="Cantal"                          value="15"/>
+         <entry key="Charente"                        value="16"/>
+         <entry key="Charente-Maritime"               value="17"/>
+         <entry key="Cher"                            value="18"/>
+         <!-- &#232; =  Small Letter E with grave -->
+         <entry key="Corr&#232;ze"                    value="19"/>
+         <entry key="Correze"                         value="19"/>
+         <entry key="Corse-du-Sud"                    value="2A"/>
+         <entry key="Haute-Corse"                     value="2B"/>
+         <!-- &#244; =  Small Letter O with circumflex -->
+         <entry key="C&#244;te-d'Or"                  value="21"/>
+         <entry key="Cote-d'Or"                       value="21"/>
+         <!-- &#244; =  Small Letter O with circumflex -->
+         <entry key="C&#244;tes-d'Armor"              value="22"/>
+         <entry key="Cotes-d'Armor"                   value="22"/>
+         <entry key="Creuse"                          value="23"/>
+         <entry key="Dordogne"                        value="24"/>
+         <entry key="Doubs"                           value="25"/>
+         <!-- &#244; =  Small Letter O with circumflex -->
+         <entry key="Dr&#244;me"                      value="26"/>
+         <entry key="Drome"                           value="26"/>
+         <entry key="Eure"                            value="27"/>
+         <entry key="Eure-et-Loir"                    value="28"/>
+         <!-- &#232; =  Small Letter E with grave -->
+         <entry key="Finist&#232;re"                  value="29"/>
+         <entry key="Finistere"                       value="29"/>
+         <entry key="Gard "                           value="30"/>
+         <entry key="Haute-Garonne"                   value="31"/>
+         <entry key="Gers"                            value="32"/>
+         <entry key="Gironde"                         value="33"/>
+         <!-- &#232; =  Small Letter E with acute -->
+         <entry key="H&#233;rault"                    value="34"/>
+         <entry key="Herault"                         value="34"/>
+         <entry key="Ille-et-Vilaine"                 value="35"/>
+         <entry key="Indre"                           value="36"/>
+         <entry key="Indre-et-Loire"                  value="37"/>
+         <!-- &#232; =  Small Letter E with grave -->
+         <entry key="Is&#232;re"                      value="38"/>
+         <entry key="Isere"                           value="38"/>
+         <entry key="Jura"                            value="39"/>
+         <entry key="Landes"                          value="40"/>
+         <entry key="Loir-et-Cher"                    value="41"/>
+         <entry key="Loire"                           value="42"/>
+         <entry key="Haute-Loire"                     value="43"/>
+         <entry key="Loire-Atlantique"                value="44"/>
+         <entry key="Loiret"                          value="45"/>
+         <entry key="Lot"                             value="46"/>
+         <entry key="Lot-et-Garonne"                  value="47"/>
+         <!-- &#232; =  Small Letter E with grave -->
+         <entry key="Loz&#232;re"                     value="48"/>
+         <entry key="Lozere"                          value="48"/>
+         <entry key="Maine-et-Loire"                  value="49"/>
+         <entry key="Manche"                          value="50"/>
+         <entry key="Marne"                           value="51"/>
+         <entry key="Haute-Marne"                     value="52"/>
+         <entry key="Mayenne"                         value="53"/>
+         <entry key="Meurthe-et-Moselle"              value="54"/>
+         <entry key="Meuse"                           value="55"/>
+         <entry key="Morbihan"                        value="56"/>
+         <entry key="Moselle"                         value="57"/>
+         <!-- &#232; =  Small Letter E with grave -->
+         <entry key="Ni&#232;vre"                     value="58"/>
+         <entry key="Nievre"                          value="58"/>
+         <entry key="Nord"                            value="59"/>
+         <entry key="Oise"                            value="60"/>
+         <entry key="Orne"                            value="61"/>
+         <entry key="Pas-de-Calais"                   value="62"/>
+         <!-- &#244; =  Small Letter O with circumflex -->
+         <entry key="Puy-de-D&#244;me"                value="63"/>
+         <entry key="Puy-de-Dome"                     value="63"/>
+         <!-- &#232; =  Small Letter E with acute -->
+         <entry key="Pyr&#233;n&#233;es-Atlantiques"  value="64"/>
+         <entry key="Pyrenees-Atlantiques"            value="64"/>
+         <!-- &#232; =  Small Letter E with acute -->
+         <entry key="Hautes-Pyr&#233;n&#233;es"       value="65"/>
+         <entry key="Hautes-Pyrenees"                 value="65"/>
+         <!-- &#232; =  Small Letter E with acute -->
+         <entry key="Pyr&#233;n&#233;es-Orientales"   value="66"/>
+         <entry key="Pyrenees-Orientales"             value="66"/>
+         <entry key="Bas-Rhin"                        value="67"/>
+         <entry key="Haut-Rhin"                       value="68"/>
+         <!-- &#244; =  Small Letter O with circumflex -->
+         <entry key="Rh&#244;ne"                      value="69"/>
+         <entry key="Rhone"                           value="69"/>
+         <entry key="Lyon"                            value="69M"/>
+         <!-- &#244; =  Small Letter O with circumflex -->
+         <entry key="Haut-Sa&#244;ne"                 value="70"/>
+         <entry key="Haut-Saone"                      value="70"/>
+         <!-- &#244; =  Small Letter O with circumflex -->
+         <entry key="Sa&#244;ne-et-Loire"             value="71"/>
+         <entry key="Saone-et-Loire"                  value="71"/>
+         <entry key="Sarthe"                          value="72"/>
+         <entry key="Savoie"                          value="73"/>
+         <entry key="Haute-Savoie"                    value="74"/>
+         <entry key="Paris"                           value="75"/>
+         <entry key="Seine-Maritime"                  value="76"/>
+         <entry key="Seine-et-Marne"                  value="77"/>
+         <entry key="Yvelines"                        value="78"/>
+         <!-- &#232; =  Small Letter E with grave -->
+         <entry key="Deux-S&#232;vres"                value="79"/>
+         <entry key="Deux-Sevres"                     value="79"/>
+         <entry key="Somme"                           value="80"/>
+         <entry key="Tarn"                            value="81"/>
+         <entry key="Tarn-et-Garonne"                 value="82"/>
+         <entry key="Var"                             value="83"/>
+         <entry key="Vaucluse"                        value="84"/>
+         <!-- &#232; =  Small Letter E with acute -->
+         <entry key="Vend&#233;e"                     value="85"/>
+         <entry key="Vendee"                          value="85"/>
+         <entry key="Vienne"                          value="86"/>
+         <entry key="Haute-Vienne"                    value="87"/>
+         <entry key="Vosges"                          value="88"/>
+         <entry key="Yonne"                           value="89"/>
+         <entry key="Territoire"                      value="90"/>
+         <entry key="Essonne"                         value="91"/>
+         <entry key="Hauts-de-Seine"                  value="92"/>
+         <entry key="Seine-Saint-Denis"               value="93"/>
+         <entry key="Val-de-Marne"                    value="94"/>
+         <entry key="Val-d'Oise"                      value="95"/>       
+       </map>
+     </property>
+   </bean>
+        
+   <bean id="gbrQasStateNameConversion" class="oracle.retail.avs.qas.impl.QASStateNameConversionBean">
+     <property name="countryISOCode" value="GB" />
+     <property name="nameToCodeMap">
+       <map>
+         <entry key="Armagh"                value="AM"/>
+         <entry key="Angus"                 value="AN"/>
+         <entry key="Argyll"                value="AR"/>
+         <entry key="Aberdeenshire"         value="AS"/>
+         <entry key="Antrim"                value="AT"/>
+         <entry key="Avon"                  value="AV"/>
+         <entry key="Ayrshire"              value="AY"/>
+         <entry key="Bedfordshire"          value="BE"/>
+         <entry key="Berkshire"             value="BK"/>
+         <entry key="Borders"               value="BO"/>
+         <entry key="Buckinghamshire"       value="BU"/>
+         <entry key="Cambridgeshire"        value="CA"/>
+         <entry key="County Durham"         value="CD"/>
+         <entry key="Central"               value="CE"/>
+         <entry key="Cheshire"              value="CH"/>
+         <entry key="Channel Islands"       value="CI"/>
+         <entry key="Clwyd"                 value="CL"/>
+         <entry key="Caithness"             value="CN"/>
+         <entry key="Cornwall"              value="CO"/>
+         <entry key="Clackmannanshire"      value="CS"/>
+         <entry key="Cumbria"               value="CU"/>
+         <entry key="Cleveland"             value="CV"/>
+         <entry key="Derbyshire"            value="DB"/>
+         <entry key="Down"                  value="DN"/>
+         <entry key="Dorset"                value="DO"/>
+         <entry key="Dumfriesshire"         value="DS"/>
+         <entry key="Dunbartonshire"        value="DT"/>
+         <entry key="Durham"                value="DU"/>
+         <entry key="Devon"                 value="DV"/>
+         <entry key="Dyfed"                 value="DY"/>
+         <entry key="East Sussex"           value="EA"/>
+         <entry key="Eire"                  value="EI"/>
+         <entry key="East Lothian"          value="EL"/>
+         <entry key="Essex"                 value="ES"/>
+         <entry key="Fife"                  value="FI"/>
+         <entry key="Fermanagh"             value="FM"/>
+         <entry key="Falkirkshire"          value="FS"/>
+         <entry key="Gloucestershire"       value="GL"/>
+         <entry key="Greater Manchester"    value="GM"/>
+         <entry key="Grampian"              value="GR"/>
+         <entry key="Glamorganshire"        value="GS"/>
+         <entry key="Gwent"                 value="GW"/>
+         <entry key="Gwynedd"               value="GY"/>
+         <entry key="Hampshire"             value="HA"/>
+         <entry key="Highland"              value="HI"/>
+         <entry key="Herefordshire"         value="HS"/>
+         <entry key="Hertfordshire"         value="HT"/>
+         <entry key="Humberside"            value="HU"/>
+         <entry key="Herefd. and Worcest."  value="HW"/>
+         <entry key="Isle of Man"           value="IM"/>
+         <entry key="Inverness-Shire"       value="IS"/>
+         <entry key="Isle of Wight"         value="IW"/>
+         <entry key="Kent"                  value="KE"/>
+         <entry key="Lancashire"            value="LA"/>
+         <entry key="Londonderry"           value="LD"/>
+         <entry key="Leicestershire"        value="LE"/>
+         <entry key="Lincolnshire"          value="LI"/>
+         <entry key="Greater London"        value="LO"/>
+         <entry key="Lanarkshire"           value="LS"/>
+         <entry key="Lothian"               value="LT"/>
+         <entry key="Mid Glamorgan"         value="MG"/>
+         <entry key="Morayshire"            value="MO"/>
+         <entry key="Middlesex"             value="MS"/>
+         <entry key="Midlothian"            value="MT"/>
+         <entry key="Merseyside"            value="MY"/>
+         <entry key="Neath"                 value="NE"/>
+         <entry key="Northamptonshire"      value="NH"/>
+         <entry key="Norther Ireland"       value="NI"/>
+         <entry key="Norfolk"               value="NK"/>
+         <entry key="Nottinghamshire"       value="NT"/>
+         <entry key="Northumberland"        value="NU"/>
+         <entry key="Oxfordshire"           value="OX"/>
+         <entry key="Powys"                 value="PO"/>
+         <entry key="Perthshire"            value="PS"/>
+         <entry key="Ross-Shire"            value="RO"/>
+         <entry key="Renfrewshire"          value="RS"/>
+         <entry key="Roxburghshire"         value="RX"/>
+         <entry key="Strathclyde"           value="SC"/>
+         <entry key="South Humberside"      value="SD"/>
+         <entry key="South Glamorgan"       value="SG"/>
+         <entry key="Shropshire"            value="SH"/>
+         <entry key="Shetland Isles"        value="SI"/>
+         <entry key="Stirlingshire"         value="SL"/>
+         <entry key="Somerset"              value="SO"/>
+         <entry key="Selkirkshire"          value="SS"/>
+         <entry key="Staffordshire"         value="ST"/>
+         <entry key="Suffolk"               value="SU"/>
+         <entry key="Sussex"                value="SX"/>
+         <entry key="Surrey"                value="SY"/>
+         <entry key="Tayside"               value="TA"/>
+         <entry key="Tyne and Wear"         value="TW"/>
+         <entry key="Tyrone"                value="TY"/>
+         <entry key="Warwickshire"          value="WA"/>
+         <entry key="West Glamorgan"        value="WG"/>
+         <entry key="Wiltshire"             value="WI"/>
+         <entry key="West Lothian"          value="WL"/>
+         <entry key="West Midlands"         value="WM"/>
+         <entry key="Worcestershire"        value="WO"/>
+         <entry key="West Sussex"           value="WS"/>
+         <entry key="East Yorkshire"        value="YE"/>
+         <entry key="Yorkshire"             value="YK"/>
+         <entry key="North Yorkshire"       value="YN"/>
+         <entry key="South Yorkshire"       value="YS"/>
+         <entry key="West Yorkshire"        value="YW"/>       
+       </map>
+     </property>
+   </bean>
+   
+   <bean id="deuQasStateNameConversion" class="oracle.retail.avs.qas.impl.QASStateNameConversionBean">
+     <property name="countryISOCode" value="DE" />
+     <property name="nameToCodeMap">
+       <map>
+         <entry key="Brandenburg"             value="BB"/>       
+         <entry key="Berlin"                  value="BE"/>
+         <!-- &#252; =  Small Letter U with diaeresis -->       
+         <entry key="Baden-W&#252;rttemberg"  value="BW"/>       
+         <entry key="Bayern"                  value="BY"/>       
+         <entry key="Bremen"                  value="HB"/>
+         <entry key="Hessen"                  value="HE"/>       
+         <entry key="Hamburg"                 value="HH"/>       
+         <entry key="Niedersachsen"           value="NI"/>       
+         <entry key="Mecklenburg-Vorpommern"  value="MV"/>       
+         <entry key="Nordrhein-Westfalen"     value="NW"/>       
+         <entry key="Rheinland-Pfalz"         value="RP"/>       
+         <entry key="Schleswig-Holstein"      value="SH"/>       
+         <entry key="Saarland"                value="SL"/>       
+         <entry key="Sachsen"                 value="SN"/>       
+         <entry key="Sachsen-Anhalt"          value="ST"/>   
+         <!-- &#252; =  Small Letter U with diaeresis -->       
+         <entry key="Th&#252;ringen"          value="TH"/>     
+       </map>
+     </property>
+   </bean>
+   
+   <bean id="espQasStateNameConversion" class="oracle.retail.avs.qas.impl.QASStateNameConversionBean">
+     <property name="countryISOCode" value="ES" />
+     <property name="nameToCodeMap">
+       <map>
+         <!-- &#241; =  Small Letter N with tilde -->       
+         <entry key="La Coru&#241;a/A Coru&#241;a"      value="C"/>
+         <entry key="Alava/Araba"             value="VI"/>
+         <entry key="Albacete"                value="AB"/>
+         <entry key="Alicante/Alacant"        value="A"/>
+         <entry key="Almeria"                 value="AL"/>
+         <entry key="Asturias"                value="O"/>
+         <entry key="Avila"                   value="AV"/>
+         <entry key="Badajoz"                 value="BA"/>
+         <entry key="Balears"                 value="PM"/>
+         <entry key="Barcelona"               value="B"/>
+         <entry key="Burgos"                  value="BU"/>
+         <entry key="Caceres"                 value="CC"/>
+         <entry key="Cadiz"                   value="CA"/>
+         <entry key="Caceres"                 value="CC"/>
+         <entry key="Cadiz"                   value="CA"/>
+         <entry key="Cantabria"               value="S"/>
+         <entry key="Castellon/Castello"      value="CS"/>
+         <entry key="Ciudad Real"             value="CR"/>
+         <entry key="Cordoba"                 value="CO"/>
+         <entry key="Cuenca"                  value="CU"/>
+         <entry key="Girona"                  value="GI"/>
+         <entry key="Granada"                 value="GR"/>
+         <entry key="Guadalajara"             value="GU"/>
+         <entry key="Guipuzcoa"               value="SS"/>
+         <entry key="Huelva"                  value="H"/>
+         <entry key="Huesca"                  value="HU"/>
+         <entry key="Jaen"                    value="J"/>
+         <entry key="La Rioja"                value="LO"/>
+         <entry key="Las Palmas"              value="GC"/>
+         <entry key="Leon"                    value="LE"/>
+         <entry key="Lleida"                  value="L"/>
+         <entry key="Lugo"                    value="LU"/>
+         <entry key="Madrid"                  value="M"/>
+         <entry key="Malaga"                  value="MA"/>
+         <entry key="Murcia"                  value="MU"/>
+         <entry key="Navarra/Nafarroa"        value="NA"/>
+         <entry key="Ourense"                 value="OR"/>
+         <entry key="Palencia"                value="P"/>
+         <entry key="Pontevedra"              value="PO"/>
+         <entry key="Salamanca"               value="SA"/>
+         <entry key="Santa Cruz de Tenerife"  value="TF"/>
+         <entry key="Segovia"                 value="SG"/>
+         <entry key="Sevilla"                 value="SE"/>
+         <entry key="Soria"                   value="SO"/>
+         <entry key="Tarragona"               value="T"/>
+         <entry key="Teruel"                  value="TE"/>
+         <entry key="Toledo"                  value="TO"/>
+         <entry key="Valencia"                value="V"/>
+         <entry key="Valladolid"              value="VA"/>
+         <entry key="Bizkaia"                 value="BI"/>
+         <entry key="Zamora"                  value="ZA"/>
+         <entry key="Zaragoza"                value="Z"/>
+       </map>
+     </property>
+   </bean>
+
+   <bean id="nldQasStateNameConversion" class="oracle.retail.avs.qas.impl.QASStateNameConversionBean">
+     <property name="countryISOCode" value="NL" />
+     <property name="nameToCodeMap">
+       <map>
+         <entry key="Drenthe"       value="DR"/>
+         <entry key="Flevoland"     value="FL"/>
+         <entry key="Friesland"     value="FR"/>
+         <entry key="Gelderland"    value="GE"/>
+         <entry key="Groningen"     value="GR"/>
+         <entry key="Limburg"       value="LI"/>
+         <entry key="Noord Brabant" value="NB"/>
+         <entry key="Noord Holland" value="NH"/>
+         <entry key="Overijssel"    value="OV"/>
+         <entry key="Utrecht"       value="UT"/>
+         <entry key="Zeeland"       value="ZE"/>
+         <entry key="Zuid Holland"  value="ZH"/>
+       </map>
+     </property>
+   </bean>
+
+   <!-- The MEX data set sends back the correct state code values except for the following. -->
+   <bean id="mexQasStateNameConversion" class="oracle.retail.avs.qas.impl.QASStateNameConversionBean">
+     <property name="countryISOCode" value="MX" />
+     <property name="nameToCodeMap">
+       <map>
+         <entry key="DF"       value="DIF"/>
+         <entry key="AGS"      value="AGU"/>
+         <entry key="BC"       value="BCN"/>
+         <entry key="COAH"     value="COA"/>
+         <entry key="CHIS"     value="CHP"/>
+         <entry key="CHIH"     value="CHH"/>
+         <entry key="DGO"      value="DUR"/>
+         <entry key="GTO"      value="GUA"/>
+         <entry key="HGO"      value="HID"/>
+         <entry key="MICH"     value="MIC"/>
+         <entry key="NL"       value="NLE"/>
+         <entry key="QRO"      value="QUE"/>
+         <entry key="QROO"     value="ROO"/>
+         <entry key="TAMPS"    value="TAM"/>
+         <entry key="TLAX"     value="TLA"/>
+         <entry key="CDMEX"    value="DIF"/>
+       </map>
+     </property>
+   </bean>
+
+   <bean id="prtQasStateNameConversion" class="oracle.retail.avs.qas.impl.QASStateNameConversionBean">
+     <property name="countryISOCode" value="PT" />
+     <property name="nameToCodeMap">
+       <map>
+         <entry key="Aveiro"                      value="01"/>
+         <entry key="Beja"                        value="02"/>
+         <entry key="Braga"                       value="03"/>
+         <entry key="Braganca"                    value="04"/>
+         <entry key="Castelo Branco"              value="05"/>
+         <entry key="Coimbra"                     value="06"/>
+         <entry key="Evora"                       value="07"/>
+         <entry key="Faro"                        value="08"/>
+         <entry key="Guarda"                      value="09"/>
+         <entry key="Leiria"                      value="10"/>
+         <entry key="Lisboa"                      value="11"/>
+         <entry key="Portalegre"                  value="12"/>
+         <entry key="Porto"                       value="13"/>
+         <entry key="Santarem"                    value="14"/>
+         <entry key="Setubal"                     value="15"/>
+         <entry key="Viana do Castelo"            value="16"/>
+         <entry key="Vila Real"                   value="17"/>
+         <entry key="Viseu"                       value="18"/>
+         <entry key="Ilha de Sao Miguel"          value="20"/>
+         <entry key="Ilha do Pico"                value="20"/>
+         <entry key="Ilha Terceira"               value="20"/>
+         <entry key="Ilha de Sao Jorge"           value="20"/>
+         <entry key="Ilha do Faial"               value="20"/>
+         <entry key="Ilha das Flores"             value="20"/>
+         <entry key="Ilha de Santa Maria"         value="20"/>
+         <entry key="Ilha da Graciosa"            value="20"/>
+         <entry key="Ilha do Corv"                value="20"/>
+         <entry key="Ilha da Madeira"             value="30"/>
+       </map>
+     </property>
+   </bean>
+
+</beans>

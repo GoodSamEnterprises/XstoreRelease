@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <RegisterConfig dtype="Default">
+    <OpenClose dtype="Default">
+      <UseSystemDate dtype="Boolean">true</UseSystemDate>
+      <RollingClose dtype="Default">
+         <!-- 
+            Determines how money is managed during open and close when rolling close is enabled.
+            Possible values are "DISABLED", 'PROMPT_FOR_FLOAT', 'CARRY_OVER_BALANCE', 'FLOAT_BALANCE', 'INSERT_PREDEFINED_FLOAT'  
+        -->
+        <RollingCloseType dtype="String">INSERT_PREDEFINED_FLOAT</RollingCloseType>
+        <AutoOpenAfterClose dtype="Boolean">true</AutoOpenAfterClose>
+        <!-- This is a note amount used to calculate and round off the suggested pickup amount in a float pickup configuration. The default value is $10 -->
+        <PickUpFloatRoundFactor dtype="BigDecimal">10</PickUpFloatRoundFactor>
+        <!-- Time at which the store opens for a business day -->
+        <!--  (The store closes at the moment just prior to this) -->
+        <!-- Note that system time attributes 00:00 (midnight) to the beginning of a new day and not the end of a current day -->
+        <StoreOpenTime dtype="String">00:00</StoreOpenTime>
+        <!--  Time in minutes before store close to start warning the user the store is about to close -->
+        <StoreCloseWarningSpan dtype="PositiveInteger">60</StoreCloseWarningSpan>
+        <!--  Time in minutes between store close warning messages -->
+        <StoreCloseWarningFrequency dtype="PositiveInteger">10</StoreCloseWarningFrequency>
+        <!--  Time in minutes after store close to allow transactions for current business day -->
+        <StoreCloseGracePeriod dtype="PositiveInteger">120</StoreCloseGracePeriod>
+        <!-- Display retail period close completion dialog -->
+        <DisplayEndRetailPeriodCompleteDialog dtype="Boolean">true</DisplayEndRetailPeriodCompleteDialog>
+        <!--  Time in hours to look back when searching for suspended transactions to cancel -->
+        <SuspendedTransactionsLookback dtype="PositiveInteger">12</SuspendedTransactionsLookback>
+      </RollingClose>
+    </OpenClose>
+  </RegisterConfig>
+  <SystemConfig dtype="Default">
+    <RefreshPromotions dtype="Default">
+      <CheckingForNewCachedPromotions dtype="Boolean">true</CheckingForNewCachedPromotions>
+      <!-- The unit is minute. The default value is 60 minutes. The minimum value is 10 minutes.  -->
+      <!--<TimeIntervalForCheckingForNewCachedPromotions dtype="PositiveInteger">10</TimeIntervalForCheckingForNewCachedPromotions>-->
+    </RefreshPromotions>
+  </SystemConfig>
+  <Xenvironment dtype="Default">
+    <UpdateGracePeriod dtype="Integer">3600</UpdateGracePeriod>
+    <UpdateRequiredPeriod dtype="Integer">900</UpdateRequiredPeriod>
+  </Xenvironment>
+</Store>

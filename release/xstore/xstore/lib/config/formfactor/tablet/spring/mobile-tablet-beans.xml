@@ -1,0 +1,45 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+  profile="xstore" default-init-method="init">
+
+  <util:map id="cheetahSpecialActivityToPromptMappings" key-type="java.lang.String"
+    value-type="com.micros_retail.xm.cheetah.data.Activity" scope="prototype">
+    <entry key="LOGIN_USER_ID">
+      <bean class="com.micros_retail.xm.cheetah.data.LoginActivity" />
+    </entry>
+    <entry key="LOGIN_USER_ID_ESC">
+      <bean class="com.micros_retail.xm.cheetah.data.LoginActivity" />
+    </entry>
+    <entry key="TIMECLOCK_USER_ID">
+      <bean class="com.micros_retail.xm.cheetah.data.LoginActivity" />
+    </entry>
+    <entry key="INVENTORY::OPTIONS">
+      <bean class="com.micros_retail.xm.cheetah.data.LoginActivity" />
+    </entry>
+     <entry key="TILL::OPTIONS">
+      <bean class="com.micros_retail.xm.cheetah.data.LoginActivity" />
+    </entry>
+  </util:map>
+  
+  <bean id="resumeTransactionItemTypeRule" class="dtv.pos.register.suspendresume.ResumeItemTypeRule" scope="prototype">
+    <property name="allowedTypes">
+      <set>
+        <value>SALE</value>
+        <value>RETURN</value>
+        <value>ORDER</value>
+        <value>LAYAWAY</value>
+        <value>SPECIAL_ORDER</value>
+        <value>PRESALE</value>
+        <value>ONHOLD</value>
+      </set>
+    </property>
+    <property name="failedMessageKey" value="_mobileInvalidItemTypeForResume" />
+  </bean>
+</beans>

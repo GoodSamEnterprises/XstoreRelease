@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+    
+  <Form name="AUTH_PROCESSING" type="POPUP_VIEW_PANEL">
+    <Page name="authProcessing">
+      <Panel startX="0" startY="0" width="100" height="55" fieldLayoutRef="authorizationInProgressLayout" padding="35, 0, 0, 0" verticalAlignment="Center" />
+      <Panel startX="0" startY="55" width="100" height="45" fieldLayoutRef="authProgressLayout" padding="0, 100, 0, 100" />
+
+    </Page>
+    
+    <ActionGroup name="DEFAULT">
+      <Action dataKey="EXIT" text="_cancel" keyStroke="Escape" />
+      <!-- following is to remove HELP button from this form -->
+      <Action keyStroke="F1" visible="false" />    
+    </ActionGroup>
+    <ActionGroup name="NO_SKIP">
+      <Action keyStrokeKey="Enter" keyStroke="Enter" visible="false" />
+      <!-- following is to remove HELP button from this form -->
+      <Action keyStroke="F1" visible="false" />      
+    </ActionGroup>
+  </Form>
+    
+</FormSet>

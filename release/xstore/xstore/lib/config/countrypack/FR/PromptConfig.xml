@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PromptSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PromptConfig.xsd">
+
+  <Prompt name="COUNTRYPACK.FR.TAMPERING_CHECK_NO_ERROR" type="Notify" title="_countrypack.fr.noErrorTitle" message="_countrypack.fr.tamperingCheckNoErrorMessage" />
+
+  <Prompt name="COUNTRYPACK.FR.TAMPERING_CHECK_ERROR" type="Notify" title="_countrypack.fr.checkdatabasetampering" message="_countrypack.fr.tamperingCheckErrorMessage">
+    <Action chainKey="CHECK_DATABASE_TAMPERING" text="_continue" keyStroke="Enter" />
+  </Prompt>
+  
+  <Prompt name="COUNTRYPACK.FR.TAMPERING_CHECK_OFFLINE_ERROR" type="Notify" title="_countrypack.fr.checkdatabasetampering" message="_countrypack.fr.datasource.offline" />
+  
+  <Prompt name="COUNTRYPACK.FR.CLOSURE_TAMPERING_CHECK_ERROR" type="Notify" title="_countrypack.fr.checkdatabasetampering" message="_countrypack.fr.tamperingCheckErrorMessage" >
+    <Action ref="ACCEPT_ENTER" privilege="FR_DATABASE_TAMPERING_CHECK_ERROR" />
+    <Action ref="CANCEL_BACK" />
+  </Prompt>
+
+  <Prompt name="COUNTRYPACK.FR.ENTER_JET_COMMENT" type="LongText" title="_countrypack.fr.insertJetCommentTitle" message="_countrypack.fr.insertJetCommentMessage" >
+    <Action ref="CANCEL_BACK" />
+    <Action dataKey="CONTINUE" text="_save" keyStroke="F8" />
+  </Prompt>
+
+</PromptSet>

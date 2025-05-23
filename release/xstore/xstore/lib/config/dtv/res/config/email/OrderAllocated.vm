@@ -1,0 +1,28 @@
+#set ($subject = "Order $orderId Is Ready For Pickup")
+#set ($comma = ", ")
+#set ($space = " ")
+<html>
+  <body>
+  Your order, $orderId, is ready to be picked up at:<br>
+  <br>
+  #if($thisStore.getStoreName())
+    $thisStore.getStoreName()<br>
+  #end
+  #if($thisStore.getAddress1())
+    $thisStore.getAddress1()
+    #if($thisStore.getAddress2())
+      $comma$thisStore.getAddress2()
+    #end
+    <br>
+  #end
+  #if($thisStore.getCity())
+    $thisStore.getCity()$comma
+  #end
+  #if($thisStore.getState())
+    $thisStore.getState()$space
+  #end
+  #if($thisStore.getPostalCode())
+    $thisStore.getPostalCode()<br>
+  #end
+  </body>
+</html>

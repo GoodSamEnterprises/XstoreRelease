@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed May 18 10:19:58 CDT 2016 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner. ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet>
+  <FormView>
+    <FormKey dtype="String">SEARCH_BY_FLIGHT_ID</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, PREFERRED, PREFERRED-->
+          <param_value dtype="DoubleArray">-2.0, 100, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="IntegerArray">10, 0, 10, 0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">false</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formFlightSearchFlightNumber</TextKey>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">flightId</Resource>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Required dtype="Boolean">true</Required>
+        <DataField Ref="FlightNumber" />
+        <Font>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formFlightSearchSeatNumber</TextKey>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">seatNumber</Resource>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <DataField Ref="SeatNumber" />
+        <Font>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormCheckBox</Type>
+        <TextKey dtype="Translatable">_formFlightNoSeat</TextKey>
+        <Resource dtype="String">seatAvailable</Resource>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Font>
+          <FontSize dtype="String">+5</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 3, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formFlightSearchFlightOriginAirport</TextKey>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">originAirport</Resource>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Required dtype="Boolean">true</Required>
+        <DataField Ref="AirportCode" />
+        <Font>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formFlightSearchFlightDestinationAirport</TextKey>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">destinationAirport</Resource>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Required dtype="Boolean">false</Required>
+        <DataField Ref="AirportCode" />
+        <Font>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 5, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_formFlightSearchFlightScheduledDate</TextKey>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 5, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">scheduleDate</Resource>
+        <TextKey dtype="Translatable">_flightSeatAvailable</TextKey>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Required dtype="Boolean">true</Required>
+        <DataField Ref="Date" />
+        <Font>
+          <FontSize dtype="String">+3</FontSize>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 6, 3, 1, L, T</LayoutLocation>
+        <Type dtype="String">FormLabelWrapping</Type>
+        <Resource dtype="String">flightsDetail</Resource>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <Font>
+<!--           <FontStyle dtype="String">BOLD</FontStyle> -->
+          <FontSize dtype="String">+1</FontSize>
+        </Font>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" text="_flightInfoSearchContinue" />
+      <Action ref="AIRPORT::FINAL" />
+      <Action ref="AIRPORT::MORE" />
+    </ActionGroup>
+    <!--**********************************-->
+    <!--** MORE::ACTIONS action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="MORE::ACTIONS">
+      <Action ref="AIRPORT::BACK" />
+      <Action ref="AIRPORT::ARRIVALS" />
+      <Action ref="AIRPORT::STAFF" />
+      <Action ref="RETAIL::RESUME_TRANSACTION::AIRPORT" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

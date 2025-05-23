@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet>
+  <FormView>
+    <FormKey dtype="String">ITEM_DRILL_DOWN</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <ColorGroup bgColorRef="_colorTransactionInformationPanel"/>
+      <ComponentParameter>
+        <param_name dtype="String">setOpaque</param_name>
+        <param_value dtype="Boolean">true</param_value>
+      </ComponentParameter>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+0,0,1,0</param_value>
+      </ComponentParameter>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCustomerMaintHeaderPanel</param_value>
+        </Parameter>
+      </LayoutParameters> 
+      <FormViewPanel>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setGaps">
+           <param_value dtype="InsetsRef">_gapsCustomerMaintHeaderPanel</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_rpt.item.drilldown.form.title</TextKey>
+          <Font fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabel</Type>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <ComponentParameter name="setIcon" >
+            <param_value dtype="IconRef">_imageTransactionHeaderDividerIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">dateRange</Resource>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabel</Type>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <ComponentParameter name="setIcon" >
+            <param_value dtype="IconRef">_imageLineDividerIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_rpt.item.drilldown.form.currentselection</TextKey>
+          <Font fontSize="+1" />
+        </FormViewCell>
+<!--         <FormViewCell> -->
+<!--           <Type dtype="String">FormLabelEmphasized</Type> -->
+<!--           <Resource dtype="String">currentSelectionFullDetail</Resource> -->
+<!--           <Font fontSize="+2" /> -->
+<!--         </FormViewCell> -->
+<!-- REPLACEMENT SECTION BELOW: YOU CAN REPLACE THE ABOVE FORMVIEWCELL WITH A MORE DETAILED INFO BELOW -->
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">currentSelectionName</Resource>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabel</Type>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <ComponentParameter name="setIcon" >
+            <param_value dtype="IconRef">_imageLineDividerIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_rpt.item.drilldown.form.itemtype</TextKey>
+          <Font fontSize="+1" />
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">currentItemType</Resource>
+          <Font fontSize="+1" />
+        </FormViewCell>
+      </FormViewPanel>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter>
+          <param_name dtype="String">setColumn</param_name>
+          <param_value dtype="DoubleArray">8.0, -2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0, 8.0</param_value>
+        </Parameter>
+        <Parameter>
+          <param_name dtype="String">setRow</param_name>
+          <param_value dtype="DoubleArray">-1.0, 24.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 0.05, 0.05, 0.05, -1.0, -1.0, -1.0, 8.0</param_value>
+        </Parameter>
+        <Parameter>
+          <param_name dtype="String">setVerticalStretch</param_name>
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewPanel componentId="TabbedPaneContext">
+        <PanelType dtype="String">DETAIL</PanelType>
+        <LayoutLocation dtype="String">0, 0, 12, 1, F, F</LayoutLocation>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter>
+            <param_name dtype="String">setColumn</param_name>
+             <param_value dtype="DoubleArray">0.005, 0.1, 0.14, 0.1, 0.14, 0.1, 0.14, 0.1, 0.14, -1</param_value>
+          </Parameter>
+          <Parameter>
+            <param_name dtype="String">setRow</param_name>
+            <param_value dtype="DoubleArray">1</param_value>
+          </Parameter>
+          <Parameter>
+            <param_name dtype="String">setVerticalStretch</param_name>
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_rpt.item.drilldown.form.grosstotals</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">totalSalesInfo</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">3, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_rpt.item.drilldown.form.returntotals</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">totalReturnsInfo</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">5, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_rpt.item.drilldown.form.discounttotals</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">6, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">totalDiscountsInfo</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">7, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_rpt.item.drilldown.form.nettotals</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">8, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">totalNetsInfo</Resource>
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 2, 9, 16, F, F</LayoutLocation>
+        <Type dtype="String">FormListOneTouch</Type>
+        <Touch type="down" ref="TOUCH::DRILL_DOWN_GRAPH_GROSS_SALES" simulateGlassPane="true" >
+          <ResponsivenessRule class="dtv.pos.reporting.drilldown.DrillDownDataGraphResponsivenessRule" >
+            <Parameter name="column" value="3" />
+          </ResponsivenessRule>
+        </Touch>
+        <Touch type="down" ref="TOUCH::DRILL_DOWN_GRAPH_RETURNS" simulateGlassPane="true" >
+          <ResponsivenessRule class="dtv.pos.reporting.drilldown.DrillDownDataGraphResponsivenessRule" >
+            <Parameter name="column" value="4" />
+          </ResponsivenessRule>
+        </Touch>
+        <Touch type="down" ref="TOUCH::DRILL_DOWN_GRAPH_DISCOUNTS" simulateGlassPane="true" >
+          <ResponsivenessRule class="dtv.pos.reporting.drilldown.DrillDownDataGraphResponsivenessRule" >
+            <Parameter name="column" value="5" />
+          </ResponsivenessRule>
+        </Touch>
+        <Touch type="down" ref="TOUCH::DRILL_DOWN_GRAPH_NET_SALES" simulateGlassPane="true" >
+          <ResponsivenessRule class="dtv.pos.reporting.drilldown.DrillDownDataGraphResponsivenessRule" >
+            <Parameter name="column" value="6" />
+          </ResponsivenessRule>
+        </Touch>
+        <Touch type="up" ref="TOUCH::DRILL_DOWN_GRAPH_GROSS_QUANTITIES" simulateGlassPane="true" >
+          <ResponsivenessRule class="dtv.pos.reporting.drilldown.DrillDownDataGraphResponsivenessRule" >
+            <Parameter name="column" value="3" />
+          </ResponsivenessRule>
+        </Touch>
+        <Touch type="up" ref="TOUCH::DRILL_DOWN_GRAPH_RETURN_QUANTITIES" simulateGlassPane="true" >
+          <ResponsivenessRule class="dtv.pos.reporting.drilldown.DrillDownDataGraphResponsivenessRule" >
+            <Parameter name="column" value="4" />
+          </ResponsivenessRule>
+        </Touch>
+        <Touch type="up" ref="TOUCH::DRILL_DOWN_GRAPH_DISCOUNT_QUANTITIES" simulateGlassPane="true" >
+          <ResponsivenessRule class="dtv.pos.reporting.drilldown.DrillDownDataGraphResponsivenessRule" >
+            <Parameter name="column" value="5" />
+          </ResponsivenessRule>
+        </Touch>
+        <Touch type="up" ref="TOUCH::DRILL_DOWN_GRAPH_NET_QUANTITIES" simulateGlassPane="true" >
+          <ResponsivenessRule class="dtv.pos.reporting.drilldown.DrillDownDataGraphResponsivenessRule" >
+            <Parameter name="column" value="6" />
+          </ResponsivenessRule>
+        </Touch>
+        <Resource dtype="String">selectionModel</Resource>
+        <ReadOnly dtype="Boolean">false</ReadOnly>
+        <TabOrder dtype="Integer">0</TabOrder>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">DRILL_DOWN_LIST</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">DRILL_DOWN_LIST_DATA</Type>
+        </Renderer>
+        <HorizontalScrollPolicy dtype="String">NEVER</HorizontalScrollPolicy>
+        <VerticalScrollPolicy dtype="String">AS_NEEDED</VerticalScrollPolicy>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT" >
+      <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+      <Action dataKey="DRILL_DOWN" text="_rpt.item.drilldown.form.button.drilldown" keyStroke="Enter" />
+      <Action dataKey="DRILL_UP" text="_rpt.item.drilldown.form.button.drillup" keyStroke="F2" />
+      <Action dataKey="DRILL_DOWN" text="_rpt.item.drilldown.form.button.drilldown" keyStroke="F3" />
+      <Action dataKey="REFRESH" text="_rpt.item.drilldown.form.button.refresh" keyStroke="F6" />
+      <Action formOptionsKey="GRAPH_OPTIONS" text="_rpt.item.drilldown.graph.menu.title" keyStroke="F11" />
+    </ActionGroup>
+    
+    <ActionGroup key="GRAPH_OPTIONS">
+      <Action chainKey="ITEM_DRILL_DOWN_GRAPH_GROSS_SALES" chainType="STACK" text="_rpt.item.drilldown.graph.sales.gross" />
+      <Action chainKey="ITEM_DRILL_DOWN_GRAPH_RETURNS" chainType="STACK" text="_rpt.item.drilldown.graph.sales.returns" />
+      <Action chainKey="ITEM_DRILL_DOWN_GRAPH_DISCOUNTS" chainType="STACK" text="_rpt.item.drilldown.graph.sales.discounts" />
+      <Action chainKey="ITEM_DRILL_DOWN_GRAPH_NET_SALES" chainType="STACK" text="_rpt.item.drilldown.graph.sales.net" />
+      <Action chainKey="ITEM_DRILL_DOWN_GRAPH_GROSS_QUANTITY" chainType="STACK" text="_rpt.item.drilldown.graph.quantity.gross" />
+      <Action chainKey="ITEM_DRILL_DOWN_GRAPH_RETURNS_QUANTITY" chainType="STACK" text="_rpt.item.drilldown.graph.quantity.returns" />
+      <Action chainKey="ITEM_DRILL_DOWN_GRAPH_DISCOUNTS_QUANTITY" chainType="STACK" text="_rpt.item.drilldown.graph.quantity.discounts" />
+      <Action chainKey="ITEM_DRILL_DOWN_GRAPH_NET_SALES_QUANTITY" chainType="STACK" text="_rpt.item.drilldown.graph.quantity.net" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <!-- ***************************************************** -->
+  <!-- ** ROUTING RULES -->
+  <!-- ***************************************************** -->
+  <RoutingRules>
+    <RoutingRule name="INVENTORY" document="INVENTORY_DOCUMENT" file="INVENTORY">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" 
+                 value="dtv.xst.dao.inv.IInventoryDocument" />
+      <condition class="dtv.pos.docbuilding.conditions.InventoryDocumentTypeCondition"
+                 type="INVENTORY_COUNT"
+                 inverted="true" />
+    </RoutingRule>
+  </RoutingRules>
+  
+  <!-- ***************************************************** -->
+  <!-- ** LOG DOCUMENT TYPES -->
+  <!-- ***************************************************** -->
+  <LogTypes>
+    <LogType document="INVENTORY_DOCUMENT" sectionref="INVENTORY_DOC" />
+  </LogTypes>
+  
+  <!-- ***************************************************** -->
+  <!-- ** SECTIONS -->
+  <!-- ***************************************************** -->
+  <sections>
+    <section name="INVENTORY_DOC">
+      <xml><![CDATA[
+        <Document>
+          <RetailLocationID>#{getRetailLocationId}</RetailLocationID>
+          <DocumentID>#{getDocumentId}</DocumentID>
+          <DocumentType>#{getDocumentTypeCode}</DocumentType>
+          <DocumentSubType>#{getDocumentSubtypeCode}</DocumentSubType>
+          <Description>#{getDescription}</Description>
+          <POReferenceNumber>#{getPoReferenceNumber}</POReferenceNumber>
+          <RecordCreationType>#{getRecordCreationType}</RecordCreationType>
+          <StatusCode>#{getStatusCode}</StatusCode>
+          <OriginatorID>#{getOriginatorId}</OriginatorID>
+          <OriginatorName>#{getOriginatorName}</OriginatorName>
+          <CreationTimestamp>#{getCreateDateTime}[datetime]</CreationTimestamp>
+          <CompletionTimestamp>#{getCompleteDateTime}[datetime]</CompletionTimestamp>
+          <LastActivityTimestamp>#{getLastActivityDate}[datetime]</LastActivityTimestamp>
+          
+          <?sectionref name="inventory_doc_common"?>
+                    
+          <?condition method="getCartons" comparison="IS_EMPTY"?>
+          <?iterator method="getInventoryDocumentLineItems"?>
+          <?sectionref name="lineitem"?>
+          <?_iterator?>
+          <?_condition?>
+          
+        </Document>
+      ]]></xml>
+    </section>
+  
+    <section name="inventory_doc_common">
+      <xml><![CDATA[
+        <?iterator method="getNotes"?>
+        <Note>
+          <NoteID>#{getNoteId}</NoteID>
+          <CreatorPartyID>#{getCreatorParty.getPartyId}</CreatorPartyID>
+          <CreationTimestamp>#{getNoteDatetimestamp}[datetime]</CreationTimestamp>
+          <NoteText>#{getNote}</NoteText>
+        </Note>
+        <?_iterator?>
+      
+        <?iterator method="getShipments"?>
+        <Shipment>
+          <ShipmentSequence>#{getShipmentSequence}</ShipmentSequence>
+          <ExpectedDeliveryDate>#{getExpectedDeliveryDate}[datetime]</ExpectedDeliveryDate>
+          <ActualDeliveryDate>#{getActualDeliveryDate}[datetime]</ActualDeliveryDate>
+          <ExpectedShipDate>#{getExpectedShipDate}[datetime]</ExpectedShipDate>
+          <ActualShipDate>#{getActualShipDate}[datetime]</ActualShipDate>
+          <DestinationPartyID>#{getDestinationParty.getPartyId}</DestinationPartyID>
+          <DestinationRetailLocationID>#{getDestinationRetailLocation.getRetailLocationId}</DestinationRetailLocationID>
+          <DestinationName>#{getDestinationName}</DestinationName>
+          <ShippingCarrier>#{getShippingCarrier}</ShippingCarrier>
+          <ShippingMethod>#{getShippingMethod}</ShippingMethod>
+          <TrackingNumber>#{getTrackingNumber}</TrackingNumber>
+          <StatusCode>#{getShipmentStatusCode}</StatusCode>
+          
+          <?call method="getAddress"?>
+          <?sectionref name="address_common"?>
+          <?_call?>
+
+        </Shipment>
+        <?_iterator?>
+          
+        <?iterator method="getCartons"?>
+        <Carton>
+          <CartonID>#{getCartonId}</CartonID>
+          <StatusCode>#{getCartonStatusCode}</StatusCode>
+          
+          <?iterator method="getLineItems"?>
+          <?sectionref name="lineitem"?>
+          <?_iterator?>
+        </Carton>
+        <?_iterator?>
+      ]]></xml>
+    </section>
+    
+    <section name="lineitem">
+      <xml><![CDATA[
+        <LineItem VoidFlag="!{dtv.pos.inventory.InventoryLineVoidedLogField}[boolean]">
+          <LineNumber>#{getInventoryDocumentLineNumber}</LineNumber>
+          <ItemID>#{getItemId}</ItemID>
+          <SerialNumber>#{getSerialNumber}</SerialNumber>
+          <SerialNumbers>#{getSerialNumbersString}</SerialNumbers>
+          <EnteredItemID>#{getEnteredItemId}</EnteredItemID>
+          <TypeCode>#{getLineItemTypeCode}</TypeCode>
+          <ActualCount>#{getUnitCount}</ActualCount>
+          <ExpectedCount>#{getExpectedCount}</ExpectedCount>
+          <PostedCount>#{getPostedCount}</PostedCount>
+          <OriginalBucketID>#{getOriginalBucketId}</OriginalBucketID>
+          <SaleLineItem>
+            <RetailLocationID>#{getLineItemRetailLocationId}</RetailLocationID>
+            <WorkstationID>#{getLineItemWorkstationId}</WorkstationID>
+            <BusinessDate>#{getLineItemBusinessDate}[date]</BusinessDate>
+            <TransactionSequence>#{getLineItemTransactionSequence}</TransactionSequence>
+            <LineItemSequence>#{getLineItemRetailTransactionLineItemSequence}</LineItemSequence>
+          </SaleLineItem>
+          <RecordCreationType>#{getRecordCreationType}</RecordCreationType>
+          <StatusCode>#{getStatusCode}</StatusCode>
+          
+          <?call method="getInventoryAccountModifier"?>
+          <ItemAccountModifier>
+            <CustomerAccountCode>#{getCustAccountCode}</CustomerAccountCode>
+            <CustomerAccountID>#{getCustAccountId}</CustomerAccountID>
+          </ItemAccountModifier>
+          <?_call?>
+        </LineItem>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>

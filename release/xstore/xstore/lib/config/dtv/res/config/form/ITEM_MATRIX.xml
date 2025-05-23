@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet>
+  <FormView>
+    <FormKey dtype="String">ITEM_MATRIX</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM</FormLayout>
+    <FormViewPanel class="dtv.pos.itemmatrix.gui.ItemMatrixFormPanel">
+  		<PanelType dtype="String">DETAIL</PanelType>
+  		<CustomView dtype="Class">dtv.pos.itemmatrix.view.ItemMatrixView</CustomView>
+	  </FormViewPanel>
+    <ActionGroup key="DEFAULT">
+      <Action dataKey="BACK" text="_itemMatrixBack" keyStroke="Escape" />
+      <Action dataKey="PRIOR" text="_itemMatrixPreviousMatrix" keyStroke="F9">
+        <VisibilityRule class="dtv.pos.itemmatrix.visibilityrules.ItemMatrixPrevButtonVisibilityRule" />
+      </Action>
+      <Action dataKey="NEXT" text="_itemMatrixNextMatrix" keyStroke="F10">
+        <VisibilityRule class="dtv.pos.itemmatrix.visibilityrules.ItemMatrixNextButtonVisibilityRule" />
+      </Action>
+    </ActionGroup>
+   </FormView>
+</FormViewSet>

@@ -1,0 +1,101 @@
+<dataTemplate name="ShippingManifest" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+       
+        <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="DASH" value="_rptDashDelimiter"/>
+    <label name="COMMA" value="_rptComma"/>
+    <label name="DATE_RANGE" value="_rptDateRange"/>
+    <label name="TITLE" value="_shippingManifestReportTitle"/>
+    <label name="SHIPTO" value="_shipManifestRptShipTo"/>
+    <label name="CARRIER" value="_shipManifestRptCarrier"/>
+    <label name="SHIPVIA" value="_shipManifestRptShipVia"/>
+    <label name="TRACK_NUMBER" value="_shipManifestRptTrackingNo"/>
+    <label name="DATE" value="_shipManifestRptShipDate"/>
+    <label name="Item" value="_rptItem"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="QTY" value="_rptQuantity"/>
+ </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+    
+    <!-- User Parameters -->
+     <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>  
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+    <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+    <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter> 
+  </parameters>
+  
+  
+  <!--Data source and data Structure-->
+    <dataSource>
+    <queryReference name="Q_MANIFEST" key="SHIPPING_MANIFEST_REPORT">
+      <Parameters>
+      <Parameter>organizationId</Parameter>
+      <Parameter>argBusinessDateStart</Parameter>
+      <Parameter>argBusinessDateEnd</Parameter>
+      </Parameters>
+      <ResultFields>
+          <ResultField>invDocId</ResultField>     
+          <ResultField>shipmentSeq</ResultField>   
+          <ResultField>shipToName</ResultField>
+          <ResultField>shipToAddress1</ResultField>
+          <ResultField>shipToAddress2</ResultField>
+          <ResultField>shipToApartment</ResultField>
+          <ResultField>shipToCity</ResultField>
+          <ResultField>shipToState</ResultField>
+          <ResultField>shipToPostalCode</ResultField>
+          <ResultField>shipToCountry</ResultField>
+          <ResultField>shipToTelephone</ResultField>
+          <ResultField>itemId</ResultField>
+          <ResultField>itemDescription</ResultField>
+          <ResultField>itemQuantity</ResultField>
+          <ResultField>shippingCarrier</ResultField>
+          <ResultField>shippingMethod</ResultField>
+          <ResultField>trackingNumber</ResultField>
+          <ResultField>actualShipDate</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_MANIFEST" source="Q_MANIFEST">
+      <element name="ID" value="invDocId"/>
+      <element name="SHIPMENT" value="shipmentSeq"/>
+      <element name="NAME" value="shipToName" />
+      <element name="ADDR1" value="shipToAddress1" />
+      <element name="ADDR2" value="shipToAddress2"/> 
+      <element name="APARTMENT" value="shipToApartment"/>
+      <element name="CITY" value="shipToCity"/>
+      <element name="STATE" value="shipToState"/>  
+      <element name="POSTAL_CDE" value="shipToPostalCode" />
+      <element name="COUNTRY" value="shipToCountry" />
+      <element name="PHONE" value="shipToTelephone"/> 
+      <element name="ITEM" value="itemId"/>
+      <element name="DESC" value="itemDescription"/>
+      <element name="QTY" value="itemQuantity"/>  
+      <element name="CARRIER" value="shippingCarrier" />
+      <element name="METHOD" value="shippingMethod" />
+      <element name="NMBR" value="trackingNumber"/> 
+      <element name="DATE" value="actualShipDate" formatter="DateMedium"/>
+    </group>  
+  </dataStructure>
+</dataTemplate>

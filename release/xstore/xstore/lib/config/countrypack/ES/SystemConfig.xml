@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <RegisterConfig dtype="Default">
+  </RegisterConfig>
+  <SystemConfig dtype="Default">
+    <Tax dtype="Default">
+      <EnableVatTaxSummaryPrint dtype="Boolean">true</EnableVatTaxSummaryPrint>
+      <DisableChangeTaxAmount dtype="Boolean">true</DisableChangeTaxAmount>
+      <SelectTaxPercentFromList dtype="Boolean">true</SelectTaxPercentFromList>
+      <IgnoreTaxGroups dtype="String"></IgnoreTaxGroups>
+    </Tax>
+    <OnScreenKeyboard dtype="Default">
+      <Layout dtype="String">qwerty_es</Layout>
+    </OnScreenKeyboard>
+    <MeasurementUnits dtype="Default">
+      <!-- VALUES:  CELSIUS, FAHRENHEIT, KELVIN -->
+      <Temperature dtype="String">CELSIUS</Temperature>
+      <!-- VALUES:  IMPERIAL, METRIC -->
+      <Length dtype="String">METRIC</Length>
+    </MeasurementUnits>
+    <ItemReturn dtype="Default">
+      <CustomerRecordRequiredWhenNegativeBalance dtype="Boolean">true</CustomerRecordRequiredWhenNegativeBalance>
+    </ItemReturn>
+    <MixedTransactionSettings dtype="Default">
+      <AllowNegativeTotalInExchangeTransaction dtype="Boolean">false</AllowNegativeTotalInExchangeTransaction>
+    </MixedTransactionSettings>
+    <LocalCurrencyId dtype="String">EUR</LocalCurrencyId>
+    <InvoiceConfig dtype="Default">
+      <EnableInvoicing dtype="Boolean">false</EnableInvoicing>
+    </InvoiceConfig>
+    <FiscalConfig dtype="Default">
+      <CashLimits dtype="Default">
+        <OverridableLimit dtype="BigDecimal">2499.99</OverridableLimit>
+        <NotOverridableLimit dtype="BigDecimal">14999.99</NotOverridableLimit>
+      </CashLimits>
+      <Country dtype="Default">
+        <Es dtype="Default">
+          <!-- This represents the threshold for issuing a "Factura Simplificata" (below or equal this limit) or a "Factura Completa" (over this limit) -->
+          <InvoiceLimit dtype="BigDecimal">3000</InvoiceLimit>
+          <Sequence dtype="Default">
+            <Invoice dtype="Default">
+              <ResetDay dtype="PositiveInteger">1</ResetDay>
+              <ResetMonth dtype="PositiveInteger">1</ResetMonth>
+            </Invoice>
+          </Sequence>
+        </Es>
+      </Country>
+    </FiscalConfig>
+    <TaxFreeConfig dtype="Default">
+      <FintraxConfig dtype="Default">
+        <ShopCountryCode dtype="String">724</ShopCountryCode>
+        <GoodCustomsClassificationPropertyCode dtype="String">ES_TAXFREE_DIVA_CODE</GoodCustomsClassificationPropertyCode>
+        <MinAmountThreshold dtype="BigDecimal">90.16</MinAmountThreshold>
+        <MandatoryFields dtype="String">identityDocumentNumber,lastName,firstName,countryCode,birthDate</MandatoryFields>
+        <OptionalFields dtype="String">street,city,postalCode,identityDocumentCountryCode,emailAddress,finalDestination,arrivalDate,departureDate</OptionalFields>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">month</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </FintraxConfig>
+      <GlobalBlueConfig dtype="Default">
+        <MinimumAge dtype="PositiveInteger">16</MinimumAge>
+        <MaximumAge dtype="PositiveInteger">110</MaximumAge>
+        <IsZeroVATItemAllowed dtype="Boolean">true</IsZeroVATItemAllowed>
+        <SendReceiptNumberAsInvoiceNumber dtype="Boolean">true</SendReceiptNumberAsInvoiceNumber>
+        <MandatoryFields dtype="String">identityDocumentType,identityDocumentNumber,lastName,firstName,countryCode,birthDate</MandatoryFields>
+        <OptionalFields dtype="String">identityDocumentCountryCode,mobileNumber,street,postalCode,city,emailAddress,departureDate</OptionalFields>
+        <AvailableIdentificationDocumentType dtype="String">Passport</AvailableIdentificationDocumentType>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">month</TimeUnit>
+          <UnitLimit dtype="String">3</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">false</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </GlobalBlueConfig>
+    </TaxFreeConfig>
+  </SystemConfig>
+</Store>

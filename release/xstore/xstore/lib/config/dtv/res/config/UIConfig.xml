@@ -1,0 +1,1069 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UISet dtype="UISet" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="UIConfig.xsd">
+  <UI dtype="UI" name="REGISTER">
+    <Component type="Desktop" layout="dtv.ui.layout.TableLayout">
+      <LayoutParameters dtype="ParameterList">
+        <parameter name="setSize">
+          <param_value dtype="Integer">1024</param_value>
+          <param_value dtype="Integer">768</param_value>
+        </parameter>
+        <parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsDesktopLayout</param_value>
+        </parameter>
+        <parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginDesktopLayout</param_value>
+        </parameter>
+        <parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </parameter>
+      </LayoutParameters>
+      
+      <Component name="GENERAL_VIEW" type="AnimatedCardedPanel" layoutLocation="0, 0, 1024, 616" layoutLayer="30">
+        <Component name="TRANSACTION_VIEW" type="TransparentPanel" layoutLocation="TRANSACTION_VIEW" layout="dtv.ui.layout.TableLayout">
+          <LayoutParameters dtype="ParameterList">
+            <parameter name="setSize">
+              <param_value dtype="Integer">1024</param_value>
+              <param_value dtype="Integer">616</param_value>
+            </parameter>
+            <parameter name="setGaps">
+              <param_value dtype="InsetsRef">_gapsTransactionViewLayout</param_value>
+            </parameter>
+            <parameter name="setMargins">
+              <param_value dtype="InsetsRef">_marginTransactionViewLayout</param_value>
+            </parameter>
+            <parameter name="setVerticalStretch">
+              <param_value dtype="Boolean">true</param_value>
+            </parameter>
+          </LayoutParameters>
+
+          <Component name="FOCUS_BAR_MESSAGE_AREA" type="PanelOptimizedFocusBarArea" componentId="NormalPanel" contextSensitiveConstraint="DEFAULT"
+            layoutLocation="0, 0, 478, 616" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">450</param_value>
+                <param_value dtype="Integer">588</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="INPUT_CONTROL_AREA" type="ContextTabbedPane" componentId="TabbedPaneContext" layoutLocation="0, 0, 450, 434" />
+            <Component name="FOCUS_BAR" type="TextPromptView" layoutLocation="0, 433, 450, 155" />
+          </Component>
+
+          <Component name="TRANSACTION_LIST_AREA_BACKGROUND" type="SimplePanel" layoutLocation="478, 0, 546, 616"
+            layout="java.awt.BorderLayout">
+            <Component name="TRANSACTION_LIST_AREA" type="CardedPanelOptimized" contextSensitiveConstraint="DEFAULT" layoutLocation="Center">
+              <Component name="STARTUP_SCREEN_VIEW" type="StartupScreenView" layoutLocation="STARTUP_SCREEN_VIEW" />
+            </Component>
+          </Component>
+        </Component>
+        <Component name="MULTI_PURPOSE_VIEW" type="CardedPanel" layoutLocation="MULTI_PURPOSE_VIEW" />
+      </Component>
+
+      <Component name="MENU_VIEW" type="MenuView" layoutLocation="0, 616, 1024, 75" layoutLayer="30" layout="dtv.ui.layout.CenteringLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">13</param_value>
+            <param_value dtype="Integer">1</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsButtonView</param_value>
+          </parameter>
+          <parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginButtonView</param_value>
+          </parameter>
+        </LayoutParameters>
+      </Component>
+
+      <Component name="POPUP_LAYER" type="TranslucentPane" layoutLocation="0, 0, 1024, 700" layoutLayer="100" layout="dtv.ui.layout.TableLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">1024</param_value>
+            <param_value dtype="Integer">700</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsTransactionViewLayout</param_value>
+          </parameter>
+          <parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginTransactionViewLayout</param_value>
+          </parameter>
+          <parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </parameter>
+        </LayoutParameters>
+
+        <Component name="POPUP_VIEW_BACKGROUND" type="Panel" componentId="PopupPanel" contextSensitiveConstraint="DEFAULT"
+          layoutLocation="0, 0, 478, 613" layout="java.awt.BorderLayout" visible="true">
+
+          <Component name="POPUP_VIEW" type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">32</param_value>
+              </parameter>
+              <parameter name="setGaps">
+                <param_value dtype="InsetsRef">_gapsPopupViewLayout</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="POPUP_VIEW_PANEL" type="CardedPanel" layoutLocation="0, 0, 1, 27">
+              <Component name="POPUP_LIST_VIEW" type="ListPromptView" layoutLocation="POPUP_LIST_VIEW" />
+              <Component name="POPUP_NOTIFY_VIEW" type="NotifyPromptView" layoutLocation="POPUP_NOTIFY_VIEW" />
+              <Component name="POPUP_LONG_TEXT_VIEW" type="LongTextPromptView" layoutLocation="POPUP_LONG_TEXT_VIEW" />
+              <Component name="POPUP_MENU_VIEW" type="MenuListView" layoutLocation="POPUP_MENU_VIEW" />
+              <Component name="POPUP_ICON_MENU_VIEW" type="ActionIconListView" layoutLocation="POPUP_ICON_MENU_VIEW" />
+            </Component>
+
+            <Component type="PromptActionView" layoutLocation="0, 27, 1, 4" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">5</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsPromptButtonView</param_value>
+                </parameter>
+                <parameter name="setMargins">
+                  <param_value dtype="InsetsRef">_marginPromptButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+
+        <Component name="POPUP_VIEW_BACKGROUND_FULL_SCREEN" type="Panel" componentId="PopupPanel" contextSensitiveConstraint="DEFAULT"
+          layoutLocation="0, 0, 1024, 612" layout="java.awt.BorderLayout" visible="true">
+
+          <Component type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">32</param_value>
+              </parameter>
+              <parameter name="setGaps">
+                <param_value dtype="InsetsRef">_gapsPopupViewLayout</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component type="CardedPanel" layoutLocation="0, 0, 1, 27">
+              <Component name="POPUP_LIST_VIEW_FULL_SCREEN" type="ListPromptView" layoutLocation="POPUP_LIST_VIEW" />
+            </Component>
+
+            <Component type="PromptActionView" layoutLocation="0, 27, 1, 4" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">11</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsPromptButtonView</param_value>
+                </parameter>
+                <parameter name="setMargins">
+                  <param_value dtype="InsetsRef">_marginPromptButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+
+        <Component name="HELP_VIEW_BACKGROUND" type="Panel" componentId="InsetPanel" contextSensitiveConstraint="DEFAULT"
+          layoutLocation="0, 0, 478, 611" layout="java.awt.BorderLayout" visible="false">
+
+          <Component name="HELP_VIEW_PANEL" type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">16</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="HELP_VIEW" type="HelpView" layoutLocation="0, 0, 1, 13" />
+
+            <Component name="HELP_ACTION_VIEW" type="HelpActionView" layoutLocation="0, 13, 1, 2" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">6</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+      </Component>
+      
+      <Component type="MessagesStatusBar" name="MessagesStatusBar" layoutLocation="0, 700, 1024, 34" layoutLayer="30" />
+
+      <Component type="StatusBar" name="StatusBar" layoutLocation="0, 734, 1024, 34" layoutLayer="30" layout="dtv.ui.layout.TableLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">1024</param_value>
+            <param_value dtype="Integer">1</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsStatusBarLayout</param_value>
+          </parameter>
+          <parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </parameter>
+        </LayoutParameters>
+        <Component type="OnScreenKeyboardStatusCell" layoutLocation="0, 0, 57, 1" />
+        <Component type="AreaLocatorAndEmployeeNameStatusCell" layoutLocation="57, 0, 234, 1" />
+        <Component type="DatabaseStatusCell" layoutLocation="291, 0, 94, 1" />
+        <Component type="StoreNameAndIdStatusCell" layoutLocation="385, 0, 255, 1" />
+        <Component type="RegisterIdStatusCell" layoutLocation="640, 0, 94, 1" />
+        <Component type="DateStatusCell" layoutLocation="734, 0, 140, 1" />
+        <Component type="TimeStatusCell" layoutLocation="874 0, 75, 1" />
+        <Component type="HelpStatusCell" layoutLocation="949, 0, 75, 1" />
+      </Component>
+    </Component>
+  </UI>
+  <UI dtype="UI" name="REGISTER_FLIPPED">
+    <Component type="Desktop" layout="dtv.ui.layout.TableLayout">
+      <LayoutParameters dtype="ParameterList">
+        <parameter name="setSize">
+          <param_value dtype="Integer">1024</param_value>
+          <param_value dtype="Integer">768</param_value>
+        </parameter>
+        <parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsDesktopLayout</param_value>
+        </parameter>
+        <parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginDesktopLayout</param_value>
+        </parameter>
+        <parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </parameter>
+      </LayoutParameters>
+      
+      <Component name="GENERAL_VIEW" type="AnimatedCardedPanel" layoutLocation="0, 0, 1024, 616" layoutLayer="30">
+        <Component name="TRANSACTION_VIEW" type="TransparentPanel" layoutLocation="TRANSACTION_VIEW" layout="dtv.ui.layout.TableLayout">
+          <LayoutParameters dtype="ParameterList">
+            <parameter name="setSize">
+              <param_value dtype="Integer">1024</param_value>
+              <param_value dtype="Integer">616</param_value>
+            </parameter>
+            <parameter name="setGaps">
+              <param_value dtype="InsetsRef">_gapsTransactionViewLayout</param_value>
+            </parameter>
+            <parameter name="setMargins">
+              <param_value dtype="InsetsRef">_marginTransactionViewLayout</param_value>
+            </parameter>
+            <parameter name="setVerticalStretch">
+              <param_value dtype="Boolean">true</param_value>
+            </parameter>
+          </LayoutParameters>
+
+          <Component name="FOCUS_BAR_MESSAGE_AREA" type="PanelOptimizedFocusBarArea" componentId="NormalPanel" contextSensitiveConstraint="DEFAULT"
+            layoutLocation="546, 0, 478, 616" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">450</param_value>
+                <param_value dtype="Integer">588</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="INPUT_CONTROL_AREA" type="ContextTabbedPane" componentId="TabbedPaneContext" layoutLocation="0, 0, 450, 434" />
+            <Component name="FOCUS_BAR" type="TextPromptView" layoutLocation="0, 433, 450, 155" />
+          </Component>
+
+          <Component name="TRANSACTION_LIST_AREA_BACKGROUND" type="SimplePanel" layoutLocation="0, 0, 546, 616" layout="java.awt.BorderLayout">
+            <Component name="TRANSACTION_LIST_AREA" type="CardedPanelOptimized" contextSensitiveConstraint="DEFAULT" layoutLocation="Center">
+              <Component name="STARTUP_SCREEN_VIEW" type="StartupScreenView" layoutLocation="STARTUP_SCREEN_VIEW" />
+            </Component>
+          </Component>
+        </Component>
+        <Component name="MULTI_PURPOSE_VIEW" type="CardedPanel" layoutLocation="MULTI_PURPOSE_VIEW" />
+      </Component>
+
+      <Component name="MENU_VIEW" type="MenuView" layoutLocation="0, 616, 1024, 75" layoutLayer="30" layout="dtv.ui.layout.CenteringLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">13</param_value>
+            <param_value dtype="Integer">1</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsButtonView</param_value>
+          </parameter>
+          <parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginButtonView</param_value>
+          </parameter>
+        </LayoutParameters>
+      </Component>
+
+      <Component name="POPUP_LAYER" type="TransparentPanel" layoutLocation="0, 0, 1024, 700" layoutLayer="100" layout="dtv.ui.layout.TableLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">1024</param_value>
+            <param_value dtype="Integer">700</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsTransactionViewLayout</param_value>
+          </parameter>
+          <parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginTransactionViewLayout</param_value>
+          </parameter>
+          <parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </parameter>
+        </LayoutParameters>
+
+        <Component name="POPUP_VIEW_BACKGROUND" type="Panel" componentId="PopupPanel" contextSensitiveConstraint="DEFAULT"
+          layoutLocation="546, 0, 478, 612" layout="java.awt.BorderLayout" visible="true">
+
+          <Component name="POPUP_VIEW" type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">32</param_value>
+              </parameter>
+              <parameter name="setGaps">
+                <param_value dtype="InsetsRef">_gapsPopupViewLayout</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="POPUP_VIEW_PANEL" type="CardedPanel" layoutLocation="0, 0, 1, 27">
+              <Component name="POPUP_LIST_VIEW" type="ListPromptView" layoutLocation="POPUP_LIST_VIEW" />
+              <Component name="POPUP_NOTIFY_VIEW" type="NotifyPromptView" layoutLocation="POPUP_NOTIFY_VIEW" />
+              <Component name="POPUP_LONG_TEXT_VIEW" type="LongTextPromptView" layoutLocation="POPUP_LONG_TEXT_VIEW" />
+              <Component name="POPUP_MENU_VIEW" type="MenuListView" layoutLocation="POPUP_MENU_VIEW" />
+              <Component name="POPUP_ICON_MENU_VIEW" type="ActionIconListView" layoutLocation="POPUP_ICON_MENU_VIEW" />
+            </Component>
+
+            <Component type="PromptActionView" layoutLocation="0, 27, 1, 4" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">5</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsPromptButtonView</param_value>
+                </parameter>
+                <parameter name="setMargins">
+                  <param_value dtype="InsetsRef">_marginPromptButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+
+        <Component name="POPUP_VIEW_BACKGROUND_FULL_SCREEN" type="Panel" componentId="PopupPanel" contextSensitiveConstraint="DEFAULT"
+          layoutLocation="0, 0, 1024, 612" layout="java.awt.BorderLayout" visible="true">
+
+          <Component type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">32</param_value>
+              </parameter>
+              <parameter name="setGaps">
+                <param_value dtype="InsetsRef">_gapsPopupViewLayout</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component type="CardedPanel" layoutLocation="0, 0, 1, 27">
+              <Component name="POPUP_LIST_VIEW_FULL_SCREEN" type="ListPromptView" layoutLocation="POPUP_LIST_VIEW" />
+            </Component>
+
+            <Component type="PromptActionView" layoutLocation="0, 27, 1, 4" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">11</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsPromptButtonView</param_value>
+                </parameter>
+                <parameter name="setMargins">
+                  <param_value dtype="InsetsRef">_marginPromptButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+
+        <Component name="HELP_VIEW_BACKGROUND" type="Panel" componentId="InsetPanel" contextSensitiveConstraint="DEFAULT"
+          layoutLocation="546, 0, 478, 611" layout="java.awt.BorderLayout" visible="false">
+
+          <Component name="HELP_VIEW_PANEL" type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">16</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="HELP_VIEW" type="HelpView" layoutLocation="0, 0, 1, 13" />
+
+            <Component name="HELP_ACTION_VIEW" type="HelpActionView" layoutLocation="0, 13, 1, 2" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">6</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+      </Component>
+      
+      <Component type="MessagesStatusBar" name="MessagesStatusBar" layoutLocation="0, 700, 1024, 34" layoutLayer="30" />
+
+      <Component type="StatusBar" name="StatusBar" layoutLocation="0, 734, 1024, 34" layoutLayer="30" layout="dtv.ui.layout.TableLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">1024</param_value>
+            <param_value dtype="Integer">1</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsStatusBarLayout</param_value>
+          </parameter>
+          <parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </parameter>
+        </LayoutParameters>
+        <Component type="OnScreenKeyboardStatusCell" layoutLocation="0, 0, 57, 1" />
+        <Component type="AreaLocatorAndEmployeeNameStatusCell" layoutLocation="57, 0, 234, 1" />
+        <Component type="DatabaseStatusCell" layoutLocation="291, 0, 94, 1" />
+        <Component type="StoreNameAndIdStatusCell" layoutLocation="385, 0, 255, 1" />
+        <Component type="RegisterIdStatusCell" layoutLocation="640, 0, 94, 1" />
+        <Component type="DateStatusCell" layoutLocation="734, 0, 140, 1" />
+        <Component type="TimeStatusCell" layoutLocation="874 0, 75, 1" />
+        <Component type="HelpStatusCell" layoutLocation="949, 0, 75, 1" />
+      </Component>
+    </Component>
+  </UI>
+  <UI dtype="UI" name="BACK_OFFICE">
+    <Component type="Desktop" layout="dtv.ui.layout.TableLayout" >
+      <LayoutParameters dtype="ParameterList">
+        <parameter name="setSize">
+          <param_value dtype="Integer">1024</param_value>
+          <param_value dtype="Integer">768</param_value>
+        </parameter>
+        <parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsDesktopLayout</param_value>
+        </parameter>
+        <parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginDesktopLayout</param_value>
+        </parameter>
+        <parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </parameter>
+      </LayoutParameters>
+
+      <Component name="GENERAL_VIEW" type="CardedPanel" layoutLocation="0, 0, 1024, 616" layoutLayer="30">
+        <Component name="TRANSACTION_VIEW" type="TransparentPanel" layoutLocation="TRANSACTION_VIEW" layout="dtv.ui.layout.TableLayout">
+          <LayoutParameters dtype="ParameterList">
+            <parameter name="setSize">
+              <param_value dtype="Integer">1024</param_value>
+              <param_value dtype="Integer">616</param_value>
+            </parameter>
+            <parameter name="setGaps">
+              <param_value dtype="InsetsRef">_gapsTransactionViewLayout</param_value>
+            </parameter>
+            <parameter name="setMargins">
+              <param_value dtype="InsetsRef">_marginTransactionViewLayout</param_value>
+            </parameter>
+            <parameter name="setVerticalStretch">
+              <param_value dtype="Boolean">true</param_value>
+            </parameter>
+          </LayoutParameters>
+
+          <Component name="FOCUS_BAR_MESSAGE_AREA" type="PanelOptimizedFocusBarArea" componentId="NormalPanel" contextSensitiveConstraint="DEFAULT"
+            layoutLocation="0, 0, 478, 616" layout="dtv.ui.layout.TableLayout">
+
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">450</param_value>
+                <param_value dtype="Integer">588</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="INPUT_CONTROL_AREA" type="ContextTabbedPane" componentId="TabbedPaneContext" layoutLocation="0, 0, 450, 434" />
+            <Component name="FOCUS_BAR" type="TextPromptView" layoutLocation="0, 433, 450, 155" />
+          </Component>
+
+          <Component name="TRANSACTION_LIST_AREA_BACKGROUND" type="SimplePanel" layoutLocation="478, 0, 546, 616"
+            layout="java.awt.BorderLayout">
+            <Component name="TRANSACTION_LIST_AREA" type="CardedPanelOptimized" contextSensitiveConstraint="DEFAULT" layoutLocation="Center">
+              <Component name="STARTUP_SCREEN_VIEW" type="StartupScreenView" layoutLocation="STARTUP_SCREEN_VIEW" />
+            </Component>
+          </Component>
+        </Component>
+        <Component name="MULTI_PURPOSE_VIEW" type="CardedPanel" layoutLocation="MULTI_PURPOSE_VIEW" />
+      </Component>
+
+      <Component name="MENU_VIEW" type="MenuView" layoutLocation="0, 616, 1024, 75" layoutLayer="30" layout="dtv.ui.layout.CenteringLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">13</param_value>
+            <param_value dtype="Integer">1</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsButtonView</param_value>
+          </parameter>
+          <parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginButtonView</param_value>
+          </parameter>
+        </LayoutParameters>
+      </Component>
+
+      <Component name="POPUP_LAYER" type="TranslucentPane" layoutLocation="0, 0, 1024, 700" layoutLayer="100" layout="dtv.ui.layout.TableLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">1024</param_value>
+            <param_value dtype="Integer">700</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsTransactionViewLayout</param_value>
+          </parameter>
+          <parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginTransactionViewLayout</param_value>
+          </parameter>
+          <parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </parameter>
+        </LayoutParameters>
+
+        <Component name="POPUP_VIEW_BACKGROUND" type="TransparentPanel" contextSensitiveConstraint="DEFAULT" layoutLocation="250, 0, 524, 612"
+          layout="java.awt.BorderLayout" visible="false">
+
+          <Component name="POPUP_VIEW" type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">64</param_value>
+              </parameter>
+              <parameter name="setGaps">
+                <param_value dtype="InsetsRef">_gapsPopupViewLayout</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="POPUP_VIEW_PANEL" type="CardedPanel" layoutLocation="0, 0, 1, 55">
+              <Component name="POPUP_LIST_VIEW" type="ListPromptView" layoutLocation="POPUP_LIST_VIEW" />
+              <Component name="POPUP_NOTIFY_VIEW" type="NotifyPromptView" layoutLocation="POPUP_NOTIFY_VIEW" />
+              <Component name="POPUP_LONG_TEXT_VIEW" type="LongTextPromptView" layoutLocation="POPUP_LONG_TEXT_VIEW" />
+              <Component name="POPUP_ICON_MENU_VIEW" type="ActionIconListView" layoutLocation="POPUP_ICON_MENU_VIEW" >
+                <ComponentParameter>
+                  <param_name dtype="String">setContentMargins</param_name>
+                  <param_value dtype="InsetsRef">_marginPromptContentsTenderBackOffice</param_value>
+                </ComponentParameter>
+              </Component>
+              <Component name="POPUP_MENU_VIEW" type="MenuListView" componentId="TouchReadyBackOfficeList" layoutLocation="POPUP_MENU_VIEW" >
+                <ComponentParameter>
+                  <param_name dtype="String">setContentMargins</param_name>
+                  <param_value dtype="InsetsRef">_marginPromptContentsBackOffice</param_value>
+                </ComponentParameter>
+                <ComponentParameter>
+                  <param_name dtype="String">setIcon</param_name>
+                  <param_value dtype="IconRef">_imagePromptBackOffice</param_value>
+                </ComponentParameter>
+              </Component>
+            </Component>
+
+            <Component type="PromptActionView" layoutLocation="0, 55, 1, 7" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">6</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsPromptButtonView</param_value>
+                </parameter>
+                <parameter name="setMargins">
+                  <param_value dtype="InsetsRef">_marginPromptButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+
+        <Component name="POPUP_VIEW_BACKGROUND_FULL_SCREEN" type="Panel" componentId="PopupPanel" contextSensitiveConstraint="DEFAULT"
+          layoutLocation="0, 0, 1024, 612" layout="java.awt.BorderLayout" visible="true">
+
+          <Component type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">32</param_value>
+              </parameter>
+              <parameter name="setGaps">
+                <param_value dtype="InsetsRef">_gapsPopupViewLayout</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component type="CardedPanel" layoutLocation="0, 0, 1, 27">
+              <Component name="POPUP_LIST_VIEW_FULL_SCREEN" type="ListPromptView" layoutLocation="POPUP_LIST_VIEW" />
+            </Component>
+
+            <Component type="PromptActionView" layoutLocation="0, 27, 1, 4" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">11</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsPromptButtonView</param_value>
+                </parameter>
+                <parameter name="setMargins">
+                  <param_value dtype="InsetsRef">_marginPromptButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+
+        <Component name="HELP_VIEW_BACKGROUND" type="TransparentPanel" contextSensitiveConstraint="DEFAULT" layoutLocation="273, 0, 478, 612"
+          layout="java.awt.BorderLayout" visible="false">
+
+          <Component name="HELP_VIEW_PANEL" type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">16</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="HELP_VIEW" type="HelpView" layoutLocation="0, 0, 1, 13" />
+
+            <Component name="HELP_ACTION_VIEW" type="HelpActionView" layoutLocation="0, 13, 1, 2" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">6</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+      </Component>
+      
+      <Component type="TransparentPanel" name="DUMMY" layoutLocation="0, 691, 1024, 9" layoutLayer="30" />
+      
+      <Component type="MessagesStatusBar" name="MessagesStatusBar" layoutLocation="0, 700, 1024, 34" layoutLayer="30" />
+
+      <Component type="StatusBar" name="StatusBar" layoutLocation="0, 734, 1024, 34" layoutLayer="30" layout="dtv.ui.layout.TableLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">1024</param_value>
+            <param_value dtype="Integer">1</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsStatusBarLayout</param_value>
+          </parameter>
+          <parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </parameter>
+        </LayoutParameters>
+        <Component type="OnScreenKeyboardStatusCell" layoutLocation="0, 0, 57, 1" />
+        <Component type="AreaLocatorAndEmployeeNameStatusCell" layoutLocation="57, 0, 234, 1" />
+        <Component type="DatabaseStatusCell" layoutLocation="291, 0, 94, 1" />
+        <Component type="StoreNameAndIdStatusCell" layoutLocation="385, 0, 255, 1" />
+        <Component type="RegisterIdStatusCell" layoutLocation="640, 0, 94, 1" />
+        <Component type="DateStatusCell" layoutLocation="734, 0, 140, 1" />
+        <Component type="TimeStatusCell" layoutLocation="874 0, 75, 1" />
+        <Component type="HelpStatusCell" layoutLocation="949, 0, 75, 1" />
+      </Component>
+    </Component>
+  </UI>
+  <UI dtype="UI" name="BACK_OFFICE_FLIPPED">
+    <Component type="Desktop" layout="dtv.ui.layout.TableLayout" >
+      <LayoutParameters dtype="ParameterList">
+        <parameter name="setSize">
+          <param_value dtype="Integer">1024</param_value>
+          <param_value dtype="Integer">768</param_value>
+        </parameter>
+        <parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsDesktopLayout</param_value>
+        </parameter>
+        <parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginDesktopLayout</param_value>
+        </parameter>
+        <parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </parameter>
+      </LayoutParameters>
+
+      <Component name="GENERAL_VIEW" type="CardedPanel" layoutLocation="0, 0, 1024, 616" layoutLayer="30">
+        <Component name="TRANSACTION_VIEW" type="TransparentPanel" layoutLocation="TRANSACTION_VIEW" layout="dtv.ui.layout.TableLayout">
+          <LayoutParameters dtype="ParameterList">
+            <parameter name="setSize">
+              <param_value dtype="Integer">1024</param_value>
+              <param_value dtype="Integer">616</param_value>
+            </parameter>
+            <parameter name="setGaps">
+              <param_value dtype="InsetsRef">_gapsTransactionViewLayout</param_value>
+            </parameter>
+            <parameter name="setMargins">
+              <param_value dtype="InsetsRef">_marginTransactionViewLayout</param_value>
+            </parameter>
+            <parameter name="setVerticalStretch">
+              <param_value dtype="Boolean">true</param_value>
+            </parameter>
+          </LayoutParameters>
+
+          <Component name="FOCUS_BAR_MESSAGE_AREA" type="PanelOptimizedFocusBarArea" componentId="NormalPanel" contextSensitiveConstraint="DEFAULT"
+            layoutLocation="546, 0, 478, 616" layout="dtv.ui.layout.TableLayout">
+
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">450</param_value>
+                <param_value dtype="Integer">588</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="INPUT_CONTROL_AREA" type="ContextTabbedPane" componentId="TabbedPaneContext" layoutLocation="0, 0, 450, 434" />
+            <Component name="FOCUS_BAR" type="TextPromptView" layoutLocation="0, 433, 450, 155" />
+          </Component>
+
+          <Component name="TRANSACTION_LIST_AREA_BACKGROUND" type="SimplePanel" layoutLocation="0, 0, 546, 616"
+            layout="java.awt.BorderLayout">
+            <Component name="TRANSACTION_LIST_AREA" type="CardedPanelOptimized" contextSensitiveConstraint="DEFAULT" layoutLocation="Center">
+            <Component name="STARTUP_SCREEN_VIEW" type="StartupScreenView" layoutLocation="STARTUP_SCREEN_VIEW" />
+            </Component>
+          </Component>
+        </Component>
+        <Component name="MULTI_PURPOSE_VIEW" type="CardedPanel" layoutLocation="MULTI_PURPOSE_VIEW" />
+      </Component>
+
+      <Component name="MENU_VIEW" type="MenuView" layoutLocation="0, 616, 1024, 75" layoutLayer="30" layout="dtv.ui.layout.CenteringLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">13</param_value>
+            <param_value dtype="Integer">1</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsButtonView</param_value>
+          </parameter>
+          <parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginButtonView</param_value>
+          </parameter>
+        </LayoutParameters>
+      </Component>
+
+      <Component name="POPUP_LAYER" type="TranslucentPane" layoutLocation="0, 0, 1024, 700" layoutLayer="100" layout="dtv.ui.layout.TableLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">1024</param_value>
+            <param_value dtype="Integer">700</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsTransactionViewLayout</param_value>
+          </parameter>
+          <parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginTransactionViewLayout</param_value>
+          </parameter>
+          <parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </parameter>
+        </LayoutParameters>
+
+        <Component name="POPUP_VIEW_BACKGROUND" type="TransparentPanel" contextSensitiveConstraint="DEFAULT" layoutLocation="250, 0, 524, 612"
+          layout="java.awt.BorderLayout" visible="false">
+
+          <Component name="POPUP_VIEW" type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">64</param_value>
+              </parameter>
+              <parameter name="setGaps">
+                <param_value dtype="InsetsRef">_gapsPopupViewLayout</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="POPUP_VIEW_PANEL" type="CardedPanel" layoutLocation="0, 0, 1, 55">
+              <Component name="POPUP_LIST_VIEW" type="ListPromptView" layoutLocation="POPUP_LIST_VIEW" />
+              <Component name="POPUP_NOTIFY_VIEW" type="NotifyPromptView" layoutLocation="POPUP_NOTIFY_VIEW" />
+              <Component name="POPUP_LONG_TEXT_VIEW" type="LongTextPromptView" layoutLocation="POPUP_LONG_TEXT_VIEW" />
+              <Component name="POPUP_ICON_MENU_VIEW" type="ActionIconListView" layoutLocation="POPUP_ICON_MENU_VIEW" >
+                <ComponentParameter>
+                  <param_name dtype="String">setContentMargins</param_name>
+                  <param_value dtype="InsetsRef">_marginPromptContentsTenderBackOffice</param_value>
+                </ComponentParameter>
+              </Component>
+              <Component name="POPUP_MENU_VIEW" type="MenuListView" componentId="TouchReadyBackOfficeList" layoutLocation="POPUP_MENU_VIEW" >
+                <ComponentParameter>
+                  <param_name dtype="String">setContentMargins</param_name>
+                  <param_value dtype="InsetsRef">_marginPromptContentsBackOffice</param_value>
+                </ComponentParameter>
+                <ComponentParameter>
+                  <param_name dtype="String">setIcon</param_name>
+                  <param_value dtype="IconRef">_imagePromptBackOffice</param_value>
+                </ComponentParameter>
+              </Component>
+            </Component>
+
+            <Component type="PromptActionView" layoutLocation="0, 55, 1, 7" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">6</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsPromptButtonView</param_value>
+                </parameter>
+                <parameter name="setMargins">
+                  <param_value dtype="InsetsRef">_marginPromptButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+
+        <Component name="POPUP_VIEW_BACKGROUND_FULL_SCREEN" type="Panel" componentId="PopupPanel" contextSensitiveConstraint="DEFAULT"
+          layoutLocation="0, 0, 1024, 612" layout="java.awt.BorderLayout" visible="true">
+
+          <Component type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">32</param_value>
+              </parameter>
+              <parameter name="setGaps">
+                <param_value dtype="InsetsRef">_gapsPopupViewLayout</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component type="CardedPanel" layoutLocation="0, 0, 1, 27">
+              <Component name="POPUP_LIST_VIEW_FULL_SCREEN" type="ListPromptView" layoutLocation="POPUP_LIST_VIEW" />
+            </Component>
+
+            <Component type="PromptActionView" layoutLocation="0, 27, 1, 4" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">11</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsPromptButtonView</param_value>
+                </parameter>
+                <parameter name="setMargins">
+                  <param_value dtype="InsetsRef">_marginPromptButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+
+        <Component name="HELP_VIEW_BACKGROUND" type="TransparentPanel" contextSensitiveConstraint="DEFAULT" layoutLocation="250, 0, 524, 612"
+          layout="java.awt.BorderLayout" visible="false">
+
+          <Component name="HELP_VIEW_PANEL" type="PopupView" layoutLocation="Center" layout="dtv.ui.layout.TableLayout">
+            <LayoutParameters dtype="ParameterList">
+              <parameter name="setSize">
+                <param_value dtype="Integer">1</param_value>
+                <param_value dtype="Integer">16</param_value>
+              </parameter>
+              <parameter name="setVerticalStretch">
+                <param_value dtype="Boolean">true</param_value>
+              </parameter>
+            </LayoutParameters>
+
+            <Component name="HELP_VIEW" type="HelpView" layoutLocation="0, 0, 1, 13" />
+
+            <Component name="HELP_ACTION_VIEW" type="HelpActionView" layoutLocation="0, 13, 1, 2" layout="dtv.ui.layout.CenteringLayout">
+              <LayoutParameters dtype="ParameterList">
+                <parameter name="setSize">
+                  <param_value dtype="Integer">6</param_value>
+                  <param_value dtype="Integer">1</param_value>
+                </parameter>
+                <parameter name="setGaps">
+                  <param_value dtype="InsetsRef">_gapsButtonView</param_value>
+                </parameter>
+              </LayoutParameters>
+            </Component>
+          </Component>
+        </Component>
+      </Component>
+      
+      <Component type="TransparentPanel" name="DUMMY" layoutLocation="0, 691, 1024, 9" layoutLayer="30" />
+      
+      <Component type="MessagesStatusBar" name="MessagesStatusBar" layoutLocation="0, 700, 1024, 34" layoutLayer="30" />
+
+      <Component type="StatusBar" name="StatusBar" layoutLocation="0, 734, 1024, 34" layoutLayer="30" layout="dtv.ui.layout.TableLayout">
+        <LayoutParameters dtype="ParameterList">
+          <parameter name="setSize">
+            <param_value dtype="Integer">1024</param_value>
+            <param_value dtype="Integer">1</param_value>
+          </parameter>
+          <parameter name="setGaps">
+            <param_value dtype="InsetsRef">_gapsStatusBarLayout</param_value>
+          </parameter>
+          <parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </parameter>
+        </LayoutParameters>
+        <Component type="OnScreenKeyboardStatusCell" layoutLocation="0, 0, 57, 1" />
+        <Component type="AreaLocatorAndEmployeeNameStatusCell" layoutLocation="57, 0, 234, 1" />
+        <Component type="DatabaseStatusCell" layoutLocation="291, 0, 94, 1" />
+        <Component type="StoreNameAndIdStatusCell" layoutLocation="385, 0, 255, 1" />
+        <Component type="RegisterIdStatusCell" layoutLocation="640, 0, 94, 1" />
+        <Component type="DateStatusCell" layoutLocation="734, 0, 140, 1" />
+        <Component type="TimeStatusCell" layoutLocation="874 0, 75, 1" />
+        <Component type="HelpStatusCell" layoutLocation="949, 0, 75, 1" />
+      </Component>
+    </Component>
+  </UI>
+
+  <!-- The customer-facing display is set up as a 100 by 100 table layout with consistent margines for all
+       UIs. Each UI is completely pluggable by specifying the components in SubstituteComponentConfig.xml,
+       which can be easily overridden on a per-store basis without needing to define the entire UI. Customers
+       can specify only the core component that manages whatever is displayed to the customer, making the
+       config overrides far more concise than they would be by overriding UIConfig.xml entries. -->
+
+  <UI dtype="UI">
+    <!-- This is the UI displayed to the customer when the system is not in a retail transaction or training
+         mode. -->
+    <Name dtype="String">CUST_OTHER_VIEW</Name>
+    <Component name="CUST_OTHER_VIEW" type="TransparentPanel" layout="dtv.ui.layout.TableLayout">
+      <LayoutParameters dtype="ParameterList">
+        <parameter name="setSize">
+          <param_value dtype="Integer">100</param_value>
+          <param_value dtype="Integer">100</param_value>
+        </parameter>
+        <parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsCustomerDisplayLayout</param_value>
+        </parameter>
+        <parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCustomerDisplayLayout</param_value>
+        </parameter>
+        <parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </parameter>
+      </LayoutParameters>
+      <Component type="SubstitutedPanel">
+        <ComponentParameter name="setComponentId" value="CUST_DISPLAY_OTHER" />
+      </Component>
+    </Component>
+  </UI>
+
+  <UI dtype="UI">
+    <!-- This is the UI displayed to the customer when the system is in training mode. -->
+    <Name dtype="String">CUST_TRAINING_VIEW</Name>
+    <Component name="CUST_TRAINING_VIEW" type="TransparentPanel" layout="dtv.ui.layout.TableLayout">
+      <LayoutParameters dtype="ParameterList">
+        <parameter name="setSize">
+          <param_value dtype="Integer">100</param_value>
+          <param_value dtype="Integer">100</param_value>
+        </parameter>
+        <parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsCustomerDisplayLayout</param_value>
+        </parameter>
+        <parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCustomerDisplayLayout</param_value>
+        </parameter>
+        <parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </parameter>
+      </LayoutParameters>
+      <Component type="SubstitutedPanel">
+        <ComponentParameter name="setComponentId" value="CUST_DISPLAY_TRAINING" />
+      </Component>
+    </Component>
+  </UI>
+
+  <UI dtype="UI">
+    <!-- This is the UI displayed to the customer when the system is in a retail transaction. -->
+    <Name dtype="String">CUST_TRANS_VIEW</Name>
+    <Component name="TRANS_VIEW" type="TransparentPanel" layout="dtv.ui.layout.TableLayout">
+      <LayoutParameters dtype="ParameterList">
+        <parameter name="setSize">
+          <param_value dtype="Integer">100</param_value>
+          <param_value dtype="Integer">100</param_value>
+        </parameter>
+        <parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsCustomerDisplayLayout</param_value>
+        </parameter>
+        <parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCustomerDisplayLayout</param_value>
+        </parameter>
+        <parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </parameter>
+      </LayoutParameters>
+
+      <!-- The base layout is four panels offset slightly. -->
+      <Component name="CUST_DISPLAY_NORTHWEST" type="Panel" componentId="Panel" layoutLocation="0, 0, 50, 75"
+        layout="java.awt.BorderLayout">
+        <Component type="SubstitutedPanel">
+          <ComponentParameter name="setComponentId" value="CUST_DISPLAY_NORTHWEST" />
+        </Component>
+      </Component>
+
+      <Component name="CUST_DISPLAY_NORTHEAST" type="Panel" componentId="Panel" layoutLocation="50, 0, 50, 50"
+        layout="java.awt.BorderLayout">
+        <Component type="SubstitutedPanel">
+          <ComponentParameter name="setComponentId" value="CUST_DISPLAY_NORTHEAST" />
+        </Component>
+      </Component>
+
+      <Component name="CUST_DISPLAY_SOUTHWEST" type="Panel" componentId="Panel" layoutLocation="0, 75, 50, 25"
+        layout="java.awt.BorderLayout">
+        <Component type="SubstitutedPanel">
+          <ComponentParameter name="setComponentId" value="CUST_DISPLAY_SOUTHWEST" />
+        </Component>
+      </Component>
+
+      <Component name="CUST_DISPLAY_SOUTHEAST" type="Panel" componentId="Panel" layoutLocation="50, 50, 50, 50"
+        layout="java.awt.BorderLayout">
+        <Component type="SubstitutedPanel">
+          <ComponentParameter name="setComponentId" value="CUST_DISPLAY_SOUTHEAST" />
+        </Component>
+      </Component>
+    </Component>
+  </UI>
+    
+</UISet>

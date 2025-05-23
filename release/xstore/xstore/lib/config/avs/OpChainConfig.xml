@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dtv/res/config/OpChainConfig.xsd">
+
+  <OpChain name="ADDRESS_LOOKUP">
+    <Op class="dtv.pos.address.search.PromptAddressLookupOp"/>
+  </OpChain>
+  
+  <OpChain name="REFINE_ADDRESS">
+    <Op class="dtv.pos.address.search.PromptAddressLookupOp"/>
+    <OpChainRoute chainKey="REFINE_ADDRESS.local" />
+  </OpChain>
+  
+  <OpChain name="REFINE_ADDRESS.local" />
+</OpChainSet>

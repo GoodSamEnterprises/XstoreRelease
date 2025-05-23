@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="TCN_Invoke" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.util.RunTransitionTN" >
+          <property name="chain">
+              <ref bean="TCN_FailAtEnd" />
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_FailAtBegin" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysFailTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.test.DoNothingTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysSucceedTransition" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_FailAtEnd" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.DoNothingTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysSucceedTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysFailTransition" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_BreakPointTest1" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.DoNothingTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.test.CaptureStringTestTN">
+          <property name="breakPoint" value="true" /> 
+          <property name="promptState" ref="STATE_DateEntry" />
+          <property name="promptDefault" >
+            <bean class="java.util.Date" />
+          </property>
+          <property name="promptParameters" value="Date Entry TEST" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysSucceedTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysFailTransition" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_BreakPointTest2" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.CaptureStringTestTN">
+          <property name="breakPoint" value="true" /> 
+          <property name="promptState" ref="STATE_DateEntry" />
+          <property name="promptDefault" >
+            <bean class="java.util.Date" />
+          </property>
+          <property name="promptParameters" value="Date Entry TEST" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.transition.test.DoNothingTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysSucceedTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysFailTransition" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_BreakPointTest3" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.BreakPointTestChoiceTN">
+          <property name="breakPoint" value="true" />
+          <property name="promptParameters">
+            <array>
+              <value>Chain Breakpoint Test</value>
+              <value>Failure</value>
+              <value>Exit</value>
+              <value>Success</value>
+            </array>
+          </property>
+        </bean>
+        <bean class="com.micros_retail.xfgclient.transition.test.DoNothingTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysSucceedTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysFailTransition" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_FailAtRollback" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.RollbackFailTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.test.RollbackFailTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.test.RollbackFailTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.test.DoNothingTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysSucceedTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysFailTransition" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_NotApplicable" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.UnapplicableTransition" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_RecursiveEntryTest" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.debug.PrintStateMachineTraceTN" />
+        <bean class="com.micros_retail.xfgclient.transition.test.RecursiveEntryTestTN" >
+          <property name="promptKeyword" ref="KW_RecursiveEntry" />
+          <property name="promptState" ref="STATE_RecursiveEntryTest" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysFailTransition" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_RecursiveEntryTest2" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.CauseRollbackExceptionTN" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysSucceedTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.util.RunTransitionTN" >
+          <property name="chain" ref="TCN_RecursiveEntryTest" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_CauseExceptionTest" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.CauseExceptionTN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_CauseExceptionTest2" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.CauseRollbackExceptionTN" />
+        <bean class="com.micros_retail.xfgclient.transition.test.RollbackFailTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysSucceedTransition" />
+        <bean class="com.micros_retail.xfgclient.transition.AlwaysFailTransition" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_InterruptionTest" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.TestInterruptionTN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_RCRTest" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.test.RCRTestTN" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="TCN_ResetStationTest" class="com.micros_retail.xfgclient.transition.TransitionChain">
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.transition.util.PromptNotificationTN" >
+          <property name="promptParameters" value="_xfgclient.notification.ResetStation.message" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.transition.xfgunit.ResetStationV2TN" >
+          <property name="saveData" value="true" />
+          <property name="preResetChain" ref="TCN_RegisterResetPre" />
+          <property name="startState" ref="STATE_LoggedOut" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+</beans>

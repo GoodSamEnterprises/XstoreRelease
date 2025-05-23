@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreFlightChecks dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PreFlightCheckConfig.xsd">
+  <PreFlightCheck name="CONFIG_PATH_UPDATE_FAILED" enabled="true" type="CONFIG" level="ERROR">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.ConfigPathUpdatePreflightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcConfigPathUpdateFailed</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="ORG_HIERARCHY_ROOT_EXISTS" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.ORG_HIERARCHY_ROOT" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcNoRootOrgHierarchyNode</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="RTL_LOC" type="CORE" level="FATAL" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.RetailLocationCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcNoRetailLocation</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="RTL_LOC_ZONE_INFO" type="CORE" level="FATAL" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.RetailLocationZoneIdCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcNoZoneId</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="TAX_LOC" type="CORE" level="FATAL" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.TaxLocationCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcNoTaxLocation</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="PARTY_ZERO_EXISTS" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.PARTY_ZERO" />
+    <Parameter name="RowCount" value="1" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.PARTY_ZERO_EXISTS</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SECURITY_PRIVILEGES_EXIST" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SECURITY_PRIVILEGES" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SECURITY_PRIVILEGES_EXIST</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_CONF" type="CORE" level="FATAL" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceLengthConfigCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_CONF</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="REGISTER_LEVEL_SEQ_VS_DB_STORAGE" type="CORE" level="FATAL" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.RegisterLevelSequenceStoragePreFlightCheck</CheckClass>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="ALL_GUID_SEQ" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.ALL_GUID_SEQ" />
+    <Parameter name="SequenceType" value="GUID"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.ALL_GUID_SEQ</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="TRAN_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.TransactionSequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_TRANSACTION" />
+    <Parameter name="SequenceType" value="TRANSACTION"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.TRAN_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="EMPLOYEE_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_EMPLOYEE" />
+    <Parameter name="SequenceType" value="EMPLOYEE"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.EMPLOYEE_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="CUST_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_CUSTOMER" />
+    <Parameter name="SequenceType" value="CUSTOMER" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.CUST_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="PARTY_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_PARTY" />
+    <Parameter name="SequenceType" value="PARTY"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.PARTY_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="ADDRESS_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_ADDRESS" />
+    <Parameter name="SequenceType" value="ADDRESS" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.ADDRESS_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="TAX_EXEMPTION_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_TAXEXEMPTION" />
+    <Parameter name="SequenceType" value="TAX_EXEMPTION" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.TAX_EXEMPTION_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SESSION_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_SESSION" />
+    <Parameter name="SequenceType" value="SESSION_ID"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SESSION_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="STORECREDIT_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.VoucherSequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_STORECREDIT" />
+    <Parameter name="SequenceType" value="STORE_CREDIT"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.STORECREDIT_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEND_SALE_INV_DOC_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_SEND_SALE" />
+    <Parameter name="SequenceType" value="SEND_SALE_INV_DOC"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEND_SALE_INV_DOC_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="STATE_JOURNAL_SEQUENCE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_STATE_JOURNAL" />
+    <Parameter name="SequenceType" value="STATE_JOURNAL"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.STATE_JOURNAL_SEQUENCE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+    
+  <!-- 1. Make sure there is a store bank session with BEGINCOUNT status for current store.-->
+  <PreFlightCheck name="STORE_BANK_SESSION" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.STORE_BANK_SESSION" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.STORE_BANK_SESSION</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- 2. Make sure there are store bank session tenders for current store.-->
+  <PreFlightCheck name="STORE_BANK_SESSION_TENDERS" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.STORE_BANK_SESSION_TENDERS" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.STORE_BANK_SESSION_TENDERS</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- 3. Make sure there is no session tender where the tender doesn't exists in tender table.-->
+  <PreFlightCheck name="SESSION_TENDERS_ALL_VALID" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SESSION_TENDERS_ALL_VALID" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SESSION_TENDERS_ALL_VALID</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!--3b. Make sure there is a session tender for each tender in the tender table.-->
+  <PreFlightCheck name="SESSION_TENDERS_ALL_PRESENT" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SESSION_TENDERS_ALL_PRESENT" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SESSION_TENDERS_ALL_PRESENT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- 4. Make sure there is a store bank tender repository with ASSIGNED status.-->
+  <PreFlightCheck name="STORE_BANK_TENDER_REPOSITORY_ASSIGNED" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.STORE_BANK_TENDER_REPOSITORY_ASSIGNED" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.STORE_BANK_TENDER_REPOSITORY_ASSIGNED</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- 5. Make sure there is a deposit bank tender repository.-->
+  <PreFlightCheck name="DEPOSIT_BANK_TENDER_REPOSITORY" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.DEPOSIT_BANK_TENDER_REPOSITORY" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.DEPOSIT_BANK_TENDER_REPOSITORY</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- 6. Make sure there is more than one till tender repository.-->
+  <PreFlightCheck name="TILL_TENDER_REPOSITORY_EXIST" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.TILL_TENDER_REPOSITORY_EXIST" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.TILL_TENDER_REPOSITORY_EXIST</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- 7. If in register counting mode, make sure there is a tender repository whose default workstation id is the current workstation id.-->
+  <PreFlightCheck name="TILL_TENDER_REPOSITORY_FOR_REGISTER" level="FATAL" type="CORE" enabled="false">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.TILL_TENDER_REPOSITORY_FOR_REGISTER" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.TILL_TENDER_REPOSITORY_FOR_REGISTER</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- make sure promo gift card is set up correctly -->
+  <PreFlightCheck name="PROMO_GIFT_CARD" level="WARN" type="CORE" enabled="false">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsNonEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.PROMO_GIFT_CARD" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.PROMO_GIFT_CARD</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- verify that the credit card encryption service is loaded correctly. -->
+  <PreFlightCheck name="CREDIT_CARD_ENCRYPTION" level="ERROR" type="CREDIT" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.CreditCardEncryptionPreFlightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="ParameterizedFormattable">
+        <TranslationKey dtype="String">_pfcCreditCardEncryptionFailure</TranslationKey>
+        <Parameter dtype="EvaluatedFormattable">
+          <Method dtype="String">getCipherHealth.toString</Method>
+        </Parameter>
+     </param_value>
+    </Parameter>
+    <Parameter name="EncryptionService" value="ccenc"/>
+  </PreFlightCheck>
+  <PreFlightCheck name="TENDER_AUTH_LOG" level="ERROR" type="CREDIT" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.AuthLogPreflightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.TENDER_AUTH_LOG</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="VOUCHER_HISTORY_SEQ" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.VOUCHER_HISTORY_SEQ" />
+    <Parameter name="SequenceType" value="VOUCHER_HISTORY_SEQ"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.VOUCHER_HISTORY_SEQ</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_LAYAWAY" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_LAYAWAY" />
+    <Parameter name="SequenceType" value="LAYAWAY"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_LAYAWAY</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_SP_ORDER" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_SP_ORDER" />
+    <Parameter name="SequenceType" value="SP_ORDER"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_SP_ORDER</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_SEND_SALE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_SEND_SALE" />
+    <Parameter name="SequenceType" value="SEND_SALE"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_SEND_SALE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_WORK_ORDER" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_WORK_ORDER" />
+    <Parameter name="SequenceType" value="WORK_ORDER"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_WORK_ORDER</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_TRANSFER" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_INVCTL_DOCUMENT" />
+    <Parameter name="SequenceType" value="TRANSFER"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_TRANSFER</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_RETURN_TO_VENDOR" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_INVCTL_DOCUMENT" />
+    <Parameter name="SequenceType" value="RETURN_TO_VENDOR"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_RETURN_TO_VENDOR</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_ASN" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_INVCTL_DOCUMENT" />
+    <Parameter name="SequenceType" value="ASN"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_ASN</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_WORK_ORDER_SHIPMENT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_INVCTL_DOCUMENT" />
+    <Parameter name="SequenceType" value="WORK_ORDER_SHIPMENT"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_WORK_ORDER_SHIPMENT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_SHIPMENT_OUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_INVCTL_DOCUMENT" />
+    <Parameter name="SequenceType" value="SHIPMENT_OUT"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_SHIPMENT_OUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_INVENTORY_COUNT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_INV_COUNT" />
+    <Parameter name="SequenceType" value="INVENTORY_COUNT"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_INVENTORY_COUNT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_INVENTORY_MOVEMENT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_INVCTL_DOCUMENT" />
+    <Parameter name="SequenceType" value="INVENTORY_MOVEMENT"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_INVENTORY_MOVEMENT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_INV_CTL_CONTROL" level="WARN" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_INV_CTL_CONTROL" />
+    <Parameter name="SequenceType" value="INV_CTL_CONTROL"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_INV_CTL_CONTROL</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_SHIPPING_CARTON" level="WARN" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_SHIPPING_CARTON" />
+    <Parameter name="SequenceType" value="SHIPPING_CARTON"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_SHIPPING_CARTON</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_GIFT_CERTIFICATE" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.VoucherSequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_GIFT_CERTIFICATE" />
+    <Parameter name="SequenceType" value="GIFT_CERTIFICATE"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_GIFT_CERTIFICATE</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_MERCHANDISE_CREDIT_CARD" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.VoucherSequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_MERCHANDISE_CREDIT_CARD" />
+    <Parameter name="SequenceType" value="MERCHANDISE_CREDIT_CARD"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_MERCHANDISE_CREDIT_CARD</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_UNAPPLIED_VOUCHER" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.VoucherSequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_UNAPPLIED_VOUCHER" />
+    <Parameter name="SequenceType" value="UNAPPLIED_VOUCHER"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_UNAPPLIED_VOUCHER</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_TIMECARD_ENTRY_ID" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_TIMECARD_ENTRY_ID" />
+    <Parameter name="SequenceType" value="TIMECARD_ENTRY_ID"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_TIMECARD_ENTRY_ID</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="TIMECARD_COMMENT_SEQ" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.TIMECARD_COMMENT_SEQ" />
+    <Parameter name="SequenceType" value="TIMECARD_COMMENT_SEQ"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.TIMECARD_COMMENT_SEQ</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_SAVED_REPORT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_SAVED_REPORT" />
+    <Parameter name="SequenceType" value="SAVED_REPORT"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_SAVED_REPORT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_AUTH" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_AUTH" />
+    <Parameter name="SequenceType" value="AUTH"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_AUTH</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_WARRANTY" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_WARRANTY" />
+    <Parameter name="SequenceType" value="WARRANTY"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_WARRANTY</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_WARRANTY_JOURNAL" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_WARRANTY_JOURNAL" />
+    <Parameter name="SequenceType" value="WARRANTY_JOURNAL"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_WARRANTY_JOURNAL</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SEQ_PRIVATE_CREDIT_CLIENT_ORDER_ID" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.SEQ_PRIVATE_CREDIT_CLIENT_ORDER_ID" />
+    <Parameter name="SequenceType" value="PRIVATE_CREDIT_CLIENT_ORDER_ID"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SEQ_PRIVATE_CREDIT_CLIENT_ORDER_ID</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="DOCUMENT_SEQUENCE_NUMBER" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.DOCUMENT_SEQUENCE_NUMBER" />
+    <Parameter name="SequenceType" value="DOCUMENT_SEQUENCE_NUMBER"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.DOCUMENT_SEQUENCE_NUMBER</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="PAYROLL_NOTES_SEQ" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.PAYROLL_NOTES_SEQ" />
+    <Parameter name="SequenceType" value="PAYROLL_NOTES_SEQ"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.PAYROLL_NOTES_SEQ</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="CUSTOMER_ACCOUNT_JOURNAL_SEQ" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.CUSTOMER_ACCOUNT_JOURNAL_SEQ" />
+    <Parameter name="SequenceType" value="CUSTOMER_ACCOUNT_JOURNAL_SEQ"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.CUSTOMER_ACCOUNT_JOURNAL_SEQ</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="GIFT_CERTIFICATE_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="GIFT_CERTIFICATE" />
+    <Parameter name="InputType" value="GIFT_CERTIFICATE" />
+    <Parameter name="EventClass" value="dtv.hardware.events.VoucherEvent" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.GIFT_CERTIFICATE_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="LAYAWAY_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="LAYAWAY" />
+    <Parameter name="InputAs" value="Code 93" />
+    <Parameter name="InputType" value="INPUT_LAYAWAY_ID" />
+    <Parameter name="EventClass" value="dtv.hardware.events.LayawayScanEvent" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.LAYAWAY_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SPECIAL_ORDER_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="SP_ORDER" />
+    <Parameter name="InputAs" value="Code 93" />
+    <Parameter name="InputType" value="INPUT_SP_ORDER_ID" />
+    <Parameter name="EventClass" value="dtv.hardware.events.SpecialOrderScanEvent" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SPECIAL_ORDER_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="STORE_CREDIT_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="STORE_CREDIT" />
+    <Parameter name="InputAs" value="Code 93" />
+    <Parameter name="InputType" value="STORE_CREDIT" />
+    <Parameter name="EventClass" value="dtv.hardware.events.VoucherEvent" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.STORE_CREDIT_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="STORE_TRANSFER_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="TRANSFER" />
+    <Parameter name="InputAs" value="Code 93" />
+    <Parameter name="InputType" value="STORE_TRANSFER" />
+    <Parameter name="EventClass" value="dtv.hardware.events.ShippingDocumentEvent" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.STORE_TRANSFER_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="RTV_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="RETURN_TO_VENDOR" />
+    <Parameter name="InputAs" value="Code 93" />
+    <Parameter name="InputType" value="RETURN_TO_VENDOR" />
+    <Parameter name="EventClass" value="dtv.hardware.events.ShippingDocumentEvent" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.RTV_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SHIPMENT_OUT_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="SHIPMENT_OUT" />
+    <Parameter name="InputAs" value="Code 93" />
+    <Parameter name="InputType" value="SHIPMENT_OUT" />
+    <Parameter name="EventClass" value="dtv.hardware.events.ShippingDocumentEvent" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.SHIPMENT_OUT_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="ASN_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="ASN" />
+    <Parameter name="InputAs" value="Code 93" />
+    <Parameter name="InputType" value="ASN" />
+    <Parameter name="EventClass" value="dtv.hardware.events.ShippingDocumentEvent" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.ASN_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="CARTON_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="SHIPPING_CARTON"/>
+    <Parameter name="InputAs" value="EAN-128"/>
+    <Parameter name="EventClass" value="dtv.hardware.events.CartonScanEvent"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.CARTON_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="WARRANTY_SEQ_INPUT" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequenceToInputCrossCheck</CheckClass>
+    <Parameter name="SequenceType" value="WARRANTY"/>
+    <Parameter name="InputAs" value="Code 93"/>
+    <Parameter name="EventClass" value="dtv.pos.warranty.hardware.WarrantyScanEvent"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfc.WARRANTY_SEQ_INPUT</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="TRAN_BARCODE_CONF" type="CORE" level="ERROR" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.TranBarcodeLengthCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcTranBarcodeConfFailed</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="REPLICATION_DATA_SOURCE" level="WARN" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.ReplicationDataSourcePreFlightCheck</CheckClass>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="TENDER_ROUNDING_AS_DISCOUNT" level="WARN" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.TenderRoundingAsDiscountPreFlightCheck</CheckClass>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="SCHEMA_LOCAL_VS_STORE" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.DatabaseVersionPreFlightCheck</CheckClass>
+    <Parameter name="SchemaScope1" value="LOCAL" />
+    <Parameter name="SchemaScope2" value="STORE" />
+    <Parameter name="Relationship" value="EQUAL" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="ParameterizedFormattable">
+        <TranslationKey dtype="String">_pfcDatabaseSchemaVersionsDoNotMatch</TranslationKey>
+        <Parameter dtype="EvaluatedFormattable">
+          <Method dtype="String">getSchemaScope1.name</Method>
+        </Parameter>
+        <Parameter dtype="EvaluatedFormattable">
+          <Method dtype="String">getSchemaScope2.name</Method>
+        </Parameter>
+     </param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="SCHEMA_STORE_VS_CENTRAL" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.DatabaseVersionPreFlightCheck</CheckClass>
+    <Parameter name="SchemaScope1" value="CENTRAL" />
+    <Parameter name="SchemaScope2" value="STORE" />
+    <Parameter name="Relationship" value="GREATER_OR_EQUAL" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="ParameterizedFormattable">
+        <TranslationKey dtype="String">_pfcDatabaseSchemaVersionLessThan</TranslationKey>
+        <Parameter dtype="EvaluatedFormattable">
+          <Method dtype="String">getSchemaScope1.name</Method>
+        </Parameter>
+        <Parameter dtype="EvaluatedFormattable">
+          <Method dtype="String">getSchemaScope2.name</Method>
+        </Parameter>
+     </param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="APP_VS_SCHEMA_VERSION" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.ApplicationVersionPreFlightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcAppVersusSchemaVersionDifferent</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="STORE_CALENDAR_STALE" enabled="true" type="CORE" level="WARN">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.StoreCalendarCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcStoreCalendarStale</param_value>
+    </Parameter>
+    <Parameter name="WeeksToCheck" value="100" />
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="LOCAL_CURRENCY" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.NoLocalCurrencyCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcNoLocalCurrency</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="ROLLING_CLOSE_WITH_SYSTEM_DATE" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.till.rollingclose.ValidateRollingCloseWithSystemDatePreFlightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_rollingCloseConfigsPreflightCheckFailed</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="MISSING_TNDR_TYPE" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.QueryReturnsEmptyPreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="PREFLIGHT.MISSING_TNDR_TYPE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcMissingTndrType</param_value>
+    </Parameter>
+  </PreFlightCheck>  
+  
+  <PreFlightCheck name="TRAINING_VS_PROD" type="CORE" level="FATAL" enabled="true">
+    <!--
+    ************************************************************************************************
+    WARNING! Disabling this check will disable any validation that data created under training mode
+    will be differentiable from data created under production mode.  This should generally not be 
+    done unless there is some very specific testing scenario that needs be accommodated.  The down-
+    the-line audit implications of ignoring this warning are too terrible to contemplate.
+
+    ************************************************************************************************
+    -->
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.TrainingVersusProdCheck</CheckClass>
+    <Parameter name="TrainingDbName" value="Training" />
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="SYSTEM_DATE_OUT_OF_SYNC" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SystemDatePreFlightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pfcSystemDateOutOfSync</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="AIRSIDE_LOCAL_AIRPORT_CONFIGURATION" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.flight.preflight.AirsidePreflightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_flightLocalAiportMisconfigured</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="AIRSIDE_LOCAL_AIRPORT_DB_MISSING" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.flight.preflight.AirsideNoDBAirportPreflightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_flightLocalAiportMissingInDatabase</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="AIRSIDE_TAX_EXEMPTION_MISSING" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.flight.preflight.AirsideTaxExempReasCodePrefligthCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_flightTaxExemptionReasonCodeMissing</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="VALIDATE_AUTH_PROCESS" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.tender.PciScopePreFlightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_pciOutOfScope.PreFlightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>  
+</PreFlightChecks>

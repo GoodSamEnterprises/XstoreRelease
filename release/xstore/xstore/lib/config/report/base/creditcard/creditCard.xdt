@@ -1,0 +1,81 @@
+<dataTemplate name="CreditCard" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="DATE" value="_rptDateTime"/>
+    <label name="REG" value="_rptReg"/>
+    <label name="ID" value="_rptCashier"/>
+    <label name="TRAN" value="_rptTransaction"/>
+    <label name="CARD" value="_rptCard"/>
+    <label name="TYPE" value="_rptType"/>
+    <label name="AUTH" value="_rptAuth"/>
+    <label name="TEND" value="_rptTender"/>
+    <label name="TOTAL" value="_rptTotal"/>
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>    
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>    
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_CREDIT_CARD" key="CREDIT_CARD_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>"organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startEmployee</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        </Parameters>
+      <ResultFields>
+        <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>employee_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>end_datetime</ResultField>
+        <ResultField>string_value</ResultField>
+        <ResultField>description</ResultField>>
+        <ResultField>auth_nbr</ResultField>
+        <ResultField>amt</ResultField>
+        <ResultField>total</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_CARD" source="Q_CREDIT_CARD">
+      <element name="DATE" value="end_datetime" formatter="DateTimeMedium"/> 
+      <element name="REG" value="wkstn_id"/>
+      <element name="ID" value="employee_id"/>
+      <element name="TRANS" value="trans_seq"/>
+      <element name="CARD" value="string_value"/>
+      <element name="TYPE" value="description"/>
+      <element name="AUTH" value="auth_nbr"/>
+      <element name="AMT" value="amt" formatter="Money"/>
+      <element name="TOTAL" value="total" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

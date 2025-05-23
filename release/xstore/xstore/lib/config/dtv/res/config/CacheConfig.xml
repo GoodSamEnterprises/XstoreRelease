@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CacheConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="CacheConfig.xsd">
+  <WriteThroughCacheEnabled>true</WriteThroughCacheEnabled>
+  
+  <Cache id="default-cache" clearable="true">
+    <Impl>dtv.data2.cache.impl.GuavaCache</Impl>
+  </Cache>
+  <Cache id="dtx-cache" clearable="true">
+    <Impl>dtv.data2.cache.impl.GuavaCache</Impl>
+    <CacheFilterRef>dtx-cache-filter</CacheFilterRef>
+  </Cache>
+  <Cache id="dtx-cache-trans" clearable="true">
+    <Impl>dtv.data2.cache.impl.GuavaCache</Impl>
+    <CacheFilterRef>dtx-cache-trans-filter</CacheFilterRef>
+  </Cache>
+  <Cache id="FINGERPRINT_CACHE" clearable="false">
+    <Impl>dtv.data2.cache.impl.GuavaCache</Impl>
+  </Cache>
+  <Cache id="RETAIL_LOCATION_CACHE" clearable="true">
+    <Impl>dtv.data2.cache.impl.GuavaCache</Impl>
+  </Cache>
+  <Cache id="LOCATION_HIERARCHY_CACHE" clearable="true">
+    <Impl>dtv.data2.cache.impl.GuavaCache</Impl>
+  </Cache>
+
+  <GlobalProperties>
+    <Property key="guavacache.global.MaxEntries" value="2000" />
+    <Property key="guavacache.global.TimeToLiveSeconds" value="86400" />
+
+    <!-- define a smaller transitory cache that expires any data more than 5 minutes old -->
+    <Property key="guavacache.dtx-cache-trans.MaxEntries" value="100" />
+    <Property key="guavacache.dtx-cache-trans.TimeToLiveSeconds" value="300" />
+  </GlobalProperties>
+  
+  <CacheFilter id="dtx-cache-filter">
+    <Object id="CODE_LOOKUP" cacheable="true" />
+    <Object id="CODE_VALUE_LOOKUP" cacheable="true" />
+    <Object id="CUSTOMER_GROUP_RANK_LOOKUP" cacheable="true" />
+    <Object id="INVENTORY_BUCKETS" cacheable="true" />
+    <Object id="INVENTORY_LOCATION_BUCKETS" cacheable="true" />
+    <Object id="LOAD_DAILY_AVAILABLE_DOCUMENT_DEALS" cacheable="true" />
+    <Object id="NEW_TAX_TAX_GROUP" cacheable="true" />
+    <Object id="REASON_CODE_LOOKUP" cacheable="true" />
+    <Object id="RECEIPT_TEXT_LOOKUP" cacheable="true" />
+    <Object id="TAX_GROUP_RULES_FOR_LOCATION" cacheable="true" />
+    <Object id="TENDER_USER_SETTINGS_FOR_TENDER" cacheable="true" />
+    <Object id="TENDERS" cacheable="true" />
+    <Object id="TRANSACTION_PROPERTY_PROMPT_WITH_STATE" cacheable="true" />
+    <Object id="PAYROLL_CATEGORIES" cacheable="true" />
+    <Object id="TAX_GROUP_RULES_FOR_LOCATION" cacheable="true" />
+    <Object id="LOCATION_TAX_MAPPING" cacheable="true" />
+    <Object id="TAX_BY_POSTAL" cacheable="true" />
+    <Object id="TAX_RULE_RATES" cacheable="true" />
+    <Object id="TAX_RULE_RATES_OVERRIDE" cacheable="true" /><!-- TODO: this is typically empty, so the query is rerunning anyway -->
+    <Object id="TAX_BRACKETS" cacheable="true" />
+    <Object id="dtv.xst.dao.com.CodeValueId" cacheable="true" />
+    <Object id="dtv.xst.dao.com.DatabaseTranslationId" cacheable="true" />
+    <Object id="dtv.xst.dao.com.ReasonCodeId" cacheable="true" />
+    <Object id="dtv.xst.dao.hrs.WorkCodesId" cacheable="true" />
+    <Object id="dtv.xst.dao.inv.InventoryBucketId" cacheable="true" />
+    <Object id="dtv.xst.dao.loc.PricingHierarchyId" cacheable="true" />
+    <Object id="dtv.xst.dao.sec.GroupId" cacheable="true" />
+    <Object id="dtv.xst.dao.tax.TaxAuthorityId" cacheable="true" />
+    <Object id="dtv.xst.dao.tax.TaxGroupId" cacheable="true" />
+    <Object id="dtv.xst.dao.tax.TaxTaxGroupMappingId" cacheable="true" />
+    <Object id="dtv.xst.dao.tax.TaxGroupRuleId" cacheable="true" />
+    <Object id="dtv.xst.dao.tax.TaxLocationId" cacheable="true" />
+    <Object id="dtv.xst.dao.tax.TaxRateRuleId" cacheable="true" />
+    <Object id="dtv.xst.dao.tax.TaxRateRuleOverrideId" cacheable="true" />
+    <Object id="dtv.xst.dao.thr.PayrollCategoryId" cacheable="true" />
+    <Object id="dtv.xst.dao.tnd.TenderId" cacheable="true" />
+    <Object id="dtv.xst.dao.tnd.TenderDenominationId" cacheable="true" />
+    <Object id="dtv.xst.dao.tnd.TenderTypeId" cacheable="true" />
+    <Object id="dtv.xst.dao.tnd.TenderUserSettingsId" cacheable="true" />
+    <Object id="dtv.xst.dao.tnd.TenderOptionsId" cacheable="true" />
+    <Object id="dtv.xst.dao.tnd.TenderAvailabilityId" cacheable="true" />
+    <Object id="dtv.xst.dao.trl.LineItemAssociationTypeCodeId" cacheable="true" />
+  </CacheFilter>
+  
+  <CacheFilter id="dtx-cache-trans-filter">
+    <Object id="CUSTOMER_TRANS_HISTORY" cacheable="true" />
+    <Object id="dtv.xst.dao.com.ReceiptTextId" cacheable="true" />
+    <Object id="dtv.xst.dao.doc.DocumentDefinitionId" cacheable="true" />
+    <Object id="dtv.xst.dao.doc.DocumentDefinitionPropertiesId" cacheable="true" />
+    <Object id="dtv.xst.dao.dsc.DiscountId" cacheable="true" />
+    <Object id="dtv.xst.dao.dsc.DiscountGroupMappingId" cacheable="true" />
+    <Object id="dtv.xst.dao.hrs.EmployeeStoreId" cacheable="true" />
+    <Object id="dtv.xst.dao.itm.ItemId" cacheable="true" />
+    <Object id="dtv.xst.dao.itm.ItemCrossReferenceId" cacheable="true" />
+  </CacheFilter>
+</CacheConfig>

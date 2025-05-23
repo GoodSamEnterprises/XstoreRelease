@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+  default-init-method="init">
+
+  <bean id="resumeTransactionItemTypeRule" class="dtv.pos.register.suspendresume.ResumeItemTypeRule" scope="prototype">
+    <property name="allowedTypes">
+      <set>
+        <value>SALE</value>
+        <value>RETURN</value>
+        <value>ORDER</value>
+      </set>
+    </property>
+    <property name="failedMessageKey" value="_mobileInvalidItemTypeForResume" />
+  </bean>
+
+  <bean id="receivingAccessRule" parent="alwaysSecuredRule" >
+    <property name="privilege" value="RECEIVING" />
+  </bean>
+  
+  <bean id="receivingAccessRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="receivingAccessRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="blockLargeCashPaymentRule" class="oracle.retail.xstore.countrypack.us.irs.BlockLargeCashPaymentRule" scope="prototype" />
+  <bean id="currencyTenderAmountRules" parent="tenderAmountRules">
+    <property name="rules">
+      <list merge="true">
+        <ref bean="cashTenderAmountRule" />
+        <ref bean="blockLargeCashPaymentRule" />
+      </list>
+    </property>
+  </bean>
+</beans>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	Tasks are internal running processes in the Xenvironment UI. 
+		An example of a task would be displaying the clock on the screen and keeping it up to date.
+		
+		task_name => A unique name for a given task
+		class_name => a task impl
+		refresh_rate => execution period
+		refresh_rate_delay => delay between executions
+ -->
+<tasks>
+    <task>
+        <task_name>ClockUpdateTask</task_name>
+        <class_name>dtv.env.util.system.task.ClockDataUpdateTask</class_name>
+        <refresh_rate>5</refresh_rate>
+        <refresh_rate_delay>1</refresh_rate_delay>
+    </task>
+    <task>
+        <task_name>SystemInfoUpdateTask</task_name>
+        <class_name>dtv.env.util.system.task.SystemInfoUpdateTask</class_name>
+        <refresh_rate>30</refresh_rate>
+        <refresh_rate_delay>10</refresh_rate_delay>
+    </task>
+    <task>
+        <task_name>SystemInfoTimeoutTask</task_name>
+        <class_name>dtv.env.util.system.task.SystemInfoTimeoutTask</class_name>
+        <refresh_rate>30</refresh_rate>
+        <refresh_rate_delay>10</refresh_rate_delay>
+    </task>
+    <task>
+        <task_name>PluginTimeoutTask</task_name>
+        <class_name>dtv.env.util.system.task.PluginTimeoutTask</class_name>
+        <refresh_rate>30</refresh_rate>
+        <refresh_rate_delay>10</refresh_rate_delay>
+    </task>
+</tasks>

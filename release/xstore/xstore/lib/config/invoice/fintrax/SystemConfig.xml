@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <SystemConfig dtype="Default">
+    <TaxFreeConfig dtype="Default">
+      <Enabled dtype="Boolean">true</Enabled>
+      <FintraxConfig dtype="Default">
+        <CheckNetAmount dtype="Boolean">false</CheckNetAmount>
+        <MinimumAge dtype="PositiveInteger">0</MinimumAge>
+        <SingleItemMaxQty dtype="PositiveInteger">0</SingleItemMaxQty>
+        <IsZeroVATItemAllowed dtype="Boolean">false</IsZeroVATItemAllowed>
+        <CheckCustomerEligibility dtype="Boolean">true</CheckCustomerEligibility>
+        <ReprintTimeout dtype="PositiveInteger">3</ReprintTimeout>
+        <Host dtype="String">${oracle.retail.xstore.taxfree.fintrax.host}</Host>
+        <ApiVersion dtype="String">4_4</ApiVersion>
+        <MessageEncoding dtype="String">UTF-8</MessageEncoding>
+        <MerchantLogoImgPath dtype="String">res/graphics/taxfree/fintrax/FINTRAX_MERCHANT_LOGO.bmp</MerchantLogoImgPath>
+        <ProviderLogoImgPath dtype="String">res/graphics/taxfree/fintrax/FINTRAX_LOGO.bmp</ProviderLogoImgPath>
+        <MerchantId dtype="String">${oracle.retail.xstore.taxfree.fintrax.merchantId}</MerchantId>
+        <MerchantVAT dtype="String">${oracle.retail.xstore.taxfree.fintrax.merchantVat}</MerchantVAT>
+        <RefundMethodsDetails dtype="Default">
+          <RefundMethods dtype="String">STANDARD,CASH,CREDIT_CARD,ALIPAY,FAST_REFUND,ETIHAD_CARD</RefundMethods>
+          <ForceRefundSelection dtype="Boolean">false</ForceRefundSelection>
+          <Provider_Refund_Code dtype="Map">
+            <Entry dtype="MapEntry" key="STANDARD" value="0000" />
+            <Entry dtype="MapEntry" key="CASH" value="0802" />
+            <Entry dtype="MapEntry" key="CREDIT_CARD" value="01" />
+            <Entry dtype="MapEntry" key="ALIPAY" value="1545" />
+            <Entry dtype="MapEntry" key="FAST_REFUND" value="16" />
+            <Entry dtype="MapEntry" key="ETIHAD_CARD" value="1701" />
+          </Provider_Refund_Code>
+          <Credit_Card_Type dtype="Map">
+			<MapEntry key="01" >
+				<value dtype="Translatable">_americanexpress</value>
+			</MapEntry>
+			<MapEntry key="02" >
+				<value dtype="Translatable">_dinersclub</value>
+			</MapEntry>
+			<MapEntry key="03" >
+				<value dtype="Translatable">_visa</value>
+			</MapEntry>
+			<MapEntry key="04" >
+				<value dtype="Translatable">_mastercard</value>
+			</MapEntry>
+			<MapEntry key="05" >
+				<value dtype="Translatable">_jcb</value>
+			</MapEntry>
+			<MapEntry key="06" >
+				<value dtype="Translatable">_unionpay</value>
+			</MapEntry>
+           </Credit_Card_Type>
+        </RefundMethodsDetails>
+        <EligibleServices dtype="Default">
+          <NonPhysItemTypcode dtype="String"></NonPhysItemTypcode>
+          <NonPhysItemSubtype dtype="String"></NonPhysItemSubtype>
+        </EligibleServices>
+        <IdentificationDocumentCodeMap dtype="Map">
+          <MapEntry key="Passport" >
+            <value dtype="String">PA</value>
+          </MapEntry>
+          <MapEntry key="IdentityCard" >
+            <value dtype="String">IC</value>
+          </MapEntry>
+        </IdentificationDocumentCodeMap>
+        <AvailableIdentificationDocumentType dtype="String">Passport</AvailableIdentificationDocumentType>
+      </FintraxConfig>
+    </TaxFreeConfig>
+  </SystemConfig>
+</Store>

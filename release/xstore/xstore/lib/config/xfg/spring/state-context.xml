@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <!--  Context Configuration -->
+
+  <bean id="CTX_Default" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_Empty" />
+    <property name="inputFormatter" ref="INPFMTTR_StringDecimal" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Inactive" />
+        <ref bean="DVMDE_VirtualKeyboard_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_Error" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_Error" />
+    <property name="inputFormatter" ref="INPFMTTR_None" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <ref bean="DVMDE_VirtualKeyboard_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_Notification" parent="CTX_Error">
+    <property name="interpreterKeyword" ref="KW_Notification" />
+  </bean>
+
+  <bean id="CTX_HelpDeskError" parent="CTX_Error">
+    <property name="interpreterKeyword" ref="KW_HelpdeskError" />
+  </bean>
+
+  <bean id="CTX_StringEntry" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_StringEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_Text" />
+    <property name="gridId" value="STATE_Capture" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <ref bean="DVMDE_VirtualKeyboard_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_SafeBagIdEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_SafeBagId" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Active" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <ref bean="DVMDE_VirtualKeyboard_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_GiftCardEntry" parent="CTX_ItemEntry">
+    <property name="gridId" value="STATE_Capture" />
+  </bean>
+
+  <bean id="CTX_CouponEntry" parent="CTX_GiftCardEntry" />
+
+  <bean id="CTX_TransactionEntry" parent="CTX_GiftCardEntry">
+    <property name="inputFormatter" ref="INPFMTTR_LongText" />
+  </bean>
+
+  <bean id="CTX_AlphanumericStringEntry" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_StringEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_LongText" />
+    <property name="gridId" value="STATE_CaptureItem" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <ref bean="DVMDE_VirtualKeyboard_Active" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_EmailAddressEntry" parent="CTX_AlphanumericStringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_ExtraLongText" />
+  </bean>
+
+  <bean id="CTX_UserAuthEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_UserAuth" />
+  </bean>
+
+  <bean id="CTX_PasswordEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_PasswordEntry" />
+    <property name="confidential" value="true" />
+    <property name="inputFormatter" ref="INPFMTTR_Password" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <ref bean="DVMDE_VirtualKeyboard_Active" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_OperatorPause" parent="CTX_PasswordEntry">
+    <property name="interpreterKeyword" ref="KW_OperatorPause" />
+    <property name="gridId" value="STATE_OperatorPause" />
+  </bean>
+
+  <bean id="CTX_BigDecimalEntry" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_Decimal" />
+  </bean>
+
+  <bean id="CTX_FixedDecimalEntry" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_FixedDecimal" />
+  </bean>
+
+  <bean id="CTX_MoneyEntry" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_Money" />
+  </bean>
+
+  <bean id="CTX_MaskEntry" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_Mask" />
+  </bean>
+
+  <bean id="CTX_PercentEntry" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_Percent" />
+  </bean>
+
+  <bean id="CTX_RecorderFile" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_Recorder" />
+  </bean>
+
+  <bean id="CTX_DateEntry" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_Date" />
+  </bean>
+
+  <bean id="CTX_DateTimeEntry" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_DateTime" />
+  </bean>
+
+  <bean id="CTX_IntegerEntry" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_Integer" />
+  </bean>
+
+  <bean id="CTX_QuantityEntry" parent="CTX_StringEntry">
+    <property name="inputFormatter" ref="INPFMTTR_FixedQuantitySymbol" />
+  </bean>
+
+  <bean id="CTX_ItemEntry" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_ItemEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_StringDecimal" />
+    <property name="gridId" value="STATE_CaptureItem" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Active" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <ref bean="DVMDE_VirtualKeyboard_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_SerialNumberEntry" parent="CTX_ItemEntry">
+    <property name="gridId" value="STATE_Capture" />
+  </bean>
+
+  <bean id="CTX_InvAdjustmentItemEntry" parent="CTX_ItemEntry">
+    <property name="interpreterKeyword" ref="KW_ItemEntryFromInInvAdjustment" />
+    <property name="gridId" value="STATE_InventoryAdjustmentCaptureItem" />
+  </bean>
+
+  <bean id="CTX_ItemSearch" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_ShowItemSearch" />
+    <property name="inputFormatter" ref="INPFMTTR_StringDecimal" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <!-- <ref bean="DVMDE_VirtualKeyboard_Active" /> -->
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_CustomerSearch" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_ShowCustomerSearch" />
+    <property name="inputFormatter" ref="INPFMTTR_StringDecimalExtended" />
+    <property name="gridId" value="STATE_CustomerSearch" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <!-- <ref bean="DVMDE_VirtualKeyboard_Active" /> -->
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_CustomerInformation" parent="CTX_Default">
+    <property name="interpreterKeyword" ref="KW_ShowCustomerInformation" />
+    <property name="gridId" value="STATE_CustomerInformation" />
+  </bean>
+
+  <bean id="CTX_TenderLineEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_TenderLineEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_None" />
+    <property name="gridId" value="STATE_TenderLineEntry" />
+  </bean>
+
+  <bean id="CTX_YesNoEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_YesNoEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_None" />
+  </bean>
+
+  <bean id="CTX_Choice3Entry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_Choice3Entry" />
+  </bean>
+
+  <bean id="CTX_PlayerResultsChoiceEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_OpenPlayerResultsList" />
+    <property name="inputFormatter" ref="INPFMTTR_Integer" />
+  </bean>
+
+  <bean id="CTX_ChoiceEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_SelectList" />
+    <property name="inputFormatter" ref="INPFMTTR_Integer" />
+  </bean>
+
+  <bean id="CTX_ScaleWeighItem" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_ScaleWeighItem" />
+    <property name="inputFormatter" ref="INPFMTTR_None" />
+    <property name="gridId" value="STATE_ScaleWeighItem" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Active" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <ref bean="DVMDE_VirtualKeyboard_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_ScaleWeighOutItem" parent="CTX_ScaleWeighItem">
+    <property name="gridId" value="STATE_ScaleWeighOutItem" />
+  </bean>
+
+  <bean id="CTX_PriceEnquiry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_PriceEnquiry" />
+  </bean>
+
+  <bean id="CTX_ManualGS1Entry" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_ManualGS1Entry" />
+    <property name="inputFormatter" ref="INPFMTTR_GS1Entry" />
+    <property name="gridId" value="STATE_Capture" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Active" />
+        <ref bean="DVMDE_VirtualKeyboard_Active" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_WaitForDrawerClose" parent="CTX_Error">
+    <property name="interpreterKeyword" ref="KW_DisplayDrawerClose" />
+    <property name="gridId" value="STATE_WaitDrawerClose" />
+  </bean>
+
+  <bean id="CTX_WaitForDelete" parent="CTX_Error">
+    <property name="interpreterKeyword" ref="KW_DisplayWaitForDelete" />
+    <property name="gridId" value="STATE_WaitForDelete" />
+  </bean>
+
+  <bean id="CTX_Empty" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_Empty" />
+    <property name="inputFormatter" ref="INPFMTTR_None" />
+  </bean>
+
+  <bean id="CTX_Startup" parent="CTX_Empty">
+    <!-- BE AWARE THAT GSERVER IS NOT AVAILABLE HERE -->
+    <property name="interpreterKeyword" ref="KW_Empty" />
+  </bean>
+
+  <bean id="CTX_RegisterClosed" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_RegisterClosed" />
+    <property name="inputFormatter" ref="INPFMTTR_Integer" />
+    <property name="gridId" value="STATE_RegisterClosed" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Inactive" />
+        <ref bean="DVMDE_VirtualKeyboard_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_LoggedOut" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_LoggedOut" />
+    <property name="inputFormatter" ref="INPFMTTR_Integer" />
+    <property name="gridId" value="STATE_LoggedOut" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Inactive" />
+        <ref bean="DVMDE_VirtualKeyboard_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_LoggedIn" class="com.micros_retail.xfgclient.statemachine.context.Context">
+    <property name="interpreterKeyword" ref="KW_LoggedIn" />
+    <property name="inputFormatter" ref="INPFMTTR_StringDecimal" />
+    <property name="gridId" value="STATE_LoggedIn" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Active" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Inactive" />
+        <ref bean="DVMDE_VirtualKeyboard_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_InventoryAdjustment" parent="CTX_LoggedIn">
+    <property name="interpreterKeyword" ref="KW_InventoryAdjustment" />
+    <property name="gridId" value="STATE_InventoryAdjustment" />
+  </bean>
+
+  <bean id="CTX_InventoryAdjustmentInTransaction" parent="CTX_InventoryAdjustment">
+    <property name="gridId" value="STATE_InventoryAdjustmentInTransaction" />
+  </bean>
+
+  <bean id="CTX_SaleInTransaction" parent="CTX_LoggedIn">
+    <property name="interpreterKeyword" ref="KW_SaleInTransaction" />
+    <property name="gridId" value="STATE_SaleInTransaction" />
+  </bean>
+
+  <bean id="CTX_ReturnInTransaction" parent="CTX_LoggedIn">
+    <property name="interpreterKeyword" ref="KW_ReturnInTransaction" />
+    <property name="gridId" value="STATE_ReturnInTransaction" />
+  </bean>
+
+  <bean id="CTX_InTotal" parent="CTX_LoggedIn">
+    <property name="interpreterKeyword" ref="KW_InTotal" />
+    <property name="inputFormatter" ref="INPFMTTR_TotalAmount" />
+    <property name="gridId" value="STATE_InTotal" />
+  </bean>
+
+  <bean id="CTX_InPayment" parent="CTX_LoggedIn">
+    <property name="interpreterKeyword" ref="KW_InPayment" />
+    <property name="inputFormatter" ref="INPFMTTR_TotalAmount" />
+    <property name="gridId" value="STATE_InPayment" />
+  </bean>
+
+  <bean id="CTX_In_Preselection" parent="CTX_LoggedIn">
+    <property name="interpreterKeyword" ref="KW_Empty" />
+  </bean>
+
+  <bean id="CTX_ReturnMode" parent="CTX_LoggedIn">
+    <property name="interpreterKeyword" ref="KW_ReturnMode" />
+    <property name="gridId" value="STATE_ReturnMode" />
+  </bean>
+
+  <bean id="CTX_VerifiedReturnMode" parent="CTX_ReturnMode">
+    <property name="interpreterKeyword" ref="KW_VerifiedReturnMode" />
+    <property name="gridId" value="STATE_VerifiedReturnMode" />
+    <property name="deviceModes">
+      <list>
+        <ref bean="DVMDE_Keyboard_Active" />
+        <ref bean="DVMDE_Scanner_Active" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+        <ref bean="DVMDE_ErrorNotifier_Inactive" />
+        <ref bean="DVMDE_VirtualKeyboard_Active" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="CTX_TillCount" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_Empty" />
+    <property name="inputFormatter" ref="INPFMTTR_None" />
+    <property name="gridId" value="STATE_TillCount" />
+  </bean>
+
+  <bean id="CTX_DenominationCountEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_UpdateTotalCount" />
+    <property name="inputFormatter" ref="INPFMTTR_Integer" />
+    <property name="gridId" value="STATE_DenominationCountEntry" />
+  </bean>
+
+  <bean id="CTX_TotalsCountEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_TotalCountEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_Integer" />
+    <property name="gridId" value="STATE_TotalCountEntry" />
+  </bean>
+
+  <bean id="CTX_TotalsAmountEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_TotalAmountEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_TotalAmount" />
+    <property name="gridId" value="STATE_TotalAmountEntry" />
+  </bean>
+
+  <bean id="CTX_UnitCountEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_UnitCountEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_Integer" />
+    <property name="gridId" value="STATE_UnitCountEntry" />
+  </bean>
+
+  <bean id="CTX_UnitAmountEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_UnitAmountEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_TotalAmount" />
+    <property name="gridId" value="STATE_UnitAmountEntry" />
+  </bean>
+
+  <bean id="CTX_ReasonCodeComments" parent="CTX_AlphanumericStringEntry">
+    <property name="interpreterKeyword" ref="KW_ReasonCodeComments" />
+    <property name="inputFormatter" ref="INPFMTTR_MultiLine" />
+  </bean>
+
+  <bean id="CTX_AuthorizationEntry" parent="CTX_StringEntry">
+    <property name="interpreterKeyword" ref="KW_AuthorizationEntry" />
+    <property name="gridId" value="STATE_AuthorizationEntry" />
+  </bean>
+
+  <!--  Context Configuration End -->
+</beans>

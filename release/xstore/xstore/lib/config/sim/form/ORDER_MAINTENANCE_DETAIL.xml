@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">ORDER_MAINTENANCE_DETAIL</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action chainKey="ORDER_ACCEPT_ORDER" chainType="STACK" text="_orderAcceptOrderAction" keyStroke="F2">
+        <VisibilityRule class="dtv.pos.order.maint.SourceOrderLineStatusVisibilityRule">
+          <Parameter name="status" value="POLLED" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.order.maint.OrderUnderReviewVisibilityRule" />
+      </Action>
+      <Action chainKey="ORDER_REJECT_ORDER" chainType="STACK" text="_orderRejectOrderAction" keyStroke="F3" privilege="ORDER_REJECT">
+        <VisibilityRule class="dtv.pos.order.maint.SourceOrderLineStatusVisibilityRule">
+          <Parameter name="status" value="POLLED" />
+          <Parameter name="status" value="ACCEPTED" />
+          <Parameter name="status" value="RESERVED" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.order.maint.OrderUnderReviewVisibilityRule" />
+      </Action>
+      <Action chainKey="ORDER_RESERVE_ORDER" chainType="STACK" text="_orderReserveOrderAction" keyStroke="F4">
+        <VisibilityRule class="dtv.pos.order.maint.SourceOrderLineStatusVisibilityRule">
+          <Parameter name="status" value="ACCEPTED" />
+        </VisibilityRule> 
+        <VisibilityRule class="dtv.pos.order.maint.OrderUnderReviewVisibilityRule" />        
+      </Action>
+      <Action chainKey="ORDER_UNRESERVE_ORDER" chainType="STACK" text="_orderUnReserveOrderAction" keyStroke="F5">
+        <VisibilityRule class="dtv.pos.order.maint.SourceOrderLineStatusVisibilityRule">
+          <Parameter name="status" value="RESERVED" />
+        </VisibilityRule> 
+      </Action>
+      <Action chainKey="ORDER_CHECK_INVENTORY" chainType="STACK" text="_orderCheckInventoryAction" keyStroke="F6" />
+      <Action chainKey="ORDER_PREPARE_TO_SHIP_ORDER" chainType="STACK" text="_orderShipOrderAction" keyStroke="F7">
+        <VisibilityRule class="dtv.pos.order.maint.ShippingNecessaryVisibilityRule" />
+        <VisibilityRule class="dtv.pos.order.maint.SourceOrderLineStatusVisibilityRule">
+          <Parameter name="status" value="RESERVED" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="ORDER_ALLOCATE_ITEMS" chainType="STACK" text="_orderAllocateItemsAction">
+        <VisibilityRule class="dtv.pos.order.maint.AllocateOrderVisibilityRule" />
+        <VisibilityRule class="dtv.pos.order.maint.FulfillingOrderLineStatusVisibilityRule">
+          <Parameter name="status" value="IN_TRANSIT" />
+          <Parameter name="status" value="IN_TRANSIT_POLLED" />
+        </VisibilityRule>
+      </Action>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

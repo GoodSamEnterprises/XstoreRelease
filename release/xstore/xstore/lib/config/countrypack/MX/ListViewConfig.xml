@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ListViewConfig.xsd">
+  
+  <Header name="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_LIST">
+    <Row>
+      <Column start="0" width="30" translatable="_countrypack.mx.globalInvoice.workstation" alignment="CENTER" />
+      <Column start="35" width="30" translatable="_countrypack.mx.globalInvoice.transaction" alignment="CENTER" />
+      <Column start="70" width="30" translatable="_countrypack.mx.globalInvoice.date" alignment="CENTER" />
+    </Row>
+  </Header>
+  <Element name="COUNTRYPACK.MX.CFDI_GLOBAL_INVOICE_LIST">
+    <Row>
+      <Column start="0" width="30" method="getWorkstationId" alignment="CENTER" />
+      <Column start="35" width="30" method="getSequenceNumber" alignment="CENTER" />
+      <Column start="70" width="30" method="getBusinessDate" alignment="CENTER" formatter="DateMedium" />
+    </Row>
+  </Element>
+  
+  <Element name="TRANSACTION_SUMMARY_INVOICE">
+    <Row>
+      <FontRef fontSize="-1" fontKey="_fontListMedium" />
+      <Column start="0" width="30" method="getTransactionTypeCode" />
+      <Column start="30" width="30">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_tranSummaryDateLabel</Translatable>
+          <EvaluatedFormattable method="getTransactionDate" formatter="DateMedium" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="60" width="40">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_tranSummaryTimeLabel</Translatable>
+          <EvaluatedFormattable method="getBeginDatetimestamp" formatter="TimeMedium" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontSize="-1" fontKey="_fontListMedium" />
+      <Column start="0" width="30">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_tranSummaryRgstLabel</Translatable>
+          <EvaluatedFormattable method="getWorkstationId" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="30" width="30">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_tranSummaryCashierLabel</Translatable>
+          <EvaluatedFormattable method="getOperatorId" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="60" width="40">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_tranSummaryTranIdLabel</Translatable>
+          <EvaluatedFormattable method="getTransactionSequence" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontSize="-1" fontKey="_fontListMedium" />
+      <Column start="0" width="100">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_tranSummaryCustLabel</Translatable>
+          <EvaluatedFormattable method="getCustomerName" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="60" width="40">
+        <CellDataHandlerFactoryClass dtype="Class">oracle.retail.xstore.countrypack.mx.invoice.ui.MxInvoiceIdDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontSize="-1" fontKey="_fontListMedium" />
+      <Column start="0" width="60">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_tranSummaryTotalLabel</Translatable>
+          <EvaluatedFormattable method="getTotal" formatter="Money" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="60" width="40">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_tranSummaryStatusLabel</Translatable>
+          <EvaluatedFormattable method="getTransactionStatusCode" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+  </Element>
+
+  <Header name="USE_CFDI_VALUES">
+    <Row>
+      <Column start="0" width="15" translatable="_countrypack.mx.useCfdi.code" alignment="CENTER" />
+      <Column start="15" width="85" translatable="_countrypack.mx.useCfdi.description" alignment="CENTER" />
+    </Row>
+  </Header>
+  <Element name="USE_CFDI_VALUES">
+    <Row>
+      <Column start="0" width="15" method="getCode" alignment="LEFT" />
+      <Column start="15" width="85" method="getDescription" alignment="LEFT" wrapText="true" />
+    </Row>
+  </Element>
+  
+</ListView>

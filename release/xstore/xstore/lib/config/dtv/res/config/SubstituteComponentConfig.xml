@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SubstituteComponents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SubstituteComponentConfig.xsd">
+
+  <SubstituteComponent name="CUST_DISPLAY_OTHER">
+    <Component type="PanelImage" layoutLocation="0, 0, 100, 100">
+      <ComponentParameter name="setImage" value="_imageStartupFillerOther" />
+    </Component>
+  </SubstituteComponent>
+
+  <SubstituteComponent name="CUST_DISPLAY_TRAINING">
+    <Component type="PanelText" layoutLocation="15, 15, 70, 70">
+      <ComponentParameter name="setFont" >
+        <param_value dtype="FontRef" >_fontCustomerDisplayTrainingPanel</param_value>
+      </ComponentParameter>
+      <ComponentParameter name="setMessage" value="_trainingModeCustomerMessage" />
+    </Component>
+  </SubstituteComponent>
+
+  <SubstituteComponent name="CUST_DISPLAY_SOUTHEAST">
+    <Component name="CUSTOMER_BROWSER" type="CardedPanelOptimized" contextSensitiveConstraint="DEFAULT"
+      layoutLocation="Center" layout="java.awt.BorderLayout">
+      <Component name="CUSTOMER_BROWSER_PANEL" type="EmbeddedBrowserPanel" layoutLocation="Center">
+        <ComponentParameter name="setBrowser" value1="CUST_BROWSER" value2="_customerDisplay.browser.url1" />
+      </Component>
+    </Component>
+  </SubstituteComponent>
+
+  <SubstituteComponent name="CUST_DISPLAY_SOUTHWEST">
+    <Component name="CUSTOMER_DISPLAY_MESSAGE_AREA" type="PanelText">
+      <ComponentParameter name="setMessage" value="_defaultCustomerMessage" />
+    </Component>
+  </SubstituteComponent>
+
+  <SubstituteComponent name="CUST_DISPLAY_NORTHEAST">
+    <Component type="PanelBordered" layout="dtv.ui.layout.TableLayout">
+      <LayoutParameters dtype="ParameterList">
+        <parameter name="setSize">
+          <param_value dtype="Integer">1</param_value>
+          <param_value dtype="Integer">100</param_value>
+        </parameter>
+        <parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </parameter>
+      </LayoutParameters>
+      <Component name="CUSTOMER_MESSAGES_LIST" type="CustomerMessagesListView" layoutLocation="0, 0, 1, 97" />
+    </Component>
+  </SubstituteComponent>
+
+  <SubstituteComponent name="CUST_DISPLAY_NORTHWEST">
+    <Component name="CUSTOMER_TRANSACTION_LIST_AREA" type="CardedPanelOptimized"
+      contextSensitiveConstraint="DEFAULT" layoutLocation="Center" />
+  </SubstituteComponent>
+
+<!-- Example of available options to change a text panel through xml configuration -->
+<!--   <SubstituteComponent name="TEST"> -->
+<!--     <Component name="CUSTOMER_DISPLAY_MESSAGE_AREA" type="PanelText" > -->
+<!--       <ComponentParameter name="setBackground"> -->
+<!--         <param_value dtype="Color">0x575757</param_value> -->
+<!--       </ComponentParameter> -->   
+<!--       <ComponentParameter name="setBorderColor"> -->
+<!--         <param_value dtype="Color">0x000000</param_value> -->
+<!--       </ComponentParameter> -->
+<!--       <ComponentParameter name="setFontColor"> -->
+<!--         <param_value dtype="Color">0x000000</param_value> -->
+<!--       </ComponentParameter> -->
+<!--       <ComponentParameter name="setFont" value="Arial-BOLD-38"/> -->
+<!--       <ComponentParameter name="setMessage" value="_defaultCustomerMessage"/> -->
+<!--     </Component> -->
+<!--   </SubstituteComponent> -->
+
+<!-- Example of available options to change a text panel through ui.properties configuration -->
+<!--   <SubstituteComponent name="TEST"> -->
+<!--     <Component name="CUSTOMER_DISPLAY_MESSAGE_AREA" type="PanelText" > -->
+<!--       <ComponentParameter name="setBackgroundKey" value="_colorCustomerDisplayTextPanelBackground" /> -->
+<!--       <ComponentParameter name="setBorderColorKey" value="_colorCustomerDisplayTextPanelBorder" /> -->
+<!--       <ComponentParameter name="setFontColorKey" value="_colorBorder" /> -->
+<!--       <ComponentParameter name="setFontKey" value="_fontCustomerDisplayTextPanel"/> -->
+<!--       <ComponentParameter name="setMessage" value="_defaultCustomerMessage"/> -->
+<!--     </Component> -->
+<!--   </SubstituteComponent> -->
+
+</SubstituteComponents>

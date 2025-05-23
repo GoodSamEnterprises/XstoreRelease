@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+    
+  <Form name="CUSTOMER_MAINTENANCE" type="MULTI_PURPOSE_VIEW" formLayoutRef="TOP_TO_BOTTOM_TRANSPARENT">
+    
+    <Page name="CustomerAccount" text="_customerAccountTabText" displayOrder="40">
+      <Panel startX="0" width="100" startY="0" height="22" fieldLayoutRef="custLoyaltyCardSummaryLayout" padding="0, 0, 4, 0" />
+      <Panel startX="0" width="100" startY="22" height="30" fieldLayoutRef="custLoyaltyAwardsLayout" padding="4, 0, 4, 0" />
+      <Panel startX="0" width="100" startY="52" height="48" fieldLayoutRef="custAccountHistoryLayout" padding="4, 0, 0, 0" />
+      
+      <ActionGroups view="CUSTOMER_ACCOUNT_VIEW_ACTIONS" edit="CUSTOMER_ACCOUNT_EDIT_ACTIONS" />
+    </Page>
+        
+    <ActionGroup name="CUSTOMER_OPTIONS">
+      <Action chainKey="CREATE_CUSTOMER" chainType="START" text="_createCustomerKey" privilege="CREATE_CUSTOMER" />
+      <Action chainKey="PRINT_CUSTOMER" chainType="STACK" text="_printCustomer" privilege="PRINT_CUSTOMER" />
+      <Action ref="CUSTOMER_MAINT::REVIEW_INFORMATION_CONSENT" chainType="STACK" />
+      <Action chainKey="ADD_LOYALTY_CARD" chainType="STACK" text="_addLoyalty">
+        <VisibilityRule class="dtv.pos.customer.loyalty.AllowLoyaltySignupRule" />
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+      </Action>
+      <Action chainKey="CUST_MAINT_TAX_EXEMPTIONS" chainType="STACK" text="_customerTaxExemptionsAction" />
+      <Action chainKey="CUST_MAINT_HOUSE_ACCOUNT_NEW" chainType="STACK" text="_custMaintHouseAccountCreateNew">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CorporateHouseAccountVisibilityRule" />
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerHasNoHouseAccountVisibilityRule" />        
+      </Action>
+    </ActionGroup>
+     
+    <ActionGroup name="CUSTOMER_ACCOUNT_VIEW_ACTIONS">
+      <Action ref="CANCEL_EXIT" />
+      <Action dataKey="CONTINUE" text="_addCustomerKey">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AddCustomerToTranVisibilityRule" />
+      </Action>
+      <Action dataKey="EDIT" text="_editCustomer" privilege="EDIT_CUSTOMER">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.CustomerSecurityPrivilegeVisibilityRule" />
+      </Action>
+      <Action formOptionsKey="CUSTOMER_OPTIONS" text="_customerOptionsAction" />
+      <Action ref="CUSTOMER::LOYALTY_CARD_HISTORY" keyStroke="F5" />
+      <Action dataKey="HISTORY_RECEIPT_PRINT" text="_loyaltyAccountHistoryBalanceReceipt" keyStroke="F6" />
+      <Action chainKey="LOYALTY_HISTORY_PRINT" chainType="STACK" text="_loyaltyAccountHistoryPrint" keyStroke="F7" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="CUSTOMER_ACCOUNT_EDIT_ACTIONS">
+      <Action ref="ABORT_CHANGES" text="_custMaintUndoChanges" />
+      <Action ref="ACCEPT_SAVE" />
+      <Action ref="CUSTOMER::LOYALTY_CARD_HISTORY" keyStroke="F5" />
+      <Action dataKey="HISTORY_RECEIPT_PRINT" text="_loyaltyAccountHistoryBalanceReceipt" keyStroke="F6" />
+      <Action dataKey="LOYALTY_HISTORY_PRINT" text="_loyaltyAccountHistoryPrint" keyStroke="F7" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+  </Form>
+    
+</FormSet>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Mon Nov 24 19:25:53 EST 2003 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../pos/config/dtv/res/config/form/FormsConfig.xsd">
+  <FormView formKey="CUSTOMER_ACCOUNT_LIST" formLocation="TRANSACTION_LIST_AREA" formLayout="LEFT_TO_RIGHT">
+  
+    <FormViewPanel panelType="TOP_INFO" class="dtv.pos.register.ui.FormTransactionInformationHeader">
+      <Touch ref="CUSTOMER::EDIT">
+        <ResponsivenessRule class="dtv.pos.framework.touch.rules.PopupNotShowingResponsivenessRule" />
+        <ResponsivenessRule class="dtv.pos.framework.touch.rules.HiddenButtonNotShowingResponsivenessRule" />
+        <ResponsivenessRule class="dtv.pos.framework.touch.rules.ValidateCurrentPromptResponsivenessRule" />
+      </Touch>
+      <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setGaps">
+          <param_value dtype="InsetsRef">_gapsTransactionInformationPanel</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginTransactionInformationPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      
+      <FormViewCell type="FormLabelEmphasized" resource="customerName">
+        <Font fontSize="+8"/>
+      </FormViewCell>
+      <FormViewCell type="FormIconLoyalty" resource="headerDividerIcon">
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      
+      <FormViewPanel class="dtv.pos.register.ui.FormLoyaltyPanel">
+        <Layout dtype="Class">java.awt.BorderLayout</Layout>
+        
+        <FormViewPanel layoutLocation="North">
+          <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+          <LayoutParameters dtype="ParameterList">
+            <parameter name="setGaps">
+              <param_value dtype="InsetsRef">_gapsTransactionInformationPanelDetails</param_value>
+            </parameter>
+          </LayoutParameters>
+          <FormViewCell type="FormLabelEmphasized" textKey="_loyaltyBalanceLabel" resourceLink="loyaltyBalance" />
+          <FormViewCell type="FormLabelEmphasized" resource="loyaltyBalance">
+            <FormatterType dtype="String">Integer</FormatterType>
+            <ReadOnly dtype="Boolean">true</ReadOnly>
+          </FormViewCell>
+        </FormViewPanel>
+        <FormViewPanel layoutLocation="South">
+          <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+          <LayoutParameters dtype="ParameterList">
+            <parameter name="setGaps">
+              <param_value dtype="InsetsRef">_gapsTransactionHeaderPanelDetails</param_value>
+            </parameter>
+          </LayoutParameters>
+          <FormViewCell type="FormLabelEmphasized" textKey="_awardBalanceLabel" resourceLink="awardBalance" />
+          <FormViewCell type="FormLabelEmphasized" resource="awardBalance">
+            <FormatterType dtype="String">Money</FormatterType>
+          </FormViewCell>
+        </FormViewPanel>
+      </FormViewPanel>
+      
+      <FormViewCell layoutLocation="Last" type="FormIcon" resource="loyaltyIcon">
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+    </FormViewPanel>
+  </FormView>
+</FormViewSet>

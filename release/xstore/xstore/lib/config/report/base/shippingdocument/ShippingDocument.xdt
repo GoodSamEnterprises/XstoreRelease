@@ -1,0 +1,115 @@
+<dataTemplate name="ShippingDocument" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="SHIP_FROM" value="_shippingReportShipFrom"/>
+    <label name="STORE_NO" value="_shippingReportStoreNumber"/>
+    <label name="SHIP_TO" value="_shippingReportShipTo"/>
+    <label name="ORDER_DATE_LABEL" value="_shippingReportOrderDate"/>
+    <label name="ORDER_NO" value="_shippingReportOrderNumber"/>
+    <label name="PO_NO" value="_shippingReportPurchaseOrder"/>
+    <label name="SHIP_DATE_LABEL" value="_shippingReportDate"/>
+    <label name="CARRIER" value="_shippingReportShippingCarrier"/>
+    <label name="TRACKING_NO" value="_shippingReportTrackingNumber"/>
+    <label name="PART_NO" value="_shippingReportItemId"/>
+    <label name="DESC" value="_shippingReportItemDescription"/>
+    <label name="ORDER_QTY" value="_shippingReportOrderQuantity"/>
+    <label name="SHIP_QTY" value="_shippingReportShipQuantity"/>
+    <label name="CTRL_NO_LABEL" value="_shippingReportControlNumber"/>
+    <label name="ITEM_SERIAL_LABEL" value="_shippingReportSerialNumbers"/>
+
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <!-- User Parameters -->
+    
+    </parameters>
+  
+  <dataSource>
+    <dataReference name="O_SHIPPING_HEADER">
+      <ResultFields>
+        <ResultField>DocumentId</ResultField>
+        <ResultField>ShippingCarrier</ResultField>
+        <ResultField>TrackingNumber</ResultField>
+        <ResultField>ParentDocument.getControlNumber</ResultField>
+        <ResultField>ParentDocument.getOriginatorAddress</ResultField>
+        <ResultField>ParentDocument.getOriginatorName</ResultField>
+        <ResultField>ParentDocument.getOriginatorId</ResultField>
+        <ResultField>Address</ResultField>
+        <ResultField>ParentDocument.getCreateDateTime</ResultField>
+        <ResultField>ParentDocument.getPoReferenceNumber</ResultField>
+        <ResultField>ActualShipDate</ResultField>
+        <ResultField>DestinationRetailLocation.getStoreNbr</ResultField>
+        <ResultField>DestinationRetailLocation</ResultField>
+        <ResultField>StringProperty(DocumentSubtypeDescription)</ResultField>
+        
+        <!-- Destination name can be in 3 different places. Precedence order is as follows, 
+        if the information is not in the first, try the second, if not, try the third-->
+        <ResultField>DestinationName</ResultField>
+        <ResultField>DestinationRetailLocation.getDescription</ResultField>
+        <ResultField>DestinationServiceLocationId</ResultField>
+        
+      </ResultFields>
+    </dataReference>
+    <dataReference name="O_SHIPPING_DETAIL" key="ShipmentLineItems">
+      <ResultFields>
+        <ResultField>InventoryLineItem.getItemId</ResultField>
+        <ResultField>InventoryLineItem.getItemDescription</ResultField>
+        <ResultField>InventoryLineItem.getExpectedCount</ResultField>
+        <ResultField>InventoryLineItem.getStatusCode</ResultField>
+        <ResultField>InventoryLineItem.getTempUnitCount</ResultField>
+        <ResultField>InventoryLineItem.getTempStatusCode</ResultField>
+        <ResultField>InventoryLineItem.getSerialNumbersString</ResultField>
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_HEADER" source="O_SHIPPING_HEADER">
+      <element name="DOC_ID" value="DocumentId"/>
+      <element name="DOC_ID_BARCODE" value="DocumentId" barcode="Code93Below"/>
+      <element name="SHIPPING_CARRIER" value="ShippingCarrier"/>
+      <element name="TRACKING_NUMBER" value="TrackingNumber"/>
+      <element name="CTRL_NO" value="ParentDocument.getControlNumber"/>
+      <element name="CTRL_NO_BARCODE" value="ParentDocument.getControlNumber" barcode="Code93Below"/>
+      <element name="SHIP_FROM_ADDRESS" value="ParentDocument.getOriginatorAddress" formatter="BasicAddress"/>
+      <element name="SHIP_FROM_NAME" value="ParentDocument.getOriginatorName"/>
+      <element name="SHIP_FROM_ID" value="ParentDocument.getOriginatorId"/>
+      <element name="SHIP_TO_ADDRESS" value="Address" formatter="BasicAddress"/>
+      
+      <element name="SHIP_TO_NAME" value="DestinationName"/>
+      <element name="SHIP_TO_NAME_ALT" value="DestinationRetailLocation.getDescription"/>
+      <element name="SHIP_TO_NAME_ALT_1" value="DestinationServiceLocationId"/>
+      
+      <element name="ORDER_DATE" value="ParentDocument.getCreateDateTime" formatter="DateShort"/>
+      <element name="PO_NUMBER" value="ParentDocument.getPoReferenceNumber"/>
+      <element name="SHIP_DATE" value="ActualShipDate" formatter="DateShort"/>
+      <element name="STORE_NBR" value="DestinationRetailLocation.getStoreNbr"/>
+      <element name="RTL_LOC_ADDRESS" value="DestinationRetailLocation" formatter="BasicAddress"/>
+      <element name="DocumentSubtypeDescription" value="StringProperty(DocumentSubtypeDescription)"/>
+    </group>
+    <group name="G_DETAIL" source="O_SHIPPING_DETAIL">
+      <element name="ITEM_ID" value="InventoryLineItem.getItemId"/>
+      <element name="ITEM_DESC" value="InventoryLineItem.getItemDescription"/>
+      <element name="EXPECTED_COUNT" value="InventoryLineItem.getExpectedCount" formatter="Decimal"/>
+      <element name="STATUS_CODE" value="InventoryLineItem.getStatusCode"/>
+      <element name="TEMP_UNIT_COUNT" value="InventoryLineItem.getTempUnitCount" formatter="Decimal"/>
+      <element name="TEMP_STATUS_CODE" value="InventoryLineItem.getTempStatusCode"/>
+      <element name="ITEM_SERIALS" value="InventoryLineItem.getSerialNumbersString"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

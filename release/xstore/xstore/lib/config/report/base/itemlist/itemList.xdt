@@ -1,0 +1,75 @@
+<dataTemplate name="ItemList" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+ 
+    
+    
+        <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="DESCRIPTION" value="_rptDescription"/>
+    <label name="LOCATION ID" value="_rptItemListLocationId"/>
+    <label name="BUCKET ID" value="_rptItemListBucketId"/>
+    <label name="QTY" value="_rptQuantityHeading"/>
+ </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+    
+    <!-- User Parameters -->
+    
+  <parameter name="locationId" class="java.lang.String" isForPrompting="true">
+    <parameterDescription><![CDATA[_rptItemListLocationId;Combo;dtv.pos.inventory.InventoryLocationsLoader;all=_rptParamSelectionAll]]></parameterDescription>
+  </parameter>
+  <parameter name="bucketId" class="java.lang.String" isForPrompting="true">
+    <parameterDescription><![CDATA[_rptItemListBucketId;Combo;dtv.pos.inventory.InventoryBucketsLoader;all=_rptParamSelectionAll]]></parameterDescription>
+  </parameter>
+   <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+   </parameter> 
+  </parameters>
+  
+  
+  <!--Data source and data Structure-->
+    <dataSource>
+    <queryReference name="Q_ITEM_LIST" key="ITEM_LIST_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+         <Parameter>locationId</Parameter>
+        <Parameter>bucketId</Parameter>
+      </Parameters>
+      <ResultFields>
+          <ResultField>item_id</ResultField>
+          <ResultField>description</ResultField>          
+          <ResultField>location_id</ResultField>
+          <ResultField>bucket_id</ResultField>
+          <ResultField>unitcount</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_ITEM_LIST" source="Q_ITEM_LIST">
+      <element name="ITM" value="item_id"/>
+      <element name="DESC" value="description"/>
+      <element name="LOC" value="location_id"/>
+      <element name="BKT" value="bucket_id"/> 
+      <element name="QTY" value="unitcount" formatter="Decimal"/>
+    </group>
+  </dataStructure>
+  
+</dataTemplate>

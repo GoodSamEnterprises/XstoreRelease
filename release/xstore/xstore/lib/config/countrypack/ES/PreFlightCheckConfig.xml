@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreFlightChecks dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PreFlightCheckConfig.xsd">
+
+  <PreFlightCheck name="COUNTRYPACK.ES.SIMPLE_INVOICE_PREFLIGHT" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.es.preflight.EsDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.ES.PREFLIGHT.SEQ_INVOICE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.ES.SIMPLE_INVOICE_SEQUENCE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.es.SimpleInvoiceSequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.ES.INVOICE_PREFLIGHT" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.es.preflight.EsDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.ES.PREFLIGHT.SEQ_INVOICE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.ES.INVOICE_SEQUENCE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.es.InvoiceSequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.ES.CREDITNOTE_PREFLIGHT" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.es.preflight.EsDocumentSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.ES.PREFLIGHT.SEQ_INVOICE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.ES.CREDIT_NOTE_SEQUENCE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.es.CreditNoteSequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <!-- Manual sequences are not checked -->
+
+</PreFlightChecks>

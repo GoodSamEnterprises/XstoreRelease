@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="STATE_EFTLINK_Notification" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_EFTLINK_Notification" />
+    <property name="transitions" >
+      <list>
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_IgnoreListSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_IgnorePasteData" />
+        <ref bean="STTN_STD_Auth_CaptureOnEvent" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_EFTLINK_YesNoEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_YesNoEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_Entry_CaptureOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_IgnoreListSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_IgnorePasteData" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+        <ref bean="STTN_STD_Auth_CaptureOnEvent" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_EFTLINK_ChoiceEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ChoiceEntry" />
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition" >
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor" >
+              <property name="list" ref="DEV_SelectList" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SelectListSelection" />
+        </bean>
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_EFTLINK_PostEventOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+        <ref bean="STTN_STD_Auth_CaptureOnEvent" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_EFTLINK_StringEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_StringEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_EFTLINK_PostEventOnEnter" />
+        <ref bean="STTN_STD_Entry_ErrorInvalidOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESC" />
+        <ref bean="STTN_STD_IgnoreListSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+        <ref bean="STTN_STD_Auth_CaptureOnEvent" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_EFTLINK_Admin" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_EFTLINK_Authorization" />
+    <property name="timers" >
+      <list>
+        <!-- a timer for authorization communication timeout -->
+        <!-- TODO: make timeout configurable in SystemConfig or AuthFramework -->
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="COMMUNICATION_TIMEOUT_TIMER"/>
+          <property name="type" value="STATE" />
+          <property name="delay" value="50000" /> <!-- set that to 2 min -->
+        </bean>
+      </list>
+    </property>
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_IgnoreListSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_IgnorePasteData" />
+        <ref bean="STTN_STD_Auth_CaptureOnEvent" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

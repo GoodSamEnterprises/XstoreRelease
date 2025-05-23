@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DaoEditMappingList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DaoEditMapping.xsd">
+  
+  <DataObjectDefinition name="PARTY_LOCALE">
+    <DataEditFieldList>
+      <DataEditField name="address1" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="address2" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="address3" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="address4" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="apartment" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="city" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="country" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.location.CountryEnumLoader" nullAllowed="false" />
+      </DataEditField>
+      <DataEditField name="postalCode" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="state" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="neighborhood" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="county" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="primary" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="contact" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="addressType" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="ADDRESS_TYPE" />
+        </enumerated_values>
+      </DataEditField>
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  
+  <!-- - - - - Mapping for Found Item - - - - - -->
+  <DaoEditMapping name="FOUND_ITEM">
+    <model_name dtype="Translatable">_foundItemName</model_name>
+    <edit_model_class dtype="Class">oracle.retail.xstore.countrypack.br.item.BrItemResultsEditModel</edit_model_class>
+    <description dtype="Translatable">_foundItemDescription</description>
+    <data_object_ref dtype="String">ITEM</data_object_ref>
+    <data_object_ref dtype="String">ITEM_OPTIONS</data_object_ref>
+  </DaoEditMapping>
+
+  <DaoEditMapping name="BR::NFE_QUEUE">
+    <model_name dtype="Translatable">_countrypack.br.nfe.maintenance.detail.masterLabel</model_name>
+    <edit_model_class dtype="Class">oracle.retail.xstore.countrypack.br.nfe.maintenance.model.NfeMaintenanceEditModel</edit_model_class>
+    <description dtype="Translatable">_countrypack.br.nfe.maintenance.detail.masterLabel</description>
+    <data_object_ref dtype="String">PAF_NFE_QUEUE</data_object_ref>
+    <data_object_ref dtype="String">PAF_NFE_QUEUE_DEST</data_object_ref>
+<!--     <data_object_ref dtype="String">PAF_NFE_QUEUE_TRANSPORT</data_object_ref> -->
+  </DaoEditMapping>
+
+  <DataObjectDefinition name="PAF_NFE_QUEUE">
+    <KeyFields>
+      <DataEditField name="workstationId" class="Long" cardinality="1..1" />
+      <DataEditField name="queueSequence" class="Long" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="environmentId" class="int" cardinality="0..1" />
+      <DataEditField name="tpNf" class="int" cardinality="0..1" />
+      <DataEditField name="seriesId" class="int" cardinality="0..1" />
+      <DataEditField name="nnf" class="int" cardinality="0..1" />
+      <DataEditField name="cuf" class="int" cardinality="0..1" />
+      <DataEditField name="cnf" class="int" cardinality="0..1" />
+      <DataEditField name="usageTypeCode" class="String" cardinality="0..1" />
+      <DataEditField name="transTypeCode" class="String" cardinality="0..1" />
+      <DataEditField name="natop" class="String" cardinality="0..1" />
+      <DataEditField name="indPag" class="int" cardinality="0..1" />
+      <DataEditField name="model" class="String" cardinality="0..1" />
+      <DataEditField name="issueDate" class="Date" cardinality="0..1" />
+      <DataEditField name="saiEntDatetime" class="Date" cardinality="0..1" />
+      <DataEditField name="cmunFG" class="String" cardinality="0..1" />
+      <DataEditField name="tpImp" class="int" cardinality="0..1" />
+      <DataEditField name="tpEmis" class="int" cardinality="0..1" />
+      <DataEditField name="finNfe" class="int" cardinality="0..1" />
+      <DataEditField name="procEmi" class="int" cardinality="0..1" />
+      <DataEditField name="verProc" class="String" cardinality="0..1" />
+      <DataEditField name="contDatetime" class="Date" cardinality="0..1" />
+      <DataEditField name="contJustification" class="String" cardinality="0..1" />
+      <DataEditField name="productAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="serviceAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsBasis" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsStBasis" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsStAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="issBasis" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="issAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="iiAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="pisAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="cofinsAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="discountAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="freightAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="insuranceAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="otherAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="totalAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="infCpl" class="String" cardinality="0..1" />
+      <DataEditField name="protocolo" class="String" cardinality="0..1" />
+      <DataEditField name="cancelationProtocolo" class="String" cardinality="0..1" />
+      <DataEditField name="chaveNfe" class="String" cardinality="0..1" />
+      <DataEditField name="recibo" class="String" cardinality="0..1" />
+      <DataEditField name="statusCode" class="String" cardinality="0..1" />
+      <DataEditField name="xml" class="String" cardinality="0..1" />
+      <DataEditField name="responseCode" class="String" cardinality="0..1" />
+      <DataEditField name="responseText" class="String" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="PAF_NFE_QUEUE_DEST">
+    <DataEditFieldList>
+      <DataEditField name="name" class="String" cardinality="1..1" />
+      <DataEditField name="federalTaxId" class="String" cardinality="1..1" />
+      <DataEditField name="stateTaxId" class="String" cardinality="0..1" />
+      <DataEditField name="streetName" class="String" cardinality="1..1" />
+      <DataEditField name="streetNumber" class="String" cardinality="1..1" />
+      <DataEditField name="complemento" class="String" cardinality="0..1" />
+      <DataEditField name="neighborhood" class="String" cardinality="1..1" />
+      <DataEditField name="cityCode" class="String" cardinality="1..1" />
+      <DataEditField name="city" class="String" cardinality="1..1" />
+      <DataEditField name="state" class="String" cardinality="1..1" />
+      <DataEditField name="postalCode" class="String" cardinality="0..1" />
+      <DataEditField name="countryCode" class="String" cardinality="0..1" />
+      <DataEditField name="countryName" class="String" cardinality="0..1" />
+      <DataEditField name="telephone" class="String" cardinality="0..1" />
+      <DataEditField name="emailAddress" class="String" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+<!--   <DataObjectDefinition name="PAF_NFE_QUEUE_TRANSPORT"> -->
+<!--     <DataEditFieldList> -->
+<!--       <DataEditField name="freightTypecode" class="int" cardinality="1..1" /> -->
+<!--       <DataEditField name="transportName" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="transportFederalTaxId" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="transportStateTaxId" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="transportAddress" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="transportCity" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="transportState" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="vehiclePlate" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="vehicleUf" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="vehicleRntc" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="packageQuantity" class="int" cardinality="0..1" /> -->
+<!--       <DataEditField name="packageType" class="String" cardinality="0..1" /> -->
+<!--       <DataEditField name="netWeight" class="BigDecimal" cardinality="0..1" /> -->
+<!--       <DataEditField name="grossWeight" class="BigDecimal" cardinality="0..1" /> -->
+<!--     </DataEditFieldList> -->
+<!--   </DataObjectDefinition> -->
+
+  <DaoEditMapping name="BR::NFE_QUEUE_ITEM">
+    <model_name dtype="Translatable">_countrypack.br.nfe.maintenance.detail.items.edit.label</model_name>
+    <edit_model_class dtype="Class">oracle.retail.xstore.countrypack.br.nfe.maintenance.model.NfeMaintenanceItemEditModel</edit_model_class>
+    <description dtype="Translatable">_countrypack.br.nfe.maintenance.detail.items.edit.label</description>
+    <data_object_ref dtype="String">PAF_NFE_QUEUE_AS_PARENT</data_object_ref>
+    <data_object_ref dtype="String">PAF_NFE_QUEUE_ITEM</data_object_ref>
+  </DaoEditMapping>
+
+  <DataObjectDefinition name="PAF_NFE_QUEUE_AS_PARENT">
+    <KeyFields>
+      <DataEditField name="workstationId" class="Long" cardinality="1..1" />
+      <DataEditField name="queueSequence" class="Long" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="totalAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="saiEntDatetime" class="Date" cardinality="0..1" />
+      <DataEditField name="usageTypeCode" class="String" cardinality="0..1" />
+      <DataEditField name="transTypeCode" class="String" cardinality="0..1" />
+      <DataEditField name="statusCode" class="String" cardinality="0..1" />
+      <DataEditField name="chaveNfe" class="String" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  
+  <DataObjectDefinition name="PAF_NFE_QUEUE_ITEM">
+    <DataEditFieldList>
+      <DataEditField name="itemId" class="String" cardinality="1..1" />
+      <DataEditField name="ncm" class="String" cardinality="1..1" />
+      <DataEditField name="cest" class="String" cardinality="0..1" />
+      <DataEditField name="itemDescription" class="String" cardinality="1..1" />
+      <DataEditField name="infAdProd" class="String" cardinality="0..1" />
+      <DataEditField name="cfop" class="String" cardinality="1..1" />
+      <DataEditField name="icmsCst" class="String" cardinality="0..1" />
+      <DataEditField name="ean" class="String" cardinality="0..1" />
+      <DataEditField name="iat" class="String" cardinality="0..1" />
+      <DataEditField name="ippt" class="String" cardinality="0..1" />
+      <DataEditField name="taxSituationCode" class="String" cardinality="0..1" />
+      <DataEditField name="exTipi" class="String" cardinality="0..1" />
+      <DataEditField name="quantity" class="BigDecimal" cardinality="1..1" />
+      <DataEditField name="unitOfMeasureCode" class="String" cardinality="1..1" />
+      <DataEditField name="unitPrice" class="BigDecimal" cardinality="1..1" />
+      <DataEditField name="extendedAmount" class="BigDecimal" cardinality="1..1" />
+      <DataEditField name="discountAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsRate" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsBasis" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="ipiRate" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="ipiAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsStRate" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsStBasis" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="icmsStAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="freightAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="insuranceAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="otherAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="taxableQuantity" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="unitTaxableAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="taxableEan" class="String" cardinality="0..1" />
+      <DataEditField name="taxableUnitOfMeasureCode" class="String" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>  
+</DaoEditMappingList>

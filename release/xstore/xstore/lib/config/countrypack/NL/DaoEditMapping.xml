@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DaoEditMappingList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DaoEditMapping.xsd">
+
+  <DataObjectDefinition name="PARTY_LOCALE">
+    <DataEditFieldList>
+      <DataEditField name="address1" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="address2" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="address3" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="address4" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="apartment" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="city" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="country" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.location.CountryEnumLoader" nullAllowed="false" />
+      </DataEditField>
+      <DataEditField name="postalCode" class="String" cardinality="1..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="state" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="neighborhood" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="county" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="primary" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="contact" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="addressType" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="ADDRESS_TYPE" />
+        </enumerated_values>
+      </DataEditField>
+    </DataEditFieldList>
+  </DataObjectDefinition>
+
+</DaoEditMappingList>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/AuthConfig.xsd">
+  <!-- ***** AuthProcess OPERA ******************************************* -->
+  <AuthProcess name="OPERA" Abstract="true">
+    <Parameter name="communicatorHosts">
+      <param_value dtype="List">
+        <IPHost dtype="String">http://localhost:4400/Operajserv/Ifc8ws/Ifcws</IPHost>
+      </param_value>
+    </Parameter>
+    <!-- +++++ OPERA communication parameters +++++ -->
+    <Parameter name="communicator" value="dtv.tenderauth.impl.opera.OperaCommunicator" />
+    <Parameter name="DataSource" value="Opera" />
+    <!-- the following (communicatorProgress...) control the progress bar -->
+    <!-- progress timing that work well with an IP connection -->
+    <Parameter name="communicatorProgressConnectMillis" value="500" />
+    <Parameter name="communicatorProgressSendingMillis" value="500" />
+    <Parameter name="communicatorProgressWaitMillis" value="6000" />
+    <Parameter name="communicatorProgressReceiveMillis" value="500" />
+    <!-- +++++ OPERA java-xml marshalling parameters +++++ -->
+    <Parameter name="requestConverter" value="dtv.tenderauth.impl.opera.OperaRequestConverter" />
+    <Parameter name="responseConverter" value="dtv.tenderauth.impl.opera.OperaResponseConverter" />
+  </AuthProcess>
+  <!-- ***** AuthProcess OPERA_ROOM_CHARGE ******************************* -->
+  <AuthProcess name="OPERA_ROOM_CHARGE" extends="OPERA">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.opera.OperaRoomChargeAuthProcess</AuthProcessClass>
+    <!-- +++++ OPERA_ROOM_CHARGE message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_operaRoomChargeMANUALAUTH">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_operaRoomChargeManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when Opera is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_operaRoomChargeOFFLINE" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_operaRoomChargeFatalError" />
+        </MapEntry>
+        <MapEntry key="RESPONSE_CODE_CO">
+          <!-- message shown for Over Credit Limit -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_operaRoomChargeDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESPONSE_CODE_FX">
+          <!-- message shown for Guest not alowd to use this feature -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_operaRoomChargeDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESPONE_CODE_IA">
+          <!-- message shown for Invalid Account(Room) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_operaRoomChargeDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESPONSE_CODE_NP">
+          <!-- message shown for Posting denied because NoPost is set -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_operaRoomChargeDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESPONSE_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_operaRoomChargeDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++++ Opera action map +++++ -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given RTS result code -->
+      <param_value dtype="Map">
+        <MapEntry key="CO">
+          <!-- WHEN Over Credit Limit -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="FX">
+          <!-- WHEN Guest not Allowed to use this feature -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="IA">
+          <!-- WHEN Invalid Account(Room) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="NP">
+          <!-- WHEN NoPost is set -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN OPERA IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthRequestMap OPERA_ROOM_CHARGE ***************** -->
+  <AuthRequestMap name="OPERA_ROOM_CHARGE">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.opera.req.RoomChargeRequest" enabled="true">
+      <Parameter name="WSNum" ref="terminalId" />
+      <Parameter name="PostType" value="C" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.opera.req.RoomChargeRequest" enabled="true">
+      <Parameter name="WSNum" ref="terminalId" />
+      <Parameter name="PostType" value="C" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="dtv.tenderauth.impl.opera.req.RoomChargeRequest" enabled="true">
+      <Parameter name="WSNum" ref="terminalId" />
+      <Parameter name="PostType" value="C" />
+    </AuthRequest>
+    <AuthRequest key="VOID_REFUND_TENDER" class="dtv.tenderauth.impl.opera.req.RoomChargeRequest" enabled="true">
+      <Parameter name="WSNum" ref="terminalId" />
+      <Parameter name="PostType" value="C" />
+    </AuthRequest>
+  </AuthRequestMap>
+</AuthConfig>

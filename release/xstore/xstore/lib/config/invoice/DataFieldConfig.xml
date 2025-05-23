@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataFields xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DataFieldConfig.xsd">
+
+  <DataField name="taxFree_customerName" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[32]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\'\&\-\u00C0-\u00FF]*]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="taxFree_street" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[100]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="taxFree_city" editFormat="CaseProperName">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[50]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="taxFree_passport" editFormat="CaseMixed">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[40]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[\w\s\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+  
+  <DataField name="taxFree_mobileNumber" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[30]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[0-9\+]*]]></param_value>
+    </Parameter>
+  </DataField>
+  
+  <DataField name="taxFree_taxRegistrationNumber" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[20]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[A-Z0-9\-]*]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="taxFree_email" editFormat="CaseMixed">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[100]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[^<>(),;:\s\[\]\\"]*]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="taxFree_cardToken" editFormat="CaseAllUpper">
+    <Parameter name="maxCharacters">
+      <param_value dtype="Integer"><![CDATA[30]]></param_value>
+    </Parameter>
+    <Parameter name="regexPolicy">
+      <param_value dtype="String"><![CDATA[[A-Z0-9]*]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="taxFree_etihadNumber" editFormat="Numeric">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[12]]></param_value>
+    </Parameter>
+  </DataField>
+
+  <DataField name="taxFree_alipayNumber" editFormat="Numeric">
+    <Parameter name="maximumIntegerDigits">
+      <param_value dtype="Integer"><![CDATA[11]]></param_value>
+    </Parameter>
+  </DataField>
+
+
+</DataFields>

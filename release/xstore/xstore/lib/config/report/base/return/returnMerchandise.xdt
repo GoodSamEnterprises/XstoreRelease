@@ -1,0 +1,141 @@
+<dataTemplate name="ReturnMerchandise" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="MIN" value="_rptMin"/>
+    <label name="MAX" value="_rptMax"/>
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="CRITERIA_CASHIER" value="_rptReturnMerchandiseCashierColon"/>
+    <label name="CRITERIA_MIN_AMOUNT" value="_rptReturnMerchandiseMinimumReturnAmountColon"/>
+    <label name="CRITERIA_REASON" value="_rptReturnMerchandiseReasonColon"/>
+    <label name="CRITERIA_SORT_ORDER" value="_rptReturnMerchandiseSortOrderColon"/>
+
+    <label name="SORT_DATE_TIME" value="_rptReturnMerchandiseDateTime"/>
+    <label name="SORT_CASHIER" value="_rptReturnMerchandiseCashier"/>
+    <label name="SORT_COMM_ASSOC" value="_rptReturnMerchandiseCommissionedAssociate"/>
+    <label name="SORT_QTY" value="_rptQuantity"/>
+    <label name="SORT_EXT_AMOUNT" value="_rptReturnMerchandiseExtendedPrice"/>
+    <label name="SORT_REASON" value="_rptReturnMerchandiseReason"/>
+    <label name="SORT_TRANS" value="_rptReturnMerchandiseTransaction"/>
+    <label name="SORT_ITEM" value="_rptReturnMerchandiseItem"/>
+
+    <label name="TRANS" value="_rptTrans"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="REASON" value="_rptReturnMerchandiseReason"/>
+    <label name="REGISTER" value="_rptReg"/>
+    <label name="DATE_TIME" value="_rptDateTime"/>
+    <label name="COMMISIONED" value="_rptReturnMerchandiseCommissionedAssociateAbbrv"/>
+    <label name="CASHIER" value="_rptReturnMerchandiseCashier"/>
+    <label name="RETURN_PRICE" value="_rptReturnMerchandiseReturnPrice"/>
+    <label name="EXT_PRICE" value="_rptReturnMerchandiseExtendedPrice"/>
+    <label name="QTY" value="_rptQuantity"/>
+    <label name="TOTAL" value="_rptTotal"/>
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startEmp" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptReturnedMerchandiseStartCashier;Text;Simple;maxCharacters=20]]></parameterDescription>
+    </parameter>
+    <parameter name="endEmp" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptReturnedMerchandiseEndCashier;Text;Simple;maxCharacters=20]]></parameterDescription>
+    </parameter>
+    <parameter name="returnReason" class="java.lang.Object" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptReturnMerchandiseReasonCode;Combo;dtv.pos.register.returns.ReturnReasonCodesLoader;all=_rptParamSelectionAll;invokeMethods=getReasonCode,getDescription]]></parameterDescription>
+      <defaultValueExpression><![CDATA["all"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="returnReason_getReasonCode" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="returnReason_getDescription" class="java.lang.String" isForPrompting="false" include_in_output="true">
+      <defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+    </parameter>    <parameter name="minimumReturnAmount" class="java.math.BigDecimal" isForPrompting="true" include_in_output="true" formatter="Money">
+      <parameterDescription><![CDATA[_rptReturnMerchandiseMinimumReturnAmount;Text;Decimal;maximumIntegerDigits=9]]></parameterDescription>
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="sortOrder" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptReturnMerchandiseSortOrder;Combo;dtv.pos.reporting.fill.SoftEnumFactory;TRN.begin_datetime=_rptReturnMerchandiseDateTime|TSL.trans_seq=_rptReturnMerchandiseTransaction|CRE.employee_id=_rptReturnMerchandiseCashier|CRP.employee_id=_rptReturnMerchandiseCommissionedAssociate      |TSL.item_id=_rptReturnMerchandiseItem|TSL.quantity=_rptQuantityHeading|abs(extended_amt)=_rptReturnMerchandiseExtendedPrice|TRR.description=_rptReturnMerchandiseReasonCode]]></parameterDescription>
+      <defaultValueExpression><![CDATA["TRN.begin_datetime"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="ascDesc" class="java.lang.String" isForPrompting="true" include_in_output="true">
+    <parameterDescription><![CDATA[_rptReturnMerchandiseAscDesc;Combo;dtv.pos.reporting.fill.SoftEnumFactory;asc=_rptReturnMerchandiseAscending|desc=_rptReturnMerchandiseDescending]]></parameterDescription>
+      <defaultValueExpression><![CDATA["ASC"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+
+  <dataSource>
+    <queryReference name="Q_RETURNS" key="RETURN_MERCHANDISE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>minimumReturnAmount</Parameter>
+        <Parameter>startEmp</Parameter>
+        <Parameter>endEmp</Parameter>
+        <Parameter>sortOrder</Parameter>
+        <Parameter>ascDesc</Parameter>
+        <Parameter>returnReason_getReasonCode</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>quantity</ResultField>
+        <ResultField>unit_price</ResultField>
+        <ResultField>ext_price</ResultField>
+        <ResultField>commissioned_associate</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>begin_datetime</ResultField>
+        <ResultField>item_description</ResultField>
+        <ResultField>ringing_associate</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_RETURNS" source="Q_RETURNS">
+      <element name="TRANS_SEQ" value="trans_seq"/>
+      <element name="ITEM_ID" value="item_id"/>
+      <element name="COMMISIONED_ID" value="commissioned_associate"/>
+      <element name="CASHIER_ID" value="ringing_associate"/>
+      <element name="REG_ID" value="wkstn_id"/>
+      <element name="QTY" value="quantity" formatter="Decimal"/>
+      <element name="DATE" value="begin_datetime" formatter="DateShort"/>
+      <element name="TIME" value="begin_datetime" formatter="TimeShort"/>
+      <element name="UNIT_PRICE" value="unit_price" formatter="Money"/>
+      <element name="EXT_PRICE" value="ext_price" formatter="Money"/>
+      <element name="RET_DESC" value="description"/>
+      <element name="ITEM_DESC" value="item_description"/>
+    </group>
+    <group name="G_RETURNS_TOTAL" source="Q_RETURNS">
+      <element name="QTY" value="quantity" formatter="Decimal" function="SUM"/>
+      <element name="UNIT_PRICE" value="unit_price" formatter="Money" function="SUM"/>
+      <element name="EXT_PRICE" value="ext_price" formatter="Money" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

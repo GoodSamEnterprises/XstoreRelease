@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DaoEditMappingList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DaoEditMapping.xsd">
+  <DaoEditMapping name="CUSTOMER">
+    <model_name dtype="Translatable">_customerMaintenanceName</model_name>
+    <edit_model_class dtype="Class">dtv.pos.customer.CustomerMaintenanceModel</edit_model_class>
+    <description dtype="Translatable">_customerMaintenanceDescription</description>
+    <data_object_ref dtype="String">PARTY</data_object_ref>
+  </DaoEditMapping>
+
+  <DaoEditMapping name="EMPLOYEE">
+    <model_name dtype="Translatable">_employeeMaintenanceName</model_name>
+    <edit_model_class dtype="Class">dtv.pos.employee.EmployeeMaintenanceModel</edit_model_class>
+    <description dtype="Translatable">_employeeMaintenanceDescription</description>
+    <data_object_ref dtype="String">EMPLOYEE</data_object_ref>
+    <data_object_ref dtype="String">EMPLOYEE_PASSWORD</data_object_ref>
+    <data_object_ref dtype="String">PARTY</data_object_ref>
+    <data_object_ref dtype="String">PARTY_LOCALE</data_object_ref>
+  </DaoEditMapping>
+
+  <DaoEditMapping name="TIMECARD_RECORD">
+    <model_name dtype="Translatable">_timecardMaintenance</model_name>
+    <edit_model_class dtype="Class">dtv.pos.timeclock.timecard.model.TimecardRecordEditModel</edit_model_class>
+    <description dtype="Translatable">_timecardRecordDescription</description>
+    <data_object_ref dtype="String">TIMECARD_ENTRY</data_object_ref>
+  </DaoEditMapping>
+
+  <DataObjectDefinition name="EMPLOYEE">
+    <KeyFields>
+      <DataEditField name="employeeId" class="Long" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="hireDate" class="Date" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="activeDate" class="Date" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="employeeStatusCode" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="EMPLOYEE_STATUS" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="terminatedDate" class="Date" cardinality="0..0" securedObject="EMPLOYEE_DATA">
+      </DataEditField>
+      <DataEditField name="jobTitle" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="addDate" class="Date" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="maritalStatus" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="true">
+          <parameter name="category" value="MARITAL_STATUS" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="spouseName" class="String" cardinality="0..0" securedObject="EMPLOYEE_DATA">
+        <dependency dtype="FieldDependency" fieldRef="maritalStatus" dependencyRule="dtv.pos.framework.form.dependency.ValueDependencyRule">
+          <parameter name="code" value="M" />
+          <parameter name="matchState" value="0..1" />
+          <parameter name="noMatchState" value="0..0" />
+        </dependency>
+      </DataEditField>
+      <DataEditField name="emergencyContactName" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="emergencyContactPhone" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="lastReviewDate" class="Date" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="nextReviewDate" class="Date" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="basePay" class="BigDecimal" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="additionalWithholdings" class="BigDecimal" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="clockInNotRequired" class="boolean" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="overtimeEligible" class="boolean" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+
+      <DataEditField name="employeePayStatus" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="true">
+          <parameter name="category" value="PAY_STATUS" />
+        </enumerated_values>
+      </DataEditField>
+      
+      <!-- Removed IDepartment from the Xstore database.  - C Dusseau 9/28/05 -->
+      <DataEditField name="departmentId" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="true">
+          <parameter name="category" value="EMPLOYEE_DEPARTMENT" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="employeeGroup" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="true">
+          <parameter name="category" value="EMPLOYEE_GROUP" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="employeeRoleCode" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="true">
+          <parameter name="category" value="EMPLOYEE_ROLE" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="employeeTypeCode" class="String" cardinality="0..1" securedObject="EMPLOYEE_DATA">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="true">
+          <parameter name="category" value="EMPLOYEE_TYPE" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="personalDays" class="BigDecimal" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="personalDaysUsed" class="BigDecimal" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="sickDays" class="BigDecimal" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="sickDaysUsed" class="BigDecimal" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="vacationDays" class="BigDecimal" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="vacationDaysUsed" class="BigDecimal" cardinality="0..1" securedObject="EMPLOYEE_DATA" />
+      <DataEditField name="primaryGroup" class="dtv.xst.dao.sec.IGroup" cardinality="1..1" securedObject="EMPLOYEE_SECURITY">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.DaoEnumLoader" nullAllowed="false">
+          <parameter name="dai" value="dtv.xst.dao.sec.GroupId" />
+          <parameter name="wrapper" value="dtv.pos.employee.SecurityGroupWrapper" />
+          <parameter name="comparator" value="dtv.pos.framework.security.SecurityGroupSorter" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="trainingStatusEnum" class="String" cardinality="0..1">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.assistance.typesafe.TrainingModeEnumLoader" nullAllowed="false" />
+      </DataEditField>
+      <DataEditField name="lockedOut" class="boolean" cardinality="0..1" securedObject="EMPLOYEE_LOCKOUT" />
+      <DataEditField name="loginId" class="String" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="dtv.pos.employee.EmployeeMaintenanceModel">
+    <DataEditFieldList>
+      <DataEditField name="securityGroups" class="dtv.pos.employee.SecurityGroupList" cardinality="0..*" securedObject="EMPLOYEE_DATA" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="EMPLOYEE_PASSWORD">
+    <DataEditFieldList>
+      <DataEditField name="password" class="String" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="EMPLOYEE_NOTE" factoryClass="dtv.pos.employee.EmployeeNoteFactory">
+    <KeyFields>
+      <DataEditField name="noteTimeStamp" class="Date" cardinality="1..1" />
+      <DataEditField name="creatorParty" class="dtv.xst.dao.crm.IParty" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="note" class="String" cardinality="1..1" securedObject="EMPLOYEE_NOTE" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="CUSTOMER_NOTE" factoryClass="dtv.pos.customer.CustomerNoteFactory">
+    <KeyFields>
+      <DataEditField name="noteSequence" class="Long" cardinality="1..1" />
+      <DataEditField name="partyId" class="Long" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="note" class="String" cardinality="1..1" securedObject="CUSTOMER_ATTRIBUTES" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="TRAN_NOTE" factoryClass="dtv.pos.ejournal.TransactionNoteFactory">
+    <DataEditFieldList>
+      <DataEditField name="noteDatetimestamp" class="Date" cardinality="1..1" />
+      <DataEditField name="note" class="String" cardinality="1..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="PARTY">
+    <KeyFields>
+      <DataEditField name="partyId" class="Long" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="customerId" class="String" cardinality="0..1" securedObject="CUSTOMER_ID" />
+      <DataEditField name="salutation" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="firstName" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="lastName" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="middleName" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="firstName2" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="lastName2" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="suffix" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.SimpleEnumLoader" nullAllowed="true">
+          <values dtype="FormValueEnumList">
+            <value dtype="String">Jr.</value>
+            <value dtype="String">Sr.</value>
+            <value dtype="String">II</value>
+            <value dtype="String">III</value>
+            <value dtype="String">IV</value>
+          </values>
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="gender" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="true">
+          <parameter name="category" value="GENDER" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="preferredLocale" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.LocaleEnumLoader" nullAllowed="true" />
+      </DataEditField>
+      <DataEditField name="birthDate" class="Date" inputMask="DATE" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="anniversaryDate" class="Date" inputMask="DATE" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="emailAddress" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="emailRcpts" class="boolean" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES">
+        <dependency dtype="FieldDependency" fieldRef="emailAddress" dependencyRule="dtv.pos.framework.form.dependency.SimpleDependencyRule" />
+      </DataEditField>
+      <DataEditField name="pictureUri" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="organizationName" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="organizationTypeCode" class="String" cardinality="0..0" securedObject="CUSTOMER_CONTACT_INFO">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="true">
+          <parameter name="category" value="ORGANIZATION_TYPE" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="socialSecurityNbr" class="String" cardinality="0..1" securedObject="CUSTOMER_FINANCIAL_INFO" />
+      <DataEditField name="personalTaxId" class="String" cardinality="0..1" securedObject="CUSTOMER_FINANCIAL_INFO" />
+      <DataEditField name="nationalTaxId" class="String" cardinality="0..1" securedObject="CUSTOMER_FINANCIAL_INFO" />
+      <DataEditField name="employeeId" class="String" cardinality="0..1" securedObject="CUSTOMER_EMPLOYEE_DATA" />
+      <!-- enums -->
+      <DataEditField name="customerGroups" class="List" cardinality="0..*" securedObject="CUSTOMER_GROUPS">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.DaoEnumLoader" nullAllowed="false">
+          <parameter name="dai" value="dtv.xst.dao.com.CodeValueId" />
+          <parameter name="wrapper" value="dtv.pos.customer.CustomerGroupEnumValueWrapper" />
+          <parameter name="codeCategory" param_value="CUSTOMER_GROUPS" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="partyTypeCode" class="String" cardinality="0..1" securedObject="CUSTOMER_EMPLOYEE_DATA">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.SimpleEnumLoader" nullAllowed="true">
+          <values dtype="FormValueEnumList">
+            <value dtype="String">CUSTOMER</value>
+            <value dtype="String">EMPLOYEE</value>
+          </values>
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="signUpRetailLocationId" class="long" cardinality="1..1" />
+      <DataEditField name="allegianceRetailLocationId" class="long" cardinality="0..1" />
+      <DataEditField name="mailingList" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="createDate" class="Date" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="emailContact" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <dependency dtype="FieldDependency" fieldRef="emailAddress" dependencyRule="dtv.pos.framework.form.dependency.SimpleDependencyRule" />
+      </DataEditField>
+      <DataEditField name="privacyCard" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="commercialCustomer" class="boolean" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES" />
+      <DataEditField name="telephone1" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" inputMask="MediumPhone" />
+      <DataEditField name="telephone2" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" inputMask="MediumPhone" />
+      <DataEditField name="telephone3" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" inputMask="MediumPhone" />
+      <DataEditField name="telephone4" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" inputMask="MediumPhone" />
+      <DataEditField name="telephone1Contact" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <dependency dtype="FieldDependency" fieldRef="telephone1" dependencyRule="dtv.pos.framework.form.dependency.SimpleDependencyRule" />
+      </DataEditField>
+      <DataEditField name="telephone2Contact" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <dependency dtype="FieldDependency" fieldRef="telephone2" dependencyRule="dtv.pos.framework.form.dependency.SimpleDependencyRule" />
+      </DataEditField>
+      <DataEditField name="telephone3Contact" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <dependency dtype="FieldDependency" fieldRef="telephone3" dependencyRule="dtv.pos.framework.form.dependency.SimpleDependencyRule" />
+      </DataEditField>
+      <DataEditField name="telephone4Contact" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <dependency dtype="FieldDependency" fieldRef="telephone4" dependencyRule="dtv.pos.framework.form.dependency.SimpleDependencyRule" />
+      </DataEditField>
+      <DataEditField name="contactPref" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="true">
+          <parameter name="category" value="CUSTOMER_CONTACT_PREF" />
+        </enumerated_values>
+      </DataEditField>      
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="PARTY_LOCALE">
+    <DataEditFieldList>
+      <DataEditField name="address1" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="address2" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="address3" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="address4" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="apartment" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="city" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="country" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.location.CountryEnumLoader" nullAllowed="false" />
+      </DataEditField>
+      <DataEditField name="postalCode" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="state" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="neighborhood" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="county" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="primary" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="contact" class="boolean" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO" />
+      <DataEditField name="addressType" class="String" cardinality="0..1" securedObject="CUSTOMER_CONTACT_INFO">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="ADDRESS_TYPE" />
+        </enumerated_values>
+      </DataEditField>
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  
+  <!-- - - - - Mapping for Found Item - - - - - -->
+  <DaoEditMapping name="FOUND_ITEM">
+    <model_name dtype="Translatable">_foundItemName</model_name>
+    <edit_model_class dtype="Class">dtv.pos.inventory.lookup.ItemResultsEditModel</edit_model_class>
+    <description dtype="Translatable">_foundItemDescription</description>
+    <data_object_ref dtype="String">ITEM</data_object_ref>
+    <data_object_ref dtype="String">ITEM_OPTIONS</data_object_ref>
+  </DaoEditMapping>
+  <DataObjectDefinition name="ITEM">
+    <KeyFields>
+      <DataEditField name="itemId" class="String" cardinality="0..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="description" class="String" cardinality="0..1" />
+      <DataEditField name="merchLevel1Id" class="String" cardinality="0..1" />
+      <DataEditField name="merchLevel2Id" class="String" cardinality="0..1" />
+      <DataEditField name="merchLevel3Id" class="String" cardinality="0..1" />
+      <DataEditField name="merchLevel4Id" class="String" cardinality="0..1" />
+      <DataEditField name="parentItem" class="dtv.xst.dao.itm.IItem" cardinality="0..1" />
+      <DataEditField name="serializedItem" class="boolean" cardinality="0..0" />
+      <DataEditField name="listPrice" class="BigDecimal" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="ITEM_OPTIONS">
+    <DataEditFieldList>
+      <DataEditField name="vendorId" class="String" cardinality="0..1" />
+      <DataEditField name="partNumber" class="String" cardinality="0..1" />
+      <DataEditField name="seasonCode" class="String" cardinality="0..1" />
+      <DataEditField name="currentSalePrice" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="compareAtPrice" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="disallowLayaway" class="boolean" cardinality="0..1" />
+      <DataEditField name="disallowSendSale" class="boolean" cardinality="0..1" />
+      <DataEditField name="disallowSpecialOrder" class="boolean" cardinality="0..1" />
+      <DataEditField name="disallowOrder" class="boolean" cardinality="0..1" />
+      <DataEditField name="disallowWorkOrder" class="boolean" cardinality="0..1" />
+      <DataEditField name="unitCost" class="BigDecimal" cardinality="0..0" />
+      <DataEditField name="unitOfMeasureCode" class="String" cardinality="0..1" />
+      <DataEditField name="dispositionCode" class="String" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="dtv.pos.inventory.lookup.ItemResultsEditModel">
+    <DataEditFieldList>
+     <KeyFields>
+      <DataEditField name="vendorName" class="String" cardinality="0..1" />
+     </KeyFields>
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  
+  <!-- - - - - Mapping for Work Order Account (i.e. Layaways) - - - - - -->
+  <DaoEditMapping name="WORK_ORDER_ACCOUNT">
+    <model_name dtype="Translatable">_workOrder</model_name>
+    <edit_model_class dtype="Class">dtv.pos.workorder.common.WorkOrderMaintenanceModel</edit_model_class>
+    <description dtype="Translatable">_workOrder</description>
+    <data_object_ref dtype="String">WORK_ORDER_ACCOUNT</data_object_ref>
+    <data_object_ref dtype="String">WORK_ORDER_CATEGORY</data_object_ref>
+    <data_object_ref dtype="String">SERVICE_LOCATION</data_object_ref>
+    <data_object_ref dtype="String">PARTY</data_object_ref>
+    <data_object_ref dtype="String">PARTY_LOCALE</data_object_ref>
+  </DaoEditMapping>
+
+  <DaoEditMapping name="WORK_ORDER_ACCOUNT_MAINTENANCE">
+    <model_name dtype="Translatable">_workOrder</model_name>
+    <edit_model_class dtype="Class">dtv.pos.workorder.common.WorkOrderMaintenanceModel</edit_model_class>
+    <description dtype="Translatable">_workOrder</description>
+    <data_object_ref dtype="String">WORK_ORDER_ACCOUNT</data_object_ref>
+    <data_object_ref dtype="String">WORK_ORDER_CATEGORY</data_object_ref>
+    <data_object_ref dtype="String">SERVICE_LOCATION</data_object_ref>
+    <data_object_ref dtype="String">PARTY</data_object_ref>
+    <data_object_ref dtype="String">PARTY_LOCALE</data_object_ref>
+  </DaoEditMapping>
+  <DataObjectDefinition name="SERVICE_LOCATION">
+    <KeyFields>
+      <DataEditField name="serviceLocationId" class="String" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="serviceLocDescription" class="String" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="WORK_ORDER_CATEGORY">
+    <KeyFields>
+      <DataEditField name="categoryId" class="String" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="description" class="String" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="WORK_ORDER_ACCOUNT">
+    <KeyFields>
+      <DataEditField name="custAccountId" class="String" cardinality="1..1" />
+    </KeyFields>
+    <!-- CustomerAccount: Start -->
+    <DataEditFieldList>
+      <DataEditField name="accountBalance" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="custIdentityReq" class="boolean" cardinality="0..1" />
+      <DataEditField name="custIdentityTypeCode" class="String" cardinality="0..1" />
+      <!-- CustomerAccount: End -->
+      <!-- CustomerItemAccount: Start -->
+      <DataEditField name="custAccountStateCode" class="String" cardinality="1..1">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="CUST_ACCOUNT_STATE" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="accountSetupDate" class="Date" cardinality="0..1" />
+      <DataEditField name="accountTotal" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="activeAccountTotal" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="accountPayments" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="activeAccountPayments" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="lastActivityDate" class="Date" cardinality="0..1" />
+      <DataEditField name="openItemCount" class="int" cardinality="0..1" />
+      <!-- CustomerItemAccount: End -->
+      <!-- WorkOrderAccount: Start -->
+      <DataEditField name="openWorkItemCount" class="int" cardinality="0..1" />
+      <DataEditField name="totalValue" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="estimatedCompletionDate" class="Date" cardinality="0..1" />
+      <DataEditField name="approvedWorkAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="approvedWorkDate" class="Date" cardinality="0..1" />
+      <DataEditField name="priorityCode" class="String" cardinality="1..1">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="WORK_ORDER_PRIORITIES" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="workOrderAccountPriceCode" class="dtv.xst.dao.cwo.IWorkOrderPriceCode" cardinality="0..1" />
+      <DataEditField name="workOrderAccountCategory" class="dtv.xst.dao.cwo.IWorkOrderCategory" cardinality="0..1" />
+      <DataEditField name="contactMethodCode" class="String" cardinality="0..1" />
+      <DataEditField name="lastCustomerNoticeDate" class="Date" cardinality="0..1" />
+      <DataEditField name="workOrderAccountServiceLocation" class="dtv.xst.dao.cwo.IServiceLocation" cardinality="0..1" />
+      <!-- WorkOrderAccount: End -->
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  
+  <!-- - - - - Mapping for Customer Item Account (i.e. Layaways) - - - - - -->
+  <DaoEditMapping name="CUSTOMER_ITEM_ACCOUNT">
+    <model_name dtype="Translatable">_customerAccount</model_name>
+    <edit_model_class dtype="Class">dtv.pos.customer.account.common.CustomerItemAccountEditModel</edit_model_class>
+    <description dtype="Translatable">_contextLayaway</description>
+    <data_object_ref dtype="String">CUSTOMER_ITEM_ACCOUNT</data_object_ref>
+    <data_object_ref dtype="String">PARTY</data_object_ref>
+    <data_object_ref dtype="String">PARTY_LOCALE</data_object_ref>
+  </DaoEditMapping>
+
+  <DaoEditMapping name="CUSTOMER_ITEM_ACCOUNT_MAINTENANCE">
+    <model_name dtype="Translatable">_customerAccount</model_name>
+    <edit_model_class dtype="Class">dtv.pos.customer.account.common.CustomerItemAccountEditModel</edit_model_class>
+    <description dtype="Translatable">_contextLayaway</description>
+    <data_object_ref dtype="String">CUSTOMER_ITEM_ACCOUNT</data_object_ref>
+    <data_object_ref dtype="String">PARTY</data_object_ref>
+    <data_object_ref dtype="String">PARTY_LOCALE</data_object_ref>
+  </DaoEditMapping>
+
+  <DataObjectDefinition name="CUSTOMER_ITEM_ACCOUNT">
+    <KeyFields>
+      <DataEditField name="custAccountId" class="String" cardinality="1..1" />
+    </KeyFields>
+    <!-- CustomerAccount: Start -->
+    <DataEditFieldList>
+      <DataEditField name="accountBalance" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="custIdentityReq" class="boolean" cardinality="0..1" />
+      <DataEditField name="custIdentityTypeCode" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationId" class="long" cardinality="0..1" />
+      <DataEditField name="retailLocationStoreName" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationAddress1" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationAddress2" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationAddress3" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationAddress4" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationApartment" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationCity" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationState" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationPostalCode" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationCountry" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationTelephone1" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationTelephone2" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationTelephone3" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationTelephone4" class="String" cardinality="0..1" />
+      <DataEditField name="retailLocationStoreManager" class="String" cardinality="0..1" />s
+      <!-- CustomerAccount: End -->
+      <!-- CustomerItemAccount: Start -->
+      <DataEditField name="custAccountStateCode" class="String" cardinality="0..1" />
+      <DataEditField name="accountSetupDate" class="Date" cardinality="0..1" />
+      <DataEditField name="accountTotal" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="activeAccountTotal" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="accountPayments" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="activeAccountPayments" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="lastActivityDate" class="Date" cardinality="0..1" />
+      <DataEditField name="openItemCount" class="int" cardinality="0..1" />
+      <DataEditField name="deliveryLastName" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryFirstName" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryMiddleName" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryAddress1" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryAddress2" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryAddress3" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryAddress4" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryApartment" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryCity" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryState" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryPostalCode" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryCountry" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryTelephone1" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryTelephone2" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryTelephone3" class="String" cardinality="0..1" />
+      <DataEditField name="deliveryTelephone4" class="String" cardinality="0..1" />
+      <!-- CustomerItemAccount: End -->
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="CUSTOMER_ACCOUNT_NOTE" factoryClass="dtv.pos.register.layaway.LayawayNoteFactory">
+    <DataEditFieldList>
+      <DataEditField name="entryTimestamp" class="Date" cardinality="1..1" />
+      <DataEditField name="entryPartyId" class="long" cardinality="1..1" />
+      <DataEditField name="note" class="String" cardinality="1..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="TIMECARD_ENTRY">
+    <KeyFields>
+      <DataEditField name="businessDate" class="Date" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="workCode" class="dtv.xst.dao.hrs.IWorkCodes" cardinality="1..1">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.DaoEnumLoader" nullAllowed="false">
+          <parameter name="dai" param_value="dtv.xst.dao.hrs.WorkCodesId" />
+          <parameter name="interface" param_value="dtv.xst.dao.hrs.IWorkCodes" />
+          <parameter name="wrapper" param_value="dtv.pos.framework.form.CodeEnumValueWrapper" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="clockInDateTime" class="Date" cardinality="1..1" />
+      <DataEditField name="clockOutDateTime" class="Date" cardinality="1..1" />
+      <DataEditField name="timecardDate" class="Date" cardinality="1..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+
+  <DaoEditMapping name="TIMECARD_RECORD_HISTORY">
+    <model_name dtype="Translatable">_timecardRecordHistoryName</model_name>
+    <description dtype="Translatable">_timecardRecordHistoryDescription</description>
+    <data_object_ref dtype="String">TIMECARD_RECORD_HISTORY</data_object_ref>
+  </DaoEditMapping>
+  <DataObjectDefinition name="TIMECARD_RECORD_HISTORY">
+    <DataEditFieldList>
+      <DataEditField name="currentDate" class="Date" cardinality="0..1" />
+      <DataEditField name="customerName" class="String" cardinality="0..1" />
+      <DataEditField name="customerId" class="long" cardinality="0..1" />
+      <DataEditField name="originalWorkCode" class="String" cardinality="0..1" />
+      <DataEditField name="originalClockInTime" class="Date" cardinality="0..1" />
+      <DataEditField name="originalClockOutTime" class="Date" cardinality="0..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+
+  <DaoEditMapping name="ACCOUNT_RECEIVABLE">
+    <model_name dtype="Translatable">_accountreceivabletender</model_name>
+    <edit_model_class dtype="Class">dtv.pos.accountsreceivable.model.AccountsReceivableMaintenanceModel</edit_model_class>
+    <description dtype="Translatable">_accountreceivabletender</description>
+    <data_object_ref dtype="String">ACCOUNT_RECEIVABLE</data_object_ref>
+    <data_object_ref dtype="String">PARTY</data_object_ref>
+    <data_object_ref dtype="String">PARTY_LOCALE</data_object_ref>
+  </DaoEditMapping>
+  <DataObjectDefinition name="ACCOUNT_RECEIVABLE">
+    <KeyFields>
+      <DataEditField name="custAccountId" class="String" cardinality="1..1" />
+    </KeyFields>
+    <!-- CustomerAccount: Start -->
+    <DataEditFieldList>
+      <DataEditField name="accountBalance" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="creditLimit" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="custAccountStateCode" class="String" cardinality="1..1" />
+      <DataEditField name="accountSetupDate" class="Date" cardinality="0..1" />
+      <DataEditField name="lastActivityDate" class="Date" cardinality="0..1" />
+      <DataEditField name="DateProperty::LAST_PAYMENT_DATE" class="Date" cardinality="0..1" />
+      <DataEditField name="DateProperty::LAST_PURCHASE_DATE" class="Date" cardinality="0..1" />
+      <DataEditField name="DecimalProperty::LAST_PAYMENT_AMOUNT" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="DecimalProperty::LAST_PURCHASE_AMOUNT" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="availableCredit" class="BigDecimal" cardinality="1..1" />
+      <DataEditField name="accountName" class="String" cardinality="1..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+
+  <DaoEditMapping name="ACCOUNT_RECEIVABLE_NO_PARTY">
+    <model_name dtype="Translatable">_accountreceivabletender</model_name>
+    <edit_model_class dtype="Class">dtv.pos.accountsreceivable.model.AccountsReceivableMaintenanceModel</edit_model_class>
+    <description dtype="Translatable">_accountreceivabletender</description>
+    <data_object_ref dtype="String">ACCOUNT_RECEIVABLE</data_object_ref>
+  </DaoEditMapping>
+
+  <DaoEditMapping name="SCHEDULE_RECORD">
+    <model_name dtype="Translatable">_schedulingMaintenanceTitle</model_name>
+    <edit_model_class dtype="Class">dtv.pos.scheduling.model.ScheduleRecordEditModel</edit_model_class>
+    <description dtype="Translatable">_schedulingMaintenanceRecordDescription</description>
+    <data_object_ref dtype="String">SCHEDULE_RECORD</data_object_ref>
+  </DaoEditMapping>
+  <DataObjectDefinition name="SCHEDULE_RECORD">
+    <KeyFields>
+      <DataEditField name="businessDate" class="Date" cardinality="1..1" />
+      <DataEditField name="employeeId" class="String" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="workCode" class="dtv.xst.dao.hrs.IWorkCodes" cardinality="1..1">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.DaoEnumLoader" nullAllowed="false">
+          <parameter name="dai" param_value="dtv.xst.dao.hrs.WorkCodesId" />
+          <parameter name="interface" param_value="dtv.xst.dao.hrs.IWorkCodes" />
+          <parameter name="wrapper" param_value="dtv.pos.framework.form.CodeEnumValueWrapper" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="startTime" class="Date" cardinality="1..1" />
+      <DataEditField name="endTime" class="Date" cardinality="1..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+
+  <DaoEditMapping name="CREDIT_APPLICATION">
+    <model_name dtype="Translatable">_creditApplicationTitle</model_name>
+    <edit_model_class dtype="Class">dtv.pos.customer.credit.model.PrivateCreditApplicationModel</edit_model_class>
+    <description dtype="Translatable">_customerMaintenanceDescription</description>
+  </DaoEditMapping>
+  <DataObjectDefinition name="dtv.pos.customer.credit.model.PrivateCreditApplicationModel">
+    <DataEditFieldList>
+      <DataEditField name="firstName" class="String" cardinality="1..1" />
+      <DataEditField name="middleName" class="String" cardinality="0..1" />
+      <DataEditField name="lastName" class="String" cardinality="1..1" />
+      <DataEditField name="suffix" class="String" cardinality="0..1" securedObject="CUSTOMER_ATTRIBUTES">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.SimpleEnumLoader" nullAllowed="true">
+          <values dtype="FormValueEnumList">
+            <value dtype="String">Jr.</value>
+            <value dtype="String">Sr.</value>
+            <value dtype="String">II</value>
+            <value dtype="String">III</value>
+            <value dtype="String">IV</value>
+          </values>
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="address1" class="String" cardinality="1..1" />
+      <DataEditField name="address2" class="String" cardinality="0..1" />
+      <DataEditField name="postalCode" class="String" cardinality="1..1" />
+      <DataEditField name="city" class="String" cardinality="1..1" />
+      <DataEditField name="state" class="String" cardinality="1..1" />
+      <DataEditField name="country" class="String" cardinality="0..1" />
+      <DataEditField name="dateOfBirth" class="Date" cardinality="1..1" />
+      <DataEditField name="socialSecurityNumber" class="String" cardinality="1..1" />
+      <DataEditField name="homePhoneNumber" class="String" cardinality="1..1" />
+      <DataEditField name="workPhoneNumber" class="String" cardinality="0..1" />
+      <DataEditField name="emailAddress" class="String" cardinality="0..1" />
+      <DataEditField name="primaryIdType" class="String" cardinality="1..1">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="PRIVATE_CREDIT_PRIMARY_ID_TYPE" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="primaryIdNumber" class="String" cardinality="1..1" />
+      <DataEditField name="primaryIdState" class="String" cardinality="1..1">
+        <dependency dtype="FieldDependency" fieldRef="primaryIdType" dependencyRule="dtv.pos.framework.form.dependency.ValueDependencyRule">
+          <parameter name="code" value="DL" />
+          <parameter name="matchState" value="1..1" />
+          <parameter name="noMatchState" value="0..0" />
+        </dependency>
+      </DataEditField>
+      <DataEditField name="secondaryIdType" class="String" cardinality="1..1">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="PRIVATE_CREDIT_SECOND_ID_TYPE" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="secondaryIdNumber" class="String" cardinality="0..0">
+        <dependency dtype="FieldDependency" fieldRef="secondaryIdType" dependencyRule="dtv.pos.framework.form.dependency.ValueDependencyRule">
+          <parameter name="code" value="NONE" />
+          <parameter name="matchState" value="0..0" />
+          <parameter name="noMatchState" value="1..1" />
+          <parameter name="notSetIsMatch" value="true" />
+        </dependency>
+      </DataEditField>
+      <DataEditField name="chargeAmount" class="BigDecimal" cardinality="0..1" />
+      <DataEditField name="annualHouseholdIncome" class="BigDecimal" cardinality="0..0">
+        <dependency dtype="FieldDependency" fieldRef="chargeAmount" dependencyRule="dtv.pos.framework.form.dependency.GreaterThanDependencyRule">
+          <parameter name="value">
+            <param_value dtype="BigDecimal">4999</param_value>
+          </parameter>
+          <parameter name="matchState" value="1..1" />
+          <parameter name="noMatchState" value="0..0" />
+        </dependency>
+      </DataEditField>
+      <DataEditField name="insurancePlan" class="String" cardinality="1..1">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="INSURANCE_PLAN" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="work30hours" class="Boolean" cardinality="0..0">
+        <dependency dtype="FieldDependency" fieldRef="insurancePlan" dependencyRule="dtv.pos.framework.form.dependency.ValueDependencyRule">
+          <parameter name="code" value="P" />
+          <parameter name="matchState" value="1..1" />
+          <parameter name="noMatchState" value="0..0" />
+        </dependency>
+      </DataEditField>
+      <DataEditField name="r10Fraud" class="Boolean" cardinality="0..1">
+        <dependency dtype="FieldDependency" fieldRef="m10Fraud" dependencyRule="dtv.pos.framework.form.dependency.OrDependencyRule" />
+      </DataEditField>
+      <DataEditField name="m10Fraud" class="Boolean" cardinality="0..1">
+        <dependency dtype="FieldDependency" fieldRef="r10Fraud" dependencyRule="dtv.pos.framework.form.dependency.OrDependencyRule" />
+      </DataEditField>
+      <DataEditField name="accountType" class="String" cardinality="1..1">
+        <enumerated_values dtype="FormValueEnum" loader="dtv.pos.framework.form.CodeEnumLoader" nullAllowed="false">
+          <parameter name="category" value="PRIVATE_CREDIT_ACCOUNT_TYPE" />
+        </enumerated_values>
+      </DataEditField>
+      <DataEditField name="jointFirstName" class="String" cardinality="0..0">
+        <dependency dtype="FieldDependency">
+          <!-- joint name required if account type is not individual -->
+          <field_ref dtype="String">accountType</field_ref>
+          <dependency_rule dtype="Class">dtv.pos.framework.form.dependency.ValueDependencyRule</dependency_rule>
+          <parameter name="code" value="I" />
+          <parameter name="matchState" value="0..0" />
+          <parameter name="noMatchState" value="1..1" />
+          <parameter name="notSetIsMatch" value="true" />
+        </dependency>
+      </DataEditField>
+      <DataEditField name="jointLastName" class="String" cardinality="0..0">
+        <dependency dtype="FieldDependency">
+          <!-- joint name required if account type is not individual -->
+          <field_ref dtype="String">accountType</field_ref>
+          <dependency_rule dtype="Class">dtv.pos.framework.form.dependency.ValueDependencyRule</dependency_rule>
+          <parameter name="code" value="I" />
+          <parameter name="matchState" value="0..0" />
+          <parameter name="noMatchState" value="1..1" />
+          <parameter name="notSetIsMatch" value="true" />
+        </dependency>
+      </DataEditField>
+    </DataEditFieldList>
+  </DataObjectDefinition>
+
+  <DaoEditMapping name="EMPLOYEE_MESSAGE">
+    <model_name dtype="Translatable">_messageEmployeeMessages</model_name>
+    <edit_model_class dtype="Class">dtv.pos.employee.message.MessageMaintenanceModel</edit_model_class>
+    <description dtype="Translatable">_messageMaintenance</description>
+    <data_object_ref dtype="String">EMPLOYEE_MESSAGE</data_object_ref>
+  </DaoEditMapping>
+  <DataObjectDefinition name="EMPLOYEE_MESSAGE">
+    <KeyFields>
+      <DataEditField name="messageId" class="Long" cardinality="1..1" />
+    </KeyFields>
+    <DataEditFieldList>
+      <DataEditField name="startDate" class="Date" cardinality="1..1" />
+      <DataEditField name="endDate" class="Date" cardinality="1..1" />
+      <DataEditField name="storeCreated" class="boolean" cardinality="0..1" />
+      <DataEditField name="workstationSpecific" class="boolean" cardinality="0..1" />
+      <DataEditField name="workstationIdObject" class="Integer" cardinality="0..0">
+        <dependency dtype="FieldDependency" fieldRef="workstationSpecific" dependencyRule="dtv.pos.framework.form.dependency.ValueDependencyRule">
+          <parameter name="code" value="true" />
+          <parameter name="matchState" value="1..1" />
+          <parameter name="noMatchState" value="0..0" />
+        </dependency>
+      </DataEditField>
+      <DataEditField name="description" class="String" cardinality="1..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  
+  <DaoEditMapping name="FLIGHT_INFORMATION">
+    <model_name dtype="Translatable">_flightInfoEditMessage</model_name>
+    <edit_model_class dtype="Class">dtv.pos.flight.model.FlightInformationEditModel</edit_model_class>
+    <description dtype="Translatable">_flightInfoEditDesc</description>    
+    <data_object_ref dtype="String">FLIGHT_INFORMATION</data_object_ref>
+    <data_object_ref dtype="String">AIRPORT_ZONE_MAPPING</data_object_ref>    
+  </DaoEditMapping>
+  <DataObjectDefinition name="FLIGHT_INFORMATION">
+    <DataEditFieldList>      
+      <DataEditField name="flightNumber" class="String" cardinality="1..1" />
+      <!-- <DataEditField name="destinationAirportName" class="String" cardinality="1..1" /> -->
+      <DataEditField name="destinationAirport" class="String" cardinality="1..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  <DataObjectDefinition name="AIRPORT_ZONE_MAPPING">
+    <DataEditFieldList>      
+      <DataEditField name="originatedAirport" class="String" cardinality="1..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+
+<DaoEditMapping name="CONFIGURE_IP_CASH_DRAWER">
+    <model_name dtype="Translatable">_configureIPCashDrawerTitle</model_name>
+    <edit_model_class dtype="Class">dtv.pos.hardware.op.IPCashDrawerConfigEditModel</edit_model_class>
+    <description dtype="Translatable">_configureIPCashDrawerDescription</description>    
+    <data_object_ref dtype="String">CONFIGURE_IP_CASH_DRAWER</data_object_ref>
+  </DaoEditMapping>
+  <DataObjectDefinition name="CONFIGURE_IP_CASH_DRAWER">
+    <DataEditFieldList>      
+      <DataEditField name="ipAddress" class="String" cardinality="1..1" />
+      <DataEditField name="subnetMask" class="String" cardinality="1..1" />
+      <DataEditField name="gateway" class="String" cardinality="1..1" />
+      <DataEditField name="dnsHostName" class="String" cardinality="1..1" />
+      <DataEditField name="tcpPort" class="long" cardinality="1..1" />
+      <DataEditField name="description" class="String" cardinality="1..1" />
+      <DataEditField name="beepOnOpen" class="boolean" cardinality="1..1" />
+      <DataEditField name="beepLongOpen" class="boolean" cardinality="1..1" />
+    </DataEditFieldList>
+  </DataObjectDefinition>
+  
+</DaoEditMappingList>

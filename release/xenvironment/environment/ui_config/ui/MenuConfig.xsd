@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="icon">
+        <xs:complexType>
+            <xs:attribute name="name" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="path" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="icons">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="icon" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Menu">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="icons"/>
+                <xs:element ref="MenuKey"/>
+                <xs:element ref="MenuKeys"/>
+                <xs:element ref="MenuBar"/>
+            </xs:sequence>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="xsi:noNamespaceSchemaLocation" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="Debug.Outline" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuBar">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="MenuBarColumns"/>
+                <xs:element ref="MenuBarRows"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuBarColumn">
+        <xs:complexType>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required" fixed="double"/>
+            <xs:attribute name="value" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:NMTOKEN">
+                        <xs:enumeration value="-1.0"/>
+                        <xs:enumeration value="10.0"/>
+                        <xs:enumeration value="5.0"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuBarColumns">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="MenuBarColumn" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuBarRow">
+        <xs:complexType>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="value" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuBarRows">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="MenuBarRow" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuKey">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="MenuKeyColumns" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="Run.Argument" type="xs:string" use="optional"/>
+            <xs:attribute name="name" type="xs:NMTOKEN" use="optional"/>
+            <xs:attribute name="keyLabel" type="xs:string" use="optional"/>
+            <xs:attribute name="Run" type="xs:string" use="optional"/>
+            <xs:attribute name="keyFunction" type="xs:NMTOKEN" use="optional"/>
+            <xs:attribute name="ActionCommand" type="xs:NMTOKEN" use="optional"/>
+            <xs:attribute name="keyEventCode" type="xs:ID" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuKeyColumn">
+        <xs:complexType>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="value" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuKeyColumns">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element ref="MenuKeyColumn"/>
+                <xs:element ref="MenuKeyRow"/>
+            </xs:choice>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuKeyRow">
+        <xs:complexType>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="value" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="MenuKeys">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="MenuKey" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

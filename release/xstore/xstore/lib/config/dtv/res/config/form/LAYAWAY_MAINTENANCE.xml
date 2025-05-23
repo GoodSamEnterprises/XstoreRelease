@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed Mar 10 13:58:43 EST 2004 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">LAYAWAY_MAINTENANCE</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">0.75, 0.25</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCommonMaintFormHeaderPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter>
+        <param_name dtype="String">setOpaque</param_name>
+        <param_value dtype="Boolean">true</param_value>
+      </ComponentParameter>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+0,0,1,0</param_value>
+      </ComponentParameter>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setGaps">
+           <param_value dtype="InsetsRef">_gapsCommonMaintHeaderPanel</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">custAccountId</Resource>
+          <Value dtype="AppendingFormattable">
+            <Value dtype="Translatable">_layaway</Value>
+          </Value>
+          <Font fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabel</Type>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <ComponentParameter name="setIcon">
+            <param_value dtype="IconRef">_imageTransactionHeaderDividerIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">customerName</Resource>
+          <FormatterType dtype="String">BasicName</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabel</Type>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <ComponentParameter name="setIcon">
+            <param_value dtype="IconRef">_imageLineDividerIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">custAccountId</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabel</Type>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <ComponentParameter name="setIcon">
+            <param_value dtype="IconRef">_imageLineDividerIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>  
+        <FormViewPanel>
+          <Layout dtype="Class">java.awt.BorderLayout</Layout>
+          <FormViewPanel>
+            <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+            <LayoutLocation dtype="String">North</LayoutLocation>
+            <FormViewCell>
+              <Type dtype="String">FormLabelEmphasized</Type>
+              <TextKey dtype="Translatable">_commonAcctDisplaySetupDate</TextKey>
+            </FormViewCell>
+            <FormViewCell>
+              <Type dtype="String">FormLabelEmphasized</Type>
+              <Resource dtype="String">accountSetupDate</Resource>
+              <FormatterType dtype="String">DateMedium</FormatterType>
+            </FormViewCell>
+         </FormViewPanel>
+         <FormViewPanel>
+           <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+           <LayoutLocation dtype="String">South</LayoutLocation>
+           <FormViewCell>
+             <Type dtype="String">FormLabelEmphasized</Type>
+             <TextKey dtype="Translatable">_commonLastActivityDate</TextKey>
+           </FormViewCell>
+           <FormViewCell>
+             <Type dtype="String">FormLabelEmphasized</Type>
+             <Resource dtype="String">lastActivityDate</Resource>
+             <FormatterType dtype="String">DateMedium</FormatterType>
+           </FormViewCell>
+         </FormViewPanel>
+        </FormViewPanel>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">accountStatusDesc</Resource>
+        <Font fontSize="+4" />
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <TextKey dtype="Translatable">_layawayDetailKey</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">0.0341, 0.35, 0.01, -2.0, 0.02, 0.30, -2.0, 0.02, 0.2318, 0.0341</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">0.03, 0.435, 0.01, 0.505, 0.03, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter>
+        <param_name dtype="String">setBackground</param_name>
+        <param_value dtype="ColorRef">_colorLayawayBackground</param_value>
+      </ComponentParameter>
+      <ColorGroup bgColorRef="_colorLayawayBackground"/>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">1, 0, 1, 2, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">0.09, 0.10, 0.60, 0.20, 0.0978</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">0.05, 0.16, -2.0, 0.10, 0.29, 0.10, 0.10, 0.10, 0.10</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+            <ComponentParameter name="setIcon" >
+              <param_value dtype="IconRef">_imagePersonIcon</param_value>
+            </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 1, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonCustomerInfo</TextKey>
+          <Font fontSize="+2" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 2, 3, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormIcon</Type>
+          <TextKey dtype="String">_imageBlueSeparator2</TextKey>
+        </FormViewCell>
+       <FormViewCell>
+          <LayoutLocation dtype="String">0, 3, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonDetailSoldToColon</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 3, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">customerName</Resource>
+          <FormatterType dtype="String">BasicName</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 4, 2, 2, F, T</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">customerAddress</Resource>
+          <FormatterType dtype="String">LabelAddress</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 5, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonDetailCompanyColon</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 5, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">organizationName</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 6, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonDetailEmailColon</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 6, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">emailAddress</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 7, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonDetailPhoneColon</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 7, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">telephone1</Resource>
+          <FormatterType dtype="String">Phone</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 8, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">telephone2</Resource>
+          <FormatterType dtype="String">Phone</FormatterType>
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormIcon</Type>
+        <TextKey dtype="Literal">classpath:graphics/vertical-dividing-line.png</TextKey>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+      </FormViewCell>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">5, 0, 1, 2, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">0.1007, 0.2014, 0.5, 0.1978</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">0.05, 0.16, -2.0, 0.10, 0.10, 0.10, 0.10, 0.10</param_value>
+          </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+            <ComponentParameter name="setIcon" >
+              <param_value dtype="IconRef">_imagePlusIcon</param_value>
+            </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 1, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_layawayTotals</TextKey>
+          <Font fontSize="+2" />
+        </FormViewCell>
+         <FormViewCell>
+          <LayoutLocation dtype="String">0, 2, 3, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormIcon</Type>
+          <TextKey dtype="String">_imageBlueSeparator2</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 3, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonOrderDetailSubtotalColon</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 3, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">subtotal</Resource>
+          <FormatterType dtype="String">Money</FormatterType>
+        </FormViewCell>
+       <FormViewCell>
+          <LayoutLocation dtype="String">0, 4, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonFeesColon</TextKey>
+       </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 4, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">feeTotal</Resource>
+          <FormatterType dtype="String">Money</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 5, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonTaxColon</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 5, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">taxTotal</Resource>
+          <FormatterType dtype="String">Money</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 6, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonTotalColon</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 6, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">accountTotal</Resource>
+          <FormatterType dtype="String">Money</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 7, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_layawayAcctDisplayBalanceDue</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 7, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">accountBalance</Resource>
+          <FormatterType dtype="String">Money</FormatterType>
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="string">1, 3, 8, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormList</Type>
+        <Resource dtype="String">accountItems</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">LAYAWAY_ITEM</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">LAYAWAY_ITEM</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">LAYAWAY_ACTIVITY</FormTabKey>
+      <TabOrder dtype="Integer">20</TabOrder>
+      <TextKey dtype="Translatable">_layawayActivityKey</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormList</Type>
+        <Resource dtype="String">accountActivities</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <RuleSet dtype="String">CUSTOMER_ACCOUNT_ACTIVITY</RuleSet>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">CUSTOMER_ACCOUNT_ACTIVITY</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">LAYAWAY_COMMENTS</FormTabKey>
+      <ActionSubGroupKey dtype="String">COMMENTS_SUB_GROUP</ActionSubGroupKey>
+      <TabOrder dtype="Integer">30</TabOrder>
+      <TextKey dtype="Translatable">_layawayCommentsKey</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormList</Type>
+        <Resource dtype="String">notes</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">LAYAWAY_COMMENT</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">LAYAWAY_COMMENT</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>  
+        
+    <ActionGroup key="DEFAULT">
+      <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+      <Action chainKey="LAYAWAY_MAINT_CANCEL_ORDER" chainType="STACK" text="_layawayCancel" keyStroke="F5" privilege="LAYAWAY_CANCEL">
+        <VisibilityRule class="dtv.pos.register.layaway.validation.LayawayStatusVisibilityRule">
+          <Parameter name="status" value="NEW" />
+          <Parameter name="status" value="OPEN" />
+        </VisibilityRule>
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="DEFAULT" subKey="COMMENTS_SUB_GROUP">
+      <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+      <Action chainKey="LAYAWAY_MAINT_CANCEL_ORDER" chainType="STACK" text="_layawayCancel" keyStroke="F5" privilege="LAYAWAY_CANCEL">
+        <VisibilityRule class="dtv.pos.register.layaway.validation.LayawayStatusVisibilityRule">
+          <Parameter name="status" value="NEW" />
+          <Parameter name="status" value="OPEN" />
+        </VisibilityRule>
+      </Action>
+      <Action chainKey="LAYAWAY_MAINTENANCE_ADD_COMMENT" chainType="STACK" text="_timecardMenu5" keyStroke="F2" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

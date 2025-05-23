@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri Jan 07 08:48:34 EST 2005 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">HOME_OFFICE_CHECK_INFO</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+    <Instructions dtype="Translatable">_homeOfficeCheckInfoTitle</Instructions>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, FILL, 0.2, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -1.0, 0.2, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, 15.0, PREFERRED, PREFERRED, PREFERRED, PREFERRED, 15.0, PREFERRED, PREFERRED-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, 15.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_sendSaleSendTo</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">fullName</Resource>
+        <DataField ref="NameFull" />
+        <Required dtype="Boolean">true</Required>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 1, 3, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formFullNameLabel</TextKey>
+        <Font fontStyle="ITALIC" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 3, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_addressLabel</TextKey>
+        <Font fontStyle="BOLD" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 3, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">address1</Resource>
+        <DataField ref="Address" />
+        <Required dtype="Boolean">true</Required>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 4, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">address2</Resource>
+        <DataField ref="Address" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">postalCode</Resource>
+        <DataField ref="PostalCode" />
+        <Required dtype="Boolean">true</Required>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 5, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">state</Resource>
+        <Required dtype="Boolean">true</Required>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 6, 1, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formPostalCode</TextKey>
+        <Font fontStyle="ITALIC" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 6, 2, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formState</TextKey>
+        <Font fontStyle="ITALIC" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 7, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">city</Resource>
+        <DataField ref="Address" />
+        <Required dtype="Boolean">true</Required>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 7, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">apartment</Resource>
+        <DataField ref="AddressShort" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 8, 2, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formCity</TextKey>
+        <Font fontStyle="ITALIC" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 8, 1, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formApt</TextKey>
+        <Font fontStyle="ITALIC" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 10, 1, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_countyLabel</TextKey>
+        <Font fontStyle="ITALIC" />
+        <ResourceLink dtype="String">county</ResourceLink>
+        <VisibilityGroup dtype="String">countyVisibility</VisibilityGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 9, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">county</Resource>
+        <Required dtype="Boolean">false</Required>
+        <DataField ref="Address" />
+        <VisibilityGroup dtype="String">countyVisibility</VisibilityGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 10, 2, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_neighborhoodLabel</TextKey>
+        <Font fontStyle="ITALIC" />
+        <ResourceLink dtype="String">neighborhood</ResourceLink>
+        <VisibilityGroup dtype="String">neighborhoodVisibility</VisibilityGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 9, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">neighborhood</Resource>
+        <Required dtype="Boolean">false</Required>
+        <DataField ref="Address" />
+        <VisibilityGroup dtype="String">neighborhoodVisibility</VisibilityGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 11, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_countryLabel</TextKey>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 11, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">country</Resource>
+        <Required dtype="Boolean">true</Required>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 13, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_formLabelDefault</TextKey>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ADDRESS_LOOKUP" chainType="STACK"/>     
+      <Action ref="CHANGE_COUNTRY" />
+      <Action ref="ACCEPT_SAVE" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

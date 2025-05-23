@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreFlightChecks dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PreFlightCheckConfig.xsd">
+  
+  <!-- ##### REQUIRED STORE INFORMATION ##### -->
+
+  <PreFlightCheck name="COUNTRYPACK.BR.LOC::STATE" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.preflight.LocDataStatePreFlightCheck</CheckClass>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.BR.LOC_PROP::CNPJ" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.br.pos.appmanagement.preflight.check.LocPropertyCnpjPreFlightCheck</CheckClass>
+    <Parameter name="CheckProperty" value="BR::CNPJ" />
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.BR.LOC_PROP::STATE_TAX" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.br.pos.appmanagement.preflight.check.LocPropertyStateTaxIdPreFlightCheck</CheckClass>
+    <Parameter name="CheckProperty" value="BR::IE" />
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.BR.LOC_PROP::CORP_NAME" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.preflight.LocPropertyPreFlightCheck</CheckClass>
+    <Parameter name="CheckProperty" value="BR::CORP_NAME" />
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.BR.LOC_PROP::COUNTRY_NAME" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.preflight.LocPropertyPreFlightCheck</CheckClass>
+    <Parameter name="CheckProperty" value="BR::COUNTRY_NAME" />
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.BR.LOC_PROP::COUNTRY_CODE" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.preflight.LocPropertyPreFlightCheck</CheckClass>
+    <Parameter name="CheckProperty" value="BR::COUNTRY_CODE" />
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="COUNTRYPACK.BR.LOC_PROP::CUF" enabled="true" type="CORE" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.preflight.LocPropertyPreFlightCheck</CheckClass>
+    <Parameter name="CheckProperty" value="BR::CUF" />
+    <Parameter name="PropertyType" value="BIGDECIMAL" />    
+  </PreFlightCheck>
+  
+  <!-- ############################ -->
+  
+  <PreFlightCheck name="COUNTRYPACK.BR.NFE_QUEUE_SEQ" level="ERROR" type="CORE" enabled="true">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.BR.PREFLIGHT_NFE_QUEUE_SEQ" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.BR.NFE_QUEUE_SEQ" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.br.preflight.nfe.queue.seq.error</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.BR.NFE_SEQ_PROD" level="ERROR" type="CORE">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.br.pos.appmanagement.preflight.check.NfeSequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.BR.PREFLIGHT_NFE_SEQ_PROD" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.BR.NFE_PROD" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.br.preflight.nfe.production.seq.error</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="COUNTRYPACK.BR.NFE_SEQ_TEST" level="ERROR" type="CORE">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.br.pos.appmanagement.preflight.check.NfeSequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.BR.PREFLIGHT_NFE_SEQ_TEST" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.BR.NFE_TEST" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.br.preflight.nfe.test.seq.error</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="COUNTRYPACK.BR.NFCE_SEQ_PROD" level="ERROR" type="CORE">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.br.pos.appmanagement.preflight.check.NfceSequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.BR.PREFLIGHT_NFCE_SEQ_PROD" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.BR.NFCE_PROD" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.br.preflight.nfe.production.seq.error</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <PreFlightCheck name="COUNTRYPACK.BR.NFCE_SEQ_TEST" level="ERROR" type="CORE">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.br.pos.appmanagement.preflight.check.NfceSequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.BR.PREFLIGHT_NFCE_SEQ_TEST" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.BR.NFCE_TEST" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.br.preflight.nfe.test.seq.error</param_value>
+    </Parameter>
+  </PreFlightCheck>
+</PreFlightChecks>

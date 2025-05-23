@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="retail"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+  default-init-method="init">
+  
+  <bean id="contextConfigHelper" class="dtv.pos.framework.ui.context.ContextConfigHelper" init-method="initialize" />
+
+  <bean id="uiConfigHelper" class="dtv.pos.framework.ui.UIConfigHelper" init-method="initialize" />
+
+  <bean id="customerUIHelper" class="dtv.pos.customer.CustomerUIHelper" lazy-init="true" />
+
+  <bean id="componentPropertySetConfigHelper" class="dtv.pos.framework.ui.context.ComponentPropertySetConfigHelper" init-method="initialize" />
+
+  <bean id="componentGroupConfigHelper" class="dtv.pos.framework.ui.context.ComponentGroupConfigHelper" init-method="initialize" />
+
+  <bean id="uiResponsivenessMgr" class="dtv.pos.ui.UIResponsivenessMgr" />
+
+  <bean id="infoTabHelper" class="dtv.pos.framework.ui.model.InfoTabHelper" lazy-init="true" />
+
+  <bean id="ccaUiHelper" class="dtv.pos.register.cca.ui.ConfigurableCustomerAccountUIHelper" lazy-init="true" />
+
+  <bean id="menuFactory" class="dtv.pos.framework.ui.menu.MenuFactory">
+    <constructor-arg>
+      <bean class="com.micros.xstore.config.impl.MenuConfigMgr">
+        <constructor-arg ref="menuItemCascader" />
+      </bean>
+    </constructor-arg>
+    <property name="menuCascader" ref="menuItemCascader" />
+  </bean>
+
+  <bean id="menuConfigReloader" class="dtv.pos.framework.ui.menu.MenuConfigReloader" />
+
+  <bean id="opReqHandlerFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pos.iframework.op.req.IOpReqHandlerFactory" />
+    <property name="serviceMappings">
+      <props>
+        <prop key="DEFAULT">defaultOpRequestHandler</prop>
+        <prop key="HELP">helpOpRequestHandler</prop>
+        <prop key="INFO_MESSAGE">infoMessageOpRequestHandler</prop>
+        <prop key="PROMPT_List">listPromptOpRequestHandler</prop>
+        <prop key="PROMPT_Text">textPromptOpRequestHandler</prop>
+        <prop key="PROMPT_LongText">longTextPromptOpRequestHandler</prop>
+        <prop key="PROMPT_Notify">notifyPromptOpRequestHandler</prop>
+        <prop key="PROMPT_NotifyCancel">notifyPromptOpRequestHandler</prop>
+        <prop key="PROMPT_NotifyOkCancel">notifyPromptOpRequestHandler</prop>
+        <prop key="PROMPT_NotifyYesNo">notifyPromptOpRequestHandler</prop>
+        <prop key="PROMPT_NotifyYesCancel">notifyPromptOpRequestHandler</prop>
+        <prop key="PROMPT_NotifyYesNoCancel">notifyPromptOpRequestHandler</prop>
+        <prop key="PROMPT_NotifyWithNoActions">notifyPromptOpRequestHandler</prop>
+        <prop key="PROMPT_Viewport">viewportPromptOpRequestHandler</prop>
+        <prop key="PROMPT_Menu">menuPromptOpRequestHandler</prop>
+        <prop key="RUN_CHAIN">runChainOpRequestHandler</prop>
+        <prop key="RUN_REPORT">runReportOpRequestHandler</prop>
+        <prop key="SECURITY">securityOpRequestHandler</prop>
+        <prop key="CHANGE_FORM">formOpRequestHandler</prop>
+        <prop key="SHOW_FORM">formOpRequestHandler</prop>
+        <prop key="MENU">menuOpRequestHandler</prop>
+      </props>
+    </property>
+  </bean>
+   
+  <bean id="defaultOpRequestHandler" class="dtv.pos.framework.op.req.DefaultReqHandler" scope="prototype" />
+  <bean id="helpOpRequestHandler" class="dtv.pos.framework.op.req.HelpReqHandler" scope="prototype" />
+  <bean id="infoMessageOpRequestHandler" class="dtv.pos.framework.op.req.InfoMessageReqHandler" scope="prototype" />
+  <bean id="listPromptOpRequestHandler" class="dtv.pos.framework.op.req.ListPromptReqHandler" scope="prototype" />
+  <bean id="textPromptOpRequestHandler" class="dtv.pos.framework.op.req.TextPromptReqHandler" scope="prototype" />
+  <bean id="longTextPromptOpRequestHandler" class="dtv.pos.framework.op.req.LongTextPromptReqHandler" scope="prototype" />
+  <bean id="notifyPromptOpRequestHandler" class="dtv.pos.framework.op.req.NotifyPromptReqHandler" scope="prototype" />
+  <bean id="viewportPromptOpRequestHandler" class="dtv.pos.framework.op.req.ViewportPromptReqHandler" scope="prototype" />
+  <bean id="runChainOpRequestHandler" class="dtv.pos.framework.op.req.RunChainReqHandler" scope="prototype" />
+  <bean id="runReportOpRequestHandler" class="dtv.pos.framework.op.req.ReportRequestHandler" scope="prototype" />
+  <bean id="securityOpRequestHandler" class="dtv.pos.framework.op.req.SecurityReqHandler" scope="prototype" />
+  <bean id="formOpRequestHandler" class="dtv.pos.framework.op.req.FormReqHandler" scope="prototype" />
+  <bean id="menuOpRequestHandler" class="dtv.pos.framework.op.req.MenuReqHandler" scope="prototype" />
+  <bean id="menuPromptOpRequestHandler" class="dtv.pos.framework.op.req.MenuPromptReqHandler" scope="prototype" />
+  
+  <bean id="infoMetaDataManager" class="dtv.pos.framework.ui.model.InfoMetaDataManager" lazy-init="true">
+    <constructor-arg>
+      <list value-type="java.lang.String">
+        <value>TABBED_PANE_DEFAULT</value>
+        <value>TABBED_PANE_TRANSACTION</value>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="tenderIconLookup" class="dtv.pos.tender.TenderIconKeyLookup">
+    <property name="mappings">
+      <props>
+        <prop key="FOREIGN_CURRENCY">_imageTenderForeignCurrency</prop>
+        <prop key="CURRENCY">_imageTenderCash</prop>
+        <prop key="STORE_CREDIT">_imageTenderStoreCredit</prop>
+        <prop key="GIFT_CARD">_imageTenderGiftCard</prop>
+        <prop key="XPAY_GIFT_CARD">_imageTenderGiftCard</prop>
+        <prop key="CREDIT_CARD">_imageTenderCredit</prop>
+        <prop key="ACCOUNT_CREDIT">_imageTenderIssueStoreCreditCard</prop>
+        <prop key="GIFT_CERTIFICATE">_imageTenderGiftCert</prop>
+        <prop key="MERCHANDISE_CREDIT_CARD">_imageTenderStoreCreditCard</prop>
+        <prop key="TRAVELERS_CHECK">_imageTenderTravelersCheck</prop>
+        <prop key="COUPON">_imageTenderCoupon</prop>
+      </props>
+    </property>
+  </bean>
+  
+  <bean id="listViewBuilderHelper" class="dtv.cheetah.operations.req.ListViewBuilderHelper">
+    <property name="fontSizeOffset" value="-2" />
+  </bean>
+  
+  <bean id="htmlContentManager" class="dtv.pos.html.HtmlContentManager" />
+
+  <bean id="employeeMessageHtmlContentInfo" class="dtv.pos.html.ContentInfo">
+    <constructor-arg value="EMPLOYEE_MESSAGES" />
+    <property name="dynamic" value="true" />
+  </bean>
+        
+  <bean id="salesGoalHtmlContentInfo" class="dtv.pos.html.ContentInfo">
+    <constructor-arg value="SALES_GOAL" />
+    <property name="dynamic" value="true" />
+  </bean>
+  
+  <bean id="associateTasksHtmlContentInfo" class="dtv.pos.html.ContentInfo">
+    <constructor-arg value="ASSOCIATE_TASKS" />
+    <property name="refreshInterval" value="#{taskHelper.getTasksTabRefresh()}" />
+  </bean>
+  
+  <bean id="transactionCouponsHtmlContentInfo" class="dtv.pos.html.ContentInfo">
+    <constructor-arg value="TRANSACTION_COUPONS" />
+    <property name="transactionBased" value="true" />
+    <property name="dynamic" value="true" />
+  </bean>
+  
+  <bean id="messageAreaHtmlContentInfo" class="dtv.pos.html.ContentInfo">
+    <constructor-arg value="MESSAGE_AREA" />
+    <property name="dynamic" value="true" />
+  </bean>
+  
+  <bean id="airsideMessagesHtmlContentInfo" class="dtv.pos.html.ContentInfo">
+    <constructor-arg value="AIRSIDE_MESSAGES" />
+    <property name="dynamic" value="true" />
+  </bean>
+    
+  <bean id="employeeScheduleHtmlContentInfo" class="dtv.pos.html.ContentInfo">
+    <constructor-arg value="EMPLOYEE_SCHEDULE" />
+    <property name="dynamic" value="true" />
+  </bean>
+   
+  <bean id="activityStreamHtmlContentInfo" class="dtv.pos.html.ContentInfo">
+    <constructor-arg value="ACTIVITY_STREAM" />
+    <property name="dynamic" value="true" />
+  </bean>  
+    
+  <bean id="htmlContentBuilderLocator" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pos.html.ContentBuilderLocator" />
+    <property name="serviceMappings">
+      <props>
+        <prop key="EMPLOYEE_MESSAGES">employeeMessageContentBuilder</prop>
+        <prop key="SALES_GOAL">salesGoalContentBuilder</prop>
+        <prop key="ASSOCIATE_TASKS">employeeTaskContentBuilder</prop>
+        <prop key="TRANSACTION_COUPONS">transactionCouponContentBuilder</prop>
+        <prop key="MESSAGE_AREA">messageAreaContentBuilder</prop>
+        <prop key="AIRSIDE_MESSAGES">airsideMessageAreaContentBuilder</prop>
+        <prop key="ORDER_WORKLIST">orderWorklistContentBuilder</prop>
+        <prop key="ASSOCIATED_ITEMS">associatedItemsContentBuilder</prop>
+        <prop key="EMPLOYEE_SCHEDULE">employeeScheduleContentBuilder</prop>
+        <prop key="ACTIVITY_STREAM">activityStreamContentBuilder</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="employeeMessageContentBuilder" class="dtv.pos.html.EmployeeMessageContentBuilder">
+    <property name="viewElementType" value="EMPLOYEE_MESSAGE_SUMMARY" />
+  </bean>
+  
+  <bean id="employeeScheduleContentBuilder" class="dtv.pos.html.EmployeeScheduleContentBuilder" >
+    <property name="viewElementType" value="TAB_EMPLOYEE_SCHEDULE" />
+  </bean>
+  
+  <bean id="activityStreamContentBuilder" class="dtv.pos.html.ActivityStreamContentBuilder" scope="transaction">
+    <property name="viewElementType" value="CUSTOMER_ACTIVITY_STREAM" />
+  </bean>
+  
+  <bean id="salesGoalContentBuilder" class="dtv.pos.html.SalesGoalContentBuilder">
+    <property name="viewElementType" value="SALES_GOAL_SUMMARY" />
+  </bean>
+  
+  <bean id="employeeTaskContentBuilder" class="dtv.pos.html.TaskContentBuilder">
+    <property name="viewElementType" value="ASSOCIATE_TASKS_LIST_TAB" />
+  </bean>
+  
+  <bean id="transactionCouponContentBuilder" class="dtv.pos.html.TransactionCouponContentBuilder" scope="transaction">
+    <property name="viewElementType" value="TRANSACTION_COUPONS_TAB" />
+  </bean>
+  
+  <bean id="messageAreaContentBuilder" class="dtv.pos.html.MessageAreaContentBuilder" scope="prototype" />
+  
+  <bean id="orderWorklistContentBuilder" class="dtv.pos.html.OrderWorklistContentBuilder" scope="prototype">
+    <property name="viewElementType" value="ORDER_WORKLIST_RESULT" />
+  </bean>
+  
+  <bean id="airsideMessageAreaContentBuilder" class="dtv.pos.html.AirsideMessageContentBuilder" scope="prototype" />
+  
+  <bean id="infoChangeEventDescriptor" class="dtv.pos.framework.event.InfoChangeDescriptor" />
+    
+  <bean id="embeddedBrowserProvider" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pos.browser.IBrowserProvider" />
+    <property name="serviceMappings">
+      <props>
+        <prop key="FORM_PRIMARY">fullScreenBrowserManager</prop>
+        <prop key="URL_NAVIGATOR">tabViewBrowserManager</prop>
+        <prop key="CUST_BROWSER">customerBrowserManager</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="tabViewBrowserManager" class="dtv.pos.browser.DjBrowserManager" />
+  <bean id="fullScreenBrowserManager" class="dtv.pos.browser.DjBrowserManager" />
+  <bean id="customerBrowserManager" class="dtv.pos.browser.DjBrowserManager" />
+  
+  <bean id="xstViewComponentFactory" class="dtv.pos.framework.ui.component.XstViewComponentFactory" factory-method="getInstance" />
+  
+  <bean id="applicationFrame" factory-bean="xstViewComponentFactory" factory-method="createAppFrame" lazy-init="true">
+    <constructor-arg value="#{systemProperties['dtv.pos.ui.useFrame']}" />
+  </bean>
+  
+  <bean id="uiBusyState" class="dtv.pos.framework.XstoreBusyState">
+    <constructor-arg ref="applicationFrame" />
+  </bean>
+
+  <bean id="promptConfigHelper" class="dtv.pos.framework.ui.config.PromptConfigHelper" />  
+  <bean id="formLayoutConfigHelper" class="dtv.pos.framework.form.config.FormLayoutConfigHelper" />
+  <bean id="formViewConfigHelper" class="dtv.pos.framework.form.config.FormViewConfigHelper" init-method="initialize" />
+  <bean id="formConfigReloader" class="dtv.pos.framework.ui.config.FormConfigReloader" />
+  
+  <bean id="visibilityRuleLocator" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.pos.iframework.form.IVisibilityRuleLocator" />
+  </bean>
+  
+  <bean id="countyVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="true" />
+  </bean>
+  
+  <bean id="neighborhoodVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="true" />
+  </bean>
+  
+  <bean id="apartmentVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="true" />
+  </bean>
+  
+  <bean id="addressListVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="true" />
+  </bean>
+  
+  <bean id="selectedAddressVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="false" />
+  </bean>
+  
+  <bean id="merchLevel2Visibility" class="dtv.pos.framework.form.config.MerchLevelIsEnabled">
+    <constructor-arg value="2" />
+  </bean>
+  
+  <bean id="merchLevel3Visibility" class="dtv.pos.framework.form.config.MerchLevelIsEnabled">
+    <constructor-arg value="3" />
+  </bean>
+  
+  <bean id="merchLevel4Visibility" class="dtv.pos.framework.form.config.MerchLevelIsEnabled">
+    <constructor-arg value="4" />
+  </bean>
+  
+  <bean id="rollingCloseVisibility" class="dtv.pos.till.rollingclose.RollingCloseFormComponentVisibilityRule" />
+  
+  <bean id="nonRollingCloseVisibility" class="dtv.pos.till.rollingclose.NonRollingCloseFormComponentVisibilityRule" />
+  
+  <bean id="itemURLInfoVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="false" />
+  </bean>
+  
+  <bean id="journalFiscalNumberVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="false" />
+  </bean>
+  
+  <!-- tab visibility rules -->
+  
+  <bean id="viewEditCustGroupsAccCheck" class="dtv.pos.framework.action.access.CurrentUserAccCheck" scope="prototype">
+    <property name="Privilege" value="VIEW_AND_EDIT_CUSTOMER_GROUPS" />
+  </bean>
+  
+  <bean id="multipleAddressCheck" class="dtv.pos.customer.MultipleAddressesEnabledVisibilityRule" scope="prototype" />  
+  <bean id="customerHasHouseAcct" class="dtv.pos.shared.visibilityrules.CustomerHasHouseAccountVisibilityRule" scope="prototype" />  
+  <bean id="customerWishListEnabledRule" class="dtv.pos.shared.visibilityrules.CustomerWishListEnabledVisibilityRule" scope="prototype" />
+  <bean id="itemhasDimensionsRule" class="dtv.pos.shared.visibilityrules.ItemHasDimensionsVisibilityRule" scope="prototype" />
+  
+  <!-- tab visibility rules -->
+  
+  <bean id="systemActions" class="dtv.pos.common.ActionKeyProvider">
+    <property name="touchOpenStore" value="TOUCH::OPEN_STORE" />
+    <property name="touchOpenRegister" value="TOUCH::OPEN_REGISTER" />
+    <property name="touchClockInOut" value="TOUCH::CLOCK_IN_OUT" />
+    <property name="touchViewDashboard" value="TOUCH::VIEW_DASHBOARD" />
+    <property name="touchViewDashboardNoLogin" value="TOUCH::VIEW_DASHBOARD_NO_LOGIN" />
+    <property name="touchBringEnvironmentToFront" value="TOUCH::SHOW_ENVIRONMENT" />
+  </bean>
+
+  <bean id="touchHelper" class="dtv.ui.touch.TouchHelper" />
+  <bean id="swipeFactory" class="dtv.ui.touch.SwipeFactory" />
+  <bean id="glassPaneSwipeSource" class="dtv.ui.touch.GlassPaneSwipeSource" />
+  
+  <bean id="avsAddressLineVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+  </bean>
+    
+  <bean id="avsAddressListVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="true" />
+  </bean>
+  
+  <bean id="avsSelectedAddressVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+      <constructor-arg value="false" />
+  </bean>
+  
+  <bean id="showOnlyInDesktopRule" class="dtv.pos.framework.action.access.HideForFormFactorRule">
+    <property name="formFactors">
+      <list>
+        <value>handheld</value>
+        <value>tablet</value>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="hideOnlyInHandHeldRule" class="dtv.pos.framework.action.access.HideForFormFactorRule">
+    <property name="formFactors">
+      <list>
+        <value>handheld</value>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="hideOnlyInHandHeldCreditCardRule" class="dtv.pos.framework.action.access.HideForFormFactorRule">
+    <property name="formFactors">
+      <list>
+        <value>handheld</value>
+      </list>
+    </property>
+  </bean>
+</beans>

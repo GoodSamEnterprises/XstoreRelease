@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+  <!-- desired version => converter from current to desired version -->
+  <util:map id="dao.converters" map-class="java.util.HashMap" key-type="java.lang.String"
+    value-type="com.micros_retail.xadmin.util.IDataAccessObjectConverter">
+    <entry key="16.0" value-ref="dao.converters.current.v16" />
+    <entry key="15.0" value-ref="dao.converters.current.v15" />
+    <entry key="7.1" value-ref="dao.converters.current.v71" />
+    <entry key="7.0" value-ref="dao.converters.current.v70" />
+    <entry key="6.5" value-ref="dao.converters.current.v65" />
+  </util:map>
+
+  <bean id="dao.converters.dozer" class="org.dozer.DozerBeanMapper">
+    <property name="mappingFiles">
+      <list>
+        <value>dozerDAOBeanMapping.xml</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="dao.converters.abstract" abstract="true" init-method="init">
+    <property name="dozer" ref="dao.converters.dozer" />
+    <property name="affectedClasses">
+      <list value-type="java.lang.String">
+      </list>
+    </property>
+  </bean>
+
+  <bean id="dao.converters.current.v16" parent="dao.converters.abstract" class="com.micros_retail.xadmin.util.Dao17to16Converter">
+  </bean>
+
+  <bean id="dao.converters.current.v15" parent="dao.converters.abstract" class="com.micros_retail.xadmin.util.Dao16to15Converter">
+    <property name="parent" ref="dao.converters.current.v16" />
+    <property name="affectedClasses">
+      <list value-type="java.lang.String">
+        <value>dtv.xst.dao.itm.impl.ItemOptionsDAO</value>
+        <value>dtv.xst.dao.loc.impl.RetailLocationDAO</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="dao.converters.current.v71" parent="dao.converters.abstract" class="com.micros_retail.xadmin.util.Dao15to71Converter">
+    <property name="parent" ref="dao.converters.current.v15" />
+    <property name="affectedClasses">
+      <list value-type="java.lang.String">
+        <value>dtv.xst.dao.itm.impl.ItemDAO</value>
+        <value>dtv.xst.dao.itm.impl.ItemOptionsDAO</value>
+        <value>dtv.xst.dao.itm.impl.ItemPricesDAO</value>
+        <value>dtv.xst.dao.itm.impl.NonPhysicalItemDAO</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="dao.converters.current.v70" parent="dao.converters.abstract" class="com.micros_retail.xadmin.util.Dao71to70Converter">
+    <property name="parent" ref="dao.converters.current.v71" />
+    <property name="affectedClasses">
+      <list value-type="java.lang.String">
+        <value>dtv.xst.dao.hrs.impl.EmployeeTaskDAO</value>
+        <value>dtv.xst.dao.hrs.impl.EmployeeTaskNoteDAO</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="dao.converters.current.v65" parent="dao.converters.abstract" class="com.micros_retail.xadmin.util.Dao70to65Converter">
+    <property name="parent" ref="dao.converters.current.v70" />
+    <property name="affectedClasses">
+      <list value-type="java.lang.String">
+        <value>dtv.xst.dao.itm.impl.ItemDAO</value>
+      </list>
+    </property>
+  </bean>
+</beans>

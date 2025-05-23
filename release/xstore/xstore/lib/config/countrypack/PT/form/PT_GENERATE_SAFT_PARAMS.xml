@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed Feb 10 12:35:58 CET 2016 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING FormDesigner. ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet>
+  <FormView formKey="PT_GENERATE_SAFT_PARAMS" formLocation="POPUP_VIEW_PANEL" formLayout="LEFT_TO_RIGHT">
+    <FormViewPanel panelType="DETAIL" formTabKey="DEFAULT">
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--MINIMUM, 10.0, PREFERRED-->
+          <param_value dtype="DoubleArray">-3.0, 10.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, 10.0, PREFERRED, 10.0, PREFERRED, 10.0, PREFERRED, 10.0, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, 10.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="IntegerArray">0, 1, 0, 1</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell layoutLocation="0, 0, 1, 1, R, F" type="FormLabel" textKey="_countrypack.pt.saftReferenceYear">
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="2, 0, 1, 1, F, F" type="FormComboBox" resource="referenceYear">
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 2, 1, 1, R, F" type="FormLabel" textKey="_countrypack.pt.saftStartMonth">
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="2, 2, 1, 1, F, F" type="FormComboBox" resource="startMonth">
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 4, 1, 1, R, F" type="FormLabel" textKey="_countrypack.pt.saftEndMonth">
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="2, 4, 1, 1, F, F" type="FormComboBox" resource="endMonth">
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 6, 1, 1, R, F" type="FormLabel" textKey="_countrypack.pt.saftReferenceWorkstation">
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="2, 6, 1, 1, F, F" type="FormComboBox" resource="workstation">
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+5" />
+      </FormViewCell>      
+      <FormViewCell layoutLocation="0, 8, 1, 1, R, F" type="FormLabel" textKey="_countrypack.pt.saftProductsOption">
+        <Font fontStyle="BOLD" fontSize="+5" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="2, 8, 1, 1, F, F" type="FormYesNo" resource="productsOption">
+        <Required dtype="Boolean">true</Required>
+        <Font fontSize="+5" />
+      </FormViewCell>
+    </FormViewPanel>
+    <ActionGroup>
+      <Key dtype="String">DEFAULT</Key>
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" />
+    </ActionGroup>  
+  </FormView>
+</FormViewSet>

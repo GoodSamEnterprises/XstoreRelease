@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PersistenceManagerTypeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../dtv/res/config/PersistenceManagerConfig.xsd">
+  
+  <!-- ************************************************* -->
+  <!-- TEMPLATES -->
+  <!-- ************************************************* -->
+  <PersistenceManagerType name="RESERVED_MASTER">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Master" />
+      <PersistenceLocation dataSourceName="Master" />
+    </Online>
+    <Offline dtype="LocationGroup" />
+    <Training dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Training>
+  </PersistenceManagerType>
+  <PersistenceManagerType name="RESERVED_TRAINING">
+    <Online dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Online>
+    <Offline dtype="LocationGroup" />
+    <Training dtype="LocationGroup">
+      <LookupLocation dataSourceName="Training" />
+      <PersistenceLocation dataSourceName="Training" />
+    </Training>
+  </PersistenceManagerType>
+  <!-- ************************************************* -->
+  <!-- /TEMPLATES -->
+  <!-- ************************************************* -->
+</PersistenceManagerTypeSet>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InputTypeList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="InputConfig.xsd">
+  <InputType name="TAXFREE_QR_CODE">
+    <Event dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.fintrax.events.FintraxQrCodeScanEvent</Event>
+    <Type dtype="String">TAXFREE_QR_CODE</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule" />
+      <InputRule RuleType="RegExRule">
+        <!-- At least 5 | with data in between -->
+        <!-- start with 15 digits, | and then at least 4 fields separated by |  -->
+        <Parameter name="expression" value="(^\d{15})\|([^\|].*\|){4,}.*" />
+      </InputRule>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="QR CODE"/>
+      </InputRule>
+      <InputRule RuleType="LengthRangeRule">
+        <Parameter name="minimum" value="41"/>
+        <Parameter name="maximum" value="258"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+  <InputType name="FINTRAX_FORM_ID_SCAN">
+    <Event dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.events.TaxFreeFormIdScanEvent</Event>
+    <Type dtype="String">FINTRAX_FORM_ID</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule" />
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Interleaved 2 of 5" />
+      </InputRule>
+      <InputRule RuleType="RegExRule">
+        <Parameter name="expression" value="(\d{20})" />
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+  <ProcessingOrder>
+    <Entry name="TAXFREE_QR_CODE" order="1010" enabled="true" />
+    <Entry name="FINTRAX_FORM_ID_SCAN" order="1012" enabled="true" />
+  </ProcessingOrder>
+</InputTypeList>

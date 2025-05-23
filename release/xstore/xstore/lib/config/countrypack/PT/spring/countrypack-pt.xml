@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  default-init-method="init">
+
+  <context:annotation-config />
+
+  <!-- Fiscal types for Portugal -->
+  <util:constant id="PT_FISCAL_TYPE_SIMPLE_INVOICE"
+        static-field="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType.PT_FISCAL_TYPE_SIMPLE_INVOICE" />
+
+  <util:constant id="PT_FISCAL_TYPE_INVOICE"
+        static-field="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType.PT_FISCAL_TYPE_INVOICE" />
+
+  <util:constant id="PT_FISCAL_TYPE_CREDIT_NOTE"
+        static-field="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType.PT_FISCAL_TYPE_CREDIT_NOTE" />
+
+  <util:constant id="PT_FISCAL_TYPE_INVENTORY_SHIPPING"
+        static-field="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType.PT_FISCAL_TYPE_INVENTORY_SHIPPING" />
+
+  <!--Fiscal document types -->
+  <bean id="pt.fiscal.simple.standard" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="SIMPLE_INVOICE_STANDARD" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.simpleinvoice" />
+    <constructor-arg index="2" value="10" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_SIMPLE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.FATURASIMPLICADA" />
+    <constructor-arg index="6" value="FS" />
+    <constructor-arg index="7" value="ptSimpleInvoice" />
+  </bean>
+
+  <bean id="pt.fiscal.invoice.standard" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="INVOICE_STANDARD" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.invoice" />
+    <constructor-arg index="2" value="20" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.FATURA" />
+    <constructor-arg index="6" value="FT" />
+    <constructor-arg index="7" value="ptInvoice" />
+  </bean>
+
+  <bean id="pt.fiscal.creditnote.standard" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="CREDITNOTE_STANDARD" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.creditnote" />
+    <constructor-arg index="2" value="30" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_CREDIT_NOTE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.CREDIT_NOTE" />
+    <constructor-arg index="6" value="NC" />
+    <constructor-arg index="7" value="ptCreditNote" />
+  </bean>
+
+  <bean id="pt.fiscal.simple.recover" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="SIMPLE_INVOICE_RECOVERY" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.simpleinvoice" />
+    <constructor-arg index="2" value="40" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_SIMPLE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_RECOVER" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.RECOVERY.FATURASIMPLICADA" />
+    <constructor-arg index="6" value="FS" />
+    <constructor-arg index="7" value="ptSimpleInvoiceRec" />
+  </bean>
+
+  <bean id="pt.fiscal.invoice.recovery" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="INVOICE_RECOVERY" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.invoice" />
+    <constructor-arg index="2" value="50" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_RECOVER" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.RECOVERY.FATURA" />
+    <constructor-arg index="6" value="FT" />
+    <constructor-arg index="7" value="ptInvoiceRec" />
+  </bean>
+
+  <bean id="pt.fiscal.creditnote.recovery" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="CREDITNOTE_RECOVERY" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.creditnote" />
+    <constructor-arg index="2" value="60" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_CREDIT_NOTE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_RECOVER" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.RECOVERY.CREDIT_NOTE" />
+    <constructor-arg index="6" value="NC" />
+    <constructor-arg index="7" value="ptCreditNoteRec" />
+  </bean>
+
+  <bean id="pt.fiscal.simple.manual" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="SIMPLE_INVOICE_MANUAL" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.simpleinvoice" />
+    <constructor-arg index="2" value="70" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_SIMPLE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_MANUAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.MANUAL.FATURASIMPLICADA" />
+    <constructor-arg index="6" value="FS" />
+    <constructor-arg index="7" value="ptSimpleInvoiceMan" />
+  </bean>
+
+  <bean id="pt.fiscal.invoice.manual" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="INVOICE_MANUAL" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.invoice" />
+    <constructor-arg index="2" value="80" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_INVOICE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_MANUAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.MANUAL.FATURA" />
+    <constructor-arg index="6" value="FT" />
+    <constructor-arg index="7" value="ptInvoiceMan" />
+  </bean>
+
+  <bean id="pt.fiscal.creditnote.manual" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="CREDITNOTE_MANUAL" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.creditnote" />
+    <constructor-arg index="2" value="90" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_CREDIT_NOTE" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_MANUAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.MANUAL.CREDIT_NOTE" />
+    <constructor-arg index="6" value="NC" />
+    <constructor-arg index="7" value="ptCreditNoteMan" />
+  </bean>
+
+  <bean id="pt.fiscal.inventory.shipping" class="oracle.retail.xstore.countrypack.pt.PtFiscalDocumentType">
+    <constructor-arg index="0" value="INVENTORY_SHIPPING" />
+    <constructor-arg index="1" value="_countrypack.pt.fiscal.shipping" />
+    <constructor-arg index="2" value="100" />
+    <constructor-arg index="3" ref="PT_FISCAL_TYPE_INVENTORY_SHIPPING" />
+    <constructor-arg index="4" ref="FISCAL_DOCUMENT_USAGE_NORMAL" />
+    <constructor-arg index="5" value="COUNTRYPACK.PT.GR_SHIPPING" />
+    <constructor-arg index="6" value="GR" />
+    <constructor-arg index="7" value="ptShipping" />
+    <property name="inventoryDocuments" value="STORE_TRANSFER,DEFECTIVE_RETURN,REPAIR,RETURN_TO_VENDOR,CALL_BACK,WORK_ORDER" />
+  </bean>
+
+  <!-- Shipping Document Report -->
+  <bean id="SHIPPING_DOCUMENT_REPORT" class="dtv.pos.framework.reporting.ReportDefinition">
+    <property name="title" value="_shippingReportPackingSlip" />
+    <property name="dataTemplate" value="countrypack/PT/report/shippingdocument/ShippingDocument.xdt" />
+    <property name="layoutTemplate" value="countrypack/PT/report/shippingdocument/ShippingDocument.rtf" />
+  </bean>
+  <!-- Shipping Document Report -->
+
+  <bean id="countyVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="false" />
+  </bean>
+  <bean id="neighborhoodVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="false" />
+  </bean>
+  <bean id="fiscalCodeVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="true" />
+  </bean>
+  <bean id="journalFiscalNumberVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="true" />
+  </bean>
+
+  <bean id="countrypack.manualReceiptValidator" class="oracle.retail.xstore.countrypack.pt.PtManualInvoiceValidator" scope="prototype" />
+  <bean id="countrypack.manualReceiptDateRule" class="oracle.retail.xstore.countrypack.pt.validation.PtValidateManualReceiptDateRule" scope="prototype" />
+  <bean id="countrypack.ptExemptionHelper" class="oracle.retail.xstore.countrypack.pt.PtTaxExemptionHelper" scope="prototype" />
+
+  <bean id="invoiceSummaryCustMaintModelFieldValidatorFactory" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory">
+    <property name="parameters">
+      <map merge="true">
+        <entry key="fiscalCode" value-ref="fiscalCodeFieldValidator" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="custMaintModelSetFieldFilterFactory" class="dtv.pos.framework.form.DefaultEditModelSetFieldFilterFactory" scope="prototype" >
+    <property name="parameters">
+      <map>
+        <entry key="customerGroups" value-ref="custMaintModelCustGroupsSetFieldFilter" />
+        <entry key="organizationName" value-ref="organizationNameSetFieldFilter" />
+        <entry key="birthDate" value-ref="birthDateSetFieldFilter" />
+        <entry key="personalTaxId" value-ref="ptPersonalTaxIdSetFieldFilter" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="ptBuildTransFromInvDocWorker" class="oracle.retail.xstore.countrypack.pt.shipping.workers.PtBuildTransFromInvDocWorker" scope="prototype" />
+
+  <bean id="saveShippingWorkers" parent="workerList">
+    <property name="workers">
+      <list>
+        <ref bean="ptBuildTransFromInvDocWorker" />
+        <ref bean="generateReceivingFromShippingWorker" />
+        <ref bean="processInventoryMovementWorker" />
+        <ref bean="persistCurrentTransactionWorker" />
+        <ref bean="writeLogEntryForCurrentDocWorker" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- removed privilege override since qty to be returned cannot exceed the original purchased qty -->
+  <bean id="allowReturnInputQtyRule" class="dtv.pos.register.returns.verification.ValidateAllowItemReturnInputQtyRule" scope="prototype" />
+
+<!-- ************************************  -->
+<!--   PT WEBSERVICE IMPLEMENTATION START  -->
+<!-- ************************************  -->
+  <bean id="PtShippingWSHelper" class="oracle.retail.xstore.countrypack.pt.shipping.services.PtShippingWSHelper" />
+
+  <bean id="ptShippingWSResponseAdapter" class="oracle.retail.xstore.countrypack.pt.shipping.services.impl.PtShippingWSExceptionResponseAdapter" />
+
+  <bean id="standardPtShippingWSErrorHandler" parent="standardServiceErrorHandler">
+    <property name="errorCases">
+      <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="code" value="VALIDATION_ERROR" />
+          <property name="throws" value="oracle.retail.xstore.countrypack.pt.shipping.services.exception.ValidationErrorException" />
+        </bean>
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="code" value="INTERNAL_ERROR" />
+          <property name="throws" value="oracle.retail.xstore.countrypack.pt.shipping.services.exception.CriticalErrorException" />
+        </bean>
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="exception" value="javax.xml.ws.soap.SoapFaultException" />
+          <property name="throws" value="oracle.retail.xstore.countrypack.pt.shipping.services.exception.CriticalErrorException" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="PtShippingWSExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter" ref="ptShippingWSResponseAdapter" />
+    <property name="errorHandler" ref="standardPtShippingWSErrorHandler" />
+  </bean>
+
+  <bean id="GET_SHIPPING_AT_CODE" class="oracle.retail.xstore.countrypack.pt.shipping.services.impl.PtShippingGetAtCodeHandler">
+    <property name="serviceId" value="PT_SHIPPING_WS" />
+    <property name="servicePort" ref="PtShippingWSJaxWsServicePort" />
+    <property name="exceptionHandler" ref="PtShippingWSExceptionHandler" />
+    <property name="requestPreparer">
+      <bean class="oracle.retail.xstore.countrypack.pt.shipping.services.request.PtShippingWSRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="oracle.retail.xstore.countrypack.pt.shipping.services.request.PtShippingWSRequestAdapter" />
+      </list>
+    </property>
+    <property name="responsePreparer">
+      <bean class="oracle.retail.xstore.countrypack.pt.shipping.services.response.PtShippingWSResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="oracle.retail.xstore.countrypack.pt.shipping.services.response.PtShippingWSResponseAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="PtShippingWSJaxWsServicePort" class="oracle.retail.xstore.countrypack.pt.shipping.services.PtJaxWsPortFactoryBean">
+    <property name="serviceId" value="PT_SHIPPING_WS" />
+    <property name="serviceInterface" value="pt.at.sgdt.ws.client.DocumentosTransporte" />
+    <property name="namespaceUri" value="https://servicos.portaldasfinancas.gov.pt/sgdtws/documentosTransporte/" />
+    <property name="serviceConfigHelper" ref="serviceConfigHelper" />
+    <property name="lookupServiceOnStartup" value="false" />
+    <property name="serviceName" value="documentosTransporte" />
+    <property name="portName" value="documentosTransporteSOAP" />
+    <property name="handlerResolver" ref="ptShippingWSJaxWsHandlerResolver" />
+    <!-- This should be the path of the truststore used to setup the SSL channel (for instance res/ssl/.shipping) -->
+    <property name="shipTruststorePath" value="#{systemProperties['countrypack.pt.shipTruststorePath']}" />
+    <!-- This should be the password of the SSL shipping truststore (note that this should be the same as the certificate) -->
+    <property name="shipTruststorePassword" value="#{systemProperties['countrypack.pt.shipTruststorePassword']}" />
+    <!-- Set this to false to not use server side certificate check. Note that if this is set to true, then
+         the server certificate should be present inside the shipping truststore as a trusted certificate.
+         If it is not present, then the Ssl connection will be rejected by the client. -->
+    <property name="shipTrustedSslConnection" value="true" />
+    <property name="customProperties">
+      <map>
+        <entry key="javax.xml.ws.service.endpoint.address" value="#{systemProperties['countrypack.pt.shipWSEndpoint']}" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="ptShippingWSJaxWsHandlerResolver" parent="wsLoggingHandlerResolver">
+    <property name="handlers">
+      <list value-type="java.xml.ws.handler.Handler" merge="true">
+        <bean class="oracle.retail.xstore.countrypack.pt.shipping.services.impl.PtShippingWSAuthHandler">
+          <property name="shipTruststorePath" value="#{systemProperties['countrypack.pt.shipTruststorePath']}" />
+          <property name="shipTruststorePassword" value="#{systemProperties['countrypack.pt.shipTruststorePassword']}" />
+          <!-- This should be the alias of the public key certificate inside the trustore -->
+          <property name="shipPublicKeyCertAlias" value="#{systemProperties['countrypack.pt.shipPublicKeyCertAlias']}" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+<!-- **********************************  -->
+<!--   PT WEBSERVICE IMPLEMENTATION END  -->
+<!-- **********************************  -->
+
+<!-- ************************************  -->
+<!--   PT TAX FREE IMPLEMENTATION START  -->
+<!-- ************************************  -->
+  <bean id="countryPack.taxFree.taxRegistrationNumberFieldWarnValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.PtTaxRegistrationNumberValidator" scope="prototype">
+    <property name="regexPolicy" value="(?:12345678|87654321)|([\d])\1{8}" />
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.warnTaxRegistrationNumber" />
+    <property name="inverted" value="true" />
+    <property name="useFind" value="true" />
+  </bean>
+  <bean id="countryPack.taxFree.taxRegistrationNumberFieldErrorValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.PtTaxRegistrationNumberValidator" scope="prototype">
+    <property name="regexPolicy" value="^[0-9]{9}$" />
+    <property name="emptyValueIsFailure" value="true" />
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.invalidTaxRegistrationNumber" />
+  </bean>
+  <bean id="taxFreeCustTaxRegistrationNumberVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="true" />
+  </bean>
+<!-- ************************************  -->
+<!--   PT TAX FREE IMPLEMENTATION END  -->
+<!-- ************************************  -->
+</beans>

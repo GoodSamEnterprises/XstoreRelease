@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+
+  <OpChain name="TENDER_EFTL_CREDIT_CARD" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Tender" />
+      <Parameter name="TenderCategory" value="CREDIT_CARD" />
+      <Parameter name="TenderId" value="CREDIT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkAuthorizeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <OpChainRoute chainKey="CAPTURE_SALE_TENDER_SIGNATURE" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="REFUND_EFTL_CREDIT_CARD" signal="TransactionModified" contextKey="REFUND_TENDER_EMPTY_MENU_OPTION">
+    <Op class="dtv.pos.tender.DefaultCreateTenderLineItemOp">
+      <Parameter name="TenderStatus" value="Refund" />
+      <Parameter name="TenderId" value="CREDIT_CARD" />
+      <Parameter name="TenderCategory" value="CREDIT_CARD" />
+    </Op>
+    <PromptOp class="dtv.pos.tender.PromptCustAsscRequiredForTenderOp" />
+    <Op class="dtv.pos.tender.check.PromptIdentityVerificationOp" />
+    <PromptOp class="dtv.pos.tender.DefaultPromptTenderAmtOp" validationsBean="tenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.pos.tender.rounding.UpdateTransactionRoundedAmountOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkAuthorizeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+    <OpChainRoute chainKey="CAPTURE_SALE_TENDER_SIGNATURE" />
+    <Op class="dtv.pos.assistance.NotifyTrainingTenderAuthOp" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="REFUND_ORIG_CREDIT_CARD_TENDER" signal="TransactionModified">
+    <PromptOp class="dtv.pos.tender.PromptOrigCreditCardsToSelectOp" contextKey="CREDIT_CARD_REFUND" breakpoint="true" />
+    <PromptOp class="dtv.pos.tender.PromptOrigCreditCardAmount" validationsBean="originalCardRefundTenderAmountRules" />
+    <Op class="dtv.pos.tender.AddTenderToSaleTranOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkAuthorizeOp" />
+    <Op class="dtv.pos.common.PersistTranInProcessOp" />
+  </OpChain>
+  
+  <OpChain name="WORKSTATION_OPEN.eftlink">
+    <!-- login to eft link -->
+    <Op class="dtv.tenderauth.impl.eftlink.op.SendEftLinkAuthenticationRequestOp">
+      <Parameter name="RequestType" value="LOGIN" />
+    </Op>
+  </OpChain>
+  <OpChain name="EXT_WORKSTATION_CLOSE_CHECK.eftlink">
+    <!-- logout from eft link -->
+    <Op class="dtv.tenderauth.impl.eftlink.op.SendEftLinkAuthenticationRequestOp">
+      <Parameter name="RequestType" value="LOGOFF" />
+    </Op>
+  </OpChain>
+  <OpChain name="REGISTER_STARTUP.1">
+    <!-- to handle the scenario where Xstore is restarting at the middle of the day -->
+    <Op class="dtv.tenderauth.impl.eftlink.op.SendEftLinkAuthenticationRequestOp">
+      <Parameter name="RequestType" value="LOGIN" />
+      <Parameter name="RESTART" value="true" />
+    </Op>
+  </OpChain>
+  <OpChain name="VOID_TENDER" signal="TransactionModified" contextKey="SALE_TENDER_EMPTY_MENU_OPTION">
+    <PromptOp class="dtv.pos.tender.modifytender.PromptTendersToVoidOp">
+      <Parameter name="disallowNonVoidableTenders" value="true" />
+    </PromptOp>
+    <OpChainRoute chainKey="GUEST_LOOKUP" />
+    <OpChainRoute chainKey="VOID_ROOM_CHARGE" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.VoidEftLinkTenderAuthorizationOp" />
+    <WorkerOp workersBean="updateTenderVoidWorkers" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="VOID_REFUND_TENDER" signal="TransactionModified" contextKey="REFUND_TENDER_EMPTY_MENU_OPTION">
+    <PromptOp class="dtv.pos.tender.modifytender.PromptTendersToVoidOp">
+    <!--Parameter name="disallowAuthorizedTenders" value="true" /-->
+    </PromptOp>
+    <OpChainRoute chainKey="GUEST_LOOKUP" />
+    <OpChainRoute chainKey="VOID_ROOM_CHARGE" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.VoidEftLinkTenderAuthorizationOp" />
+    <WorkerOp workersBean="updateTenderVoidWorkers" />
+    <OpChainRoute chainKey="CHECK_SALE_COMPLETE" chainType="START" />
+  </OpChain>
+  <OpChain name="POST_VOID_TENDER_AUTH">
+    <OpChainRoute chainKey="POSTVOID_GUEST_LOOKUP" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.VoidEftLinkTenderAuthorizationOp" />
+  </OpChain>
+  <OpChain name="EFTLINK_ADMIN_FUNCTIONS">
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkAdministrativeFunctionsOp">
+      <Parameter name="RequestType" value="ADMINISTRATION" />
+    </Op>
+  </OpChain>
+  <OpChain name="POST_VOID_MAIN.2">
+    <Op class="dtv.tenderauth.impl.eftlink.op.CreateEftLinkPostVoidTransactionOp" />   
+  </OpChain>  
+  <OpChain name="INITIALIZE_FACTORIES">
+    <Op class="dtv.tenderauth.impl.eftlink.op.InitializeFactoriesEftLinkOp" />
+  </OpChain>
+</OpChainSet>

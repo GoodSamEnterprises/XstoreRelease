@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="codeMapManager" class="com.micros_retail.xfgclient.code.CodeMapManager">
+    <property name="codeMap" >
+      <map>
+        <entry key="20">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_CashTransfer" />
+            <property name="description" value="_xfgclient.codefunction.cashTransfer" />
+            <property name="validations" ref="loggedInStateRules" />
+            <property name="privilege" ref="PRV_CashTransfer" />
+          </bean>
+        </entry>
+        <entry key="21">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_CashPickup" />
+            <property name="description" value="_xfgclient.codefunction.pickupcash" />
+            <property name="validations" ref="loggedInStateRules" />
+            <property name="privilege" ref="PRV_CashPickup" />
+          </bean>
+        </entry>
+        <entry key="22">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_PostVoid" />
+            <property name="description" value="_xfgclient.codefunction.postvoid" />
+            <property name="validations" ref="loggedInStateRules" />
+            <property name="privilege" ref="PRV_PostVoid" />
+          </bean>
+        </entry>
+        <entry key="23">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_PaidIn" />
+            <property name="description" value="_xfgclient.codefunction.paidin" />
+            <property name="validations" ref="loggedInStateRules" />
+            <property name="privilege" ref="PRV_PaidIn" />
+          </bean>
+        </entry>
+        <entry key="24">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_PaidOut" />
+            <property name="description" value="_xfgclient.codefunction.paidout" />
+            <property name="validations" ref="loggedInStateRules" />
+            <property name="privilege" ref="PRV_PaidOut" />
+          </bean>
+        </entry>
+        <entry key="25">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_TillAudit" />
+            <property name="description" value="_xfgclient.codefunction.tillaudit" />
+            <property name="validations" ref="loggedInStateRules" />
+            <property name="privilege" ref="PRV_TillAudit" />
+          </bean>
+        </entry>
+        <entry key="30">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_ViewItemSearch" />
+            <property name="description" value="_xfgclient.codefunction.itemsearch" />
+            <property name="validations" ref="primaryStateRules" />
+          </bean>
+        </entry>
+        <entry key="31">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref ="TCN_ViewCustomerSearch" />
+            <property name="description" value="_xfgclient.codefunction.customersearch" />
+            <property name="validations" ref="primaryStateRules" />
+          </bean>
+        </entry>
+        <entry key="32">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref ="TCN_RemoveCustomerFromTransaction" />
+            <property name="description" value="_xfgclient.codefunction.removecustomer" />
+          </bean>
+        </entry>
+        <entry key="33">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref ="TCN_ShowCurrencyRates" />
+            <property name="description" value="_xfgclient.codefunction.showcurrencyrates" />
+          </bean>
+        </entry>
+        <entry key="34">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref ="TCN_ChangePassword" />
+            <property name="description" value="_xfgclient.codefunction.changepassword" />
+            <property name="validations" ref="passwordChangeRules" />
+            <property name="privilege" ref="PRV_PasswordChange" />
+          </bean>
+        </entry>
+        <entry key="50">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_StartRecorder" />
+            <property name="description" value="_xfgclient.codefunction.startrecorder" />
+            <property name="validations" ref="codeFunctionWithStateChangeRules" />
+          </bean>
+        </entry>
+        <entry key="51">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_StopRecorder" />
+            <property name="description" value="_xfgclient.codefunction.stoprecorder" />
+            <property name="validations" ref="codeFunctionWithStateChangeRules" />
+          </bean>
+        </entry>
+        <entry key="52">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_StartReplay" />
+            <property name="description" value="_xfgclient.codefunction.startplayer" />
+            <property name="validations" ref="codeFunctionWithStateChangeRules" />
+          </bean>
+        </entry>
+        <!-- 59 is reserved for EFTLink Administration -->
+        <entry key="60">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.util.NextOutputContextLocaleTN" >
+                      <property name="context" ref="OC_Operator" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.transition.util.InvokeInterpreterTN">
+                      <property name="keyword" ref="KW_SetTimeFormat"/>
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.localechange.operator" />
+            <property name="validations" ref="loggedInStateRules" />
+          </bean>
+        </entry>
+        <entry key="61">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.util.NextOutputContextLocaleTN" >
+                      <property name="context" ref="OC_Customer" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.localechange.customer" />
+            <property name="validations" ref="loggedInStateRules" />
+          </bean>
+        </entry>
+        <entry key="62">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.util.NextOutputContextLocaleTN" >
+                      <property name="context" ref="OC_Store" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.localechange.store" />
+            <property name="validations" ref="loggedInStateRules" />
+          </bean>
+        </entry>
+        <entry key="63">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.util.NextOutputContextLocaleTN" >
+                      <property name="context" ref="OC_Keyboard" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.localechange.next.keyboard" />
+            <property name="validations" ref="loggedInStateRules" />
+          </bean>
+        </entry>
+        <entry key="64">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.util.PreviousOutputContextLocaleTN" >
+                      <property name="context" ref="OC_Keyboard" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.localechange.previous.keyboard" />
+            <property name="validations" ref="loggedInStateRules" />
+          </bean>
+        </entry>
+        <entry key="69">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.util.ClearTranslationCachesTN" />
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.cleartranslationcaches" />
+            <property name="validations" ref="loggedInStateRules" />
+          </bean>
+        </entry>
+        <entry key="70">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="validations" ref="codeFunctionWithStateChangeRules" />
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions">
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.sale.ClearTransactionTN" >
+                      <property name="keyword" ref="KW_TransactionInit" />
+                    </bean>
+                    <bean class="com.micros_retail.xfgclient.transition.util.PostRunChainEventTN" >
+                      <property name="chain">
+                        <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                          <property name="transitions">
+                            <bean class="com.micros_retail.xfgclient.transition.util.GotoStateTN">
+                              <property name="state" ref="STATE_LoggedIn" />
+                            </bean>
+                          </property>
+                        </bean>
+                      </property>
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.clearlocaltransaction" />
+          </bean>
+        </entry>
+        <entry key="76">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean parent="listPromptTemplateTN" class="com.micros_retail.xfgclient.transition.startup.PreFlightCheckTN" >
+                    <property name="promptKeyword" ref="KW_SelectListNoCancel" />
+                    <property name="promptParameters" value="_xfgclient.pfc.header" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.pfc" />
+            <property name="validations" ref="primaryStateRules" />
+          </bean>
+        </entry>
+        <entry key="77">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.util.DisplaySystemInfoTN" >
+                    <property name="keyword" ref="KW_ShowSystemInfo" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.showinformation" />
+            <property name="validations" ref="primaryStateRules" />
+          </bean>
+        </entry>
+        <!--  
+        <entry key="78">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_ScaleInfo" />
+            <property name="description" value="_xfgclient.codefunction.showscales" />
+            <property name="validations" ref="primaryStateRules" />
+          </bean>
+        </entry>
+        <entry key="79">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_GiftCardBalanceInquiry" />
+            <property name="description" value="_xfgclient.codefunction.tender.giftcard.balance" />
+            <property name="validations" ref="loggedInStateRules" />
+          </bean>
+        </entry> -->
+        <entry key="80">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+                <property name="transitions" >
+                  <bean class="com.micros_retail.xfgclient.transition.util.PromptNotificationTN" >
+                    <property name="promptState" ref="STATE_Notification" />
+                    <property name="promptKeyword" ref="KW_ShowBrowser" />
+                    <property name="promptParameters">
+                      <array>
+                        <value>_xfgclient.browser.header</value>
+                        <value>&#x2754;XFGCONFIG.getBrowserUrl()</value>
+                      </array> 
+                    </property>
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="Browser Popup" />
+          </bean>
+        </entry>
+        <entry key="88">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="visible" value="false" /> <!-- must not be visible or else user could cause endless recursion by alwasy selecting this entry from the list -->
+            <property name="transitionChain" ref="TCN_CodeViewCodes" />
+            <property name="description" value="_xfgclient.codefunction.listcodefunctions" />
+          </bean>
+        </entry>
+        <entry key="99">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_ForceShutdown" />
+            <property name="description" value="_xfgclient.codefunction.exitprogram" />
+            <property name="visible" value="false" />
+            <property name="validations" ref="inStateListRules" />
+            <property name="privilege" ref="PRV_Manager" />
+          </bean>
+        </entry>
+        <entry key="101">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.debug.LogSystemMemoryTN" >
+                    <property name="logLevel" value="FATAL" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.debug.logmemory" />
+          </bean>
+        </entry>
+        <entry key="102">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.debug.LogSystemPropertiesTN" >
+                    <property name="logLevel" value="FATAL" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.debug.logsystemproperties" />
+          </bean>
+        </entry>
+        <entry key="103">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.debug.LogVersionInformationTN" >
+                    <property name="logLevel" value="FATAL" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.debug.logversion" />
+          </bean>
+        </entry>
+        <entry key="111">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.debug.PrintStateMachineTraceTN" >
+                    <property name="logLevel" value="FATAL" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.debug.logstatestack" />
+          </bean>
+        </entry>
+        <entry key="112">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.debug.PrintStackAndStateTraceTN" >
+                    <property name="logLevel" value="FATAL" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.debug.logfunctionstatestack" />
+          </bean>
+        </entry>
+        <entry key="121">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.debug.InvokeBeanViewerTN" >
+                    <property name="viewer" ref="VIEWER_NamedBeans" />
+                  </bean>
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.debug.lognamedbeans" />
+          </bean>
+        </entry>
+        <entry key="122">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.debug.DumpInterpreterContextTN" />
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.debug.dumpinterpretercontext" />
+          </bean>
+        </entry>
+        <entry key="123">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" >
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <bean class="com.micros_retail.xfgclient.transition.debug.LogBeanDefinitionRegistyInformationTN" />
+                </property>
+              </bean>
+            </property>
+            <property name="description" value="_xfgclient.codefunction.debug.logbeandefinitionregistry" />
+          </bean>
+        </entry>
+        <!--  
+        <entry key="201">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_ScaleZeroSet" />
+            <property name="description" value="ZERO SET SCALE" />
+          </bean>
+        </entry>
+        <entry key="202">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_ScaleRemoteTare" />
+            <property name="description" value="SET SCALE REMOTE TARE" />
+          </bean>
+        </entry>
+        <entry key="203">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="transitionChain" ref="TCN_ScaleClear" />
+            <property name="description" value="CLEAR SCALE" />
+          </bean>
+        </entry> -->
+        <!--  204 is reserved for heapdump feature -->
+        <entry key="47806">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="visible" value="false" />
+            <property name="privilege" ref="PRV_Manager" />
+            <property name="transitionChain">
+              <bean class="com.micros_retail.xfgclient.transition.TransitionChain" >
+                <property name="transitions">
+                  <list>
+                    <bean class="com.micros_retail.xfgclient.transition.xfgunit.ResetStationV2TN" >
+                      <property name="preResetChain" ref="TCN_RegisterResetPre" />
+                      <property name="startState" ref="STATE_LoggedOut" />
+                    </bean>
+                  </list>
+                </property>
+              </bean>
+            </property>
+          </bean>
+        </entry>
+        <entry key="57005">
+          <bean class="com.micros_retail.xfgclient.code.CodeMapEntry" >
+            <property name="visible" value="false" />
+            <property name="transitionChain" ref="TCN_ForceShutdownAutomaticCancel" />
+            <property name="privilege" ref="PRV_Manager" />
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+</beans>

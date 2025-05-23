@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../pos/config/dtv/res/config/query/QueryConfig.xsd">
+  <Query name="TRANSACTIONS_TO_REREPLICATE" pmType="LOCAL_ONLY">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.trn.PosTransactionId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String">
+        <![CDATA[
+          WHERE t.organization_id = ?
+        ]]>
+      </WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argRetailLocationId"><![CDATA[t.rtl_loc_id = ?]]></Expression>
+      <Expression trigger="argWorkstationId"><![CDATA[t.wkstn_id = ?]]></Expression>
+      <Expression trigger="argTransIdStart"><![CDATA[t.trans_seq >= ?]]></Expression>
+      <Expression trigger="argTransIdEnd"><![CDATA[t.trans_seq <= ?]]></Expression>
+      <Expression trigger="argStartDate"><![CDATA[t.business_date >= ?]]></Expression>
+      <Expression trigger="argEndDate"><![CDATA[t.business_date <= ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.trans_seq]]></Suffix>
+  </Query>
+  <Query name="POSLOG_DATA_TO_REREPLICATE" pmType="LOCAL_ONLY">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.trn.PosLogDataId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String">
+        <![CDATA[
+          WHERE t.organization_id = ?
+        ]]>
+      </WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argRetailLocationId"><![CDATA[t.rtl_loc_id = ?]]></Expression>
+      <Expression trigger="argWorkstationId"><![CDATA[t.wkstn_id = ?]]></Expression>
+      <Expression trigger="argTransIdStart"><![CDATA[t.trans_seq >= ?]]></Expression>
+      <Expression trigger="argTransIdEnd"><![CDATA[t.trans_seq <= ?]]></Expression>
+      <Expression trigger="argStartDate"><![CDATA[t.business_date >= ?]]></Expression>
+      <Expression trigger="argEndDate"><![CDATA[t.business_date <= ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.trans_seq]]></Suffix>
+  </Query>
+</QuerySet>

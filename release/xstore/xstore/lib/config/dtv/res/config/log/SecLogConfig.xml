@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <!-- ***************************************************** -->
+  <!-- ** ROUTING RULES -->
+  <!-- ***************************************************** -->
+  <RoutingRules>
+    <RoutingRule name="SEC_LOGIN" document="SEC_LOGIN" file="SECLOG">
+      <condition class="dtv.pos.framework.security.LoginCondition" />
+    </RoutingRule>
+    <RoutingRule name="SEC_AUTH" document="SEC_AUTH" file="SECLOG">
+      <condition class="dtv.pos.framework.security.AuthenticateCondition" />
+    </RoutingRule>
+    <RoutingRule name="SEC_OVERRIDE" document="SEC_OVERRIDE" file="SECLOG_OVERRIDE">
+      <condition class="dtv.pos.framework.security.AuthorizeCondition" />
+    </RoutingRule>
+    <RoutingRule name="SEC_LOGOUT" document="SEC_LOGOUT" file="SECLOG">
+      <condition class="dtv.pos.framework.security.LogoutCondition" />
+    </RoutingRule>
+    <RoutingRule name="SEC_REPRINT" document="SEC_REPRINT" file="SECLOG">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.logbuilder.model.IReprintModel" />
+    </RoutingRule>
+  </RoutingRules>
+  
+  <!-- ***************************************************** -->
+  <!-- ** LOG FILES -->
+  <!-- ***************************************************** -->
+  <LogFiles>
+    <LogFile id="SECLOG">
+      <Destination class="dtv.logbuilder.writers.LogEntryFileWriter">
+        <Parameter name="file_path" value="${user.dir}/${log.dir.name:log}/seclog.xml" />
+        <Parameter name="file_per_object" value="false" />
+        <Parameter name="training_file_path" value="${user.dir}/${log.dir.name:log}/training/seclog.xml" />
+      </Destination>
+      <Destination class="dtv.pos.framework.security.BasicDBLogWriter" />
+      <Header dtype="String"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<dtv:SecurityLog xmlns:dtv="http://www.datavantagecorp.com/xstore/"
+                 xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+                 dtv:schemaLocation="http://www.datavantagecorp.com/xstore/ DtvSecLog.xsd">]]></Header>
+      <Footer dtype="String"><![CDATA[</dtv:SecurityLog>]]></Footer>
+
+    </LogFile>
+    <LogFile id="SECLOG_OVERRIDE">
+      <Destination class="dtv.logbuilder.writers.LogEntryFileWriter">
+        <Parameter name="file_path" value="${user.dir}/log/seclog.xml" />
+        <Parameter name="file_per_object" value="false" />
+        <Parameter name="training_file_path" value="${user.dir}/log/training/seclog.xml" />
+      </Destination>
+      <Destination class="dtv.pos.framework.security.OverrideDBLogWriter" />
+      <Header dtype="String"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<SecurityLog xmlns:dtv="http://www.datavantagecorp.com/xstore/">]]></Header>
+      <Footer dtype="String"><![CDATA[</SecurityLog>]]></Footer>
+    </LogFile>
+  </LogFiles>
+  
+  <!-- ***************************************************** -->
+  <!-- ** LOG DOCUMENT TYPES -->
+  <!-- ***************************************************** -->
+  <LogTypes>
+    <LogType document="SEC_LOGIN" sectionref="SEC_ACTIVITY" argHeaderTag="dtv:Login" />
+    <LogType document="SEC_LOGOUT" sectionref="SEC_ACTIVITY" argHeaderTag="dtv:Logout" />
+    <LogType document="SEC_AUTH" sectionref="SEC_ACTIVITY" argHeaderTag="dtv:Auth" />
+    <LogType document="SEC_OVERRIDE" sectionref="SEC_OVERRIDE" />
+    <LogType document="SEC_REPRINT" sectionref="SEC_REPRINT" />
+    <LogType document="SEC_GIFT_RCPT" sectionref="SEC_GIFT_RCPT_PRINT" />
+  </LogTypes>
+  
+  <!-- ***************************************************** -->
+  <!-- ** SECTIONS -->
+  <!-- ***************************************************** -->
+  <sections>
+    <!-- generic security information -->
+    <section name="loggable_model_common">
+      <!-- this should be working with a dtv.pos.framework.tlog.model.ILoggableModel -->
+      <xml><![CDATA[
+        <dtv:SystemDateTime>#{getSystemDateTimeStamp}[dateTime]</dtv:SystemDateTime>
+        <dtv:CurrentStore>#{getRetailLocationId}</dtv:CurrentStore>
+        <dtv:WorkstationId>#{getWorkstationId}</dtv:WorkstationId>
+        <dtv:SystemUser>#{getSystemUser.getOperatorId}</dtv:SystemUser>
+        <dtv:BusinessDate>#{getBusinessDate}[date]</dtv:BusinessDate>
+        
+        <?call method="getRelatedTransaction"?>
+        <dtv:Transaction>
+          <dtv:BusinessDate>#{getBusinessDate}[date]</dtv:BusinessDate>
+          <dtv:RetailLocationId>#{getRetailLocationId}</dtv:RetailLocationId>
+          <dtv:WorkstationId>#{getWorkstationId}</dtv:WorkstationId>
+          <dtv:TransactionId>#{getTransactionSequence}</dtv:TransactionId>
+        </dtv:Transaction>
+        <?_call?>
+      ]]></xml>
+    </section>
+    
+    <section name="SEC_ACTIVITY">
+      <xml><![CDATA[
+        <?element name="@argHeaderTag"?>
+          <?sectionref name="sec_auth_body"?>
+        <?_element?>
+      ]]></xml>
+    </section>
+
+    <section name="sec_auth_body">
+      <xml><![CDATA[
+        <dtv:Success>#{getSuccess}</dtv:Success>
+        <dtv:FailedId>#{getPreviouslyFailedUserId}</dtv:FailedId>  
+        <dtv:EmployeeId>#{getSystemUser.getOperatorId}</dtv:EmployeeId>
+        
+        <?sectionref name="loggable_model_common"?>
+      ]]></xml>
+    </section>
+ 
+    <section name="SEC_OVERRIDE">
+      <xml><![CDATA[
+        <dtv:Override>
+          <dtv:OperatorId>#{getTempSystemUser.getOperatorId}</dtv:OperatorId>
+          <dtv:OverridingOperatorId>#{getOverridingUser.getOperatorId}</dtv:OverridingOperatorId>
+          
+          <?iterator method="getPrivileges"?>
+          <dtv:Privilege>#{toString}</dtv:Privilege>          
+          <?_iterator?>
+          
+          <?sectionref name="loggable_model_common"?>
+        </dtv:Override>
+      ]]></xml>
+    </section>
+    
+    <section name="SEC_REPRINT">
+      <xml><![CDATA[
+        <dtv:Reprint>
+          <?sectionref name="loggable_model_common"?>
+        </dtv:Reprint>
+      ]]></xml>
+    </section>
+    
+    <section name="SEC_GIFT_RCPT_PRINT">
+      <xml><![CDATA[
+        <dtv:GiftRcptPrint>
+          <?sectionref name="loggable_model_common"?>
+        </dtv:GiftRcptPrint>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>

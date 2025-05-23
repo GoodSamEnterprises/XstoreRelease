@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+  default-init-method="init" default-lazy-init="true">
+
+  <bean id="localeManager" class="dtv.i18n.LocaleManager" factory-method="getInstance" />
+  <bean id="localeHelper" class="dtv.i18n.LocaleHelper" factory-method="getInstance" />
+  
+  <bean id="formattableFactory" class="dtv.i18n.FormattableFactory" lazy-init="false" >
+    <property name="locator" ref="formattableLocatorFactory" />
+  </bean>
+  
+  <bean id="formattableLocatorFactory" class="dtv.i18n.FormattableLocatorFactoryBean">
+    <property name="serviceMappings">
+        <props>
+          <prop key="APPENDING">appendingFormattable</prop>
+          <prop key="CONDITIONAL">conditionalFormattable</prop>
+          <prop key="EVALUATED">evaluatedFormattable</prop>
+          <prop key="PARAMETERIZED">parametizedFormattable</prop>
+          <prop key="SIMPLE">simpleFormattable</prop>
+        </props>
+      </property>
+  </bean>
+  
+  <bean id="appendingFormattable" class="dtv.i18n.formattable.AppendingFormattable" scope="prototype" />
+  <bean id="conditionalFormattable" class="dtv.i18n.formattable.ConditionalFormattable" scope="prototype" />
+  <bean id="evaluatedFormattable" class="dtv.i18n.formattable.EvaluatedFormattable" scope="prototype" />
+  <bean id="parametizedFormattable" class="dtv.i18n.formattable.ParameterizedFormattable" scope="prototype" />
+  <bean id="simpleFormattable" class="dtv.i18n.formattable.SimpleFormattable" scope="prototype" />
+
+  <bean id="formatterFactory" class="dtv.i18n.FormatterFactory" factory-method="getInstance" lazy-init="false" >
+    <property name="locator" ref="formatterLocatorFactory" />
+  </bean>
+  
+  <bean id="formatterLocatorFactory" class="dtv.i18n.FormatterLocatorFactoryBean">
+    <property name="serviceMappings" ref="formatterLocatorServiceMappings" />
+  </bean>
+  
+  <bean id="formatterLocatorServiceMappings" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <property name="properties">
+      <props>
+        <prop key="BooleanShort">booleanShortFormatter</prop>
+        <prop key="BooleanMedium">booleanMediumFormatter</prop>
+        <prop key="BooleanLong">booleanLongFormatter</prop>
+        <prop key="DateShort">dateShortFormatter</prop>
+        <prop key="DateMedium">dateMediumFormatter</prop>
+        <prop key="DateMediumShortYear">dateMediumShortYearFormatter</prop>
+        <prop key="DateLong">dateLongFormatter</prop>
+        <prop key="DateFull">dateFullFormatter</prop>
+        <prop key="DateIso">dateIsoFormatter</prop>
+        <prop key="DateMonthNameDay">dateMonthNameDayFormatter</prop>
+        <prop key="DateMonthNameDayYear">dateMonthNameDayYearFormatter</prop>
+        <prop key="DateYear">dateYearFormatter</prop>
+        <prop key="BirthDate">birthDateFormatter</prop>
+        <prop key="DateTimeShort">dateTimeShortFormatter</prop>
+        <prop key="DateTimeMedium">dateTimeMediumFormatter</prop>
+        <prop key="DateTimeLong">dateTimeLongFormatter</prop>
+        <prop key="DateTimeFull">dateTimeFullFormatter</prop>
+        <prop key="DateTimeIso">dateTimeIsoFormatter</prop>
+        <prop key="DateExpirationLong">dateExpirationLongFormatter</prop>
+        <prop key="DateExpirationShort">dateExpirationShortFormatter</prop>
+        <prop key="DayOfWeekShort">dayOfWeekShortFormatter</prop>
+        <prop key="DayOfWeekLong">dayOfWeekLongFormatter</prop>
+        <prop key="DayOfWeekTimeLong">dayOfWeekTimeLongFormatter</prop>
+        <prop key="MonthOfYearShort">monthOfYearShortFormatter</prop>
+        <prop key="MonthOfYearLong">monthOfYearLongFormatter</prop>
+        <prop key="Integer">integerFormatter</prop>
+        <prop key="Decimal">decimalFormatter</prop>
+        <prop key="Money">moneyFormatter</prop>
+        <prop key="MoneyBasic">moneyBasicFormatter</prop>
+        <prop key="MoneyBasicPositive">moneyBasicPositiveFormatter</prop>
+        <prop key="InverseMoney">inverseMoneyFormatter</prop>
+        <prop key="Accounting">accountingFormatter</prop>
+        <prop key="Percent">percentFormatter</prop>
+        <prop key="Simple">simpleFormatter</prop>
+        <prop key="CreditCard">creditCardFormatter</prop>
+        <prop key="Text">textFormatter</prop>
+        <prop key="KeyOrLiteral">keyOrLiteralFormatter</prop>
+        <prop key="TimeShort">timeShortFormatter</prop>
+        <prop key="TimeMedium">timeMediumFormatter</prop>
+        <prop key="TimeLong">timeLongFormatter</prop>
+        <prop key="TimeFull">timeFullFormatter</prop>
+        <prop key="Phone">phoneFormatter</prop>
+        <prop key="PostalCode">postalCodeFormatter</prop>
+        <prop key="InputDate">inputDateFormatter</prop>
+        <prop key="InputMonthDay">inputMonthDayFormatter</prop>
+        <prop key="InputTimeShort">inputTimeShortFormatter</prop>
+        <prop key="InputTimeMedium">inputTimeMediumFormatter</prop>
+        <prop key="InputTimeLong">inputTimeLongFormatter</prop>
+        <prop key="InputInteger">inputIntegerFormatter</prop>
+        <prop key="InputMoney">inputMoneyFormatter</prop>
+        <prop key="InputPercent">inputPercentFormatter</prop>
+        <prop key="InputDecimal">inputDecimalFormatter</prop>
+        <prop key="Description">descriptionFormatter</prop>
+        <prop key="DateCreditApp">dateCreditAppFormatter</prop>
+        <prop key="BasicAddress">basicAddressFormatter</prop>
+        <prop key="OneLineAddress">oneLineAddressFormatter</prop>
+        <prop key="CityLocation">cityLocationFormatter</prop>
+        <prop key="LabelAddress">labelAddressFormatter</prop>
+        <prop key="BasicName">basicNameFormatter</prop>
+        <prop key="LastFirstName">lastFirstNameFormatter</prop>
+        <prop key="LastFirstNameFromString">lastFirstNameFromStringFormatter</prop>
+        <prop key="Ssn">ssnFormatter</prop>
+        <prop key="Last4OfSessionId">last4OfSessionIdformatter</prop>
+        <prop key="MillsToHours">millsToHoursFormatter</prop>
+        <prop key="StringTimeShort">stringTimeShortFormatter</prop>
+      </props>
+    </property>
+  </bean>
+  
+  <bean id="booleanShortFormatter" class="dtv.i18n.formatter.BooleanFormatter" scope="prototype" />
+  <bean id="booleanMediumFormatter" class="dtv.i18n.formatter.BooleanFormatter" scope="prototype" />
+  <bean id="booleanLongFormatter" class="dtv.i18n.formatter.BooleanFormatter" scope="prototype" />
+  <bean id="dateShortFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateMediumFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateMediumShortYearFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateLongFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateFullFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateIsoFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateMonthNameDayFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateMonthNameDayYearFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateYearFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="birthDateFormatter" class="dtv.pos.i18n.format.BirthDateFormatter" scope="prototype" />
+  <bean id="dateTimeShortFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateTimeMediumFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateTimeLongFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateTimeFullFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateTimeIsoFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateExpirationLongFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dateExpirationShortFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dayOfWeekShortFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dayOfWeekLongFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="dayOfWeekTimeLongFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="monthOfYearShortFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="monthOfYearLongFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="integerFormatter" class="dtv.i18n.formatter.IntegerFormatter" scope="prototype" />
+  <bean id="decimalFormatter" class="dtv.i18n.formatter.DecimalFormatter" scope="prototype" />
+  <bean id="moneyFormatter" class="dtv.i18n.formatter.MoneyFormatter" scope="prototype" />
+  <bean id="moneyBasicFormatter" class="dtv.i18n.formatter.MoneyFormatter" scope="prototype" />
+  <bean id="moneyBasicPositiveFormatter" class="dtv.i18n.formatter.MoneyFormatter" scope="prototype" />
+  <bean id="inverseMoneyFormatter" class="dtv.i18n.formatter.InverseMoneyFormatter" scope="prototype" />
+  <bean id="accountingFormatter" class="dtv.i18n.formatter.MoneyFormatter" scope="prototype" />
+  <bean id="percentFormatter" class="dtv.i18n.formatter.PercentFormatter" scope="prototype" />
+  <bean id="simpleFormatter" class="dtv.i18n.formatter.SimpleFormatter" scope="prototype" />
+  <bean id="creditCardFormatter" class="dtv.i18n.formatter.CreditCardFormatter" scope="prototype" />
+  <bean id="textFormatter" class="dtv.pos.i18n.format.PosTextFormatter" scope="prototype" />
+  <bean id="keyOrLiteralFormatter" class="dtv.i18n.formatter.KeyOrLiteralFormatter" scope="prototype" />
+  <bean id="timeShortFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="timeMediumFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="timeLongFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="timeFullFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="phoneFormatter" class="dtv.i18n.formatter.PhoneFormatter" scope="prototype" />
+  <bean id="postalCodeFormatter" class="dtv.i18n.formatter.PostalCodeFormatter" scope="prototype" />
+  <bean id="inputDateFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="inputMonthDayFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="inputTimeShortFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="inputTimeMediumFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="inputTimeLongFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="inputIntegerFormatter" class="dtv.i18n.formatter.IntegerFormatter" scope="prototype" />
+  <bean id="inputMoneyFormatter" class="dtv.i18n.formatter.MoneyFormatter" scope="prototype" />
+  <bean id="inputPercentFormatter" class="dtv.i18n.formatter.PercentFormatter" scope="prototype" />
+  <bean id="inputDecimalFormatter" class="dtv.i18n.formatter.DecimalFormatter" scope="prototype" />
+  <bean id="descriptionFormatter" class="dtv.pos.i18n.format.DescriptionFormatter" scope="prototype" />
+  <bean id="dateCreditAppFormatter" class="dtv.i18n.formatter.DateTimeFormatter" scope="prototype" />
+  <bean id="basicAddressFormatter" class="dtv.pos.i18n.format.BasicAddressFormatter" scope="prototype" />
+  <bean id="ssnFormatter" class="dtv.i18n.formatter.SsnFormatter" scope="prototype" />
+  <bean id="last4OfSessionIdformatter" class="dtv.i18n.formatter.LengthFormatter" scope="prototype">
+    <property name="length" value="-4" />
+  </bean>
+  <bean id="millsToHoursFormatter" class="dtv.i18n.formatter.MillsToHoursFormatter" scope="prototype" />
+  <bean id="stringTimeShortFormatter" class="dtv.i18n.formatter.StringTimeShortFormatter" scope="prototype" />
+  
+  <bean id="oneLineAddressFormatter" class="dtv.pos.i18n.format.BasicAddressFormatter" scope="prototype">
+    <property name="formatKey" value="OneLineAddress" />
+  </bean>
+  
+  <bean id="cityLocationFormatter" class="dtv.pos.i18n.format.BasicAddressFormatter" scope="prototype">
+    <property name="formatKey" value="CityLocation" />
+  </bean>
+  
+  <bean id="labelAddressFormatter" class="dtv.pos.i18n.format.LabelAddressFormatter" scope="prototype" />
+  <bean id="basicNameFormatter" class="dtv.pos.i18n.format.BasicNameFormatter" scope="prototype" />
+  
+  <bean id="lastFirstNameFormatter" class="dtv.pos.i18n.format.BasicNameFormatter" scope="prototype">
+    <property name="formatKey" value="LastFirstName" />
+  </bean>
+
+  <bean id="lastFirstNameFromStringFormatter" class="dtv.pos.i18n.format.BasicNameFromStringFormatter" scope="prototype">
+    <property name="formatKey" value="LastFirstName" />
+  </bean>
+  
+  <bean id="databaseTranslationService" class="dtv.pos.i18n.DatabaseTranslationService"/>
+
+</beans>

@@ -1,0 +1,2086 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <!-- Special state for signaling the state machine to return to the invoking function & capture input -->
+  <bean id="STATE_ReturnCapture" class="com.micros_retail.xfgclient.statemachine.state.DummyState" />
+
+  <!-- Special state for signaling the state machine to return to the invoking function & discard input -->
+  <bean id="STATE_ReturnCancel" class="com.micros_retail.xfgclient.statemachine.state.DummyState" />
+
+  <bean id="STATE_Notification" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_Notification" />
+    <property name="transitions">
+      <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+    </property>
+  </bean>
+
+  <!-- state for error display -->
+  <bean id="STATE_Error" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_Error" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event"> <!-- ERROR STATE - ignore all keys except ESC and delete -->
+            <bean class="com.micros_retail.xfgclient.statemachine.event.AnyKeyDescriptor" />
+          </property>
+          <property name="transitionChain" ref="TCN_Fail" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_HelpDeskError" parent="STATE_Error">
+    <property name="context" ref="CTX_HelpDeskError" />
+  </bean>
+
+  <bean id="STATE_PriceEnquiry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_PriceEnquiry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_Entry_CaptureOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ManualGS1Entry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ManualGS1Entry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_Entry_CaptureOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_YesNoEntry" parent="STATE_PriceEnquiry">
+    <property name="context" ref="CTX_YesNoEntry" />
+  </bean>
+
+  <bean id="STATE_DateEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_DateEntry" />
+  </bean>
+
+  <bean id="STATE_DateTimeEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_DateTimeEntry" />
+  </bean>
+
+  <bean id="STATE_ChoiceEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ChoiceEntry" />
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor">
+              <property name="list" ref="DEV_SelectList" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SelectListSelection" />
+        </bean>
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Up" />
+          <property name="transitionChain" ref="TCN_SelectPopUpListUpSelection" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Down" />
+          <property name="transitionChain" ref="TCN_SelectPopUpListDownSelection" />
+        </bean>
+        <ref bean="STTN_STD_Entry_CaptureOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_PlayerResultsChoiceEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_PlayerResultsChoiceEntry" />
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor">
+              <property name="list" ref="DEV_PlayerResultsList" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SelectListSelection" />
+        </bean>
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Up" />
+          <property name="transitionChain" ref="TCN_SelectPlayerResultsListUpSelection" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Down" />
+          <property name="transitionChain" ref="TCN_SelectPlayerResultsListDownSelection" />
+        </bean>
+        <ref bean="STTN_STD_Entry_CaptureOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_Choice3Entry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_Choice3Entry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_Entry_CaptureOnEnter" />
+        <ref bean="STTN_STD_PasteData" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_StringEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_StringEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_Entry_CaptureOnEnter" />
+        <ref bean="STTN_STD_Entry_ErrorInvalidOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESC" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_AlphanumericStringEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_AlphanumericStringEntry" />
+  </bean>
+
+  <bean id="STATE_SerialNumberEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_SerialNumberEntry" />
+    <property name="transitions">
+      <list merge="true">
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.ScanDataDescriptor" />
+          </property>
+          <property name="transitionChain" ref="TCN_PasteData" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ScaleWeighItem" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ScaleWeighItem" />
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+          <property name="type" value="SUBSTATE_PRESERVE_EVENT" />
+          <property name="events">
+            <list>
+              <bean class="com.micros_retail.xfgclient.statemachine.event.EventPayloadClassDescriptor">
+                <property name="payloadClass"
+                  value="com.micros_retail.xfgclient.hardware.scale.event.ScalePricingInputEvent" />
+              </bean>
+              <bean class="com.micros_retail.xfgclient.statemachine.event.EventPayloadClassDescriptor">
+                <property name="payloadClass"
+                  value="com.micros_retail.xfgclient.hardware.scale.event.ScaleErrorInputEvent" />
+              </bean>
+            </list>
+          </property>
+          <property name="transitionChain" ref="TCN_ScaleClear" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_ManualEntry" />
+          <property name="transitionChain" ref="TCN_ScaleClear" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+        <bean parent="STTN_STD_Entry_CancelOnESCOrDelete">
+          <property name="transitionChain" ref="TCN_ScaleClear" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ScaleWeighOutItem" parent="STATE_ScaleWeighItem">
+    <property name="context" ref="CTX_ScaleWeighOutItem" />
+    <property name="transitions">
+      <list merge="true">
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_WeightOutScaleCaptureWeight" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_CodeEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_IntegerEntry" />
+    <property name="transitions">
+      <list merge="true">
+        <ref bean="STTN_STD_IgnoreCode" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_UserAuthEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_UserAuthEntry" />
+    <property name="transitions">
+      <list merge="true">
+        <ref bean="STTN_STD_IgnoreCode" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_PasswordEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_PasswordEntry" />
+    <property name="transitions">
+      <list merge="true">
+        <ref bean="STTN_STD_IgnoreCode" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_OperatorPause" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_OperatorPause" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_Entry_CaptureOnEnter" />
+        <ref bean="STTN_STD_Entry_ErrorInvalidOnEnter" />
+        <ref bean="STTN_STD_Entry_CancelOnESC" />
+        <ref bean="STTN_STD_ScaleInformation" />
+        <ref bean="STTN_STD_PriceEnquiry" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_BigDecimalEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_BigDecimalEntry" />
+  </bean>
+
+  <bean id="STATE_FixedDecimalEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_FixedDecimalEntry" />
+  </bean>
+
+  <bean id="STATE_GiftCardEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_GiftCardEntry" />
+    <property name="transitions">
+      <list merge="true">
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.ScanDataDescriptor" />
+          </property>
+          <property name="transitionChain" ref="TCN_PasteData" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_CouponEntry" parent="STATE_GiftCardEntry">
+    <property name="context" ref="CTX_CouponEntry" />
+  </bean>
+
+  <bean id="STATE_SafeBagIdEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_SafeBagIdEntry" />
+    <property name="transitions">
+      <list merge="true">
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.ScanDataDescriptor" />
+          </property>
+          <property name="transitionChain" ref="TCN_PasteData" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_TransactionEntry" parent="STATE_GiftCardEntry">
+    <property name="context" ref="CTX_TransactionEntry" />
+  </bean>
+
+  <bean id="STATE_MoneyEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_MoneyEntry" />
+  </bean>
+
+  <bean id="STATE_MaskEntry" parent="STATE_StringEntry">
+    <property name="context" ref="CTX_MaskEntry" />
+  </bean>
+
+  <bean id="STATE_AuthorizationEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_AuthorizationEntry" />
+    <property name="timers">
+      <list>
+        <!-- a timer for authorization communication timeout -->
+        <!-- TODO: make timeout configurable in SystemConfig or AuthFramework -->
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="COMMUNICATION_TIMEOUT_TIMER" />
+          <property name="type" value="STATE" />
+          <property name="delay" value="120000" /> <!-- set that to 5 min -->
+        </bean>
+      </list>
+    </property>
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_IgnoreListSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_IgnorePasteData" />
+        <ref bean="STTN_STD_Auth_CaptureOnEvent" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_WaitForDrawerClose" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_WaitForDrawerClose" />
+    <property name="allowInheritedTransitions" value="false" />
+    <property name="timers">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="AUTOMATIC_EXECUTION_TIMER" />
+          <property name="type" value="STATE" />
+          <property name="delay" value="1000" />
+          <property name="repeat" value="true" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+              <property name="timerName" value="AUTOMATIC_EXECUTION_TIMER" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_PollCashDrawer" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event"> <!-- IGNORE DRAWER OPENED EVENTS HERE -->
+            <bean class="com.micros_retail.xfgclient.statemachine.event.DrawerOpenedDescriptor" />
+          </property>
+          <property name="transitionChain" ref="TCN_Succeed" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.DrawerClosedDescriptor" />
+          </property>
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnCancel" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ItemEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ItemEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListItemSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+          <property name="events"> <!-- accept input on enter too, if inputbuffer is nonempty -->
+            <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+              <property name="descriptors">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+                    <property name="key" ref="KEY_Enter" />
+                  </bean>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.InputBufferNonEmptyDescriptor" />
+                </list>
+              </property>
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_InterpretKeyboardInput" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_PostItemOfSeletedLineItem" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+          <property name="events">
+            <list>
+              <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+                <property name="inputType" value="INPUT_ITEM" />
+              </bean>
+              <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+                <property name="inputType" value="BOTTLE_RETURN" />
+              </bean>
+              <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+                <property name="inputType" value="OTHERS" />
+              </bean>
+            </list>
+          </property>
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+        <ref bean="STTN_STD_Entry_CancelOnESC" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_TenderLineEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_TenderLineEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_ListTenderSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" /> <!-- TO DO -->
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_PostSelectedTenderLine" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.EventEnumDescriptor">
+              <property name="eventEnum">
+                <util:constant static-field="com.micros_retail.xfgclient.event.ClientEvents.TENDERLINE_SELECTION" />
+              </property>
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_LineItemEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ItemEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListItemSelection" /> <!-- TO DO -->
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+          <property name="events"> <!-- accept input on enter too, if inputbuffer is nonempty -->
+            <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+              <property name="descriptors">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+                    <property name="key" ref="KEY_Enter" />
+                  </bean>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.InputBufferNonEmptyDescriptor" />
+                </list>
+              </property>
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_InterpretKeyboardInput" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_PostSelectedLineItem" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+          <property name="events">
+            <list>
+              <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+                <property name="inputType" value="INPUT_ITEM" />
+              </bean>
+              <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+                <property name="inputType" value="OTHERS" />
+              </bean>
+            </list>
+          </property>
+          <property name="transitionChain" ref="TCN_FindAndPostLineItem" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.EventEnumDescriptor">
+              <property name="eventEnum">
+                <util:constant static-field="com.micros_retail.xfgclient.event.ClientEvents.LINEITEM_SELECTION" />
+              </property>
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ItemSearch" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ItemSearch" />
+    <property name="transitions">
+      <list>
+        <bean parent="STTN_STD_AlphaNumericInput">
+          <property name="transitionChain" ref="TCN_SearchItemKeyInput" />
+        </bean>
+        <bean parent="STTN_STD_PasteData">
+          <property name="transitionChain" ref="TCN_SearchItemPasteData" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor">
+              <property name="list" ref="DEV_ItemSearchList" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SearchItemListSelection" />
+        </bean>
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Up" />
+          <property name="transitionChain" ref="TCN_SelectItemSearchListUpSelection" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Down" />
+          <property name="transitionChain" ref="TCN_SelectItemSearchListDownSelection" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+              <property name="descriptors">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.SearchItemResultsEmptyDescriptor" />
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+                    <property name="key" ref="KEY_Enter" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SearchItemDoSearch" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_SearchItemCapture" />
+        </bean>
+        <bean parent="STTN_STD_DepartmentLookup">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_QuickPick">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_ItemSelection">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_ViewStoreMessages">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.EventEnumDescriptor">
+              <property name="eventEnum">
+                <util:constant static-field="com.micros_retail.xfgclient.event.ClientEvents.ITEM_SELECTION" />
+              </property>
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+        <ref bean="STTN_STD_Entry_CancelOnESC" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_CustomerSearch" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_CustomerSearch" />
+    <property name="transitions">
+      <list>
+        <bean parent="STTN_STD_AlphaNumericInput">
+          <property name="transitionChain" ref="TCN_SearchCustomerKeyInput" />
+        </bean>
+        <bean parent="STTN_STD_PasteData">
+          <property name="transitionChain" ref="TCN_SearchCustomerPasteData" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.ListSelectionDescriptor">
+              <property name="list" ref="DEV_CustomerSearchList" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SearchCustomerListSelection" />
+        </bean>
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Up" />
+          <property name="transitionChain" ref="TCN_SelectCustomerSearchListUpSelection" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Down" />
+          <property name="transitionChain" ref="TCN_SelectCustomerSearchListDownSelection" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+              <property name="descriptors">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.SearchCustomerResultsEmptyDescriptor" />
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+                    <property name="key" ref="KEY_Enter" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SearchCustomerDoSearch" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_SearchCustomerCapture" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.EventEnumDescriptor">
+              <property name="eventEnum">
+                <util:constant static-field="com.micros_retail.xfgclient.event.ClientEvents.CUSTOMER_SELECTION" />
+              </property>
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_CloseCustomerSearch" />
+          <property name="successState" ref="STATE_ReturnCancel" />
+        </bean>
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_CustomerInformation" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_CustomerInformation" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_SwipeEvent" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_CloseCustomerInformation" />
+          <property name="successState" ref="STATE_ReturnCancel" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_SearchCustomerCapture" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.EventEnumDescriptor">
+              <property name="eventEnum">
+                <util:constant static-field="com.micros_retail.xfgclient.event.ClientEvents.CUSTOMER_SELECTION" />
+              </property>
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_StartUp" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_Startup" />
+    <property name="allowInheritedTransitions" value="false" />
+    <property name="allowTransitionChainEvents" value="false" />
+    <property name="timers">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="AUTOMATIC_EXECUTION_TIMER" />
+          <property name="type" value="STATE" />
+          <property name="delay" value="1" />
+        </bean>
+        <!-- a backup timer that kicks in after 5sec in case the first timer event got dropped (seen if startup 
+          is very slow) -->
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="BACKUP_EXECUTION_TIMER" />
+          <property name="type" value="IDLE" />
+          <property name="delay" value="5000" />
+        </bean>
+        <!-- Demo Timer Definitions -->
+        <!-- 
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="GLOBAL_REPEAT_TIMER"/>
+          <property name="type" value="GLOBAL" />
+          <property name="delay" value="35000" />
+          <property name="repeat" value="true" /> 
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer"> 
+          <property name="name" value="GLOBAL_TIMER"/>
+          <property name="type" value="GLOBAL" />
+          <property name="delay" value="40000" />
+        </bean>
+         -->
+        <!-- begin 24x7 -->
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.rollingclose.StoreCloseWarningTimer">
+          <property name="name" value="STORE_CLOSE_WARNING_TIMER" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.rollingclose.StoreCloseGraceTimer">
+          <property name="name" value="STORE_CLOSE_GRACE_TIMER" />
+          <property name="repeat" value="true" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.rollingclose.StoreCloseExpiredTimer">
+          <property name="name" value="STORE_CLOSE_EXPIRED_TIMER" />
+          <property name="repeat" value="true" />
+        </bean>
+        <!-- end 24x7 -->
+      </list>
+    </property>
+
+    <property name="transitions">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+          <property name="events">
+            <list>
+              <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+                <property name="timerName" value="AUTOMATIC_EXECUTION_TIMER" />
+              </bean>
+              <bean class="com.micros_retail.xfgclient.statemachine.event.TimerNameDescriptor">
+                <property name="timerName" value="BACKUP_EXECUTION_TIMER" />
+              </bean>
+            </list>
+          </property>
+          <property name="transitionChain" ref="TCN_RegisterStartup" />
+          <property name="errorState" ref="STATE_ReturnCancel" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_RegisterClosed" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_RegisterClosed" />
+    <property name="savePoint" value="true" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_LoginOpenRegister" />
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <ref bean="STTN_STD_PriceEnquiry" />
+        <ref bean="STTN_STD_ClockInOut" />
+        <ref bean="STTN_STD_ScaleInformation" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_EnterTrainingMode" />
+          <property name="transitionChain" ref="TCN_StartTrainingMode" />
+          <property name="validations" ref="trainingModeRules" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_ExitTrainingMode" />
+          <property name="transitionChain" ref="TCN_StopTrainingMode" />
+          <property name="validations" ref="trainingModeExitRules" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_LoggedOut" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_LoggedOut" />
+    <property name="savePoint" value="true" />
+    <property name="timers">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.rollingclose.StoreCloseTimer">
+          <property name="name" value="STORE_CLOSE_TIMER" />
+          <property name="type" value="STATE" />
+          <property name="delay" value="1" />
+          <property name="repeat" value="false" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_StoreCloseMessage" />
+        <bean parent="STTN_STD_StoreCloseWarning">
+          <property name="type" value="STANDARD" />
+          <property name="transitionChain" ref="TCN_StoreCloseWarning" />
+        </bean>
+        <bean parent="STTN_STD_StoreCloseGrace">
+          <property name="type" value="STANDARD" />
+          <property name="transitionChain" ref="TCN_StoreCloseGrace" />
+        </bean>
+        <bean parent="STTN_STD_StoreCloseExpired">
+          <property name="type" value="STANDARD" />
+          <property name="transitionChain" ref="TCN_StoreCloseExpired" />
+        </bean>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_Login" />
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Close_Register" />
+          <property name="transitionChain" ref="TCN_CloseRegisterAtLoggedOutState" />
+          <property name="successState" ref="STATE_RegisterClosed" />
+        </bean>
+        <ref bean="STTN_STD_PriceEnquiry" />
+        <ref bean="STTN_STD_ClockInOut" />
+        <ref bean="STTN_STD_ScaleInformation" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_LoggedIn" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_LoggedIn" />
+    <property name="savePoint" value="true" />
+    <property name="timers">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="IDLE_TIMER" />
+          <property name="type" value="IDLE" />
+          <property name="delay" value="300000" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="REGISTER_WORKSTATION_ACTIVE_TIMER" />
+          <property name="type" value="STATE" />
+          <property name="delay" value="0" />
+          <property name="repeat" value="false" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.rollingclose.StoreCloseTimer">
+          <property name="name" value="STORE_CLOSE_TIMER" />
+          <property name="type" value="STATE" />
+          <property name="delay" value="0" />
+          <property name="repeat" value="false" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.update.CheckForUpdateTimer">
+          <property name="name" value="CHECK_UPDATE_TIMER" />
+          <property name="type" value="STATE" />
+          <property name="delay" value="250" />
+          <property name="repeat" value="false" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_StoreCloseMessage" />
+        <ref bean="STTN_STD_CheckForUpdates" />
+        <ref bean="STTN_STD_RegisterWorkstationActive" />
+        <bean parent="STTN_STD_StoreCloseWarning">
+          <property name="type" value="STANDARD" />
+          <property name="transitionChain" ref="TCN_StoreCloseWarning" />
+        </bean>
+        <bean parent="STTN_STD_StoreCloseGrace">
+          <property name="type" value="STANDARD" />
+          <property name="transitionChain" ref="TCN_StoreCloseGrace" />
+        </bean>
+        <bean parent="STTN_STD_StoreCloseExpired">
+          <property name="type" value="STANDARD" />
+          <property name="transitionChain" ref="TCN_StoreCloseExpired" />
+        </bean>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListItemSelection" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <ref bean="STTN_STD_ShowCurrencyRates" />
+        <ref bean="STTN_STD_CustomerAdd" />
+        <ref bean="STTN_STD_CustomerByCustIdAdd" />
+        <ref bean="STTN_STD_RemoveCustomer" />
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <ref bean="STTN_STD_VerifiedReturn" />
+        <bean parent="STTN_TemplateQuantity">
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.transition.sale.ClearLastSoldLineItemTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedQuantityTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN">
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptContext" ref="CTX_LoggedIn" />
+                    <property name="promptKeyword" ref="KW_QuantityPreselectionFromLoggedIn" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <bean parent="STTN_TemplatePrice">
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.transition.sale.ClearLastSoldLineItemTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedPriceTN">
+                    <property name="validations" ref="itemPriceRules" />
+                  </bean>
+                  <ref bean="saleItemPriceRules" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN">
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptContext" ref="CTX_LoggedIn" />
+                    <property name="promptKeyword" ref="KW_PricePreselectionFromLoggedIn" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Logout" />
+          <property name="transitionChain" ref="TCN_Logout" />
+          <property name="successState" ref="STATE_LoggedOut" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_NonMerch" />
+          <property name="transitionChain" ref="TCN_SellNonMerchMenu" />
+          <property name="privilege" ref="PRV_SellNonPhysical" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Close_Register" />
+          <property name="transitionChain" ref="TCN_CloseRegister" />
+          <property name="successState" ref="STATE_RegisterClosed" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Reprint_Last_Receipt" />
+          <property name="transitionChain" ref="TCN_ReprintLastReceipt" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Reprint_Receipt" />
+          <property name="transitionChain" ref="TCN_ReprintReceipt" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_InventoryAdjustment" />
+          <property name="transitionChain" ref="TCN_InventoryAdjustment" />
+          <property name="successState" ref="STATE_InventoryAdjustment" />
+          <property name="privilege" ref="PRV_InventoryAdjustment" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Gift_Card_Balance" />
+          <property name="transitionChain" ref="TCN_GiftCardBalanceInquiry" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Till_Audit" />
+          <property name="transitionChain" ref="TCN_TillAudit" />
+          <property name="privilege" ref="PRV_TillAudit" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_NoSale" />
+          <property name="transitionChain" ref="TCN_NoSale" />
+          <property name="privilege" ref="PRV_NoSale" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_LoyaltyInquiry" />
+          <property name="transitionChain" ref="TCN_LoyaltyInquiry" />
+        </bean>
+        <ref bean="STTN_STD_PriceEnquiry" />
+        <ref bean="STTN_STD_ResumeTransaction" />
+        <ref bean="STTN_STD_PostVoid" />
+        <ref bean="STTN_STD_Pause" />
+        <bean parent="STTN_STD_ExecuteCode">
+          <property name="type" value="STANDARD" />
+          <property name="key" ref="KEY_Enter" />
+        </bean>
+        <bean parent="STTN_STD_ItemSale">
+          <property name="successState" ref="STATE_SaleInTransaction" />
+        </bean>
+        <bean parent="STTN_STD_HouseAccountPayment">
+          <property name="successState" ref="STATE_SaleInTransaction" />
+        </bean>
+        <bean parent="STTN_STD_HouseAccountReversal">
+          <property name="successState" ref="STATE_SaleInTransaction" />
+        </bean>
+        <bean parent="STTN_STD_BottleReturn">
+          <property name="successState" ref="STATE_SaleInTransaction" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_UnverifiedReturnMode" />
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnMode" />
+          <property name="privilege" ref="PRV_Return" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+          <property name="events">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.XstEventTypeDescriptor">
+              <property name="inputType" value="INPUT_CUSTOMER_CARD" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SetCustomerInput" />
+        </bean>
+        <ref bean="STTN_STD_ScaleInformation" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_InventoryAdjustment" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_InventoryAdjustment" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <ref bean="STTN_STD_InventoryAdjustmentCancel" />
+        <bean parent="STTN_TemplateQuantity">
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedQuantityTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN">
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptContext" ref="CTX_InventoryAdjustment" />
+                    <property name="promptKeyword" ref="KW_QuantityPreselectionFromInInvAdjustment" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <bean parent="STTN_STD_ProcessInventoryAdjustment">
+          <property name="successState" ref="STATE_InventoryAdjustmentInTransaction" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_InventoryAdjustmentInTransaction" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_InventoryAdjustmentInTransaction" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <ref bean="STTN_STD_ProcessInventoryAdjustment" />
+        <ref bean="STTN_STD_ListItemSelection" />
+        <ref bean="STTN_STD_InventoryAdjustmentCancel" />
+        <bean parent="STTN_TemplateQuantity">
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedQuantityTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN">
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptContext" ref="CTX_InventoryAdjustmentInTransaction" />
+                    <property name="promptKeyword" ref="KW_QuantityPreselectionFromInInvAdjustment" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidSelected" />
+          <property name="transitionChain" ref="TCN_InventoryAdjustmentVoidSelectedLine" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidLast" />
+          <property name="transitionChain" ref="TCN_InventoryAdjustmentItemVoidLast" />
+          <property name="privilege" ref="PRV_VoidItemLast" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_CompleteInventoryAdjustment" />
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Void" />
+          <property name="transitionChain" ref="TCN_InventoryAdjustmentVoidLine" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ReturnMode" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ReturnMode" />
+    <property name="savePoint" value="true" />
+    <property name="timers">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="IDLE_TIMER" />
+          <property name="type" value="IDLE" />
+          <property name="delay" value="300000" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <ref bean="STTN_STD_VerifiedReturn" />
+        <bean parent="STTN_TemplateQuantity">
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.transition.sale.ClearLastSoldLineItemTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedQuantityTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN">
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptContext" ref="CTX_ReturnMode" />
+                    <property name="promptKeyword" ref="KW_QuantityPreselectionFromReturn" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <!-- 
+        <bean parent="STTN_TemplatePrice">
+          <property name="transitionChain" >
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.transition.sale.ClearLastSoldLineItemTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedPriceTN">
+                    <property name="validations" ref="itemPriceRules" />
+                  </bean>
+                  <ref bean="saleItemPriceRules" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN" >
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptKeyword" ref="KW_PricePreselectionFromLoggedIn" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+         -->
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Logout" />
+          <property name="transitionChain" ref="TCN_Logout" />
+          <property name="successState" ref="STATE_LoggedOut" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_NonMerch" />
+          <property name="transitionChain" ref="TCN_ReturnNonMerchMenu" />
+          <property name="privilege" ref="PRV_ReturnWithNonReturnItem" />
+        </bean>
+        <ref bean="STTN_STD_CustomerAdd" />
+        <ref bean="STTN_STD_CustomerByCustIdAdd" />
+        <ref bean="STTN_STD_RemoveCustomer" />
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <ref bean="STTN_STD_PriceEnquiry" />
+        <ref bean="STTN_STD_PostVoid" />
+        <ref bean="STTN_STD_Pause" />
+        <bean parent="STTN_STD_ExecuteCode">
+          <property name="type" value="STANDARD" />
+          <property name="key" ref="KEY_Enter" />
+        </bean>
+        <bean parent="STTN_STD_UnverifiedReturn">
+          <property name="successState" ref="STATE_ReturnInTransaction" />
+        </bean>
+        <ref bean="STTN_STD_BottleReturnDisallowed" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_CancelReturnMode" />
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <ref bean="STTN_STD_ScaleInformation" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_VerifiedReturnMode" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_VerifiedReturnMode" />
+    <property name="savePoint" value="true" />
+    <property name="timers">
+      <list>
+        <bean class="com.micros_retail.xfgclient.statemachine.timer.StateMachineTimer">
+          <property name="name" value="IDLE_TIMER" />
+          <property name="type" value="IDLE" />
+          <property name="delay" value="300000" />
+        </bean>
+      </list>
+    </property>
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_VerifyTransactionForReturn" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_UnverifiedReturnMode" />
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnMode" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Logout" />
+          <property name="transitionChain" ref="TCN_Logout" />
+          <property name="successState" ref="STATE_LoggedOut" />
+        </bean>
+        <ref bean="STTN_STD_CustomerAdd" />
+        <ref bean="STTN_STD_CustomerByCustIdAdd" />
+        <ref bean="STTN_STD_RemoveCustomer" />
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <ref bean="STTN_STD_PriceEnquiry" />
+        <ref bean="STTN_STD_PostVoid" />
+        <ref bean="STTN_STD_Pause" />
+        <bean parent="STTN_STD_ExecuteCode">
+          <property name="type" value="STANDARD" />
+          <property name="key" ref="KEY_Enter" />
+        </bean>
+        <ref bean="STTN_STD_BottleReturnDisallowed" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <ref bean="STTN_STD_ScaleInformation" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_InPreselection" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_In_Preselection" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListItemSelection" />
+        <bean parent="STTN_STD_ListClick">
+          <property name="successState" ref="STATE_ReturnCancel" />
+          <property name="errorState" ref="STATE_ReturnCancel" />
+        </bean>
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Quantity" />
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_PriceEnquiry" />
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Price" />
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <ref bean="STTN_STD_Pause" />
+        <bean parent="STTN_STD_ItemSale">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_HouseAccountPayment">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_HouseAccountReversal">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_BottleReturn">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_CustomerAdd">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_CustomerByCustIdAdd">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_RemoveCustomer">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean parent="STTN_STD_ViewCustomerInformation">
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_NonMerch" />
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_TransactionCancel" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselectedAndReturn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidLast" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselectedAndReturn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Void" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselectedAndReturn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidSelected" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselectedAndReturn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Logout" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselectedAndReturn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselectedAndReturn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Discount" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselectedAndReturn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidDiscount" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselectedAndReturn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_UnverifiedReturnMode" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselectedAndReturn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_SaleClearPreselected" />
+          <property name="successState" ref="STATE_ReturnCancel" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_SaleInTransaction" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_SaleInTransaction" />
+    <property name="savePoint" value="true" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListItemSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <ref bean="STTN_STD_ActivateRcptPrinting" />
+        <bean parent="STTN_STD_SuspendTransaction">
+          <property name="transitionChain" ref="TCN_SuspendFromTransactionTotal" />
+        </bean>
+        <bean parent="STTN_TemplateQuantity">
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.transition.sale.ClearLastSoldLineItemTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedQuantityTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN">
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptContext" ref="CTX_SaleInTransaction" />
+                    <property name="promptKeyword" ref="KW_QuantityPreselectionFromInTransaction" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <bean parent="STTN_TemplatePrice">
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.transition.sale.ClearLastSoldLineItemTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedPriceTN">
+                    <property name="validations" ref="itemPriceRules" />
+                  </bean>
+                  <ref bean="saleItemPriceRules" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN">
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptContext" ref="CTX_SaleInTransaction" />
+                    <property name="promptKeyword" ref="KW_PricePreselectionFromInTransaction" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <ref bean="STTN_STD_Pause" />
+        <ref bean="STTN_STD_PriceEnquiry" />
+        <ref bean="STTN_STD_ItemSale" />
+        <ref bean="STTN_STD_HouseAccountPayment" />
+        <ref bean="STTN_STD_HouseAccountReversal" />
+        <ref bean="STTN_STD_BottleReturn" />
+        <ref bean="STTN_STD_CustomerAdd" />
+        <ref bean="STTN_STD_CustomerByCustIdAdd" />
+        <ref bean="STTN_STD_RemoveCustomer" />
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <bean parent="STTN_STD_TransactionCancel">
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+          <property name="events">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+              <property name="descriptors">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+                    <property name="key" ref="KEY_Void" />
+                  </bean>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.ExactlyOneItemInTransactionDescriptor" />
+                </list>
+              </property>
+            </bean>
+          </property>
+          <property name="privilege" ref="PRV_VoidTransaction" />
+          <property name="transitionChain" ref="TCN_SaleTransactionCancel" />
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <ref bean="STTN_STD_VoidLineItem" />
+        <ref bean="STTN_STD_VoidSelectedLineItem" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidLast" />
+          <property name="validations" ref="saleItemVoidLastRules" />
+          <property name="transitionChain" ref="TCN_SaleItemVoidLast" />
+          <property name="privilege" ref="PRV_VoidItemLast" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_NonMerch" />
+          <property name="transitionChain" ref="TCN_SellNonMerchMenu" />
+          <property name="privilege" ref="PRV_SellNonPhysical" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_ItemDiscount" />
+          <property name="validations" ref="saleItemDiscountLastRules" />
+          <property name="transitionChain" ref="TCN_SaleLastItemDiscount" />
+          <property name="privilege" ref="PRV_Discount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidItemDiscount" />
+          <property name="transitionChain" ref="TCN_SaleVoidItemDiscount" />
+          <property name="privilege" ref="PRV_VoidDiscount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Discount" />
+          <property name="transitionChain" ref="TCN_SaleDiscount" />
+          <property name="privilege" ref="PRV_Discount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_AwardDiscount" />
+          <property name="transitionChain" ref="TCN_RedeemAwardDiscount" />
+          <property name="privilege" ref="PRV_Discount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidDiscount" />
+          <property name="transitionChain" ref="TCN_SaleVoidDiscount" />
+          <property name="privilege" ref="PRV_VoidDiscount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_SaleTransactionTotal" />
+          <property name="successState" ref="STATE_SaleInTotal" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_UnverifiedReturnMode" />
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnInTransaction" />
+          <property name="privilege" ref="PRV_Return" />
+          <property name="validations" ref="allowMixedReturnInSaleTransactionRules" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ReturnInTransaction" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ReturnInTransaction" />
+    <property name="savePoint" value="true" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListItemSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <bean parent="STTN_TemplateQuantity">
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.transition.sale.ClearLastSoldLineItemTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedQuantityTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN">
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptContext" ref="CTX_ReturnInTransaction" />
+                    <property name="promptKeyword" ref="KW_QuantityPreselectionFromReturnInTransaction" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+        <!-- 
+        <bean parent="STTN_TemplatePrice">
+          <property name="transitionChain" >
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain"> 
+              <property name="transitions">
+                <list> 
+                  <bean class="com.micros_retail.xfgclient.transition.sale.ClearLastSoldLineItemTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.input.MoveInputToStorageTN" />
+                  <bean class="com.micros_retail.xfgclient.transition.sale.StoreSelectedPriceTN">
+                    <property name="validations" ref="itemPriceRules" />
+                  </bean>
+                  <ref bean="saleItemPriceRules" />
+                  <bean class="com.micros_retail.xfgclient.transition.util.InvokeStateTN">
+                    <property name="promptState" ref="STATE_InPreselection" />
+                    <property name="promptKeyword" ref="KW_PricePreselectionFromInTransaction" />
+                  </bean>
+                </list>
+              </property>
+            </bean>
+          </property>
+        </bean>
+         -->
+        <ref bean="STTN_STD_Pause" />
+        <ref bean="STTN_STD_PriceEnquiry" />
+        <ref bean="STTN_STD_UnverifiedReturn" />
+        <ref bean="STTN_STD_BottleReturnDisallowed" />
+        <ref bean="STTN_STD_CustomerAdd" />
+        <ref bean="STTN_STD_CustomerByCustIdAdd" />
+        <ref bean="STTN_STD_RemoveCustomer" />
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <bean parent="STTN_STD_TransactionCancel">
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.StateTransition">
+          <property name="events">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.AllDescriptor">
+              <property name="descriptors">
+                <list>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.KeyDescriptor">
+                    <property name="key" ref="KEY_Void" />
+                  </bean>
+                  <bean class="com.micros_retail.xfgclient.statemachine.event.ExactlyOneItemInTransactionDescriptor" />
+                </list>
+              </property>
+            </bean>
+          </property>
+          <property name="privilege" ref="PRV_VoidTransaction" />
+          <property name="transitionChain" ref="TCN_SaleTransactionCancel" />
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <ref bean="STTN_STD_VoidLineItem" />
+        <ref bean="STTN_STD_VoidSelectedLineItem" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_SaleInTransaction" />
+          <property name="validations" ref="allowMixedSaleInReturnTransactionRules" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidLast" />
+          <property name="validations" ref="saleItemVoidLastRules" />
+          <property name="transitionChain" ref="TCN_SaleItemVoidLast" />
+          <property name="privilege" ref="PRV_VoidItemLast" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_NonMerch" />
+          <property name="transitionChain" ref="TCN_ReturnNonMerchMenu" />
+          <property name="privilege" ref="PRV_ReturnWithNonReturnItem" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_ItemDiscount" />
+          <property name="validations" ref="saleItemDiscountLastRules" />
+          <property name="transitionChain" ref="TCN_SaleLastItemDiscount" />
+          <property name="privilege" ref="PRV_Discount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidItemDiscount" />
+          <property name="transitionChain" ref="TCN_SaleVoidItemDiscount" />
+          <property name="privilege" ref="PRV_VoidDiscount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Discount" />
+          <property name="transitionChain" ref="TCN_SaleDiscount" />
+          <property name="privilege" ref="PRV_Discount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidDiscount" />
+          <property name="transitionChain" ref="TCN_SaleVoidDiscount" />
+          <property name="privilege" ref="PRV_VoidDiscount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_SaleTransactionTotal" />
+          <property name="successState" ref="STATE_ReturnInTotal" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_SaleInTotal" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_InTotal" />
+    <property name="savePoint" value="true" />
+
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListItemSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <ref bean="STTN_STD_SuspendTransaction" />
+        <ref bean="STTN_STD_ActivateRcptPrinting" />
+        <ref bean="STTN_STD_Pause" />
+        <ref bean="STTN_STD_CustomerAdd" />
+        <ref bean="STTN_STD_CustomerByCustIdAdd" />
+        <ref bean="STTN_STD_RemoveCustomer" />
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <bean parent="STTN_STD_TransactionCancel">
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_TransactionDiscount" />
+          <property name="transitionChain" ref="TCN_SaleTransactionDiscount" />
+          <property name="privilege" ref="PRV_Discount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidTransactionDiscount" />
+          <property name="transitionChain" ref="TCN_SaleVoidTransactionDiscount" />
+          <property name="privilege" ref="PRV_VoidDiscount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Discount" />
+          <property name="transitionChain" ref="TCN_SaleDiscount" />
+          <property name="privilege" ref="PRV_Discount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_AwardDiscount" />
+          <property name="transitionChain" ref="TCN_RedeemAwardDiscount" />
+          <property name="privilege" ref="PRV_Discount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidDiscount" />
+          <property name="transitionChain" ref="TCN_SaleVoidDiscount" />
+          <property name="privilege" ref="PRV_VoidDiscount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_CompleteTransaction" />
+          <property name="transitionChain" ref="TCN_CompleteTransaction" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Foreign_Currency" />
+          <property name="transitionChain" ref="TCN_SaleTenderAdd" />
+          <property name="successState" ref="STATE_SaleInPayment" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_HouseAccount" />
+          <property name="transitionChain" ref="TCN_TenderHouseAccount" />
+          <property name="successState" ref="STATE_SaleInPayment" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.KeyTypeDescriptor">
+              <property name="keyType" value="TENDER" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SaleTenderAdd" />
+          <property name="successState" ref="STATE_SaleInPayment" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <ref bean="TCN_NotifyTransactionInSale" />
+                  <ref bean="updateTransactionTN" />
+                </list>
+              </property>
+            </bean>
+          </property>
+          <property name="successState" ref="STATE_SaleInTransaction" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ReturnInTotal" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_InTotal" />
+    <property name="savePoint" value="true" />
+
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListItemSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <ref bean="STTN_STD_InterpretKeyboardInput" />
+        <ref bean="STTN_STD_InterpretScannerInput" />
+        <ref bean="STTN_STD_SuspendTransaction" />
+        <ref bean="STTN_STD_ActivateRcptPrinting" />
+        <ref bean="STTN_STD_Pause" />
+        <ref bean="STTN_STD_CustomerAdd" />
+        <ref bean="STTN_STD_CustomerByCustIdAdd" />
+        <ref bean="STTN_STD_RemoveCustomer" />
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <bean parent="STTN_STD_TransactionCancel">
+          <property name="successState" ref="STATE_LoggedIn" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_TransactionDiscount" />
+          <property name="transitionChain" ref="TCN_SaleTransactionDiscount" />
+          <property name="privilege" ref="PRV_Discount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidTransactionDiscount" />
+          <property name="transitionChain" ref="TCN_SaleVoidTransactionDiscount" />
+          <property name="privilege" ref="PRV_VoidDiscount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_CompleteTransaction" />
+          <property name="transitionChain" ref="TCN_CompleteTransaction" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Foreign_Currency" />
+          <property name="transitionChain" ref="TCN_SaleTenderAdd" />
+          <property name="successState" ref="STATE_ReturnInPayment" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_HouseAccount" />
+          <property name="transitionChain" ref="TCN_TenderHouseAccount" />
+          <property name="successState" ref="STATE_ReturnInPayment" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.KeyTypeDescriptor">
+              <property name="keyType" value="TENDER" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SaleTenderAdd" />
+          <property name="successState" ref="STATE_ReturnInPayment" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain">
+            <bean class="com.micros_retail.xfgclient.transition.TransitionChain">
+              <property name="transitions">
+                <list>
+                  <ref bean="TCN_NotifyTransactionInSale" />
+                  <ref bean="updateTransactionTN" />
+                </list>
+              </property>
+            </bean>
+          </property>
+          <property name="successState" ref="STATE_ReturnInTransaction" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_SaleInPayment" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_InPayment" />
+    <property name="savePoint" value="true" />
+
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListTenderSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_CompleteTransaction" />
+          <property name="transitionChain" ref="TCN_CompleteTransaction" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Foreign_Currency" />
+          <property name="transitionChain" ref="TCN_SaleTenderAdd" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_HouseAccount" />
+          <property name="transitionChain" ref="TCN_TenderHouseAccount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.KeyTypeDescriptor">
+              <property name="keyType" value="TENDER" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SaleTenderAdd" />
+        </bean>
+        <ref bean="STTN_STD_CustomerAdd" />
+        <ref bean="STTN_STD_CustomerByCustIdAdd" />
+        <ref bean="STTN_STD_RemoveCustomer" />
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <bean parent="STTN_STD_VoidTenderLine">
+          <property name="successState" ref="STATE_SaleInTotal" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidLast" />
+          <property name="transitionChain" ref="TCN_TenderVoidLast" />
+          <property name="privilege" ref="PRV_VoidTenderLast" />
+          <property name="successState" ref="STATE_SaleInTotal" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ReturnInPayment" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_InPayment" />
+    <property name="savePoint" value="true" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_ListTenderSelection" />
+        <ref bean="STTN_STD_IgnoreListClick" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_CompleteTransaction" />
+          <property name="transitionChain" ref="TCN_CompleteTransaction" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Foreign_Currency" />
+          <property name="transitionChain" ref="TCN_SaleTenderAdd" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_HouseAccount" />
+          <property name="transitionChain" ref="TCN_TenderHouseAccount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.KeyTypeDescriptor">
+              <property name="keyType" value="TENDER" />
+            </bean>
+          </property>
+          <property name="transitionChain" ref="TCN_SaleTenderAdd" />
+        </bean>
+        <ref bean="STTN_STD_CustomerAdd" />
+        <ref bean="STTN_STD_CustomerByCustIdAdd" />
+        <ref bean="STTN_STD_RemoveCustomer" />
+        <ref bean="STTN_STD_ViewCustomerInformation" />
+        <bean parent="STTN_STD_VoidTenderLine">
+          <property name="successState" ref="STATE_ReturnInTotal" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidLast" />
+          <property name="transitionChain" ref="TCN_TenderVoidLast" />
+          <property name="privilege" ref="PRV_VoidTenderLast" />
+          <property name="successState" ref="STATE_ReturnInTotal" />
+        </bean>
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_TillCount" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_TillCount" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_TillCountListSelection" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_TillCountEntry" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_CompleteTillCount" />
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+        </bean>
+        <ref bean="STTN_STD_IgnoreDrawerOpened" />
+        <ref bean="STTN_STD_Entry_CancelOnESC" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_DenominationCountEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_DenominationCountEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_TillCountEntryListSelection" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_TenderCount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_ClearTillCountEntries" />
+          <property name="successState" ref="STATE_ReturnCancel" />
+        </bean>
+        <ref bean="STTN_STD_CompleteTillCountEntry" />
+        <ref bean="STTN_STD_IgnoreDrawerOpened" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_TotalsCountEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_TotalsCountEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_TillCountEntryListSelection" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_TenderCount" />
+          <property name="successState" ref="STATE_TotalsAmountEntry" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_ClearTillCountEntries" />
+          <property name="successState" ref="STATE_ReturnCancel" />
+        </bean>
+        <ref bean="STTN_STD_CompleteTillCountEntry" />
+        <ref bean="STTN_STD_IgnoreDrawerOpened" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_TotalsAmountEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_TotalsAmountEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_TillCountEntryListSelection" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_TenderAmount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_ClearTillCountEntries" />
+          <property name="successState" ref="STATE_ReturnCancel" />
+        </bean>
+        <ref bean="STTN_STD_CompleteTillCountEntry" />
+        <ref bean="STTN_STD_IgnoreDrawerOpened" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_UnitCountEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_UnitCountEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_TillCountEntryListSelection" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidSelected" />
+          <property name="transitionChain" ref="TCN_VoidUnitCount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_TenderCount" />
+          <property name="successState" ref="STATE_UnitAmountEntry" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_ClearTillCountEntries" />
+          <property name="successState" ref="STATE_ReturnCancel" />
+        </bean>
+        <ref bean="STTN_STD_CompleteTillCountEntry" />
+        <ref bean="STTN_STD_IgnoreDrawerOpened" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_UnitAmountEntry" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_UnitAmountEntry" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInput" />
+        <ref bean="STTN_STD_PasteData" />
+        <ref bean="STTN_STD_TillCountEntryListSelection" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_VoidSelected" />
+          <property name="transitionChain" ref="TCN_VoidUnitCount" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Enter" />
+          <property name="transitionChain" ref="TCN_TenderAmount" />
+          <property name="successState" ref="STATE_UnitCountEntry" />
+        </bean>
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="key" ref="KEY_Escape" />
+          <property name="transitionChain" ref="TCN_ClearTillCountEntries" />
+          <property name="successState" ref="STATE_ReturnCancel" />
+        </bean>
+        <ref bean="STTN_STD_CompleteTillCountEntry" />
+        <ref bean="STTN_STD_IgnoreDrawerOpened" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_ReasonCodeComments" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_ReasonCodeComments" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_AlphaNumericInputWithEnter" />
+        <ref bean="STTN_STD_PasteData" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleKeyStateTransition">
+          <property name="transitionChain" ref="TCN_Succeed" />
+          <property name="successState" ref="STATE_ReturnCapture" />
+          <property name="key" ref="KEY_Accept" />
+        </bean>
+        <ref bean="STTN_STD_Entry_CancelOnESC" />
+        <ref bean="STTN_STD_InvalidKeyError" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_DepartmentLookup" class="com.micros_retail.xfgclient.statemachine.state.State">
+    <property name="context" ref="CTX_Default" />
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_Entry_CancelOnESC" />
+        <ref bean="STTN_STD_SwipeEvent" />
+        <bean class="com.micros_retail.xfgclient.statemachine.statetransition.SingleDescriptorStateTransition">
+          <property name="event">
+            <bean class="com.micros_retail.xfgclient.statemachine.event.AlwaysDescriptor" />
+          </property>
+          <property name="transitionChain" ref="TCN_UtilReturnAndRepeatEvent" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="STATE_QuickPick" parent="STATE_DepartmentLookup" />
+
+  <bean id="STATE_ItemSelection" parent="STATE_DepartmentLookup" />
+
+  <bean id="STATE_IgnoreDrawerOpenedNotification" parent="STATE_Notification">
+    <property name="transitions">
+      <list>
+        <ref bean="STTN_STD_IgnoreDrawerOpened" />
+        <ref bean="STTN_STD_Entry_CancelOnESCOrDelete" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

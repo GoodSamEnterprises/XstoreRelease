@@ -1,0 +1,3876 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <!-- *************************************************************************** -->
+  <!-- *** INVOICE RESET SEQUENCE *** -->
+  <!-- *************************************************************************** -->
+
+  <!-- Returns the last date when the store was opened before today -->
+  <!-- Must be called *after* the current open store transaction has been written -->
+  <Query name="COUNTRYPACK.RETAIL_LOCATION_LAST_OPEN_DATE" pmType="STATE_JOURNAL">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="Date" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT bdate FROM (
+        SELECT business_date AS bdate, ROW_NUMBER() OVER (ORDER BY business_date DESC, T.TRANS_SEQ DESC) AS RowNumber
+          FROM trn_trans T
+          WHERE organization_id = ?
+            AND rtl_loc_id = ?
+            AND /*UPPER*/ TRANS_TYPCODE = 'SYSTEM_OPEN'
+            AND /*UPPER*/ TRANS_STATCODE = 'COMPLETE'
+            AND POST_VOID_FLAG = 0) ref
+        WHERE RowNumber = 2]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" pmType="STATE_JOURNAL">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="Date" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT MAX(date_value)
+        FROM loc_state_journal
+        WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND status_typcode = ?
+          AND time_stamp <
+      (
+        SELECT MAX(time_stamp)
+          FROM loc_State_journal
+          WHERE organization_id = ?
+            AND rtl_loc_id = ?
+            AND wkstn_id = ?
+            AND status_typcode = ?
+      )]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argSJTypeBusinessDate" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argSJTypeWkstnState" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY organization_id, rtl_loc_id]]></Suffix>
+  </Query>
+  <!-- *************************************************************************** -->
+  <!-- *** INVOICE *** -->
+  <!-- *************************************************************************** -->
+  <Query name="COUNTRYPACK.INVOICE_LOOKUP">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.civc.SaleInvoiceId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        INNER join civc_invoice_xref xref
+          ON t.organization_id = xref.organization_id
+          AND t.rtl_loc_id = xref.rtl_loc_id
+          AND t.wkstn_id = xref.wkstn_id
+          AND t.business_year = xref.business_year
+          AND t.sequence_id = xref.sequence_id
+          AND t.sequence_nbr = xref.sequence_nbr
+        WHERE xref.ORGANIZATION_ID = ?
+          AND xref.TRANS_RTL_LOC_ID = ?
+          AND xref.TRANS_BUSINESS_DATE = ?
+          AND xref.TRANS_WKSTN_ID = ?
+          AND xref.TRANS_TRANS_SEQ = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argTransactionSequence" />
+            <Expression trigger="argVoidFlag" parameters="argVoidFlag,argVoidFlag"><![CDATA[t.void_flag = ? and t.return_flag = ? and /*UPPER*/ t.invoice_type <> 'TAXFREE_CREDIT_NOTE']]></Expression>
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.SEARCH_LAST_INVOICE" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.DefaultTransactionSummaryModel</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="RetailLocationId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionSequence" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT trn.organization_id, trn.rtl_loc_id, trn.business_date, trn.wkstn_id, trn.trans_seq
+        FROM trn_trans trn
+        LEFT JOIN trn_trans_link link
+             ON (trn.organization_id = link.organization_id
+               And trn.rtl_loc_id = link.rtl_loc_id
+               And trn.wkstn_id = link.wkstn_id
+               And trn.business_date = link.business_date
+               And trn.trans_seq = link.trans_seq )
+        WHERE trn.organization_id = ?
+          AND trn.rtl_loc_id = ?
+          AND trn.wkstn_id = ?
+          AND trn.business_date = ?
+          AND trn.post_void_flag = 0
+          AND /*UPPER*/ trn.trans_statcode = 'COMPLETE'
+          AND (/*UPPER*/ trn.trans_typcode = 'RETAIL_SALE'
+              OR (/*UPPER*/ trn.trans_typcode = 'DEFERRED_INVOICE' AND /*UPPER*/ link.link_typcode IN ('DEFERRED_INVOICE_TRANSACTION', 'DEFERRED_TAXFREE_TRANSACTION')))
+        ORDER BY trn.trans_seq DESC
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkStationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+
+  <!-- *************************************************************************** -->
+  <!-- *** INVOICE - TAX FREE *** -->
+  <!-- *************************************************************************** -->
+  <Query name="COUNTRYPACK.TAXFREE_TRANSACTION_SEARCH" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.taxfree.TaxFreeDefaultTransactionSummaryModel</ResultClass>
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="TransactionDate" type="Date" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="RetailLocationId" type="Long" />
+    <ResultField name="TransactionSequence" type="Long" />
+    <ResultField name="Total" type="BigDecimal" />
+    <ResultField name="FiscalNumber" type="String" />
+    <ResultField name="FirstName" type="String" />
+    <ResultField name="LastName" type="String" />
+    <ResultField name="BeginDatetimestamp" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT t.business_date,
+               t.trans_date,
+               t.wkstn_id,
+               t.organization_id,
+               t.rtl_loc_id,
+               t.trans_seq,
+               t.total,
+               t.fiscal_number,
+               cp.first_name AS fName,
+               cp.last_name AS lName,
+               t.begin_datetime
+        FROM trn_trans t
+          JOIN trl_rtrans rt
+            ON t.organization_id = rt.organization_id
+            AND t.rtl_loc_id = rt.rtl_loc_id
+            AND t.wkstn_id = rt.wkstn_id
+            AND t.business_date = rt.business_date
+            AND t.trans_seq = rt.trans_seq
+        LEFT JOIN
+            (SELECT invf.sequence_nbr,
+              xref.organization_id,
+              xref.trans_rtl_loc_id,
+              xref.trans_business_date,
+              xref.trans_wkstn_id,
+              xref.trans_trans_seq
+            FROM civc_invoice invf
+            INNER JOIN civc_invoice_xref xref
+              ON invf.organization_id    = xref.organization_id
+              AND invf.rtl_loc_id        = xref.rtl_loc_id
+              AND invf.wkstn_id          = xref.wkstn_id
+              AND invf.business_year     = xref.business_year
+              AND invf.sequence_id       = xref.sequence_id
+              AND invf.sequence_nbr      = xref.sequence_nbr
+              AND invf.void_flag       = 0
+              AND invf.return_flag = 0
+              AND /*UPPER*/ invf.invoice_type <> 'TAXFREE_CREDIT_NOTE'
+            ) inv
+            ON t.organization_id         = inv.organization_id
+            AND t.rtl_loc_id             = inv.trans_rtl_loc_id
+            AND t.wkstn_id               = inv.trans_wkstn_id
+            AND t.business_date          = inv.trans_business_date
+            AND t.trans_seq              = inv.trans_trans_seq
+        LEFT JOIN crm_party cp
+            ON cp.organization_id=rt.organization_id
+            AND cp.party_id      =rt.cust_party_id
+        WHERE t.organization_id = ?
+          AND /*UPPER*/ t.trans_typCode = 'RETAIL_SALE'
+          AND /*UPPER*/ t.trans_statCode = 'COMPLETE'
+          AND t.post_void_flag = 0
+          AND coalesce(inv.sequence_nbr, 0) = 0
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Expression parameters="argStartWorkstationId, argEndWorkstationId" trigger="argStartWorkstationId"><![CDATA[? <= t.wkstn_id and t.wkstn_id <= ?]]></Expression>
+      <Expression parameters="argStartTranSeq, argEndTranSeq" trigger="argStartTranSeq"><![CDATA[? <= t.trans_seq and t.trans_seq <= ?]]></Expression>
+      <Expression parameters="argStartDate, argEndDate" trigger="argStartDate"><![CDATA[t.trans_date between ? and ?]]></Expression>
+      <Expression parameters="argStartTime, argEndTime" trigger="argStartTime"><![CDATA[t.begin_time_int between ? and ?]]></Expression>
+      <Expression parameters="argStartEmployeeId, argEndEmployeeId" trigger="argEmployeeRange"><![CDATA[? <= t.operator_party_id and t.operator_party_id <= ?]]></Expression>
+      <Expression parameters="argCustomerId, argCustomerId" trigger="argCustomerId"><![CDATA[/*UPPER*/ cp.last_name = ? or /*UPPER*/ cp.cust_id = ?]]></Expression>
+      <Expression parameters="argTotalStart, argTotalEnd" trigger="argTotalStart"><![CDATA[? <= t.total and t.total <= ?]]></Expression>
+      <Expression trigger="argTotalNull"><![CDATA[t.total is not null and ? = 'IsNull']]></Expression>
+      <Expression trigger="argWorkstationId"><![CDATA[ t.wkstn_id = ?]]></Expression>
+      <Expression trigger="argRetailLocationId"><![CDATA[ t.rtl_loc_id = ?]]></Expression>
+      <Expression trigger="argTransactionSeq"><![CDATA[ t.trans_seq = ?]]></Expression>
+      <Expression parameters="argTranBusinessDateSearch,argTranBusinessDateSearch" trigger="argTranBusinessDateSearch"><![CDATA[t.business_date = ? OR t.trans_date = ?]]></Expression>
+    </SQL>
+    <Property>
+      <Key dtype="String">MaxRows</Key>
+      <Value dtype="String"><![CDATA[250]]></Value>
+    </Property>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.begin_datetime DESC]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.TAXFREE.LOADCOUNTRIES">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.civc.TaxFreeCountryId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+          WHERE t.organization_id = ?
+            AND t.rtl_loc_id = ?
+            AND t.wkstn_id = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Expression trigger="argIso2Code"><![CDATA[/*UPPER*/ t.iso2alp_code = ?]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.TAXFREE.LOADCARDRANGES">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.civc.TaxFreeCardRangeId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+          WHERE t.organization_id = ?
+            AND t.rtl_loc_id = ?
+            AND t.wkstn_id = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.TAXFREE.CHECK_CARD" pmType="TAXFREE_CFG">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="range_start" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT RANGE_START FROM CIVC_TAXFREE_CARD_RANGE
+          WHERE ORGANIZATION_ID = ?
+            AND RTL_LOC_ID = ?
+            AND WKSTN_ID = ?
+            AND RANGE_START<=?
+            AND /*UPPER*/ RANGE_END>?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argCardNumber" />
+      <Parameter name="argCardNumber" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.TAXFREE.TRANSACTION_VALIDATION_DATES" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="beginDate" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT t.begin_datetime
+          FROM CIVC_INVOICE_XREF xr
+            INNER JOIN TRN_TRANS t
+              ON (    xr.ORGANIZATION_ID = t.ORGANIZATION_ID
+                  AND xr.TRANS_RTL_LOC_ID = t.RTL_LOC_ID
+                  AND xr.TRANS_BUSINESS_DATE = t.BUSINESS_DATE
+                  AND xr.TRANS_WKSTN_ID = t.WKSTN_ID
+                  AND xr.TRANS_TRANS_SEQ = t.TRANS_SEQ)
+              WHERE xr.ORGANIZATION_ID = ?
+                AND xr.RTL_LOC_ID = ?
+                AND xr.WKSTN_ID = ?
+                AND xr.BUSINESS_YEAR = ?
+                AND xr.SEQUENCE_ID = ?
+                AND xr.SEQUENCE_NBR = ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessYear" />
+      <Parameter name="argSequenceId" />
+      <Parameter name="argSequenceNbr" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.TAXFREE.CHECK_RETURNED_ITEMS" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="locationId" type="Long" />
+    <ResultField name="wkstnId" type="Long" />
+    <ResultField name="businessDate" type="Date" />
+    <ResultField name="transSequence" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT rtn_rtl_loc_id,rtn_wkstn_id,rtn_business_date,rtn_trans_seq
+    FROM trl_returned_item_journal
+    WHERE organization_id = ?
+      AND rtl_loc_id = ?
+      AND business_date = ?
+      AND wkstn_id = ?
+      AND trans_seq = ?
+    GROUP BY rtn_rtl_loc_id,rtn_wkstn_id,rtn_business_date,rtn_trans_seq,rtn_rtrans_lineitm_seq
+    HAVING sum(returned_count) <> 0
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+  </Query>
+
+  <!-- *************************************************************************** -->
+  <!-- *** TRANSACTION_SEARCH WITH INVOICE INFORMATION *** -->
+  <!-- *************************************************************************** -->
+  <Query name="COUNTRYPACK.TRANSACTION_SEARCH_INVOICE" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.invoice.ejournal.InvoiceTransactionSummaryModel</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="TransactionDate" type="Date" />
+    <ResultField name="RetailLocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionSequence" type="Long" />
+    <ResultField name="TransactionTypeCode" type="String" />
+    <ResultField name="TenderControlTypeCode" type="String" />
+    <ResultField name="SessionControlTypeCode" type="String" />
+    <ResultField name="BeginDatetimestamp" type="Date" />
+    <ResultField name="EndDatetimestamp" type="Date" />
+    <ResultField name="OperatorId" type="String" />
+    <ResultField name="TransactionStatusCode" type="String" />
+    <ResultField name="Total" type="BigDecimal" />
+    <ResultField name="FirstName" type="String" />
+    <ResultField name="LastName" type="String" />
+    <ResultField name="PostVoid" type="Boolean" />
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="InvoiceType" type="String" />
+    <ResultField name="InvoiceNumber" type="Long" />
+    <ResultField name="InvoiceExternalId" type="String" />
+    <ResultField name="InvoicePrefix" type="String" />
+    <ResultField name="InvoiceSequenceId" type="String" />
+    <ResultField name="LinkTranRetailLocationId" type="Long" />
+    <ResultField name="LinkTranBusinessDate" type="Date" />
+    <ResultField name="LinkTranWorkstationId" type="Long" />
+    <ResultField name="LinkTranTransactionSequence" type="Long" />
+    <ResultField name="LinkType" type="String" />
+    <ResultField name="LinkInvoiceCount" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT t.organization_id AS organizationId,
+               t.business_date AS businessDate,
+               t.trans_date,
+               t.rtl_loc_id AS retailLocationId,
+               t.wkstn_id AS workstationId,
+               t.trans_seq AS transactionSequence,
+               t.trans_typcode AS transactionTypeCode,
+               tct.typcode AS tenderControlTranTypeCode,
+               sct.typcode AS sessionControlTranTypeCode,
+               t.begin_datetime AS beginDatetimestamp,
+               t.end_datetime AS endDatetimestamp,
+               ep.employee_id AS operatorId,
+               t.trans_statcode AS transactionStatusCode,
+               t.total AS total,
+               cp.first_name AS fName,
+               cp.last_name AS lName,
+               t.post_void_flag AS postVoid,
+               t.organization_id AS organizationId,
+               inv.invoice_type,
+               inv.sequence_nbr,
+               inv.ext_invoice_id,
+               inv.invoice_prefix,
+               inv.sequence_id,
+               lnk.link_rtl_loc_id,
+               lnk.link_business_date,
+               lnk.link_wkstn_id,
+               lnk.link_trans_seq,
+               lnk.link_typcode,
+               lnk.invoice_count
+        FROM trn_trans t
+          LEFT JOIN trl_rtrans rt
+            ON t.organization_id = rt.organization_id
+            AND t.business_date = rt.business_date
+            AND t.rtl_loc_id = rt.rtl_loc_id
+            AND t.wkstn_id = rt.wkstn_id
+            AND t.trans_seq = rt.trans_seq
+          LEFT JOIN tsn_tndr_control_trans tct
+            ON t.organization_id = tct.organization_id
+            AND t.business_date = tct.business_date
+            AND t.rtl_loc_id = tct.rtl_loc_id
+            AND t.wkstn_id = tct.wkstn_id
+            AND t.trans_seq = tct.trans_seq
+          LEFT JOIN tsn_session_control_trans sct
+            ON t.organization_id = sct.organization_id
+            AND t.business_date = sct.business_date
+            AND t.rtl_loc_id = sct.rtl_loc_id
+            AND t.wkstn_id = sct.wkstn_id
+            AND t.trans_seq = sct.trans_seq
+          LEFT JOIN crm_party cp
+            ON rt.organization_id = cp.organization_id
+            AND rt.cust_party_id = cp.party_id
+          LEFT JOIN crm_party ep
+            ON t.organization_id = ep.organization_id
+            AND t.operator_party_id = ep.party_id
+          LEFT JOIN
+              (SELECT invf.party_id,
+                invf.invoice_type,
+                invf.sequence_nbr,
+                invf.ext_invoice_id,
+                invf.invoice_prefix,
+                invf.sequence_id,
+                invf.ext_invoice_barcode,
+                xref.organization_id,
+                xref.trans_rtl_loc_id,
+                xref.trans_business_date,
+                xref.trans_wkstn_id,
+                xref.trans_trans_seq,
+                invf.business_date
+              FROM civc_invoice invf
+              INNER JOIN civc_invoice_xref xref
+              ON invf.organization_id    = xref.organization_id
+              AND invf.rtl_loc_id        = xref.rtl_loc_id
+              AND invf.wkstn_id          = xref.wkstn_id
+              AND invf.business_year     = xref.business_year
+              AND invf.sequence_id       = xref.sequence_id
+              AND invf.sequence_nbr      = xref.sequence_nbr
+              AND invf.void_flag       = 0
+              AND invf.return_flag = 0
+              AND /*UPPER*/ invf.invoice_type <> 'TAXFREE_CREDIT_NOTE'
+              ) inv
+            ON t.organization_id         = inv.organization_id
+            AND t.rtl_loc_id             = inv.trans_rtl_loc_id
+            AND t.wkstn_id               = inv.trans_wkstn_id
+            AND t.business_date          = inv.trans_business_date
+            AND t.trans_seq              = inv.trans_trans_seq
+          LEFT JOIN
+              (SELECT organization_id,
+                rtl_loc_id,
+                business_date,
+                wkstn_id,
+                trans_seq,
+                COUNT(*) as invoice_count,
+                MIN(link_rtl_loc_id) AS link_rtl_loc_id,
+                MIN(link_business_date) AS link_business_date,
+                MIN(link_wkstn_id) AS link_wkstn_id,
+                MIN(link_trans_seq) AS link_trans_seq,
+                MIN(link_typcode) AS link_typcode
+              FROM trn_trans_link
+              GROUP BY organization_id,
+                rtl_loc_id,
+                business_date,
+                wkstn_id,
+                trans_seq) lnk
+            ON lnk.organization_id = t.organization_id
+            AND lnk.rtl_loc_id = t.rtl_loc_id
+            AND lnk.business_date = t.business_date
+            AND lnk.wkstn_id = t.wkstn_id
+            AND lnk.trans_seq = t.trans_seq
+            AND /*UPPER*/ lnk.link_typcode IN ?
+          LEFT JOIN (
+          SELECT inv.organization_id,
+            inv.rtl_loc_id,
+            inv.wkstn_id,
+            inv.business_year,
+            inv.sequence_id,
+            inv.sequence_nbr,
+            cinvP.string_value,
+                xref.trans_trans_seq,
+                xref.trans_business_date,
+                xref.trans_wkstn_id,
+                xref.trans_rtl_loc_id
+          FROM civc_invoice inv
+          INNER JOIN civc_invoice_xref xref
+                ON inv.organization_id = xref.organization_id
+            AND inv.rtl_loc_id     = xref.rtl_loc_id
+            AND inv.wkstn_id       = xref.wkstn_id
+            AND inv.business_year  = xref.business_year
+            AND inv.sequence_id    = xref.sequence_id
+            AND inv.sequence_nbr   = xref.sequence_nbr
+          INNER JOIN civc_invoice_p cinvP
+                ON inv.organization_id  = cinvP.organization_id
+            AND inv.rtl_loc_id      = cinvP.rtl_loc_id
+            AND inv.wkstn_id        = cinvP.wkstn_id
+            AND inv.business_year   = cinvP.business_year
+            AND inv.sequence_id     = cinvP.sequence_id
+            AND inv.sequence_nbr    = cinvP.sequence_nbr
+            AND cinvP.property_code = 'CIVC_CUST_FIRST_NAME'
+          WHERE
+            inv.void_flag       = 0
+            AND inv.return_flag = 0
+            AND /*UPPER*/ inv.invoice_type <> 'TAXFREE_CREDIT_NOTE'
+          ) inva
+            ON t.organization_id = inva.organization_id
+          AND t.rtl_loc_id     = inva.trans_rtl_loc_id
+          AND t.wkstn_id       = inva.trans_wkstn_id
+          AND t.business_date  = inva.trans_business_date
+          AND t.trans_seq      = inva.trans_trans_seq
+          LEFT JOIN (
+            SELECT inv.organization_id,
+                inv.rtl_loc_id,
+                inv.wkstn_id,
+                inv.business_year,
+                inv.sequence_id,
+                inv.sequence_nbr,
+                cinvP.string_value,
+                xref.trans_trans_seq,
+                xref.trans_business_date,
+                xref.trans_wkstn_id,
+                xref.trans_rtl_loc_id
+            FROM civc_invoice inv
+            INNER JOIN civc_invoice_xref xref
+                ON inv.organization_id = xref.organization_id
+                AND inv.rtl_loc_id     = xref.rtl_loc_id
+                AND inv.wkstn_id       = xref.wkstn_id
+                AND inv.business_year  = xref.business_year
+                AND inv.sequence_id    = xref.sequence_id
+                AND inv.sequence_nbr   = xref.sequence_nbr
+            INNER JOIN civc_invoice_p cinvP
+                ON inv.organization_id  = cinvP.organization_id
+                AND inv.rtl_loc_id      = cinvP.rtl_loc_id
+                AND inv.wkstn_id        = cinvP.wkstn_id
+                AND inv.business_year   = cinvP.business_year
+                AND inv.sequence_id     = cinvP.sequence_id
+                AND inv.sequence_nbr    = cinvP.sequence_nbr
+                AND cinvP.property_code = 'CIVC_CUST_LAST_NAME'
+            WHERE
+              inv.void_flag = 0
+              AND inv.return_flag = 0
+              AND /*UPPER*/ inv.invoice_type <> 'TAXFREE_CREDIT_NOTE'
+            ) invb
+            ON t.organization_id   = invb.organization_id
+            AND t.rtl_loc_id       = invb.trans_rtl_loc_id
+            AND t.wkstn_id         = invb.trans_wkstn_id
+            AND t.business_date    = invb.trans_business_date
+            AND t.trans_seq        = invb.trans_trans_seq
+          LEFT JOIN (
+            SELECT inv.organization_id,
+                inv.rtl_loc_id,
+                inv.wkstn_id,
+                inv.business_year,
+                inv.sequence_id,
+                inv.sequence_nbr,
+                cinvP.string_value,
+                xref.trans_trans_seq,
+                xref.trans_business_date,
+                xref.trans_wkstn_id,
+                xref.trans_rtl_loc_id
+            FROM civc_invoice inv
+            INNER JOIN civc_invoice_xref xref
+                ON inv.organization_id = xref.organization_id
+                AND inv.rtl_loc_id     = xref.rtl_loc_id
+                AND inv.wkstn_id       = xref.wkstn_id
+                AND inv.business_year  = xref.business_year
+                AND inv.sequence_id    = xref.sequence_id
+                AND inv.sequence_nbr   = xref.sequence_nbr
+            INNER JOIN civc_invoice_p cinvP
+                ON inv.organization_id  = cinvP.organization_id
+                AND inv.rtl_loc_id      = cinvP.rtl_loc_id
+                AND inv.wkstn_id        = cinvP.wkstn_id
+                AND inv.business_year   = cinvP.business_year
+                AND inv.sequence_id     = cinvP.sequence_id
+                AND inv.sequence_nbr    = cinvP.sequence_nbr
+                AND cinvP.property_code = 'CIVC_CUST_ORG_NAME'
+            WHERE inv.void_flag = 0
+              AND inv.return_flag = 0
+              AND /*UPPER*/ inv.invoice_type <> 'TAXFREE_CREDIT_NOTE'
+            ) invc
+            ON t.organization_id = invc.organization_id
+            AND t.rtl_loc_id     = invc.trans_rtl_loc_id
+            AND t.wkstn_id       = invc.trans_wkstn_id
+            AND t.business_date  = invc.trans_business_date
+            AND t.trans_seq      = invc.trans_trans_seq
+        WHERE t.organization_id = ?
+        ]]></Statement>
+      <Parameter name="@argDeferredLinkTypes" />
+      <Parameter name="argOrganizationId" />
+      <Expression parameters="argStartRetailLocationId, argEndRetailLocationId" trigger="argStartRetailLocationId"><![CDATA[? <= t.rtl_loc_id and t.rtl_loc_id <= ?]]></Expression>
+      <Expression trigger="@argRetailLocationIdList"><![CDATA[t.rtl_loc_id IN ?]]></Expression>
+      <Expression parameters="argStartDate, argEndDate" trigger="argStartDate"><![CDATA[t.trans_date between ? and ?]]></Expression>
+      <Expression parameters="argStartTime, argEndTime" trigger="argStartTime"><![CDATA[t.begin_time_int between ? and ?]]></Expression>
+      <Expression parameters="argStartWorkstationId, argEndWorkstationId" trigger="argStartWorkstationId"><![CDATA[? <= t.wkstn_id and t.wkstn_id <= ?]]></Expression>
+      <Expression parameters="argStartTranSeq, argEndTranSeq" trigger="argStartTranSeq"><![CDATA[? <= t.trans_seq and t.trans_seq <= ?]]></Expression>
+      <Expression parameters="argStartEmployeeId, argEndEmployeeId" trigger="argEmployeeRange"><![CDATA[/*UPPER*/ ep.employee_id between ? and ?]]></Expression>
+      <Expression trigger="argStartEmployeeId"><![CDATA[/*UPPER*/ ep.employee_id >= ?]]></Expression>
+      <Expression trigger="argEndEmployeeId"><![CDATA[/*UPPER*/ ep.employee_id <= ?]]></Expression>
+      <Expression parameters="argCustomerId, argCustomerId" trigger="argCustomerId"><![CDATA[/*UPPER*/ cp.last_name = ? or /*UPPER*/ cp.cust_id = ?]]></Expression>
+      <Expression trigger="argTenderId"><![CDATA[EXISTS
+          (Select * From ttr_tndr_lineitm tl
+            Where tl.organization_id = t.organization_id
+              And tl.business_date = t.business_date
+              And tl.rtl_loc_id = t.rtl_loc_id
+              And tl.wkstn_id = t.wkstn_id
+              And tl.trans_seq = t.trans_seq
+              And /*UPPER*/ tl.tndr_id = ?)]]></Expression>
+      <Expression trigger="argTranType"><![CDATA[/*UPPER*/ t.trans_typcode = ?]]></Expression>
+      <Expression trigger="argHashedAcct"><![CDATA[EXISTS
+          (Select * From ttr_credit_debit_tndr_lineitm cdtl
+            Where t.organization_id = cdtl.organization_id
+              And t.business_date = cdtl.business_date
+              And t.rtl_loc_id = cdtl.rtl_loc_id
+              And t.wkstn_id = cdtl.wkstn_id
+              And t.trans_seq = cdtl.trans_seq
+              And /*UPPER*/ cdtl.acct_nbr_hash = ?)]]></Expression>
+      <Expression parameters="argCheckSeqNbr, argBankId, argCheckAcctNbr" trigger="argCheckSeqNbr"><![CDATA[EXISTS
+          (Select * From ttr_check_tndr_lineitm cek
+            Where t.organization_id = cek.organization_id
+              And t.business_date = cek.business_date
+              And t.rtl_loc_id = cek.rtl_loc_id
+              And t.wkstn_id = cek.wkstn_id
+              And t.trans_seq = cek.trans_seq
+              And /*UPPER*/ cek.check_seq_nbr = ?
+              And /*UPPER*/ cek.bank_id = ?
+              And /*UPPER*/ cek.check_acct_nbr = ?)]]></Expression>
+      <Expression trigger="argFiscalNumber"><![CDATA[/*UPPER*/ t.fiscal_number LIKE ?]]></Expression>
+      <Expression trigger="@argInvoiceType"><![CDATA[/*UPPER*/ inv.invoice_type IN ?]]></Expression>
+      <Expression trigger="argInvoiceType"><![CDATA[/*UPPER*/ inv.invoice_type = ?]]></Expression>
+      <Expression trigger="argInvoiceNumber"><![CDATA[inv.sequence_nbr = ?]]></Expression>
+      <Expression parameters="argInvoiceExternalId,argInvoiceExternalId" trigger="argInvoiceExternalId"><![CDATA[/*UPPER*/ inv.ext_invoice_id = ? OR /*UPPER*/ inv.ext_invoice_barcode = ?]]></Expression>
+      <Expression trigger="argInvoiceDate"><![CDATA[inv.business_date = ?]]></Expression>
+      <Expression parameters="argInvoiceNumberStart, argInvoiceNumberEnd" trigger="argInvoiceNumberStart"><![CDATA[inv.sequence_nbr between ? and ?]]></Expression>
+      <Expression parameters="argInvoiceDateStart, argInvoiceDateEnd" trigger="argInvoiceDateStart"><![CDATA[inv.business_date between ? and ?]]></Expression>
+      <Expression parameters="argInvoiceFirstNamePropertyValue%" trigger="argInvoiceFirstNamePropertyValue"><![CDATA[/*UPPER*/ inva.string_value like ?]]></Expression>
+      <Expression parameters="argInvoiceLastNamePropertyValue%" trigger="argInvoiceLastNamePropertyValue"><![CDATA[/*UPPER*/ invb.string_value like ?]]></Expression>
+      <Expression parameters="argInvoiceOrgNamePropertyValue%" trigger="argInvoiceOrgNamePropertyValue"><![CDATA[/*UPPER*/ invc.string_value like ?]]></Expression>
+      <Expression parameters="argTranBusinessDateSearch,argTranBusinessDateSearch" trigger="argTranBusinessDateSearch"><![CDATA[t.business_date = ? OR t.trans_date = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.begin_datetime DESC]]></Suffix>
+  </Query>
+
+  <!-- *************************************************************************** -->
+  <!-- *** SWEDEN *** -->
+  <!-- *************************************************************************** -->
+  <Query name="COUNTRYPACK.SWEDEN_X_REPORT_WORKSTATION_OPEN_DATE" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.se.XReportDetailWorkStationData</ResultClass>
+    <ResultField name="BusinessDate" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT MAX(business_date) as businessDate
+          FROM trn_trans
+      WHERE organization_id = ?
+      AND rtl_loc_id = ?
+      AND wkstn_id = ?
+      AND /*UPPER*/ trans_typcode = 'WORKSTATION_OPEN'
+        AND /*UPPER*/ trans_statcode = 'COMPLETE'
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.SWEDEN_X_REPORT_TILL_PARAMETER" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.se.XReportDetailWorkStationData</ResultClass>
+    <ResultField name="TndrRepositoryId" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT DISTINCT tndr_repository_id
+          FROM tsn_tndr_repository
+      WHERE organization_id = ?
+      AND rtl_loc_id = ?
+      AND dflt_wkstn_id = ?
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.SWEDEN_X_REPORT_WORKSTATION_OPEN_DATE_TRAINING" pmType="COUNTRYPACK_SWEDEN_REPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.se.XReportDetailWorkStationData</ResultClass>
+    <ResultField name="BusinessDate" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT MAX(business_date) as businessDate
+          FROM trn_trans
+      WHERE organization_id = ?
+      AND rtl_loc_id = ?
+      AND wkstn_id = ?
+      AND /*UPPER*/ trans_typcode = 'WORKSTATION_OPEN'
+        AND /*UPPER*/ trans_statcode = 'COMPLETE'
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.SWEDEN_X_REPORT_WORKSTATION_OPEN_TRANSSEQ" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.se.XReportDetailWorkStationData</ResultClass>
+    <ResultField name="TransSeq" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT MAX(trans_seq) as transSeq
+          FROM trn_trans
+      WHERE organization_id = ?
+      AND rtl_loc_id = ?
+      AND wkstn_id = ?
+          AND business_date = ?
+      AND /*UPPER*/ trans_typcode = 'WORKSTATION_OPEN'
+        AND /*UPPER*/ trans_statcode = 'COMPLETE'
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.SWEDEN_X_REPORT_WORKSTATION_OPEN_CREATEDATE_TRAINING" pmType="COUNTRYPACK_SWEDEN_REPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.se.XReportDetailWorkStationData</ResultClass>
+    <ResultField name="CreateDate" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT MAX(create_date) as createDate
+          FROM trn_trans
+      WHERE organization_id = ?
+      AND rtl_loc_id = ?
+      AND wkstn_id = ?
+          AND business_date = ?
+      AND /*UPPER*/ trans_typcode = 'WORKSTATION_OPEN'
+        AND /*UPPER*/ trans_statcode = 'COMPLETE'
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.SWEDEN_X_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.se.XReportDetail</ResultClass>
+    <ResultField name="Sequence" />
+    <ResultField name="SectionId" />
+    <ResultField name="GroupId" />
+    <ResultField name="SubGroupId" />
+    <ResultField name="TypeOfMeasure" />
+    <ResultField name="UnitOfMeasure" />
+    <ResultField name="Header" />
+    <ResultField name="Value" />
+    <ResultField name="Decimals" />
+    <ResultField name="TransClassName" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        WITH trn_trans_current AS (
+
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.trans_statcode, t5.return_flag, t9.unit_of_measure_code, t1.post_void_flag,
+            t3.tax_group_id, t3.tax_percentage, t8.merch_level_1, t11.description AS merch_level_des,
+            SUM(t5.extended_amt) AS gross_value,
+            SUM(t3.tax_amt) AS tax_value,
+            SUM(CASE WHEN /*UPPER*/ t8.ITEM_TYPCODE = 'NON_PHYSICAL' AND (/*UPPER*/ t10.non_phys_item_typcode IN ? OR /*UPPER*/ t10.non_phys_item_subtype IN ? ) THEN 0 ELSE t5.gross_quantity END) AS items_qty,
+            SUM(CASE WHEN /*UPPER*/ t8.ITEM_TYPCODE = 'NON_PHYSICAL' AND (/*UPPER*/ t10.non_phys_item_typcode IN ? OR /*UPPER*/ t10.non_phys_item_subtype IN ? ) THEN t5.gross_quantity ELSE 0 END) AS services_qty,
+            SUM(t5.gross_amt - t5.extended_amt) AS discount_value
+          FROM (
+            SELECT *
+            FROM trn_trans rt
+            WHERE organization_id = ?
+            AND rtl_loc_id = ?
+            AND wkstn_id = ?
+            AND business_date = ?
+            AND trans_seq > ?
+            AND /*UPPER*/ trans_typcode IN ('RETAIL_SALE', 'NO_SALE')
+            AND (/*UPPER*/ trans_statcode = 'COMPLETE'
+            OR /*UPPER*/ trans_statcode = 'SUSPEND'
+            AND NOT EXISTS (
+              SELECT *
+              FROM trn_trans_link link
+              WHERE link.organization_id = rt.organization_id
+              AND link.link_rtl_loc_id = rt.rtl_loc_id
+              AND link.link_wkstn_id = rt.wkstn_id
+              AND link.link_business_date = rt.business_date
+              AND link.link_trans_seq = rt.trans_seq
+              AND /*UPPER*/ link.link_typcode = 'RESUME_TRANSACTION'))
+            ) t1
+
+          INNER JOIN trl_rtrans t2
+          ON t2.organization_id = t1.organization_id
+          AND t2.rtl_loc_id = t1.rtl_loc_id
+          AND t2.business_date = t1.business_date
+          AND t2.wkstn_id = t1.wkstn_id
+          AND t2.trans_seq = t1.trans_seq
+
+          INNER JOIN trl_rtrans_lineitm t6
+          ON t6.organization_id = t1.organization_id
+          AND t6.rtl_loc_id = t1.rtl_loc_id
+          AND t6.business_date = t1.business_date
+          AND t6.wkstn_id = t1.wkstn_id
+          AND t6.trans_seq = t1.trans_seq
+
+          INNER JOIN trl_sale_lineitm t5
+          ON t5.organization_id = t6.organization_id
+          AND t5.rtl_loc_id = t6.rtl_loc_id
+          AND t5.business_date = t6.business_date
+          AND t5.wkstn_id = t6.wkstn_id
+          AND t5.trans_seq = t6.trans_seq
+          AND t5.rtrans_lineitm_seq = t6.rtrans_lineitm_seq
+
+          INNER JOIN trl_sale_tax_lineitm t3
+          ON t3.organization_id = t6.organization_id
+          AND t3.rtl_loc_id = t6.rtl_loc_id
+          AND t3.business_date = t6.business_date
+          AND t3.wkstn_id = t6.wkstn_id
+          AND t3.trans_seq = t6.trans_seq
+          AND t3.rtrans_lineitm_seq = t6.rtrans_lineitm_seq
+
+          INNER JOIN tax_tax_GROUP t7
+          ON t7.organization_id = t3.organization_id
+          AND t7.tax_group_id = /*UPPER*/ t3.tax_group_id
+
+          INNER JOIN itm_item t8
+          ON t8.organization_id = t5.organization_id
+          AND t8.item_id = /*UPPER*/ t5.item_id
+
+          LEFT JOIN itm_merch_hierarchy t11
+          ON t11.organization_id = t8.organization_id
+          AND t11.hierarchy_id = /*UPPER*/ t8.merch_level_1
+
+          LEFT JOIN itm_non_phys_item t10
+          ON t10.organization_id = t5.organization_id
+          AND t10.item_id = /*UPPER*/ t5.item_id
+
+          INNER JOIN (SELECT a.organization_id, a.item_id, unit_of_measure_code
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   INNER JOIN (SELECT a.organization_id, a.item_id, MAX(b.level_order) level_order
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   GROUP BY a.organization_id, a.item_id) c
+                   ON c.organization_id = a.ORGANIZATION_ID AND c.ITEM_ID = a.ITEM_ID AND c.level_order = b.level_order) t9
+          ON t9.organization_id = t5.organization_id
+          AND t9.item_id = /*UPPER*/ t5.item_id
+
+          WHERE /*UPPER*/ t5.sale_lineitm_typcode IN ('SALE', 'SEND_SALE', 'SHP_SALE', 'LAYAWAY', 'PRESALE')
+          AND t5.extended_amt <> 0
+          AND t6.void_flag = 0
+          AND /*UPPER*/ t6.rtrans_lineitm_typcode = 'ITEM'
+
+          GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.trans_statcode, t5.return_flag, t9.unit_of_measure_code, t1.post_void_flag, t3.tax_group_id, t3.tax_percentage, t8.merch_level_1, t11.description)
+
+        SELECT 10 as seq, 'e' AS section_id, '' AS group_id, '' AS subgroup_id, '_countrypack.se.XZReport.TotalSalesAmount' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, SUM(CASE WHEN return_flag = 0 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN gross_value ELSE 0 END) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 20 as seq, 'f' AS section_id, NULL AS group_id, NULL AS subgroup_id, '_countrypack.se.XZReport.GroupRecap' AS type_of_measure, NULL AS unit_of_measure, 'HEADER' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 20 as seq, 'f' AS section_id, '' AS group_id, '' AS subgroup_id, COALESCE(merch_level_des, merch_level_1) AS type_of_measure, NULL AS unit_of_measure, NULL AS header, SUM(CASE WHEN return_flag = 0 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN gross_value ELSE 0 END) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+        GROUP BY COALESCE(merch_level_des, merch_level_1)
+
+        UNION
+        SELECT 30 as seq, 'g' AS section_id, NULL AS group_id, NULL AS subgroup_id, '_countrypack.se.XZReport.VatRecap' AS type_of_measure, NULL AS unit_of_measure, 'HEADER' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 30 as seq, 'g' AS section_id, tax_group_id AS group_id, '1' AS subgroup_id, '_countrypack.se.XZReport.VatRate' AS type_of_measure, '%' AS unit_of_measure, '_VatRecap' AS header, MIN(tax_percentage*100) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+        GROUP BY tax_group_id, tax_percentage
+
+        UNION
+        SELECT 30 as seq, 'g' AS section_id, tax_group_id AS group_id, '2' AS subgroup_id, '_countrypack.se.XZReport.GrossValue' AS type_of_measure, NULL AS unit_of_measure, '_VatRecap' AS header, SUM(CASE WHEN return_flag = 0 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN gross_value ELSE 0 END) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+        GROUP BY tax_group_id, tax_percentage
+
+        UNION
+        SELECT 30 as seq, 'g' AS section_id, tax_group_id AS group_id, '3' AS subgroup_id, '_countrypack.se.XZReport.TaxableValue' AS type_of_measure, NULL AS unit_of_measure, '_VatRecap' AS header, SUM(CASE WHEN return_flag = 0 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN gross_value - tax_value ELSE 0 END) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+        GROUP BY tax_group_id, tax_percentage
+
+        UNION
+        SELECT 30 as seq, 'g' AS section_id, tax_group_id AS group_id, '4' AS subgroup_id, '_countrypack.se.XZReport.VatAmount' AS type_of_measure, NULL AS unit_of_measure, '_VatRecap' AS header, SUM(CASE WHEN return_flag = 0 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN tax_value ELSE 0 END) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+        GROUP BY tax_group_id, tax_percentage
+
+        UNION
+        SELECT 40 as seq, 'h' AS section_id, NULL AS group_id, NULL AS subgroup_id, '_countrypack.se.XZReport.PettyCash' AS type_of_measure, NULL AS unit_of_measure, 'HEADER' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 40 as seq, 'h' AS section_id, '' AS group_id, '' AS subgroup_id, t2.description AS type_of_measure, t2.currency_id AS unit_of_measure, NULL AS header, SUM(t1.actual_media_amt) AS value, 2 as decimals, '' AS TransClassName
+        FROM tsn_session_tndr t1
+        INNER JOIN tnd_tndr t2
+        ON t2.organization_id = t1.organization_id
+        AND t2.tndr_id = t1.tndr_id
+        WHERE t1.session_id = (SELECT MAX(session_id)
+                    FROM trn_trans
+                    WHERE organization_id = ?
+                    AND rtl_loc_id = ?
+                    AND wkstn_id = ?
+                    AND business_date = ?
+                    AND trans_seq = ? )
+        AND t1.actual_media_amt <> 0
+        GROUP BY t2.description, t2.currency_id
+
+        UNION
+        SELECT 50 as seq, 'i' AS section_id, NULL AS group_id, NULL AS subgroup_id, NULL AS type_of_measure, NULL AS unit_of_measure, 'SKIP_ROW' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 50 as seq, 'i' AS section_id, COALESCE(unit_of_measure_code, '') AS group_id, '' AS subgroup_id, '_countrypack.se.XZReport.NrOfItemsSold' AS type_of_measure, COALESCE(unit_of_measure_code, '') AS unit_of_measure, NULL AS header, SUM(CASE WHEN return_flag = 0 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN items_qty ELSE 0 END) AS value, 0 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+        GROUP BY COALESCE(unit_of_measure_code, '')
+
+        UNION
+        SELECT 60 as seq, 'j' AS section_id, '' AS group_id, '' AS subgroup_id, '_countrypack.se.XZReport.NrOfServicesSold' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, SUM(CASE WHEN return_flag = 0 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN services_qty ELSE 0 END) AS value, 0 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 70 as seq, 'k' AS section_id, NULL AS group_id, NULL AS subgroup_id, NULL AS type_of_measure, NULL AS unit_of_measure, 'SKIP_ROW' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 70 as seq, 'k' AS section_id, '' AS group_id, '' AS subgroup_id, '_countrypack.se.XZReport.NumberOfCashReceipts' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, COUNT(*) AS value, 0 as decimals, '' AS TransClassName
+        FROM (
+          SELECT DISTINCT organization_id, rtl_loc_id, business_date, wkstn_id, trans_seq
+          FROM trn_trans_current
+          WHERE return_flag = 0
+          AND post_void_flag = 0
+          AND /*UPPER*/ trans_statcode = 'COMPLETE'
+          ) t1
+
+        UNION
+        SELECT 80 as seq, 'l' AS section_id, NULL AS group_id, NULL AS subgroup_id, NULL AS type_of_measure, NULL AS unit_of_measure, 'SKIP_ROW' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 80 as seq, 'l' AS section_id, '' AS group_id, '' AS subgroup_id, '_countrypack.se.XZReport.NumberOfCashDrawerOpenings' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, COUNT(*) AS value, 0 as decimals, '' AS TransClassName
+        FROM (
+          SELECT DISTINCT organization_id, rtl_loc_id, business_date, wkstn_id, trans_seq
+          FROM trn_trans
+          WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND wkstn_id = ?
+          AND business_date = ?
+          AND trans_seq >= ?
+          AND /*UPPER*/ trans_typcode = 'NO_SALE'
+          ) t1
+
+        UNION
+        SELECT 90 as seq, 'm' AS section_id, NULL AS group_id, NULL AS subgroup_id, NULL AS type_of_measure, NULL AS unit_of_measure, 'SKIP_ROW' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT DISTINCT 90 as seq, 'm' AS section_id, '' AS group_id, '1' AS subgroup_id, '_countrypack.se.XZReport.NumberOfReceiptsCopied' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, COUNT(*) AS value, 0 as decimals, '' AS TransClassName
+        FROM (
+          SELECT DISTINCT organization_id, rtl_loc_id, business_date, wkstn_id, trans_seq
+          FROM trn_trans_current
+          WHERE post_void_flag = 0
+          ) t1
+        INNER JOIN (
+          SELECT DISTINCT organization_id, rtl_loc_id, business_date, wkstn_id, trans_seq
+          FROM trn_trans_p
+          WHERE property_code = 'SE_FISCAL_REPRINT_USER'
+          AND NOT string_value IS null) t2
+        ON t1.organization_id = t2.organization_id
+        AND t1.rtl_loc_id = t2.rtl_loc_id
+        AND t1.wkstn_id = t2.wkstn_id
+        AND t1.business_date = t2.business_date
+        AND t1.trans_seq = t2.trans_seq
+
+        UNION
+
+        SELECT DISTINCT 100 as seq, 'm' AS section_id, '' AS group_id, '2' AS subgroup_id, '_countrypack.se.XZReport.ValueOfReceiptsCopied' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, COALESCE(SUM(t1.gross_value), 0) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current t1
+        INNER JOIN (
+          SELECT DISTINCT organization_id, rtl_loc_id, business_date, wkstn_id, trans_seq
+          FROM trn_trans_p
+          WHERE property_code = 'SE_FISCAL_REPRINT_USER'
+          AND NOT string_value IS null) t2
+        ON t1.organization_id = t2.organization_id
+        AND t1.rtl_loc_id = t2.rtl_loc_id
+        AND t1.wkstn_id = t2.wkstn_id
+        AND t1.business_date = t2.business_date
+        AND t1.trans_seq = t2.trans_seq
+        WHERE post_void_flag = 0
+
+        UNION
+        SELECT 110 as seq, '' AS section_id, NULL AS group_id, NULL AS subgroup_id, '_countrypack.se.XZReport.CashMovements' AS type_of_measure, NULL AS unit_of_measure, 'HEADER' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 110 as seq, '' AS section_id, '' AS group_id, '' AS subgroup_id, COALESCE(t3.description, t2.reascode, t2.typcode) AS type_of_measure, NULL AS unit_of_measure, NULL AS header, SUM(amt * CASE WHEN /*UPPER*/ outbound_tndr_repository_id = ? THEN -1 WHEN /*UPPER*/ inbound_tndr_repository_id = ? THEN 1 ELSE 0 END) AS value, 2 as decimals, CASE WHEN COALESCE(t3.description, t2.reascode) IS NULL THEN '_dtv.pos.till.types.TenderControlTransTypeCode' ELSE '' END AS TransClassName
+        FROM (SELECT *
+            FROM trn_trans rt
+            WHERE organization_id = ?
+            AND rtl_loc_id = ?
+            AND wkstn_id = ?
+            AND business_date = ?
+            AND trans_seq > ?
+            AND /*UPPER*/ trans_typcode = 'TENDER_CONTROL'
+            AND /*UPPER*/ trans_statcode = 'COMPLETE') t1
+        INNER JOIN tsn_tndr_control_trans t2
+        ON t1.organization_id = t2.organization_id
+        AND t1.rtl_loc_id = t2.rtl_loc_id
+        AND t1.business_date = t2.business_date
+        AND t1.wkstn_id = t2.wkstn_id
+        AND t1.trans_seq = t2.trans_seq
+        LEFT JOIN com_reason_code t3
+        ON T3.organization_id = t2.organization_id
+        AND t3.reason_typcode = /*UPPER*/ t2.typcode
+        AND t3.reason_code = /*UPPER*/ t2.reascode
+        GROUP BY COALESCE(t3.description, t2.reascode, t2.typcode), CASE WHEN COALESCE(t3.description, t2.reascode) IS NULL THEN '_dtv.pos.till.types.TenderControlTransTypeCode' ELSE '' END
+        HAVING SUM(amt * CASE WHEN /*UPPER*/ outbound_tndr_repository_id = ? THEN -1 WHEN /*UPPER*/ inbound_tndr_repository_id = ? THEN 1 ELSE 0 END) <> 0
+
+        UNION
+        SELECT 120 as seq, 'o' AS section_id, NULL AS group_id, NULL AS subgroup_id, '_countrypack.se.XZReport.Payments' AS type_of_measure, NULL AS unit_of_measure, 'HEADER' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT DISTINCT 120 as seq, 'o' AS section_id, '' AS group_id, '2' AS subgroup_id, t3.description AS type_of_measure, t3.currency_id AS unit_of_measure, NULL AS header, SUM(COALESCE(t2.foreign_amt, t2.amt)) AS value, 2 as decimals, '' AS TransClassName
+        FROM (SELECT DISTINCT organization_id, rtl_loc_id, business_date, wkstn_id, trans_seq
+            FROM trn_trans_current) t1
+        INNER JOIN ttr_tndr_lineitm t2
+        ON t1.organization_id = t2.organization_id
+        AND t1.rtl_loc_id = t2.rtl_loc_id
+        AND t1.wkstn_id = t2.wkstn_id
+        AND t1.business_date = t2.business_date
+        AND t1.trans_seq = t2.trans_seq
+        INNER JOIN tnd_tndr t3
+        ON t3.organization_id = t1.organization_id
+        AND t3.tndr_id = /*UPPER*/ t2.tndr_id
+        GROUP BY t3.description, t3.currency_id
+
+        UNION
+        SELECT 130 as seq, 'p' AS section_id, NULL AS group_id, NULL AS subgroup_id, NULL AS type_of_measure, NULL AS unit_of_measure, 'SKIP_ROW' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 130 as seq, 'p' AS section_id, COALESCE(unit_of_measure_code, '') AS group_id, '1' AS subgroup_id, '_countrypack.se.XZReport.NumberOfReturns' AS type_of_measure, COALESCE(unit_of_measure_code, '') AS unit_of_measure, NULL AS header, SUM(CASE WHEN return_flag = 1 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN items_qty ELSE 0 END) AS value, 0 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+        GROUP BY COALESCE(unit_of_measure_code, '')
+
+        UNION
+
+        SELECT 130 as seq, 'p' AS section_id, '' AS group_id, '2' AS subgroup_id, '_countrypack.se.XZReport.ValueOfReturns' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, SUM(CASE WHEN return_flag = 1 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN gross_value * -1 ELSE 0 END) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 140 as seq, 'q' AS section_id, NULL AS group_id, NULL AS subgroup_id, NULL AS type_of_measure, NULL AS unit_of_measure, 'SKIP_ROW' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 140 as seq, 'q' AS section_id, '' AS group_id, '' AS subgroup_id, '_countrypack.se.XZReport.DiscountAmount' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, SUM(CASE WHEN return_flag = 0 AND post_void_flag = 0 AND /*UPPER*/ trans_statcode = 'COMPLETE' THEN discount_value ELSE 0 END) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 150 as seq, 'r' AS section_id, NULL AS group_id, NULL AS subgroup_id, NULL AS type_of_measure, NULL AS unit_of_measure, 'SKIP_ROW' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 150 as seq, 'r' AS section_id, '' AS group_id, '1' AS subgroup_id, '_countrypack.se.XZReport.NumberOfVoidedReceipts' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, COUNT(*) AS value, 0 as decimals, '' AS TransClassName
+        FROM (
+          SELECT DISTINCT organization_id, rtl_loc_id, business_date, wkstn_id, trans_seq
+          FROM trn_trans_current
+          WHERE post_void_flag = 1
+          ) t1
+
+        UNION
+
+        SELECT 150 as seq, 'r' AS section_id, '' AS group_id, '2' AS subgroup_id, '_countrypack.se.XZReport.ValueOfVoidedReceipts' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, COALESCE(SUM(gross_value), 0) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+        WHERE post_void_flag = 1
+
+        UNION
+        SELECT 160 as seq, 's' AS section_id, NULL AS group_id, NULL AS subgroup_id, NULL AS type_of_measure, NULL AS unit_of_measure, 'SKIP_ROW' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 160 as seq, 's' AS section_id, '' AS group_id, '1' AS subgroup_id, '_countrypack.se.XZReport.NumberOfIncompleteReceipts' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, COUNT(*) AS value, 0 as decimals, '' AS TransClassName
+        FROM (
+          SELECT DISTINCT organization_id, rtl_loc_id, business_date, wkstn_id, trans_seq
+          FROM trn_trans_current
+          WHERE post_void_flag = 0
+          AND /*UPPER*/ trans_statcode = 'SUSPEND'
+          ) t1
+
+        UNION
+
+        SELECT 160 as seq, 's' AS section_id, '' AS group_id, '2' AS subgroup_id, '_countrypack.se.XZReport.ValueOfIncompleteReceipts' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, COALESCE(SUM(gross_value), 0) AS value, 2 as decimals, '' AS TransClassName
+        FROM trn_trans_current
+        WHERE post_void_flag = 0
+        AND /*UPPER*/ trans_statcode = 'SUSPEND'
+
+        UNION
+        SELECT 170 as seq, 't' AS section_id, NULL AS group_id, NULL AS subgroup_id, NULL AS type_of_measure, NULL AS unit_of_measure, 'SKIP_ROW' AS header, MIN(organization_id) AS value, NULL as decimals, '' AS TransClassName
+        FROM trn_trans_current
+
+        UNION
+        SELECT 170 as seq, 't' AS section_id, '' AS group_id, '' AS subgroup_id, '_countrypack.se.XZReport.GrandTotalSales' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, SUM(COALESCE(t1.gross_value , 0)) AS value, 2 as decimals, '' AS TransClassName
+        FROM (
+          SELECT SUM(gross_value) gross_value
+          FROM trn_trans_current
+          WHERE return_flag = 0
+          AND post_void_flag = 0
+          AND /*UPPER*/ trans_statcode = 'COMPLETE'
+          UNION ALL
+          SELECT decimal_value
+          FROM loc_wkstn_p
+          WHERE property_code = 'SE_GRAND_TOTAL_SALES'
+          ) t1
+
+        UNION
+        SELECT 180 as seq, 'u' AS section_id, '' AS group_id, '' AS subgroup_id, '_countrypack.se.XZReport.GrandTotalReturns' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, SUM(COALESCE(t1.gross_value , 0)) AS value, 2 as decimals, '' AS TransClassName
+        FROM (
+          SELECT SUM(gross_value * -1) gross_value
+          FROM trn_trans_current
+          WHERE return_flag = 1
+          AND post_void_flag = 0
+          AND /*UPPER*/ trans_statcode = 'COMPLETE'
+          UNION ALL
+          SELECT decimal_value
+          FROM loc_wkstn_p
+          WHERE property_code = 'SE_GRAND_TOTAL_RETURNS'
+          ) t1
+
+        UNION
+        SELECT 190 as seq, 'v' AS section_id, '' AS group_id, '' AS subgroup_id, '_countrypack.se.XZReport.GrandTotalNet' AS type_of_measure, NULL AS unit_of_measure, NULL AS header, SUM(COALESCE(t1.gross_value , 0)) AS value, 2 as decimals, '' AS TransClassName
+        FROM (
+          SELECT SUM(gross_value) gross_value
+          FROM trn_trans_current
+          WHERE post_void_flag = 0
+          AND /*UPPER*/ trans_statcode = 'COMPLETE'
+          UNION ALL
+          SELECT decimal_value
+          FROM loc_wkstn_p
+          WHERE property_code = 'SE_GRAND_TOTAL_SALES'
+          UNION ALL
+          SELECT decimal_value * -1
+          FROM loc_wkstn_p
+          WHERE property_code = 'SE_GRAND_TOTAL_RETURNS'
+          ) t1
+
+          ORDER BY seq, section_id, group_id, subgroup_id, type_of_measure, unit_of_measure, header
+
+      ]]></Statement>
+      <Parameter name="@argNonPhysItemTypcode" />
+      <Parameter name="@argNonPhysItemSubtype" />
+      <Parameter name="@argNonPhysItemTypcode" />
+      <Parameter name="@argNonPhysItemSubtype" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransSeq" />
+
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransSeq" />
+
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransSeq" />
+
+      <Parameter name="argTndrRepositoryId" />
+      <Parameter name="argTndrRepositoryId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransSeq" />
+      <Parameter name="argTndrRepositoryId" />
+      <Parameter name="argTndrRepositoryId" />
+
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.SWEDEN_X_REPORT_TRAINING" pmType="COUNTRYPACK_SWEDEN_REPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.se.XReportDetail</ResultClass>
+    <ResultField name="SectionId" />
+    <ResultField name="GroupId" />
+    <ResultField name="SubGroupId" />
+    <ResultField name="TypeOfMeasure" />
+    <ResultField name="UnitOfMeasure" />
+    <ResultField name="Header" />
+    <ResultField name="Value" />
+    <ResultField name="Decimals" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        WITH trn_trans_current AS (
+
+        SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.trans_statcode, t5.return_flag, t9.unit_of_measure_code, t1.post_void_flag,
+          t3.tax_group_id, t3.tax_percentage, t8.merch_level_1, t11.description AS merch_level_des,
+          SUM(t5.extended_amt) AS gross_value,
+          SUM(t3.tax_amt) AS tax_value,
+          SUM(CASE WHEN /*UPPER*/ t8.ITEM_TYPCODE = 'NON_PHYSICAL' AND (/*UPPER*/ t10.non_phys_item_typcode IN ? OR /*UPPER*/ t10.non_phys_item_subtype IN ? ) THEN 0 ELSE t5.gross_quantity END) AS items_qty,
+          SUM(CASE WHEN /*UPPER*/ t8.ITEM_TYPCODE = 'NON_PHYSICAL' AND (/*UPPER*/ t10.non_phys_item_typcode IN ? OR /*UPPER*/ t10.non_phys_item_subtype IN ? ) THEN t5.gross_quantity ELSE 0 END) AS services_qty,
+          SUM(t5.gross_amt - t5.extended_amt) AS discount_value
+        FROM (
+          SELECT *
+          FROM trn_trans rt
+          WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND wkstn_id = ?
+          AND business_date = ?
+          AND create_date > ?
+          AND /*UPPER*/ trans_typcode IN ('RETAIL_SALE', 'NO_SALE')
+          AND (/*UPPER*/ trans_statcode = 'COMPLETE'
+          OR /*UPPER*/ trans_statcode = 'SUSPEND'
+          AND NOT EXISTS (
+            SELECT *
+            FROM trn_trans_link link
+            WHERE link.organization_id = rt.organization_id
+            AND link.link_rtl_loc_id = rt.rtl_loc_id
+            AND link.link_wkstn_id = rt.wkstn_id
+            AND link.link_business_date = rt.business_date
+            AND link.link_trans_seq = rt.trans_seq
+            AND /*UPPER*/ link.link_typcode = 'RESUME_TRANSACTION'))
+          ) t1
+
+        INNER JOIN trl_rtrans t2
+        ON t2.organization_id = t1.organization_id
+        AND t2.rtl_loc_id = t1.rtl_loc_id
+        AND t2.business_date = t1.business_date
+        AND t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+
+        INNER JOIN trl_rtrans_lineitm t6
+        ON t6.organization_id = t1.organization_id
+        AND t6.rtl_loc_id = t1.rtl_loc_id
+        AND t6.business_date = t1.business_date
+        AND t6.wkstn_id = t1.wkstn_id
+        AND t6.trans_seq = t1.trans_seq
+
+        INNER JOIN trl_sale_lineitm t5
+        ON t5.organization_id = t6.organization_id
+        AND t5.rtl_loc_id = t6.rtl_loc_id
+        AND t5.business_date = t6.business_date
+        AND t5.wkstn_id = t6.wkstn_id
+        AND t5.trans_seq = t6.trans_seq
+        AND t5.rtrans_lineitm_seq = t6.rtrans_lineitm_seq
+
+        INNER JOIN trl_sale_tax_lineitm t3
+        ON t3.organization_id = t6.organization_id
+        AND t3.rtl_loc_id = t6.rtl_loc_id
+        AND t3.business_date = t6.business_date
+        AND t3.wkstn_id = t6.wkstn_id
+        AND t3.trans_seq = t6.trans_seq
+        AND t3.rtrans_lineitm_seq = t6.rtrans_lineitm_seq
+
+        INNER JOIN tax_tax_GROUP t7
+        ON t7.organization_id = t3.organization_id
+        AND t7.tax_group_id = /*UPPER*/ t3.tax_group_id
+
+        INNER JOIN itm_item t8
+        ON t8.organization_id = t5.organization_id
+        AND t8.item_id = /*UPPER*/ t5.item_id
+
+        LEFT JOIN itm_merch_hierarchy t11
+        ON t11.organization_id = t8.organization_id
+        AND t11.hierarchy_id = /*UPPER*/ t8.merch_level_1
+
+        LEFT JOIN itm_non_phys_item t10
+        ON t10.organization_id = t5.organization_id
+        AND t10.item_id = /*UPPER*/ t5.item_id
+
+        INNER JOIN (SELECT a.organization_id, a.item_id, a.unit_of_measure_code
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   INNER JOIN (SELECT a.organization_id, a.item_id, MAX(b.level_order) level_order
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   GROUP BY a.organization_id, a.item_id) c
+                   ON c.organization_id = a.ORGANIZATION_ID AND c.ITEM_ID = a.ITEM_ID AND c.level_order = b.level_order) t9
+        ON t9.organization_id = t5.organization_id
+        AND t9.item_id = /*UPPER*/ t5.item_id
+
+        WHERE /*UPPER*/ t5.sale_lineitm_typcode IN ('SALE', 'SEND_SALE', 'SHP_SALE', 'LAYAWAY', 'PRESALE')
+        AND t5.extended_amt <> 0
+        AND t6.void_flag = 0
+        AND /*UPPER*/ t6.rtrans_lineitm_typcode = 'ITEM'
+
+        GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.trans_statcode, t5.return_flag, t9.unit_of_measure_code, t1.post_void_flag, t3.tax_group_id, t3.tax_percentage, t8.merch_level_1, t11.description)
+
+        SELECT DISTINCT 'n' AS section_id, NULL AS group_id, NULL AS subgroup_id, '_countrypack.se.XZReport.TrainingModeLabel' AS type_of_measure, NULL AS unit_of_measure, 'HEADER' AS header, MIN(organization_id) AS value, null as decimals
+        FROM trn_trans_current
+
+        UNION
+
+        SELECT DISTINCT 'n' AS section_id, '' AS group_id, '1' AS subgroup_id, '_countrypack.se.XZReport.NumberOfPracticeReceipts' AS type_of_measure, NULL AS unit_of_measure, 'TRAINING' AS header, COUNT(*) AS value, 0 as decimals
+        FROM (
+          SELECT DISTINCT organization_id, rtl_loc_id, business_date, wkstn_id, trans_seq
+          FROM trn_trans_current
+          WHERE post_void_flag = 0
+          ) t1
+
+        UNION
+
+        SELECT DISTINCT 'n' AS section_id, '' AS group_id, '2' AS subgroup_id, '_countrypack.se.XZReport.ValueOfThePracticeReceipts' AS type_of_measure, NULL AS unit_of_measure, 'TRAINING' AS header, COALESCE(SUM(t1.gross_value), 0) AS value, 2 as decimals
+        FROM trn_trans_current t1
+        WHERE post_void_flag = 0
+
+        ORDER BY section_id, group_id, subgroup_id
+      ]]></Statement>
+      <Parameter name="@argNonPhysItemTypcode" />
+      <Parameter name="@argNonPhysItemSubtype" />
+      <Parameter name="@argNonPhysItemTypcode" />
+      <Parameter name="@argNonPhysItemSubtype" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argRegisterId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argCreateDate" />
+
+    </SQL>
+  </Query>
+
+  <!-- -->
+
+  <!-- *************************************************************************** -->
+  <!-- *** PORTUGAL *** -->
+  <!-- *************************************************************************** -->
+  <Query name="COUNTRYPACK.WORKSTATION_LIST" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="workstation" type="Integer" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        select distinct t1.wkstn_id
+        from trn_trans t1
+          join trn_trans_p t2
+          on t1.organization_id = t2.organization_id
+            and t1.rtl_loc_id = t2.rtl_loc_id
+            and t1.business_date = t2.business_date
+            and t1.wkstn_id = t2.wkstn_id
+            and t1.trans_seq = t2.trans_seq
+            and t2.property_code = ?
+        where /*UPPER*/ t1.trans_typcode IN ('RETAIL_SALE', 'INVENTORY_CONTROL')
+          and /*UPPER*/ t1.trans_statcode = 'COMPLETE'
+          and t1.total is not null
+          and t1.organization_id = ?
+          and t1.rtl_loc_id = ?
+        order by t1.wkstn_id
+            ]]></Statement>
+      <Parameter name="argSaftDocumentProperty" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.SAFT.PRODUCT_LIST" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="productCode" type="String" />
+    <ResultField name="productDescription" type="String" />
+    <ResultField name="productNumberCode" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        (
+          SELECT DISTINCT t2.item_id, COALESCE(t3.description,'') AS description, t4.manufacturer_upc
+          FROM trn_trans t1
+          INNER JOIN trl_sale_lineitm t2
+            ON t1.organization_id = t2.organization_id
+            AND t1.rtl_loc_id = t2.rtl_loc_id
+            AND t1.business_date = t2.business_date
+            AND t1.wkstn_id = t2.wkstn_id
+            AND t1.trans_seq = t2.trans_seq
+          LEFT JOIN itm_item t3
+            ON t2.organization_id = t3.organization_id
+            AND /*UPPER*/ t2.item_id = t3.item_id
+          LEFT JOIN (
+              SELECT organization_id, item_id, manufacturer_upc
+              FROM (
+                  SELECT organization_id, item_id, manufacturer_upc, (ROW_NUMBER() OVER (PARTITION BY item_id ORDER BY ITEM_ID)) AS rnk
+                  FROM itm_item_cross_reference) dedupl
+                  WHERE rnk = 1) t4
+            ON t3.organization_id = t4.organization_id
+            AND t3.item_id = /*UPPER*/ t4.item_id
+          WHERE /*UPPER*/ t1.trans_typcode = 'RETAIL_SALE'
+          AND /*UPPER*/ t1.trans_statcode  = 'COMPLETE'
+          AND t1.organization_id = ?
+          AND t1.rtl_loc_id  = ?
+          AND t1.business_date BETWEEN ? AND ?
+          AND ((? = 0) OR (t1.wkstn_id = ?))
+        )
+        UNION
+        (
+          SELECT DISTINCT iidl.inventory_item_id, COALESCE(t3.description,'') AS description, t4.manufacturer_upc
+          FROM trn_trans trn
+          INNER JOIN inv_invctl_trans iit
+            ON trn.organization_id = iit.organization_id
+            AND trn.rtl_loc_id = iit.rtl_loc_id
+            AND trn.business_date = iit.business_date
+            AND trn.wkstn_id = iit.wkstn_id
+            AND trn.trans_seq = iit.trans_seq
+            AND /*UPPER*/ iit.document_typcode = 'SHIPPING'
+          INNER JOIN inv_invctl_trans_detail iidtl
+            ON iit.organization_id = iidtl.organization_id
+            AND iit.rtl_loc_id = iidtl.rtl_loc_id
+            AND iit.business_date = iidtl.business_date
+            AND iit.wkstn_id = iidtl.wkstn_id
+            AND iit.trans_seq = iidtl.trans_seq
+          INNER JOIN inv_invctl_document iid
+            ON iid.organization_id = trn.organization_id
+            AND iid.rtl_loc_id = trn.rtl_loc_id
+            AND iid.document_typcode = /*UPPER*/ iit.document_typcode
+            AND iid.invctl_document_id = /*UPPER*/ iit.invctl_document_id
+          INNER JOIN inv_invctl_document_lineitm iidl
+            ON iidl.organization_id = iidtl.organization_id
+            AND iidl.rtl_loc_id = iidtl.invctl_document_rtl_loc_id
+            AND iidl.invctl_document_id = /*UPPER*/ iidtl.invctl_document_id
+            AND iidl.document_typcode = /*UPPER*/ iidtl.document_typcode
+            AND iidl.invctl_document_line_nbr = iidtl.invctl_document_line_nbr
+          INNER JOIN trn_trans_p trpDocNum
+            ON trn.organization_id = trpDocNum.organization_id
+            AND trn.trans_seq = trpDocNum.trans_seq
+            AND trpDocNum.property_code = ?
+            AND trn.wkstn_id = trpDocNum.wkstn_id
+          LEFT JOIN itm_item t3
+            ON iidl.organization_id = t3.organization_id
+            AND /*UPPER*/ iidl.inventory_item_id = t3.item_id
+          LEFT JOIN (
+                SELECT organization_id, item_id, manufacturer_upc
+                FROM (
+                    SELECT organization_id, item_id, manufacturer_upc, (ROW_NUMBER() OVER (PARTITION BY item_id ORDER BY ITEM_ID)) AS rnk
+                    FROM itm_item_cross_reference) dedupl
+                WHERE rnk = 1) t4
+            ON t3.organization_id = t4.organization_id
+            AND t3.item_id = /*UPPER*/ t4.item_id
+          WHERE trn.organization_id = ?
+          AND trn.rtl_loc_id = ?
+          AND /*UPPER*/ trn.trans_statcode  = 'COMPLETE'
+          AND trn.business_date BETWEEN ? AND ?
+          AND ((? = 0) OR (trn.wkstn_id = ?))
+        )
+            ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Parameter name="argWorkStationId" />
+      <Parameter name="argWorkStationId" />
+      <Parameter name="argPropertyCode" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Parameter name="argWorkStationId" />
+      <Parameter name="argWorkStationId" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.SAFT.GET_CUSTOMERS_LIST" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="customerId" type="String" />
+    <ResultField name="salutation" type="String" />
+    <ResultField name="firstName" type="String" />
+    <ResultField name="lastName" type="String" />
+    <ResultField name="organizationName" type="String" />
+    <ResultField name="nationalTaxId" type="String" />
+    <ResultField name="address1" type="String" />
+    <ResultField name="address2" type="String" />
+    <ResultField name="city" type="String" />
+    <ResultField name="postalCode" type="String" />
+    <ResultField name="country" type="String" />
+    <ResultField name="socialSecurityNbr" type="String" />
+    <ResultField name="personalTaxId" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT t1.party_id, t1.salutation, t1.first_name, t1.last_name, t1.organization_name, t1.national_tax_id, t3.address1,
+               t3.address2, t3.city, t3.postal_code, t3.country, t1.social_security_nbr, t1.personal_tax_id
+        FROM crm_party t1
+        LEFT OUTER JOIN crm_party_locale_information t3
+          ON t1.organization_id = t3.organization_id
+          AND t1.party_id = t3.party_id
+        WHERE t1.party_id IN (
+            SELECT DISTINCT trnr.cust_party_id
+            FROM trn_trans trn
+            JOIN trn_trans_p trnp
+              ON trn.organization_id = trnp.organization_id
+              AND trn.rtl_loc_id = trnp.rtl_loc_id
+              AND trn.business_date = trnp.business_date
+              AND trn.wkstn_id = trnp.wkstn_id
+              AND trn.trans_seq = trnp.trans_seq
+              AND trnp.property_code = ?
+            LEFT OUTER JOIN trl_rtrans trnr
+              ON trn.organization_id = trnr.organization_id
+              AND trn.rtl_loc_id = trnr.rtl_loc_id
+              AND trn.business_date = trnr.business_date
+              AND trn.wkstn_id = trnr.wkstn_id
+              AND trn.trans_seq = trnr.trans_seq
+            WHERE /*UPPER*/ trn.trans_typcode = 'RETAIL_SALE'
+            AND /*UPPER*/ trn.trans_statcode = 'COMPLETE'
+            AND trn.total IS NOT NULL
+            AND trn.organization_id = ?
+            AND trn.rtl_loc_id = ?
+            AND trn.business_date BETWEEN ? AND ?
+            AND trnr.cust_party_id IS NOT NULL
+                            ]]></Statement>
+      <Parameter name="argPropertyCode" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Expression trigger="argWorkStationId"><![CDATA[trn.wkstn_id = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[) ORDER BY t1.party_id]]></Suffix>
+  </Query>
+  <Query name="COUNTRYPACK.SAFT.GET_SALE_INVOICES" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.pt.saft.results.SaftInvoiceResult</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="PostVoidFlag" type="Boolean" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="BeginDateTime" type="Date" />
+    <ResultField name="Total" type="BigDecimal" />
+    <ResultField name="Signature" type="String" />
+    <ResultField name="InvoiceNumber" type="String" />
+    <ResultField name="CustomerID" type="String" />
+    <ResultField name="TaxExemptionId" type="String" />
+    <ResultField name="Operator" type="String" />
+    <ResultField name="InvoiceType" type="String" />
+    <ResultField name="PostVoidDate" type="Date" />
+    <ResultField name="PostVoidOperator" type="String" />
+    <ResultField name="PostVoidReason" type="String" />
+    <ResultField name="HashControl" type="String" />
+    <ResultField name="ManualInvoiceNumber" type="String" />
+    <ResultField name="ManualInvoiceDate" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT t1.rtl_loc_id, t1.wkstn_id, t1.trans_seq, t1.post_void_flag, t1.business_date, t1.begin_datetime, t1.total,
+                 t4.string_value, t2.string_value, t6.cust_party_id,
+                 t6.tax_exemption_id, t1.operator_party_id, t20.string_value, t8.begin_datetime, t8.operator_party_id, t7.post_void_reascode,
+                 COALESCE(t9.string_value, '1'), t3.string_value, t5.date_value
+          FROM trn_trans t1
+          INNER JOIN trn_trans_p t4
+            ON t1.organization_id = t4.organization_id
+            AND t1.rtl_loc_id = t4.rtl_loc_id
+            AND t1.business_date = t4.business_date
+            AND t1.wkstn_id = t4.wkstn_id
+            AND t1.trans_seq = t4.trans_seq
+            AND t4.property_code = ?
+          INNER JOIN trn_trans_p t2
+            ON t1.organization_id = t2.organization_id
+            AND t1.rtl_loc_id = t2.rtl_loc_id
+            AND t1.business_date = t2.business_date
+            AND t1.wkstn_id = t2.wkstn_id
+            AND t1.trans_seq = t2.trans_seq
+            AND t2.property_code = ?
+          INNER JOIN trn_trans_p t20
+            ON t1.organization_id = t20.organization_id
+            AND t1.rtl_loc_id = t20.rtl_loc_id
+            AND t1.business_date = t20.business_date
+            AND t1.wkstn_id = t20.wkstn_id
+            AND t1.trans_seq = t20.trans_seq
+            AND t20.property_code = ?
+          LEFT OUTER JOIN trn_trans_p t9
+            ON t1.organization_id = t9.organization_id
+            AND t1.rtl_loc_id = t9.rtl_loc_id
+            AND t1.business_date = t9.business_date
+            AND t1.wkstn_id = t9.wkstn_id
+            AND t1.trans_seq = t9.trans_seq
+            AND t9.property_code = ?
+      LEFT OUTER JOIN trn_trans_p t3 ON t1.organization_id = t3.organization_id
+      AND t1.rtl_loc_id = t3.rtl_loc_id
+      AND t1.business_date = t3.business_date
+      AND t1.wkstn_id = t3.wkstn_id
+      AND t1.trans_seq = t3.trans_seq
+      AND t3.property_code = ?
+      LEFT OUTER JOIN trn_trans_p t5 ON t1.organization_id = t5.organization_id
+      AND t1.rtl_loc_id = t5.rtl_loc_id
+      AND t1.business_date = t5.business_date
+      AND t1.wkstn_id = t5.wkstn_id
+      AND t1.trans_seq = t5.trans_seq
+      AND t5.property_code = ?
+          LEFT OUTER JOIN trl_rtrans t6
+            ON t1.organization_id = t6.organization_id
+            AND t1.rtl_loc_id = t6.rtl_loc_id
+            AND t1.business_date = t6.business_date
+            AND t1.wkstn_id = t6.wkstn_id
+            AND t1.trans_seq = t6.trans_seq
+          LEFT OUTER JOIN trn_post_void_trans t7
+            ON t1.organization_id = t7.voided_org_id
+            AND t1.rtl_loc_id = t7.voided_rtl_store_id
+            AND t1.business_date = t7.voided_business_date
+            AND t1.wkstn_id = t7.voided_wkstn_id
+            AND t1.trans_seq = t7.voided_trans_id
+          LEFT OUTER JOIN trn_trans t8
+            ON t8.organization_id = t7.organization_id
+            AND t8.rtl_loc_id = t7.rtl_loc_id
+            AND t8.business_date = t7.business_date
+            AND t8.wkstn_id = t7.wkstn_id
+            AND t8.trans_seq = t7.trans_seq
+          WHERE /*UPPER*/ t1.trans_typcode = 'RETAIL_SALE'
+          AND /*UPPER*/ t1.trans_statcode = 'COMPLETE'
+          AND t1.total IS NOT NULL
+          AND t1.organization_id = ?
+          AND t1.rtl_loc_id = ?
+          AND t1.business_date BETWEEN ? AND ?
+            ]]></Statement>
+      <Parameter name="argSignatureProperty" />
+      <Parameter name="argPropertyCode" />
+      <Parameter name="argInvoiceTypeProperty" />
+      <Parameter name="argHashControlProperty" />
+      <Parameter name="argManualInvoiceNumProperty" />
+      <Parameter name="argManualInvoiceDateProperty" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Expression trigger="argWorkStationId"><![CDATA[t1.wkstn_id = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t1.wkstn_id, t2.string_value]]></Suffix>
+  </Query>
+  <Query name="COUNTRYPACK.SAFT.GET_SALE_INVOICE_LINES" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.pt.saft.results.SaftInvoiceLinesResult</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="ProductCode" type="String" />
+    <ResultField name="Description" type="String" />
+    <ResultField name="Quantity" type="BigDecimal" />
+    <ResultField name="ExtendedAmount" type="BigDecimal" />
+    <ResultField name="BaseExtendedAmount" type="BigDecimal" />
+    <ResultField name="TaxGroupId" type="String" />
+    <ResultField name="VatAmount" type="BigDecimal" />
+    <ResultField name="ReturnFlag" type="Boolean" />
+    <ResultField name="OriginalInvoice" type="String" />
+    <ResultField name="ReturnReason" type="String" />
+    <ResultField name="UnitOfMeasure" type="String" />
+    <ResultField name="TaxExemptionId" type="String" />
+    <ResultField name="OriginalManualInvoice" type="String" />
+    <ResultField name="SerialNumber" type="String" />
+    <ResultField name="OriginalInvoiceUnverified" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT trn_trans.rtl_loc_id, trn_trans.wkstn_id, trn_trans.trans_seq, trn_trans.business_date, t1.item_id, COALESCE(t2.description, '') AS description,
+                 t1.quantity, t1.extended_amt, t1.base_extended_price, t1.tax_group_id, COALESCE(t1.vat_amt, 0), t1.return_flag, t4.string_value,
+                 t1.return_reascode, coalesce(itm_item_options.unit_of_measure_code, 'EA') as uom, line_tax.tax_exemption_id, t5.string_value, t1.serial_nbr,t6.string_value
+          FROM trn_trans
+          INNER JOIN trl_sale_lineitm t1
+            ON trn_trans.organization_id = t1.organization_id
+            AND trn_trans.rtl_loc_id = t1.rtl_loc_id
+            AND trn_trans.business_date = t1.business_date
+            AND trn_trans.wkstn_id = t1.wkstn_id
+            AND trn_trans.trans_seq = t1.trans_seq
+          INNER JOIN trl_rtrans_lineitm t8
+            ON t1.organization_id = t8.organization_id
+            AND t1.rtl_loc_id = t8.rtl_loc_id
+            AND t1.business_date = t8.business_date
+            AND t1.wkstn_id = t8.wkstn_id
+            AND t1.trans_seq = t8.trans_seq
+            AND t1.rtrans_lineitm_seq = t8.rtrans_lineitm_seq
+          LEFT JOIN trl_rtrans_lineitm_p t6  ON t1.organization_id = t6.organization_id
+            AND t1.rtl_loc_id = t6.rtl_loc_id
+            AND t1.business_date = t6.business_date
+            AND t1.wkstn_id = t6.wkstn_id
+            AND t1.trans_seq = t6.trans_seq
+            AND t1.rtrans_lineitm_seq = t6.rtrans_lineitm_seq
+            AND t6.property_code = ?
+          LEFT JOIN trn_trans_p t4 ON t4.organization_id = t1.organization_id
+            AND t4.rtl_loc_id = t1.original_rtl_loc_id
+            AND t4.business_date = t1.original_business_date
+            AND t4.wkstn_id = t1.original_wkstn_id
+            AND t4.trans_seq = t1.original_trans_seq
+            AND t4.property_code = ?
+          LEFT JOIN trn_trans_p t5 ON t5.organization_id = t1.organization_id
+            AND t5.rtl_loc_id = t1.original_rtl_loc_id
+            AND t5.business_date = t1.original_business_date
+            AND t5.wkstn_id = t1.original_wkstn_id
+            AND t5.trans_seq = t1.original_trans_seq
+            AND t5.property_code = ?
+          LEFT JOIN (
+            SELECT t9.organization_id, t9.rtl_loc_id, t9.business_date, t9.wkstn_id, t9.trans_seq, t9.rtrans_lineitm_seq, t9.tax_exemption_id
+              FROM trl_sale_tax_lineitm t9
+              WHERE t9.organization_id = ?
+                AND t9.rtl_loc_id = ?
+                AND t9.business_date BETWEEN ? AND ?
+                AND t9.void_flag = 0) line_tax
+            ON line_tax.organization_id = t8.organization_id
+            AND line_tax.rtl_loc_id = t8.rtl_loc_id
+            AND line_tax.business_date = t8.business_date
+            AND line_tax.wkstn_id = t8.wkstn_id
+            AND line_tax.trans_seq = t8.trans_seq
+            AND line_tax.rtrans_lineitm_seq = t8.rtrans_lineitm_seq
+          LEFT JOIN (SELECT a.organization_id, a.item_id, a.unit_of_measure_code
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   INNER JOIN (SELECT a.organization_id, a.item_id, MAX(b.level_order) level_order
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   GROUP BY a.organization_id, a.item_id) c
+                   ON c.organization_id = a.ORGANIZATION_ID AND c.ITEM_ID = a.ITEM_ID AND c.level_order = b.level_order) itm_item_options
+            ON itm_item_options.organization_id = t1.organization_id
+            AND itm_item_options.item_id = /*UPPER*/ t1.item_id
+          LEFT JOIN itm_item t2
+            ON t1.organization_id = t2.organization_id
+            AND /*UPPER*/ t1.item_id = t2.item_id
+          WHERE /*UPPER*/ trn_trans.trans_typcode = 'RETAIL_SALE'
+            AND /*UPPER*/ trn_trans.trans_statcode = 'COMPLETE'
+            AND trn_trans.total IS NOT NULL
+            AND t1.tax_group_id IS NOT NULL
+            AND t8.void_flag = 0
+            AND trn_trans.organization_id = ?
+            AND trn_trans.rtl_loc_id = ?
+            AND trn_trans.business_date BETWEEN ? AND ?
+            ]]></Statement>
+      <Parameter name="argPropertyCodeUnverifiedOriginal" />
+      <Parameter name="argPropertyCode" />
+      <Parameter name="argManualInvoiceNumProperty" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Expression trigger="argWorkStationId"><![CDATA[t1.wkstn_id = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t1.trans_seq, t1.rtrans_lineitm_seq]]></Suffix>
+  </Query>
+  <Query name="COUNTRYPACK.SAFT.GET_SALE_INVOICE_PAYMENTS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.pt.saft.results.SaftInvoiceTenderLinesResult</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="TenderId" type="String" />
+    <ResultField name="Amount" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT trn_trans.rtl_loc_id, trn_trans.wkstn_id, trn_trans.business_date, trn_trans.trans_seq, t1.tndr_id, t1.amt
+    FROM trn_trans
+    INNER JOIN trn_trans_p ON trn_trans.organization_id = trn_trans_p.organization_id
+      AND trn_trans.rtl_loc_id = trn_trans_p.rtl_loc_id
+      AND trn_trans.business_date = trn_trans_p.business_date
+      AND trn_trans.wkstn_id = trn_trans_p.wkstn_id
+      AND trn_trans.trans_seq = trn_trans_p.trans_seq
+      AND trn_trans_p.property_code = ?
+    INNER JOIN ttr_tndr_lineitm t1 ON trn_trans.organization_id = t1.organization_id
+      AND trn_trans.rtl_loc_id = t1.rtl_loc_id
+      AND trn_trans.business_date = t1.business_date
+      AND trn_trans.wkstn_id = t1.wkstn_id
+      AND trn_trans.trans_seq = t1.trans_seq
+    INNER JOIN trl_rtrans_lineitm t2 ON t1.organization_id = t2.organization_id
+      AND t1.rtl_loc_id = t2.rtl_loc_id
+      AND t1.business_date = t2.business_date
+      AND t1.wkstn_id = t2.wkstn_id
+      AND t1.trans_seq = t2.trans_seq
+      AND t1.rtrans_lineitm_seq = t2.rtrans_lineitm_seq
+    WHERE /*UPPER*/ trn_trans.trans_typcode = 'RETAIL_SALE'
+      AND /*UPPER*/ trn_trans.trans_statcode = 'COMPLETE'
+      AND trn_trans.total IS NOT NULL
+      AND t2.void_flag = 0
+      AND trn_trans.organization_id = ?
+      AND trn_trans.rtl_loc_id = ?
+      AND trn_trans.business_date BETWEEN ? AND ?
+            ]]></Statement>
+      <Parameter name="argPropertyCode" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Expression trigger="argWorkStationId"><![CDATA[t1.wkstn_id = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t1.trans_seq, t1.rtrans_lineitm_seq]]></Suffix>
+  </Query>
+  <Query name="COUNTRYPACK.SAFT.GET_TAXES" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="taxGroupId" type="String" />
+    <ResultField name="taxCountryRegion" type="String" />
+    <ResultField name="percentage" type="BigDecimal" />
+    <ResultField name="amount" type="BigDecimal" />
+    <ResultField name="taxExpirationDate" type="Date" />
+    <ResultField name="taxCode" type="String" />
+    <ResultField name="description" type="String" />
+    <ResultField name="taxType" type="String" />
+    <ResultField name="taxEffectiveDate" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT t2.tax_group_id, t2.tax_loc_id, t3.percentage, t3.amt, t3.expr_datetime,
+                 t2.name, t2.description, t2.tax_typcode, t3.effective_datetime
+          FROM tax_rtl_loc_tax_mapping t1
+          JOIN tax_tax_group_rule t2
+            ON t1.organization_id = t2.organization_id
+            AND /*UPPER*/ t1.tax_loc_id = t2.tax_loc_id
+          JOIN tax_tax_rate_rule t3
+            ON t2.organization_id = t3.organization_id
+            AND t2.tax_loc_id = t3.tax_loc_id
+            AND t2.tax_group_id = t3.tax_group_id
+            AND t2.tax_rule_seq_nbr = t3.tax_rule_seq_nbr
+          WHERE t1.organization_id = ?
+          AND t1.rtl_loc_id = ?
+          AND /*UPPER*/ t2.tax_typcode = 'VAT'
+          ORDER BY t2.tax_group_id, t2.tax_rule_seq_nbr
+            ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.SAFT.PREVIOUS_SIGNATURE" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="LastSignature" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT d.string_value
+        FROM (
+          SELECT t2.string_value, t1.trans_seq, t1.business_date,
+                 ROW_NUMBER() OVER (ORDER BY t1.trans_seq DESC) AS RowNumber
+          FROM trn_trans_p t1
+            INNER JOIN trn_trans_p t2
+              ON t1.organization_id = t2.organization_id
+              AND t1.rtl_loc_id = t2.rtl_loc_id
+              AND t1.business_date = t2.business_date
+              AND t1.wkstn_id = t2.wkstn_id
+              AND t1.trans_seq = t2.trans_seq
+              AND t2.property_code = ?
+      INNER JOIN trn_trans_p t3 ON t1.organization_id = t3.organization_id
+        AND t1.rtl_loc_id = t3.rtl_loc_id
+        AND t1.business_date = t3.business_date
+        AND t1.wkstn_id = t3.wkstn_id
+        AND t1.trans_seq = t3.trans_seq
+        AND t3.property_code = ?
+          WHERE t1.organization_id = ?
+          AND t1.rtl_loc_id = ?
+          AND t1.wkstn_id = ?
+          AND t1.property_code = ?
+          AND /*UPPER*/ t1.string_value = ?
+          AND t1.business_date <= ?
+          AND /*UPPER*/ t3.string_value LIKE ?) d
+        WHERE RowNumber = 1
+            ]]></Statement>
+      <Parameter name="argPropertySignature" />
+      <Parameter name="argPropertyDocumentNumber" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argPropertyInvoiceType" />
+      <Parameter name="argFiscalDocumentCode" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argSequencePrefix%" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.SAFT.GET_SHIPPINGS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.pt.saft.results.SaftShippingResult</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="SaftDocNumber" type="String" />
+    <ResultField name="SaftHash" type="String" />
+    <ResultField name="AddressFrom" type="String" />
+    <ResultField name="CityFrom" type="String" />
+    <ResultField name="PostalCodeFrom" type="String" />
+    <ResultField name="CountryFrom" type="String" />
+    <ResultField name="AddressTo" type="String" />
+    <ResultField name="CityTo" type="String" />
+    <ResultField name="PostalCodeTo" type="String" />
+    <ResultField name="CountryTo" type="String" />
+    <ResultField name="MovementStatusDate" type="Date" />
+    <ResultField name="DocumentSubtypcode" type="String" />
+    <ResultField name="Operator" type="String" />
+    <ResultField name="ShippingDocumentType" type="String" />
+    <ResultField name="HashControl" type="String" />
+    <ResultField name="AtCode" type="String" />
+    <ResultField name="StateFrom" type="String" />
+    <ResultField name="StateTo" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT distinct trn.rtl_loc_id, trn.wkstn_id, trn.trans_seq, trn.business_date, trpDocNum.string_value AS saft_docnum,
+                 trpHash.string_value AS saft_hash, COALESCE(loc.address1, loc.address2) AS addressFrom,
+                 loc.city AS cityFrom, loc.postal_code AS postalCodeFrom, loc.country AS countryFrom,
+                 COALESCE(ishpaddr.address1, ishpaddr.address2) AS addressTo, ishpaddr.city AS cityTo,
+                 ishpaddr.postal_code AS postalCodeTo, ishpaddr.country AS countryTo, trn.begin_datetime AS MovementStatusDate,
+                 iid.document_subtypcode, trn.operator_party_id, trpType.string_value, COALESCE(trpHashControl.string_value, '1') AS hashControl,
+                 iidpAtCode.string_value, loc.state AS stateFrom, ishpaddr.state AS stateTo
+          FROM trn_trans trn
+          INNER JOIN inv_invctl_trans iit
+            ON trn.organization_id = iit.organization_id
+            AND trn.rtl_loc_id = iit.rtl_loc_id
+            AND trn.business_date = iit.business_date
+            AND trn.wkstn_id = iit.wkstn_id
+            AND trn.trans_seq = iit.trans_seq
+            AND /*UPPER*/ iit.document_typcode = 'SHIPPING'
+          INNER JOIN trn_trans_p trpDocNum
+            ON trn.organization_id = trpDocNum.organization_id
+            AND trn.rtl_loc_id = trpDocNum.rtl_loc_id
+            AND trn.business_date = trpDocNum.business_date
+            AND trn.wkstn_id = trpDocNum.wkstn_id
+            AND trn.trans_seq = trpDocNum.trans_seq
+            AND trpDocNum.property_code = ?
+          INNER JOIN trn_trans_p trpHash
+            ON trn.organization_id = trpHash.organization_id
+            AND trn.rtl_loc_id = trpHash.rtl_loc_id
+            AND trn.business_date = trpHash.business_date
+            AND trn.wkstn_id = trpHash.wkstn_id
+            AND trn.trans_seq = trpHash.trans_seq
+            AND trpHash.property_code = ?
+          INNER JOIN trn_trans_p trpType
+            ON trn.organization_id = trpType.organization_id
+            AND trn.rtl_loc_id = trpType.rtl_loc_id
+            AND trn.business_date = trpType.business_date
+            AND trn.wkstn_id = trpType.wkstn_id
+            AND trn.trans_seq = trpType.trans_seq
+            AND trpType.property_code = ?
+          INNER JOIN inv_invctl_document iid
+            ON iid.organization_id = trn.organization_id
+            AND iid.rtl_loc_id = trn.rtl_loc_id
+            AND iid.document_typcode = /*UPPER*/ iit.document_typcode
+            AND iid.invctl_document_id = /*UPPER*/ iit.invctl_document_id
+          INNER JOIN loc_rtl_loc loc
+            ON trn.rtl_loc_id = loc.rtl_loc_id
+            AND trn.organization_id = loc.organization_id
+          INNER JOIN inv_shipment ishp
+            ON ishp.organization_id = iid.organization_id
+            AND ishp.rtl_loc_id = iid.rtl_loc_id
+            AND ishp.document_typcode = iid.document_typcode
+            AND ishp.invctl_document_id = iid.invctl_document_id
+          INNER JOIN inv_shipment_address ishpaddr
+            ON ishp.organization_id = ishpaddr.organization_id
+            AND ishp.rtl_loc_id = ishpaddr.rtl_loc_id
+            AND ishp.document_typcode = ishpaddr.document_typcode
+            AND ishp.invctl_document_id = ishpaddr.invctl_document_id
+            AND ishp.shipment_seq = ishpaddr.shipment_seq
+          LEFT OUTER JOIN trn_trans_p trpHashControl
+            ON trn.organization_id = trpHashControl.organization_id
+            AND trn.rtl_loc_id = trpHashControl.rtl_loc_id
+            AND trn.business_date = trpHashControl.business_date
+            AND trn.wkstn_id = trpHashControl.wkstn_id
+            AND trn.trans_seq = trpHashControl.trans_seq
+            AND trpHashControl.property_code = ?
+          LEFT OUTER JOIN inv_invctl_document_p iidpAtCode
+            ON iidpAtCode.organization_id = trn.organization_id
+            AND iidpAtCode.rtl_loc_id = trn.rtl_loc_id
+            AND iidpAtCode.document_typcode = /*UPPER*/ iit.document_typcode
+            AND iidpAtCode.invctl_document_id = /*UPPER*/ iit.invctl_document_id
+            AND iidpAtCode.property_code = ?
+          WHERE trn.organization_id = ?
+          AND trn.rtl_loc_id = ?
+          AND trn.business_date BETWEEN ? AND ?
+   ]]></Statement>
+      <Parameter name="argPropertyCode" />
+      <Parameter name="argSignatureProperty" />
+      <Parameter name="argShippingTypeProperty" />
+      <Parameter name="argHashControlProperty" />
+      <Parameter name="argAtCodeProperty" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Expression trigger="argWorkStationId"><![CDATA[trn.wkstn_id = ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.SAFT.GET_SHIPPING_LINES" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.pt.saft.results.SaftShippingLinesResult</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="InventoryItemId" type="String" />
+    <ResultField name="PostedCount" type="BigDecimal" />
+    <ResultField name="Description" type="String" />
+    <ResultField name="UnitOfMeasure" type="String" />
+    <ResultField name="DocumentLine" type="Long" />
+    <ResultField name="SerialNumber" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT trn.rtl_loc_id, trn.wkstn_id, trn.trans_seq, trn.business_date, iidl.inventory_item_id, coalesce(iidtl.new_posted_count, 0) - coalesce(iidtl.previous_posted_count, 0),
+                 coalesce(t2.description, '') AS description, coalesce(itm_item_options.unit_of_measure_code, 'EA') as uom,
+                 iidls.invctl_document_line_nbr, iidls.serial_nbr
+          FROM trn_trans trn
+          INNER JOIN inv_invctl_trans iit
+            ON trn.organization_id = iit.organization_id
+            AND trn.rtl_loc_id = iit.rtl_loc_id
+            AND trn.business_date = iit.business_date
+            AND trn.wkstn_id = iit.wkstn_id
+            AND trn.trans_seq = iit.trans_seq
+            AND /*UPPER*/ iit.document_typcode = 'SHIPPING'
+          INNER JOIN inv_invctl_trans_detail iidtl
+            ON iidtl.organization_id = iit.organization_id
+            AND iidtl.rtl_loc_id = iit.rtl_loc_id
+            AND iidtl.business_date = iit.business_date
+            AND iidtl.wkstn_id = iit.wkstn_id
+            AND iidtl.trans_seq = iit.trans_seq
+            AND /*UPPER*/ iidtl.new_status_code = 'SHIPPED'
+          INNER JOIN inv_invctl_document iid
+            ON iid.organization_id = iidtl.organization_id
+            AND iid.rtl_loc_id = iidtl.invctl_document_rtl_loc_id
+            AND iid.document_typcode = /*UPPER*/ iidtl.document_typcode
+            AND iid.invctl_document_id = /*UPPER*/ iidtl.invctl_document_id
+          INNER JOIN inv_invctl_document_lineitm iidl
+            ON iidl.organization_id = iidtl.organization_id
+            AND iidl.rtl_loc_id = iidtl.invctl_document_rtl_loc_id
+            AND iidl.invctl_document_id = /*UPPER*/ iidtl.invctl_document_id
+            AND iidl.document_typcode = /*UPPER*/ iidtl.document_typcode
+            AND iidl.invctl_document_line_nbr = iidtl.invctl_document_line_nbr
+          INNER JOIN trn_trans_p trpDocNum
+            ON trn.organization_id = trpDocNum.organization_id
+            AND trn.trans_seq = trpDocNum.trans_seq
+            AND trpDocNum.property_code = ?
+            AND trn.wkstn_id = trpDocNum.wkstn_id
+          LEFT JOIN inv_invctl_doc_lineserial iidls ON iidls.organization_id = iidtl.organization_id
+            AND iidls.rtl_loc_id = iidtl.invctl_document_rtl_loc_id
+            AND iidls.invctl_document_id = /*UPPER*/ iidtl.invctl_document_id
+            AND iidls.document_typcode = /*UPPER*/ iidtl.document_typcode
+            AND iidls.invctl_document_line_nbr = iidtl.invctl_document_line_nbr
+          LEFT JOIN itm_item t2
+            ON iidl.organization_id = t2.organization_id
+            AND /*UPPER*/ iidl.inventory_item_id = t2.item_id
+          LEFT JOIN (SELECT a.organization_id, a.item_id, a.unit_of_measure_code
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   INNER JOIN (SELECT a.organization_id, a.item_id, MAX(b.level_order) level_order
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   GROUP BY a.organization_id, a.item_id) c
+                   ON c.organization_id = a.ORGANIZATION_ID AND c.ITEM_ID = a.ITEM_ID AND c.level_order = b.level_order) itm_item_options
+            ON itm_item_options.organization_id = t2.organization_id
+            AND itm_item_options.item_id = t2.item_id
+          WHERE trn.organization_id = ?
+          AND trn.rtl_loc_id = ?
+          AND trn.business_date BETWEEN ? AND ?
+   ]]></Statement>
+      <Parameter name="argPropertyCode" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Expression trigger="argWorkStationId"><![CDATA[trn.wkstn_id = ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.PT.CHECK_EXISTING_SEQUENCE" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="InvoiceNumber" type="String" />
+    <ResultField name="InvoiceDate" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT COALESCE(t4.string_value, t2.string_value), COALESCE(t3.date_value, t1.business_date)
+          FROM trn_trans t1
+          INNER JOIN trn_trans_p t2
+            ON t1.organization_id = t2.organization_id
+            AND t1.rtl_loc_id = t2.rtl_loc_id
+            AND t1.business_date = t2.business_date
+            AND t1.wkstn_id = t2.wkstn_id
+            AND t1.trans_seq = t2.trans_seq
+            AND t2.property_code = ?
+          LEFT OUTER JOIN trn_trans_p t4
+            ON t1.organization_id = t4.organization_id
+            AND t1.rtl_loc_id = t4.rtl_loc_id
+            AND t1.business_date = t4.business_date
+            AND t1.wkstn_id = t4.wkstn_id
+            AND t1.trans_seq = t4.trans_seq
+            AND t4.property_code = ?
+          LEFT OUTER JOIN trn_trans_p t3
+            ON t1.organization_id = t3.organization_id
+            AND t1.rtl_loc_id = t3.rtl_loc_id
+            AND t1.business_date = t3.business_date
+            AND t1.wkstn_id = t3.wkstn_id
+            AND t1.trans_seq = t3.trans_seq
+            AND t3.property_code = ?
+          WHERE t1.organization_id = ?
+            AND t1.rtl_loc_id = ?
+            AND /*UPPER*/ COALESCE(t4.string_value, t2.string_value) LIKE ?]]></Statement>
+      <Parameter name="argPropertyDocumentNumber" />
+      <Parameter name="argPropertyManualInvoiceNum" />
+      <Parameter name="argPropertyManualInvoiceDate" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argSequencePrefix%" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY COALESCE(t4.string_value, t2.string_value) DESC]]></Suffix>
+  </Query>
+  <Query name="COUNTRYPACK.BR.CARD_NETWORK">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafCardNetworkId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+          WHERE t.organization_id = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.network_name ASC]]></Suffix>
+  </Query>
+  <Query name="COUNTRYPACK.BR.PAF_NFE_TRANS_TAX">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafNfeTransTaxId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argTransTypeCode"><![CDATA[t.trans_typcode = ?]]></Expression>
+      <Expression trigger="argUf"><![CDATA[t.uf = ?]]></Expression>
+      <Expression trigger="argDestUf"><![CDATA[t.dest_uf = ?]]></Expression>
+      <Expression trigger="argTaxGroupId"><![CDATA[t.tax_group_id = ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.NFE_TRANS_TYPE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafNfeTransTypeId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        inner join cpaf_nfe_trans_type_use u
+          on t.organization_id = u.organization_id
+         and t.trans_typcode = u.trans_typcode
+        WHERE t.organization_id = ?
+          and u.uf = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId,argUf" />
+      <Expression trigger="argUsageType"><![CDATA[u.usage_typcode = ?]]></Expression>
+      <Expression parameters="argSAME, argSAME" trigger="argSAME"><![CDATA[t.cfop_same_uf IS NOT NULL AND ? = ?]]></Expression>
+      <Expression parameters="argOTHER, argOTHER" trigger="argOTHER"><![CDATA[t.cfop_other_uf IS NOT NULL AND ? = ?]]></Expression>
+      <Expression parameters="argFOREIGN, argFOREIGN" trigger="argFOREIGN"><![CDATA[t.cfop_foreign IS NOT NULL AND ? = ?]]></Expression>
+      <Expression trigger="argRuleType"><![CDATA[/*UPPER*/ t.rule_type = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.display_order ASC]]></Suffix>
+  </Query>
+  <Query name="COUNTRYPACK.BR.NFE_QUEUE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafNfeQueueId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE organization_id = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argStatus"><![CDATA[/*UPPER*/ stat_code = ?]]></Expression>
+      <Expression trigger="argKey"><![CDATA[/*UPPER*/ chave_nfe = ?]]></Expression>
+      <Expression trigger="argOldKey"><![CDATA[/*UPPER*/ old_chave_nfe = ?]]></Expression>
+      <Expression trigger="argRetailLocationId"><![CDATA[rtl_loc_id = ?]]></Expression>
+      <Expression trigger="argWorkstationId"><![CDATA[wkstn_id = ?]]></Expression>
+      <Expression trigger="argQueueSequence"><![CDATA[queue_seq = ?]]></Expression>
+      <Expression trigger="argSeriesId"><![CDATA[series_id = ?]]></Expression>
+      <Expression trigger="argNnf"><![CDATA[nnf = ?]]></Expression>
+      <Expression trigger="argModel"><![CDATA[/*UPPER*/ model = ?]]></Expression>
+      <Expression trigger="argExpiredNfe"><![CDATA[(/*UPPER*/ stat_code = N'ERROR' OR /*UPPER*/ stat_code = N'REJECTED' OR /*UPPER*/ stat_code = N'NEW') AND COALESCE(update_date, create_date) < ?]]></Expression>
+      <Expression trigger="argNfeUsageType"><![CDATA[/*UPPER*/ usage_type = ?]]></Expression>
+      <Expression parameters="argSaiEntDateStart,argSaiEntDateEnd" trigger="argSaiEntDateStart"><![CDATA[sai_ent_datetime between ? and ?]]></Expression>
+      <Expression parameters="argRegisterIdStart,argRegisterIdEnd" trigger="argRegisterIdStart"><![CDATA[wkstn_id between ? and ?]]></Expression>
+      <Expression parameters="argQueueSequenceStart,argQueueSequenceEnd" trigger="argQueueSequenceStart"><![CDATA[queue_seq between ? and ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.NFE_QUEUE_FROM_Q_TRAN">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafNfeQueueId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        LEFT JOIN
+          CPAF_NFE_QUEUE_TRANS qt
+        ON
+          t.organization_id = qt.organization_id
+        AND t.rtl_loc_id = qt.rtl_loc_id
+        AND t.wkstn_id = qt.wkstn_id
+        AND t.queue_seq = qt.queue_seq
+        AND qt.inactive_flag = 0
+        WHERE
+          qt.organization_id = ?
+        AND qt.rtl_loc_id = ?
+        AND qt.trans_wkstn_id = ?
+        AND qt.business_date = ?
+        AND qt.trans_seq = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.NFE_QUEUE_RESULT" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.br.nfe.maintenance.model.PafNfeQueueResult</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="RetailLocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="QueueSequence" type="Long" />
+    <ResultField name="UsageType" type="String" />
+    <ResultField name="TransTypeCode" type="String" />
+    <ResultField name="cfop" type="String" />
+    <ResultField name="Natop" type="String" />
+    <ResultField name="SaiEntDatetime" type="Date" />
+    <ResultField name="TotalAmount" type="BigDecimal" />
+    <ResultField name="InfCpl" type="String" />
+    <ResultField name="ChaveNfe" type="String" />
+    <ResultField name="StatusCode" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT
+          t.organization_id,
+          t.rtl_loc_id,
+          t.wkstn_id,
+          t.queue_seq,
+          t.usage_type,
+          t.trans_typcode,
+          cfop.string_value as cfop,
+          t.natop,
+          t.sai_ent_datetime,
+          t.total_amount,
+          t.inf_cpl,
+          t.chave_nfe,
+          t.stat_code
+        FROM
+          CPAF_NFE_QUEUE t
+        LEFT JOIN
+          CPAF_NFE_QUEUE_P cfop
+        ON
+          t.organization_id = cfop.organization_id
+        AND t.rtl_loc_id = cfop.rtl_loc_id
+        AND t.wkstn_id = cfop.wkstn_id
+        AND t.queue_seq = cfop.queue_seq
+        AND cfop.property_code = 'BR::CFOP'
+        WHERE
+          t.organization_id = ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argStatus"><![CDATA[/*UPPER*/ t.stat_code = ?]]></Expression>
+      <Expression trigger="argChaveNfe"><![CDATA[/*UPPER*/ t.chave_nfe = ?]]></Expression>
+      <Expression trigger="argModel"><![CDATA[/*UPPER*/ t.model = ?]]></Expression>
+      <Expression trigger="argRetailLocationId"><![CDATA[t.rtl_loc_id = ?]]></Expression>
+      <Expression trigger="argWorkstationId"><![CDATA[t.wkstn_id = ?]]></Expression>
+      <Expression trigger="argQueueSequence"><![CDATA[t.queue_seq = ?]]></Expression>
+      <Expression trigger="argSeriesId"><![CDATA[t.series_id = ?]]></Expression>
+      <Expression trigger="argNnf"><![CDATA[t.nnf = ?]]></Expression>
+      <Expression trigger="argExpiredNfe"><![CDATA[(/*UPPER*/ t.stat_code = N'ERROR' OR /*UPPER*/ t.stat_code = N'REJECTED' OR /*UPPER*/ t.stat_code = N'NEW') AND COALESCE(t.update_date, t.create_date) < ?]]></Expression>
+      <Expression trigger="argNfeUsageType"><![CDATA[/*UPPER*/ t.usage_type = ?]]></Expression>
+      <Expression parameters="argSaiEntDateStart,argSaiEntDateEnd" trigger="argSaiEntDateStart"><![CDATA[t.sai_ent_datetime between ? and ?]]></Expression>
+      <Expression parameters="argRegisterIdStart,argRegisterIdEnd" trigger="argRegisterIdStart"><![CDATA[t.wkstn_id between ? and ?]]></Expression>
+      <Expression parameters="argQueueSequenceStart,argQueueSequenceEnd" trigger="argQueueSequenceStart"><![CDATA[t.queue_seq between ? and ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.PAF_NFE_QUEUE_LOG">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafNfeQueueLogId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argRetailLocationId"><![CDATA[t.rtl_loc_id = ?]]></Expression>
+      <Expression trigger="argQueueSequence"><![CDATA[t.queue_seq = ?]]></Expression>
+      <Expression trigger="argSequence"><![CDATA[t.sequence = ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.NFE_MAINTAIN_QUEUE_TRAN_LOOKUP" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.br.nfe.maintenance.NfeQueueTransQueryResult</ResultClass>
+    <ResultField name="OrganizationId" />
+    <ResultField name="RetailLocationId" />
+    <ResultField name="WorkstationId" />
+    <ResultField name="BusinessDate" />
+    <ResultField name="TransactionSequence" />
+    <ResultField name="TransactionTypeCode" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT
+            nt.organization_id,
+            nt.rtl_loc_id,
+            nt.trans_wkstn_id,
+            nt.business_date,
+            nt.trans_seq,
+            t.trans_typcode
+        FROM
+            CPAF_NFE_QUEUE_TRANS nt
+        LEFT JOIN
+            trn_trans t
+        ON
+            t.organization_id = nt.organization_id
+        AND t.rtl_loc_id = nt.rtl_loc_id
+        AND t.wkstn_id = nt.trans_wkstn_id
+        AND t.business_date = nt.business_date
+        AND t.trans_seq = nt.trans_seq
+        WHERE
+            nt.organization_id = ?
+        AND nt.rtl_loc_id = ?
+        AND nt.queue_seq = ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId, argRetailLocationId, argNfeQueueSeq" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.NFE_REVERSAL_NFE_REF">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.trl.RetailTransactionLineItemPropertyId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+          AND t.rtl_loc_id = ?
+          AND t.wkstn_id = ?
+          AND t.business_date = ?
+          AND t.trans_seq = ?
+          AND t.property_code like ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkStationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+      <Parameter name="argPropertyCodeLike" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.EMAIL_QUEUE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafNfeResendQueueId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND wkstn_id = ?
+          AND email_address IS NOT NULL
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Expression trigger="argKey"><![CDATA[chave_nfe = ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.RESEND_QUEUE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafNfeResendQueueId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND wkstn_id = ?
+          AND email_address IS NULL
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Expression trigger="argKey"><![CDATA[chave_nfe = ?]]></Expression>
+      <Expression trigger="argRequestingUser"><![CDATA[/*UPPER*/ requesting_user = ?]]></Expression>
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.RESEND_DELETE_QUEUE" pmType="REGISTER_CORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM CPAF_NFE_RESEND_QUEUE
+        WHERE
+            organization_id = ?
+        AND rtl_loc_id = ?
+        AND wkstn_id = ?
+        AND chave_nfe = ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argKey" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.NFE_SERVICE_NFE_FOR_KEY">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafNfeId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE organization_id = ?
+          AND /*UPPER*/ chave_nfe = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argKey" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.CITY_CODE_SEARCH">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafAddressMunicipalityId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+          WHERE t.organization_id = ?
+            AND ? BETWEEN t.postal_code_start AND t.postal_code_end
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argPostalCode" />
+    </SQL>
+  </Query>
+  <Query name="COUNTRYPACK.BR.PAF_NFES">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cpaf.PafNfeId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+          WHERE organization_id = ?
+            AND rtl_loc_id = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Expression parameters="argStartDate, argEndDate, argStartDate, argEndDate" trigger="argStartDate"><![CDATA[(create_date >= ? AND create_date <= ?) OR (update_date >= ? AND update_date <= ?)]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.MOST_RECENT_SYSTEM_OPEN" pmType="STATE_JOURNAL">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="Date" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT MAX(time_stamp)
+      FROM loc_state_journal D
+      WHERE organization_id = ?
+      AND rtl_loc_id = ?
+      AND status_typcode = 'RTL_LOC_STATE'
+      GROUP BY organization_id, rtl_loc_id]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+
+  <!-- Mexico Queries -->
+  <Query name="COUNTRYPACK.MX.GLOBALINVOICE_SEARCH_TRANSACTIONS" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="RetailLocationId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionSequence" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      WITH Invoiced(ORGANIZATION_ID, RTL_LOC_ID, BUSINESS_DATE, WKSTN_ID, TRANS_SEQ)
+      AS (
+        SELECT
+          t.ORGANIZATION_ID
+          ,t.RTL_LOC_ID
+          ,t.BUSINESS_DATE
+          ,t.WKSTN_ID
+          ,t.TRANS_SEQ
+        FROM trn_trans t
+        LEFT OUTER JOIN (
+          SELECT d.ORGANIZATION_ID
+            ,d.TRANS_RTL_LOC_ID
+            ,d.TRANS_WKSTN_ID
+            ,d.TRANS_BUSINESS_DATE
+            ,d.TRANS_TRANS_SEQ
+          FROM CIVC_INVOICE h
+          INNER JOIN CIVC_INVOICE_XREF d ON h.ORGANIZATION_ID = d.ORGANIZATION_ID
+            AND h.RTL_LOC_ID = d.RTL_LOC_ID
+            AND h.WKSTN_ID = d.WKSTN_ID
+            AND h.SEQUENCE_NBR = d.SEQUENCE_NBR
+            AND h.VOID_FLAG = 0
+            AND h.EXT_INVOICE_ID IS NOT NULL
+          ) civc ON t.ORGANIZATION_ID = civc.ORGANIZATION_ID
+          AND t.RTL_LOC_ID = civc.TRANS_RTL_LOC_ID
+          AND t.WKSTN_ID = civc.TRANS_WKSTN_ID
+          AND t.BUSINESS_DATE = civc.TRANS_BUSINESS_DATE
+          AND t.TRANS_SEQ = civc.TRANS_TRANS_SEQ
+        WHERE /*UPPER*/ TRANS_TYPCODE = 'RETAIL_SALE'
+          AND /*UPPER*/ t.TRANS_STATCODE = 'COMPLETE'
+          AND civc.TRANS_RTL_LOC_ID IS NOT NULL
+          AND t.POST_VOID_FLAG = 0
+          AND t.BUSINESS_DATE = ?
+      ),
+      allInvoiced(ORGANIZATION_ID, RTL_LOC_ID, BUSINESS_DATE, WKSTN_ID, TRANS_SEQ)
+      as
+      (
+        select ORGANIZATION_ID, RTL_LOC_ID, BUSINESS_DATE, WKSTN_ID, TRANS_SEQ
+        from invoiced
+        union
+        select
+          t.ORGANIZATION_ID
+          ,t.RTL_LOC_ID
+          ,t.BUSINESS_DATE
+          ,t.WKSTN_ID
+          ,t.TRANS_SEQ
+        from
+          CIVC_INVOICE ivc
+            inner join TRN_TRANS_LINK tLink on
+              tLink.Organization_id = ivc.ORGANIZATION_ID
+              and tlink.rtl_loc_id = ivc.RTL_LOC_ID
+              and tlink.business_date = ivc.BUSINESS_DATE
+              and tlink.wkstn_id = ivc.WKSTN_ID
+            inner join trn_trans t on
+              t.RTL_LOC_ID = tLink.LINK_RTL_LOC_ID
+              and t.BUSINESS_DATE = tLink.LINK_BUSINESS_DATE
+              and t.WKSTN_ID = tLink.LINK_WKSTN_ID
+              and t.TRANS_SEQ = tLink.LINK_TRANS_SEQ
+            where
+              t.BUSINESS_DATE = ?
+      )
+
+      select
+        t.ORGANIZATION_ID
+        ,t.RTL_LOC_ID
+        ,t.BUSINESS_DATE
+        ,t.WKSTN_ID
+        ,t.TRANS_SEQ
+      from trn_trans t
+        left outer join allInvoiced ivc on
+          t.ORGANIZATION_ID = ivc.ORGANIZATION_ID
+          and t.RTL_LOC_ID = ivc.RTL_LOC_ID
+          and t.BUSINESS_DATE = ivc.BUSINESS_DATE
+          and t.WKSTN_ID = ivc.WKSTN_ID
+          and t.TRANS_SEQ = ivc.TRANS_SEQ
+      where
+        /*UPPER*/ t.TRANS_TYPCODE = 'RETAIL_SALE'
+        and /*UPPER*/ t.TRANS_STATCODE = 'COMPLETE'
+        and t.ORGANIZATION_ID = ?
+        and t.RTL_LOC_ID = ?
+        and t.BUSINESS_DATE = ?
+        and ivc.ORGANIZATION_ID is null
+      ]]></Statement>
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+      <Expression trigger="argPositiveAmnt"><![CDATA[coalesce(t.total, 0) > ?]]></Expression>
+      <Expression trigger="argNegativeAmnt"><![CDATA[coalesce(t.total, 0) < ?]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.MX.GLOBALINVOICE_TRANSACTIONS_ERROR_LIST" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RetailLocationId" type="Long" />
+    <ResultField name="BusinessYear" type="Long" />
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="SequenceId" type="String" />
+    <ResultField name="SequenceNumber" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT DISTINCT
+          t.WKSTN_ID
+          ,civc.TRANS_RTL_LOC_ID
+          ,civc.BUSINESS_YEAR
+          ,t.ORGANIZATION_ID
+          ,civc.SEQUENCE_ID
+          ,civc.SEQUENCE_NBR
+        FROM trn_trans t
+        INNER JOIN (
+          SELECT d.ORGANIZATION_ID
+            ,d.TRANS_RTL_LOC_ID
+            ,d.TRANS_WKSTN_ID
+            ,d.TRANS_BUSINESS_DATE
+            ,d.TRANS_TRANS_SEQ
+            ,EXT_INVOICE_ID
+            ,h.BUSINESS_YEAR
+            ,h.SEQUENCE_ID
+            ,h.SEQUENCE_NBR
+          FROM CIVC_INVOICE h
+          INNER JOIN CIVC_INVOICE_XREF d ON h.ORGANIZATION_ID = d.ORGANIZATION_ID
+            AND h.RTL_LOC_ID = d.RTL_LOC_ID
+            AND h.WKSTN_ID = d.WKSTN_ID
+            AND h.SEQUENCE_NBR = d.SEQUENCE_NBR
+            AND h.VOID_FLAG = 0
+            AND h.EXT_INVOICE_ID IS NULL
+          ) civc ON t.ORGANIZATION_ID = civc.ORGANIZATION_ID
+          AND t.RTL_LOC_ID = civc.TRANS_RTL_LOC_ID
+          AND t.WKSTN_ID = civc.TRANS_WKSTN_ID
+          AND t.BUSINESS_DATE = civc.TRANS_BUSINESS_DATE
+          AND t.TRANS_SEQ = civc.TRANS_TRANS_SEQ
+        WHERE /*UPPER*/ TRANS_TYPCODE = 'DEFERRED_INVOICE'
+          AND /*UPPER*/ t.TRANS_STATCODE = 'COMPLETE'
+          AND civc.TRANS_RTL_LOC_ID IS NOT NULL
+          AND t.POST_VOID_FLAG = 0
+      ]]></Statement>
+      <Expression trigger="argOrganizationId"><![CDATA[t.organization_id = ?]]></Expression>
+      <Expression trigger="argRetailLocationId"><![CDATA[t.rtl_loc_id = ?]]></Expression>
+      <Expression trigger="argLastValidDate"><![CDATA[t.begin_datetime >= ?]]></Expression>
+    </SQL>
+  </Query>
+  <!-- Mexico Queries -->
+
+  <Query name="COUNTRYPACK.PREVIOUS_SIGNATURE" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="LastSignature" type="String" />
+    <ResultField name="TransactionSequence" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT d.string_value,
+               d.trans_seq
+        FROM (
+          SELECT t2.string_value, t1.trans_seq, t1.business_date,
+                 ROW_NUMBER() OVER (ORDER BY t1.trans_seq DESC) AS RowNumber
+          FROM trn_trans_p t1
+            INNER JOIN trn_trans_p t2
+              ON t1.organization_id = t2.organization_id
+              AND t1.rtl_loc_id = t2.rtl_loc_id
+              AND t1.business_date = t2.business_date
+              AND t1.wkstn_id = t2.wkstn_id
+              AND t1.trans_seq = t2.trans_seq
+              AND t2.property_code = ?
+      INNER JOIN trn_trans_p t3 ON t1.organization_id = t3.organization_id
+        AND t1.rtl_loc_id = t3.rtl_loc_id
+        AND t1.business_date = t3.business_date
+        AND t1.wkstn_id = t3.wkstn_id
+        AND t1.trans_seq = t3.trans_seq
+          WHERE t1.organization_id = ?
+          AND t1.rtl_loc_id = ?
+          AND (/*UPPER*/ ? IS NULL OR t1.wkstn_id = ?)
+          AND t1.property_code = ?
+          AND (/*UPPER*/ ? IS NULL OR /*UPPER*/ t1.string_value = ?)
+          AND t1.business_date <= ?) d
+        WHERE RowNumber = 1
+            ]]></Statement>
+      <Parameter name="argPropertySignature" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argPropertyInvoiceType" />
+      <Parameter name="argFiscalDocumentCode" />
+      <Parameter name="argFiscalDocumentCode" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+
+  <!-- *************************************************************************** -->
+  <!-- *** FRANCE *** -->
+  <!-- *************************************************************************** -->
+  <Query name="COUNTRYPACK.FR.LOAD_TOTALS_STATE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cfra.FrSalesTotalId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+          AND t.rtl_loc_id = ?
+          AND t.wkstn_id = ?
+          AND t.fiscal_year <> 0
+          AND /*UPPER*/ t.status_code IN ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="@argStatusCode" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.fiscal_year, t.reference_year, t.reference_month, t.reference_day]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.LOAD_FIRST_CLOSURE_DAY" pmType="TRANSACTION" >
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="ReferenceYear" type="Long" />
+    <ResultField name="ReferenceMonth" type="Long" />
+    <ResultField name="ReferenceDay" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT reference_year, reference_month, reference_day FROM (
+      SELECT reference_year, reference_month, reference_day,
+        ROW_NUMBER() OVER (ORDER BY reference_year ASC, reference_month ASC, reference_day ASC) AS RowNumber
+            FROM cfra_sales_total
+            WHERE organization_id = ?
+              AND rtl_loc_id = ?
+              AND wkstn_id = ?
+              AND fiscal_year <> 0
+              AND reference_month <> 0
+                AND reference_day <> 0
+              AND /*UPPER*/ status_code IN ?) ref
+      WHERE RowNumber=1
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="@argStatusCode" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.LOAD_LAST_CLOSURE_DAY" pmType="TRANSACTION" >
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="ReferenceYear" type="Long" />
+    <ResultField name="ReferenceMonth" type="Long" />
+    <ResultField name="ReferenceDay" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT reference_year, reference_month, reference_day FROM (
+      SELECT reference_year, reference_month, reference_day,
+        ROW_NUMBER() OVER (ORDER BY reference_year DESC, reference_month DESC, reference_day DESC) AS RowNumber
+            FROM cfra_sales_total
+            WHERE organization_id = ?
+              AND rtl_loc_id = ?
+              AND wkstn_id = ?
+              AND fiscal_year <> 0
+              AND reference_month <> 0
+                AND reference_day <> 0
+              AND /*UPPER*/ status_code IN ?) ref
+      WHERE RowNumber=1
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="@argStatusCode" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.LAST_TRANS_TOTAL_SIGNATURE" pmType="TRANSACTION" >
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.fr.signature.result.FrLastSignatureResult</ResultClass>
+    <ResultField name="Signature" type="String" />
+    <ResultField name="DocumentNumber" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT signature, document_number FROM (
+      SELECT signature, document_number,
+        ROW_NUMBER() OVER (ORDER BY trans_business_date DESC, trans_trans_seq DESC) AS RowNumber
+            FROM cfra_sales_trn_total
+            WHERE organization_id = ?
+              AND rtl_loc_id = ?
+              AND wkstn_id = ?
+              AND (/*UPPER*/ ? IS NULL OR document_number < ?)) ref
+        where RowNumber=1
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argDocumentNumber" />
+      <Parameter name="argDocumentNumber" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.LAST_TICKET_REPRINT_SIGNATURE" pmType="TRANSACTION" >
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.fr.signature.result.FrLastSignatureResult</ResultClass>
+    <ResultField name="Signature" type="String" />
+    <ResultField name="DocumentNumber" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT signature, reprint_id FROM (
+      SELECT signature, reprint_id,
+         ROW_NUMBER() OVER (ORDER BY reprint_id DESC) AS RowNumber
+            FROM cfra_rcpt_dup
+            WHERE organization_id = ?
+              AND rtl_loc_id = ?
+              AND wkstn_id = ?
+              AND (/*UPPER*/ ? IS NULL OR reprint_id < ?)) ref
+        where RowNumber=1
+     ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argDocumentNumber" />
+      <Parameter name="argDocumentNumber" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.LAST_INVOICE_SIGNATURE" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.fr.signature.result.FrLastSignatureResult</ResultClass>
+    <ResultField name="Signature" type="String" />
+    <ResultField name="DocumentNumber" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT d.signature, d.document_number
+        FROM (
+      SELECT ivc_sign.string_value AS signature, ivc_number.string_value AS document_number, ROW_NUMBER() OVER (
+          ORDER BY ivc.business_year DESC, ivc.sequence_nbr DESC
+          ) AS RowNumber
+      FROM civc_invoice ivc
+        INNER JOIN civc_invoice_p ivc_sign
+          ON ivc_sign.organization_id = ivc.organization_id
+          AND ivc_sign.rtl_loc_id = ivc.rtl_loc_id
+          AND ivc_sign.wkstn_id = ivc.wkstn_id
+          AND ivc_sign.business_year = ivc.business_year
+          AND ivc_sign.sequence_id = ivc.sequence_id
+          AND ivc_sign.sequence_nbr = ivc.sequence_nbr
+          AND ivc_sign.property_code = ?
+        INNER JOIN civc_invoice_p ivc_number
+          ON ivc_number.organization_id = ivc.organization_id
+          AND ivc_number.rtl_loc_id = ivc.rtl_loc_id
+          AND ivc_number.wkstn_id = ivc.wkstn_id
+          AND ivc_number.business_year = ivc.business_year
+          AND ivc_number.sequence_id = ivc.sequence_id
+          AND ivc_number.sequence_nbr = ivc.sequence_nbr
+          AND ivc_number.property_code = ?
+        WHERE ivc.organization_id = ?
+          AND ivc.rtl_loc_id = ?
+          AND /*UPPER*/ ivc.sequence_id = ?
+          AND (ivc.business_year < ?
+          OR (ivc.business_year = ? AND ivc.sequence_nbr < ?))) d
+        WHERE RowNumber = 1
+            ]]></Statement>
+      <Parameter name="argPropertySignature" />
+      <Parameter name="argPropertyDocumentNumber" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argSequenceId" />
+      <Parameter name="argBusinessYear" />
+      <Parameter name="argBusinessYear" />
+      <Parameter name="argSequenceNumber" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.ARCHIVE_LOAD_DAY_TRANS_TOTALS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cfra.FrSalesTransTotalId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+          AND t.rtl_loc_id = ?
+          AND t.wkstn_id = ?
+      AND t.reference_year = ?
+        AND t.reference_month = ?
+          AND t.reference_day = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argRefYear" />
+      <Parameter name="argRefMonth" />
+      <Parameter name="argRefDay" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.trans_trans_seq]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR_ARCHIVE_LOAD_TRANSACTIONS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.fr.archive.result.FrTotalTicketsResult</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="PostVoidFlag" type="Boolean" />
+    <ResultField name="BeginDateTime" type="Date" />
+    <ResultField name="Signature" type="String" />
+    <ResultField name="DocumentNumber" type="String" />
+    <ResultField name="CustomerID" type="String" />
+    <ResultField name="Operator" type="String" />
+    <ResultField name="ExemptionId" type="String" />
+    <ResultField name="ReprintCount" type="Long" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT t_trans.rtl_loc_id, t_trans.wkstn_id, t_trans.trans_seq, t_trans.business_date, t_trans.post_void_flag, t_trans.begin_datetime,
+                 t_sign_p.string_value, t_tot.document_number, t_rtrans.cust_party_id, t_trans.operator_party_id, t_rtrans.tax_exemption_id,
+                 COALESCE(t_reprint.reprint_count, 0) as reprints
+          FROM cfra_sales_trn_total t_tot
+      INNER JOIN trn_trans t_trans
+        ON t_tot.organization_id = t_trans.organization_id
+      AND t_tot.trans_rtl_loc_id = t_trans.rtl_loc_id
+      AND t_tot.trans_business_date = t_trans.business_date
+      AND t_tot.trans_wkstn_id = t_trans.wkstn_id
+      AND t_tot.trans_trans_seq = t_trans.trans_seq
+          INNER JOIN trn_trans_p t_sign_p
+            ON t_trans.organization_id = t_sign_p.organization_id
+            AND t_trans.rtl_loc_id = t_sign_p.rtl_loc_id
+            AND t_trans.business_date = t_sign_p.business_date
+            AND t_trans.wkstn_id = t_sign_p.wkstn_id
+            AND t_trans.trans_seq = t_sign_p.trans_seq
+            AND t_sign_p.property_code = ?
+          LEFT OUTER JOIN trl_rtrans t_rtrans
+            ON t_trans.organization_id = t_rtrans.organization_id
+            AND t_trans.rtl_loc_id = t_rtrans.rtl_loc_id
+            AND t_trans.business_date = t_rtrans.business_date
+            AND t_trans.wkstn_id = t_rtrans.wkstn_id
+            AND t_trans.trans_seq = t_rtrans.trans_seq
+          LEFT JOIN
+              (SELECT organization_id,
+                MIN(trans_rtl_loc_id) AS trans_rtl_loc_id,
+                MIN(trans_business_date) AS trans_business_date,
+                MIN(trans_wkstn_id) AS trans_wkstn_id,
+                MIN(trans_trans_seq) AS trans_trans_seq,
+                COUNT(*) as reprint_count
+              FROM cfra_rcpt_dup
+              GROUP BY organization_id,
+                trans_rtl_loc_id,
+                trans_business_date,
+                trans_wkstn_id,
+                trans_trans_seq) t_reprint
+            ON t_reprint.organization_id = t_trans.organization_id
+            AND t_reprint.trans_rtl_loc_id = t_trans.rtl_loc_id
+            AND t_reprint.trans_business_date = t_trans.business_date
+            AND t_reprint.trans_wkstn_id = t_trans.wkstn_id
+            AND t_reprint.trans_trans_seq = t_trans.trans_seq
+     WHERE t_tot.organization_id = ?
+          AND t_tot.rtl_loc_id = ?
+          AND t_tot.wkstn_id = ?
+      AND t_tot.reference_year = ?
+        AND t_tot.reference_month = ?
+          AND t_tot.reference_day = ?
+            ]]></Statement>
+      <Parameter name="argSignatureProperty" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argRefYear" />
+      <Parameter name="argRefMonth" />
+      <Parameter name="argRefDay" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t_trans.rtl_loc_id, t_trans.wkstn_id, t_trans.trans_seq]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR_ARCHIVE_LOAD_TRANSACTIONS_LINES" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.fr.archive.result.FrTotalTicketsLinesResult</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="LineNumber" type="Long" />
+    <ResultField name="ProductCode" type="String" />
+    <ResultField name="Description" type="String" />
+    <ResultField name="Quantity" type="BigDecimal" />
+    <ResultField name="ExtendedAmount" type="BigDecimal" />
+    <ResultField name="VatAmount" type="BigDecimal" />
+    <ResultField name="ReturnFlag" type="Boolean" />
+    <ResultField name="LineTypeCode" type="String" />
+    <ResultField name="TaxGroupId" type="String" />
+    <ResultField name="ReturnTypeCode" type="String" />
+    <ResultField name="BaseUnitPrice" type="BigDecimal" />
+    <ResultField name="TaxExemptionId" type="String" />
+    <ResultField name="SellerId" type="String" />
+    <ResultField name="SellingGroupId" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT t_lin.rtl_loc_id, t_lin.wkstn_id, t_lin.trans_seq, t_lin.business_date, t_lin.rtrans_lineitm_seq, t_lin.item_id, COALESCE(t_item.description,'') AS description,
+                 COALESCE(t_lin.quantity, 0), COALESCE(t_lin.extended_amt, 0), COALESCE(t_lin.vat_amt, 0), t_lin.return_flag, t_lin.sale_lineitm_typcode, t_lin.tax_group_id, t_lin.return_typcode,
+                 t_lin.base_unit_price, t_tax.tax_exemption_id, t_seller.employee_party_id, itm_item_options.selling_group_id
+          FROM cfra_sales_trn_total t_tot
+          INNER JOIN trl_sale_lineitm t_lin
+            ON  t_lin.organization_id = t_tot.organization_id
+            AND t_lin.rtl_loc_id = t_tot.trans_rtl_loc_id
+            AND t_lin.business_date = t_tot.trans_business_date
+            AND t_lin.wkstn_id = t_tot.trans_wkstn_id
+            AND t_lin.trans_seq= t_tot.trans_trans_seq
+          INNER JOIN trl_rtrans_lineitm t_rlin
+            ON t_rlin.organization_id = t_lin.organization_id
+            AND t_rlin.rtl_loc_id = t_lin.rtl_loc_id
+            AND t_rlin.business_date = t_lin.business_date
+            AND t_rlin.wkstn_id = t_lin.wkstn_id
+            AND t_rlin.trans_seq = t_lin.trans_seq
+            AND t_rlin.rtrans_lineitm_seq = t_lin.rtrans_lineitm_seq
+          LEFT JOIN trl_sale_tax_lineitm t_tax
+            ON t_tax.organization_id = t_lin.organization_id
+            AND t_tax.rtl_loc_id = t_lin.rtl_loc_id
+            AND t_tax.business_date = t_lin.business_date
+            AND t_tax.wkstn_id = t_lin.wkstn_id
+            AND t_tax.trans_seq = t_lin.trans_seq
+            AND t_tax.rtrans_lineitm_seq = t_lin.rtrans_lineitm_seq
+          LEFT JOIN trl_commission_mod t_seller
+            ON t_seller.organization_id = t_lin.organization_id
+            AND t_seller.rtl_loc_id = t_lin.rtl_loc_id
+            AND t_seller.business_date = t_lin.business_date
+            AND t_seller.wkstn_id = t_lin.wkstn_id
+            AND t_seller.trans_seq = t_lin.trans_seq
+            AND t_seller.rtrans_lineitm_seq = t_lin.rtrans_lineitm_seq
+           AND t_seller.commission_mod_seq_nbr = 1
+          LEFT JOIN itm_item t_item
+            ON t_lin.organization_id = t_item.organization_id
+            AND /*UPPER*/ t_lin.item_id = t_item.item_id
+          LEFT JOIN (SELECT a.organization_id, a.item_id, a.selling_group_id
+                     FROM itm_item_options a
+                     INNER JOIN loc_org_hierarchy b
+                     ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                     INNER JOIN (SELECT a.organization_id, a.item_id, MAX(b.level_order) level_order
+                     FROM itm_item_options a
+                     INNER JOIN loc_org_hierarchy b
+                     ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                     WHERE a.organization_id = ? AND CONCAT(CONCAT(a.LEVEL_CODE, '::'), a.LEVEL_VALUE) IN ?
+                     GROUP BY a.organization_id, a.item_id) c
+                     ON c.organization_id = a.ORGANIZATION_ID AND c.ITEM_ID = a.ITEM_ID AND c.level_order = b.level_order
+                     WHERE a.organization_id = ? AND CONCAT(CONCAT(a.LEVEL_CODE, '::'), a.LEVEL_VALUE) IN ?) itm_item_options
+            ON itm_item_options.organization_id = t_item.organization_id
+            AND itm_item_options.item_id = t_item.item_id
+          WHERE t_tot.organization_id = ?
+           AND t_tot.rtl_loc_id = ?
+           AND t_tot.wkstn_id = ?
+           AND t_tot.reference_year = ?
+           AND t_tot.reference_month = ?
+           AND t_tot.reference_day = ?
+           AND t_rlin.void_flag = 0
+           AND COALESCE(t_tax.void_flag, 0) = 0
+            ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="@argLvlNodeList" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="@argLvlNodeList" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argRefYear" />
+      <Parameter name="argRefMonth" />
+      <Parameter name="argRefDay" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t_lin.rtl_loc_id, t_lin.wkstn_id, t_lin.trans_seq, t_lin.rtrans_lineitm_seq]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR_ARCHIVE_LOAD_TRANSACTIONS_TENDERS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.fr.archive.result.FrTotalTicketsTendersResult</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="TenderId" type="String" />
+    <ResultField name="Amount" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT t_tnd_line.rtl_loc_id, t_tnd_line.wkstn_id, t_tnd_line.trans_seq, t_tnd_line.business_date, t_tnd_line.tndr_id, COALESCE(t_tnd_line.amt, 0)
+          FROM cfra_sales_trn_total t_tot
+        INNER JOIN ttr_tndr_lineitm t_tnd_line
+      ON t_tot.organization_id = t_tnd_line.organization_id
+        AND t_tot.trans_rtl_loc_id = t_tnd_line.rtl_loc_id
+        AND t_tot.trans_business_date = t_tnd_line.business_date
+        AND t_tot.trans_wkstn_id = t_tnd_line.wkstn_id
+        AND t_tot.trans_trans_seq = t_tnd_line.trans_seq
+    WHERE t_tot.organization_id = ?
+          AND t_tot.rtl_loc_id = ?
+          AND t_tot.wkstn_id = ?
+      AND t_tot.reference_year = ?
+        AND t_tot.reference_month = ?
+          AND t_tot.reference_day = ?
+            ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argRefYear" />
+      <Parameter name="argRefMonth" />
+      <Parameter name="argRefDay" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t_tnd_line.rtl_loc_id, t_tnd_line.wkstn_id, t_tnd_line.trans_seq]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR_ARCHIVE_LOAD_EVENTS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cfra.FrTechnicalEventLogId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+          AND t.rtl_loc_id = ?
+          AND t.wkstn_id = ?
+      AND t.business_date = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.prefix, t.event_number]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.RECEIPT_DUPLICATES" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cfra.FrRcptDuplicateId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+        WHERE t.organization_id = ?
+          AND t.rtl_loc_id = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Expression trigger="argWorkstationId"><![CDATA[t.wkstn_id = ?]]></Expression>
+      <Expression trigger="argBusinessDate"><![CDATA[t.business_date = ?]]></Expression>
+      <Expression trigger="argDocNumber"><![CDATA[t.doc_number = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.reprint_id]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.LAST_SIGNATURE_FOR_TAMPERING_CHECK" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.fr.signature.result.FrLastSignatureResult</ResultClass>
+    <ResultField name="Signature" type="String" />
+    <ResultField name="DocumentNumber" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT d.signature,
+               d.document_number
+        FROM (
+          SELECT t2.string_value AS signature, t1.string_value AS document_number, t1.business_date,
+      ROW_NUMBER() OVER (ORDER BY t1.business_date DESC, t1.trans_seq DESC) AS RowNumber
+          FROM trn_trans_p t1
+            INNER JOIN trn_trans_p t2
+              ON t1.organization_id = t2.organization_id
+              AND t1.rtl_loc_id = t2.rtl_loc_id
+              AND t1.business_date = t2.business_date
+              AND t1.wkstn_id = t2.wkstn_id
+              AND t1.trans_seq = t2.trans_seq
+              AND t2.property_code = ?
+            INNER JOIN trn_trans_p t3
+              ON t1.organization_id = t3.organization_id
+              AND t1.rtl_loc_id = t3.rtl_loc_id
+              AND t1.business_date = t3.business_date
+              AND t1.wkstn_id = t3.wkstn_id
+              AND t1.trans_seq = t3.trans_seq
+              AND t3.property_code = ?
+          WHERE t1.organization_id = ?
+          AND t1.rtl_loc_id = ?
+          AND t1.wkstn_id = ?
+          AND t1.property_code = ?
+          AND /*UPPER*/ t1.string_value < ?
+          AND (/*UPPER*/ ? IS NULL OR /*UPPER*/ t3.string_value = ?)) d
+        WHERE RowNumber = 1
+            ]]></Statement>
+      <Parameter name="argPropertySignature" />
+      <Parameter name="argPropertyType" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argPropertyDocumentNumber" />
+      <Parameter name="argDocumentNumber" />
+      <Parameter name="argFiscalDocumentCode" />
+      <Parameter name="argFiscalDocumentCode" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR_LOAD_INVOICE_TRANSACTIONS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.fr.archive.result.FrInvoiceTicketResult</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="BusinessYear" type="Long" />
+    <ResultField name="InvoiceType" type="String" />
+    <ResultField name="SequenceId" type="String" />
+    <ResultField name="SequenceNbr" type="Long" />
+    <ResultField name="Signature" type="String" />
+    <ResultField name="PostponementFlag" type="String" />
+    <ResultField name="InvoiceNumber" type="String" />
+    <ResultField name="TimeStamp" type="Date" />
+    <ResultField name="CustomerId" type="String" />
+    <ResultField name="FirstName" type="String" />
+    <ResultField name="LastName" type="String" />
+    <ResultField name="OrgName" type="String" />
+    <ResultField name="Address1" type="String" />
+    <ResultField name="Address2" type="String" />
+    <ResultField name="City" type="String" />
+    <ResultField name="PostalCode" type="String" />
+    <ResultField name="Country" type="String" />
+    <ResultField name="DocumentNumber" type="String" />
+    <ResultField name="FiscalCode" type="String" />
+    <ResultField name="TaxCode" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT ivc.rtl_loc_id, ivc.business_date, ivc.business_year, ivc.invoice_type, ivc.sequence_id, ivc.sequence_nbr, ivc_sign.string_value, ivc_postpone.string_value, ivc_number.string_value,
+         ivc.time_stamp, ivc_custid.string_value, ivc_firstname.string_value, ivc_lastname.string_value, ivc_orgname.string_value, ivc_adr1.string_value,
+         ivc_adr2.string_value, ivc_city.string_value, ivc_zip.string_value, ivc_country.string_value, ivc_ticket.string_value,
+         ivc_fiscalcode.string_value, ivc_taxcode.string_value
+      FROM civc_invoice ivc
+      INNER JOIN civc_invoice_p ivc_sign
+        ON ivc_sign.organization_id = ivc.organization_id
+        AND ivc_sign.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_sign.wkstn_id = ivc.wkstn_id
+        AND ivc_sign.business_year = ivc.business_year
+        AND ivc_sign.sequence_id = ivc.sequence_id
+        AND ivc_sign.sequence_nbr = ivc.sequence_nbr
+        AND ivc_sign.property_code = ?
+      INNER JOIN civc_invoice_p ivc_postpone
+        ON ivc_postpone.organization_id = ivc.organization_id
+        AND ivc_postpone.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_postpone.wkstn_id = ivc.wkstn_id
+        AND ivc_postpone.business_year = ivc.business_year
+        AND ivc_postpone.sequence_id = ivc.sequence_id
+        AND ivc_postpone.sequence_nbr = ivc.sequence_nbr
+        AND ivc_postpone.property_code = ?
+      INNER JOIN civc_invoice_p ivc_number
+        ON ivc_number.organization_id = ivc.organization_id
+        AND ivc_number.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_number.wkstn_id = ivc.wkstn_id
+        AND ivc_number.business_year = ivc.business_year
+        AND ivc_number.sequence_id = ivc.sequence_id
+        AND ivc_number.sequence_nbr = ivc.sequence_nbr
+        AND ivc_number.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_custid
+        ON ivc_custid.organization_id = ivc.organization_id
+        AND ivc_custid.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_custid.wkstn_id = ivc.wkstn_id
+        AND ivc_custid.business_year = ivc.business_year
+        AND ivc_custid.sequence_id = ivc.sequence_id
+        AND ivc_custid.sequence_nbr = ivc.sequence_nbr
+        AND ivc_custid.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_firstname
+        ON ivc_firstname.organization_id = ivc.organization_id
+        AND ivc_firstname.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_firstname.wkstn_id = ivc.wkstn_id
+        AND ivc_firstname.business_year = ivc.business_year
+        AND ivc_firstname.sequence_id = ivc.sequence_id
+        AND ivc_firstname.sequence_nbr = ivc.sequence_nbr
+        AND ivc_firstname.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_lastname
+        ON ivc_lastname.organization_id = ivc.organization_id
+        AND ivc_lastname.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_lastname.wkstn_id = ivc.wkstn_id
+        AND ivc_lastname.business_year = ivc.business_year
+        AND ivc_lastname.sequence_id = ivc.sequence_id
+        AND ivc_lastname.sequence_nbr = ivc.sequence_nbr
+        AND ivc_lastname.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_orgname
+        ON ivc_orgname.organization_id = ivc.organization_id
+        AND ivc_orgname.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_orgname.wkstn_id = ivc.wkstn_id
+        AND ivc_orgname.business_year = ivc.business_year
+        AND ivc_orgname.sequence_id = ivc.sequence_id
+        AND ivc_orgname.sequence_nbr = ivc.sequence_nbr
+        AND ivc_orgname.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_adr1
+        ON ivc_adr1.organization_id = ivc.organization_id
+        AND ivc_adr1.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_adr1.wkstn_id = ivc.wkstn_id
+        AND ivc_adr1.business_year = ivc.business_year
+        AND ivc_adr1.sequence_id = ivc.sequence_id
+        AND ivc_adr1.sequence_nbr = ivc.sequence_nbr
+        AND ivc_adr1.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_adr2
+        ON ivc_adr2.organization_id = ivc.organization_id
+        AND ivc_adr2.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_adr2.wkstn_id = ivc.wkstn_id
+        AND ivc_adr2.business_year = ivc.business_year
+        AND ivc_adr2.sequence_id = ivc.sequence_id
+        AND ivc_adr2.sequence_nbr = ivc.sequence_nbr
+        AND ivc_adr2.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_city
+        ON ivc_city.organization_id = ivc.organization_id
+        AND ivc_city.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_city.wkstn_id = ivc.wkstn_id
+        AND ivc_city.business_year = ivc.business_year
+        AND ivc_city.sequence_id = ivc.sequence_id
+        AND ivc_city.sequence_nbr = ivc.sequence_nbr
+        AND ivc_city.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_zip
+        ON ivc_zip.organization_id = ivc.organization_id
+        AND ivc_zip.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_zip.wkstn_id = ivc.wkstn_id
+        AND ivc_zip.business_year = ivc.business_year
+        AND ivc_zip.sequence_id = ivc.sequence_id
+        AND ivc_zip.sequence_nbr = ivc.sequence_nbr
+        AND ivc_zip.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_country
+        ON ivc_country.organization_id = ivc.organization_id
+        AND ivc_country.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_country.wkstn_id = ivc.wkstn_id
+        AND ivc_country.business_year = ivc.business_year
+        AND ivc_country.sequence_id = ivc.sequence_id
+        AND ivc_country.sequence_nbr = ivc.sequence_nbr
+        AND ivc_country.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_fiscalcode
+        ON ivc_fiscalcode.organization_id = ivc.organization_id
+        AND ivc_fiscalcode.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_fiscalcode.wkstn_id = ivc.wkstn_id
+        AND ivc_fiscalcode.business_year = ivc.business_year
+        AND ivc_fiscalcode.sequence_id = ivc.sequence_id
+        AND ivc_fiscalcode.sequence_nbr = ivc.sequence_nbr
+        AND ivc_fiscalcode.property_code = ?
+      LEFT JOIN civc_invoice_p ivc_taxcode
+        ON ivc_taxcode.organization_id = ivc.organization_id
+        AND ivc_taxcode.rtl_loc_id = ivc.rtl_loc_id
+        AND ivc_taxcode.wkstn_id = ivc.wkstn_id
+        AND ivc_taxcode.business_year = ivc.business_year
+        AND ivc_taxcode.sequence_id = ivc.sequence_id
+        AND ivc_taxcode.sequence_nbr = ivc.sequence_nbr
+        AND ivc_taxcode.property_code = ?
+      INNER JOIN civc_invoice_xref inv_xref
+        ON ivc.organization_id = inv_xref.organization_id
+      AND ivc.rtl_loc_id = inv_xref.rtl_loc_id
+      AND ivc.wkstn_id = inv_xref.wkstn_id
+      AND ivc.business_year = inv_xref.business_year
+      AND ivc.sequence_id = inv_xref.sequence_id
+      AND ivc.sequence_nbr = inv_xref.sequence_nbr
+      INNER JOIN trn_trans_p ivc_ticket
+        ON ivc_ticket.organization_id = inv_xref.organization_id
+        AND ivc_ticket.rtl_loc_id = inv_xref.rtl_loc_id
+        AND ivc_ticket.business_date = inv_xref.trans_business_date
+        AND ivc_ticket.wkstn_id = inv_xref.trans_wkstn_id
+        AND ivc_ticket.trans_seq = inv_xref.trans_trans_seq
+        AND ivc_ticket.property_code = ?
+      WHERE ivc.organization_id = ?
+        AND ivc.rtl_loc_id = ?
+      AND ivc.business_date = ?
+            AND /*UPPER*/ ivc.invoice_type IN ?
+              ]]></Statement>
+      <Parameter name="argSignatureProperty" />
+      <Parameter name="argPostponementProperty" />
+      <Parameter name="argInvoiceNumberProperty" />
+      <Parameter name="argCustomerIdProperty" />
+      <Parameter name="argFirstNameProperty" />
+      <Parameter name="argLastNameProperty" />
+      <Parameter name="argOrganizationNameProperty" />
+      <Parameter name="argAddress1Property" />
+      <Parameter name="argAddress2Property" />
+      <Parameter name="argCityProperty" />
+      <Parameter name="argPostalCodeProperty" />
+      <Parameter name="argCountryProperty" />
+      <Parameter name="argFiscalCodeProperty" />
+      <Parameter name="argTaxCodeProperty" />
+      <Parameter name="argTicketNumberProperty" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="@argDocumentTypes" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY ivc.sequence_nbr]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.LOAD_INVOICE_DAY_TRANS_TOTALS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.cfra.FrSalesTransTotalId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+      INNER JOIN (SELECT inv_xref.organization_id, inv_xref.trans_rtl_loc_id, inv_xref.trans_business_date, inv_xref.trans_wkstn_id, inv_xref.trans_trans_seq
+        FROM civc_invoice ivc
+        INNER JOIN civc_invoice_xref inv_xref
+        ON ivc.organization_id = inv_xref.organization_id
+        AND ivc.rtl_loc_id = inv_xref.rtl_loc_id
+        AND ivc.wkstn_id = inv_xref.wkstn_id
+        AND ivc.business_year = inv_xref.business_year
+        AND ivc.sequence_id = inv_xref.sequence_id
+        AND ivc.sequence_nbr = inv_xref.sequence_nbr
+        WHERE ivc.organization_id = ?
+        AND ivc.rtl_loc_id = ?
+        AND ivc.business_date = ?
+                AND /*UPPER*/ ivc.invoice_type IN ? ) invoices
+        ON t.organization_id = invoices.organization_id
+        AND t.trans_rtl_loc_id = invoices.trans_rtl_loc_id
+        AND t.trans_business_date = invoices.trans_business_date
+        AND t.trans_wkstn_id = invoices.trans_wkstn_id
+        AND t.trans_trans_seq = invoices.trans_trans_seq]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="@argDocumentTypes" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.document_number]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.LAST_TECHNICAL_EVENTLOG_SIGNATURE" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="Signature" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT signature FROM (
+      SELECT signature, ROW_NUMBER() OVER (ORDER BY event_number DESC) AS RowNumber
+            FROM cfra_technical_event_log
+            WHERE organization_id = ?
+              AND rtl_loc_id = ?
+              AND wkstn_id = ?) ref
+        where RowNumber=1
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.LAST_DAILY_CLOSURE_SIGNATURE" pmType="TRANSACTION" >
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="Signature" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT signature FROM (
+           SELECT signature, ROW_NUMBER() OVER (ORDER BY reference_year DESC, reference_month DESC, reference_day DESC) AS RowNumber
+                FROM cfra_sales_total
+                WHERE organization_id = ?
+                AND rtl_loc_id = ?
+                AND wkstn_id = ?
+                AND fiscal_year <> 0
+        AND reference_year <> 0
+        AND reference_month <> 0
+        AND reference_day <> 0
+                AND signature IS NOT NULL) ref
+        where RowNumber=1
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+    </SQL>
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.LAST_MONTHLY_CLOSURE_SIGNATURE" pmType="TRANSACTION" >
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="Signature" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT signature FROM (
+           SELECT signature, ROW_NUMBER() OVER (ORDER BY reference_year DESC, reference_month DESC) AS RowNumber
+                FROM cfra_sales_total
+                WHERE organization_id = ?
+                AND rtl_loc_id = ?
+                AND wkstn_id = ?
+                AND fiscal_year <> 0
+        AND reference_year <> 0
+        AND reference_month <> 0
+        AND reference_day = 0
+                AND signature IS NOT NULL) ref
+        where RowNumber=1
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+    </SQL>
+  </Query>
+
+
+  <Query name="COUNTRYPACK.FR.LAST_YEARLY_CLOSURE_SIGNATURE" pmType="TRANSACTION" >
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="Signature" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT signature FROM (
+           SELECT signature, ROW_NUMBER() OVER (ORDER BY fiscal_year DESC) AS RowNumber
+                FROM cfra_sales_total
+                WHERE organization_id = ?
+                AND rtl_loc_id = ?
+                AND wkstn_id = ?
+                AND fiscal_year <> 0
+        AND reference_year = 0
+        AND reference_month = 0
+        AND reference_day = 0
+                AND signature IS NOT NULL) ref
+        where RowNumber=1
+    ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argWorkstationId" />
+    </SQL>
+  </Query>
+
+  <!-- COUNTRYPACK FR REPORT -->
+  <Query name="COUNTRYPACK.TECHNICAL_EVENT_LOG_REPORT" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="event_timestamp" type="Date" />
+    <ResultField name="wkstn_id" type="Integer" />
+    <ResultField name="unique_id" type="String" />
+    <ResultField name="operator_code" type="String" />
+    <ResultField name="event_code" type="Integer" />
+    <ResultField name="description" type="String" />
+    <ResultField name="informations" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT event_timestamp,
+          wkstn_id,
+          unique_id,
+          operator_code,
+          event_code,
+          description,
+          informations
+        FROM cfra_technical_event_log
+        WHERE organization_id = ? AND
+          rtl_loc_id = ?
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Expression trigger="argBusinessDateStart" parameters="argBusinessDateStart, argBusinessDateEnd"><![CDATA[business_date BETWEEN ? AND ?]]></Expression>
+      <Expression trigger="workstationId"><![CDATA[wkstn_id = ?]]></Expression>
+      <Expression trigger="eventCode"><![CDATA[event_code = ?]]></Expression>
+      <Expression trigger="operatorCode"><![CDATA[/*UPPER*/ operator_code = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY wkstn_id, unique_id]]></Suffix>
+  </Query>
+
+  <!-- GERMANY GoBD -->
+  <Query name="COUNTRYPACK.DE.LOAD_TICKET_HEADER" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.de.gobd.generate.result.DeGobdTicketHeader</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="FiscalNumber" type="String" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="BeginDate" type="Date" />
+    <ResultField name="EndDate" type="Date" />
+    <ResultField name="Total" type="BigDecimal" />
+    <ResultField name="TaxTotal" type="BigDecimal" />
+    <ResultField name="PostVoid" type="Boolean" />
+    <ResultField name="AssociateId" type="String" />
+    <ResultField name="TaxExemptionCode" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+    SELECT trn.rtl_loc_id,trn.wkstn_id,trn.fiscal_number,trn.business_date,trn.trans_seq,trn.begin_datetime,trn.end_datetime,COALESCE(trn.total,0),COALESCE(trn.taxtotal,0),
+           trn.post_void_flag,trn.operator_party_id,texe.reascode
+        FROM trn_trans trn
+      INNER JOIN trl_rtrans rtrn
+        ON trn.organization_id = rtrn.organization_id
+          AND trn.rtl_loc_id = rtrn.rtl_loc_id
+          AND trn.business_date = rtrn.business_date
+          AND trn.wkstn_id = rtrn.wkstn_id
+          AND trn.trans_seq = rtrn.trans_seq
+      LEFT JOIN tax_tax_exemption texe
+        ON rtrn.organization_id = texe.organization_id
+        AND /*UPPER*/ rtrn.tax_exemption_id = texe.tax_exemption_id
+      WHERE trn.organization_id = ?
+        AND trn.rtl_loc_id = ?
+        AND /*UPPER*/ trn.trans_typcode = 'RETAIL_SALE'
+        AND /*UPPER*/ trn.trans_statcode = 'COMPLETE'
+        AND trn.fiscal_number IS NOT NULL
+        AND trn.business_date BETWEEN ? AND ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY trn.wkstn_id, trn.business_date, trn.trans_seq]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.DE.LOAD_TICKET_LINES" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.de.gobd.generate.result.DeGobdTicketLine</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="LineNumber" type="Long" />
+    <ResultField name="VoidFlag" type="Boolean" />
+    <ResultField name="ItemCode" type="String" />
+    <ResultField name="SerialNumber" type="String" />
+    <ResultField name="Quantity" type="BigDecimal" />
+    <ResultField name="RegularBasePrice" type="BigDecimal" />
+    <ResultField name="BaseUnitPrice" type="BigDecimal" />
+    <ResultField name="UnitPrice" type="BigDecimal" />
+    <ResultField name="ExtendedAmount" type="BigDecimal" />
+    <ResultField name="TaxAmount" type="BigDecimal" />
+    <ResultField name="ReturnFlag" type="Boolean" />
+    <ResultField name="LineTypeCode" type="String" />
+    <ResultField name="TaxGroupId" type="String" />
+    <ResultField name="ReturnTypeCode" type="String" />
+    <ResultField name="TaxExemptionCode" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT t_lin.rtl_loc_id, t_lin.wkstn_id, t_lin.business_date, t_lin.trans_seq, t_lin.rtrans_lineitm_seq,
+           t_rlin.void_flag, t_lin.item_id, t_lin.serial_nbr, COALESCE(t_lin.quantity, 0),
+           COALESCE(t_lin.regular_base_price, 0), COALESCE(t_lin.base_unit_price, 0), COALESCE(t_lin.unit_price, 0), COALESCE(t_lin.extended_amt, 0),
+           COALESCE(t_lin.vat_amt, 0), t_lin.return_flag, t_lin.sale_lineitm_typcode, t_lin.tax_group_id, t_lin.return_typcode,
+           texe.reascode
+      FROM trl_sale_lineitm t_lin
+      INNER JOIN trl_rtrans_lineitm t_rlin ON t_rlin.organization_id = t_lin.organization_id
+        AND t_rlin.rtl_loc_id = t_lin.rtl_loc_id
+        AND t_rlin.business_date = t_lin.business_date
+        AND t_rlin.wkstn_id = t_lin.wkstn_id
+        AND t_rlin.trans_seq = t_lin.trans_seq
+        AND t_rlin.rtrans_lineitm_seq = t_lin.rtrans_lineitm_seq
+      LEFT JOIN trl_sale_tax_lineitm t_tax ON t_tax.organization_id = t_lin.organization_id
+        AND t_tax.rtl_loc_id = t_lin.rtl_loc_id
+        AND t_tax.business_date = t_lin.business_date
+        AND t_tax.wkstn_id = t_lin.wkstn_id
+        AND t_tax.trans_seq = t_lin.trans_seq
+        AND t_tax.rtrans_lineitm_seq = t_lin.rtrans_lineitm_seq
+      LEFT JOIN tax_tax_exemption texe
+        ON t_tax.organization_id = texe.organization_id
+        AND /*UPPER*/ t_tax.tax_exemption_id = texe.tax_exemption_id
+      WHERE t_lin.organization_id = ?
+        AND t_lin.rtl_loc_id = ?
+        AND t_lin.business_date BETWEEN ? AND ?
+        AND COALESCE(t_tax.void_flag, 0) = 0
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t_lin.wkstn_id, t_lin.business_date, t_lin.trans_seq]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.DE.LOAD_TICKET_DISCOUNTS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.de.gobd.generate.result.DeGobdTicketLineDiscount</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="LineNumber" type="Long" />
+    <ResultField name="DiscountLineNumber" type="Long" />
+    <ResultField name="ReasonCode" type="String" />
+    <ResultField name="Percentage" type="BigDecimal" />
+    <ResultField name="Amount" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT t_rlin.rtl_loc_id, t_rlin.wkstn_id, t_rlin.business_date, t_rlin.trans_seq, t_rlin.rtrans_lineitm_seq,
+           t_dsc_line.rtl_price_mod_seq_nbr, t_dsc_line.rtl_price_mod_reascode, COALESCE(t_dsc_line.percentage, 0) * 100, COALESCE(t_dsc_line.extended_amt, 0)
+        FROM trl_rtrans_lineitm t_rlin
+        INNER JOIN trl_rtl_price_mod t_dsc_line ON t_rlin.organization_id = t_dsc_line.organization_id
+          AND t_rlin.rtl_loc_id = t_dsc_line.rtl_loc_id
+          AND t_rlin.business_date = t_dsc_line.business_date
+          AND t_rlin.wkstn_id = t_dsc_line.wkstn_id
+          AND t_rlin.trans_seq = t_dsc_line.trans_seq
+          AND t_rlin.rtrans_lineitm_seq = t_dsc_line.rtrans_lineitm_seq
+        WHERE t_rlin.organization_id = ?
+          AND t_rlin.rtl_loc_id = ?
+          AND t_rlin.business_date BETWEEN ? AND ?
+          AND t_dsc_line.void_flag = 0
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t_rlin.wkstn_id, t_rlin.business_date, t_rlin.trans_seq]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.DE.LOAD_TICKET_TENDERS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.de.gobd.generate.result.DeGobdTicketTender</ResultClass>
+    <ResultField name="LocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="TransactionId" type="Long" />
+    <ResultField name="LineNumber" type="Long" />
+    <ResultField name="VoidFlag" type="Boolean" />
+    <ResultField name="TenderCode" type="String" />
+    <ResultField name="CurrencyId" type="String" />
+    <ResultField name="TenderAmount" type="BigDecimal" />
+    <ResultField name="ForeignAmount" type="BigDecimal" />
+    <ResultField name="ExchangeRate" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       SELECT t_rlin.rtl_loc_id, t_rlin.wkstn_id, t_rlin.business_date, t_rlin.trans_seq, t_rlin.rtrans_lineitm_seq, t_rlin.void_flag,
+      t_tnd_line.tndr_id, t_tndr.currency_id, COALESCE(t_tnd_line.amt, 0), COALESCE(t_tnd_line.foreign_amt, 0), COALESCE(t_tnd_line.exchange_rate, 0)
+        FROM trl_rtrans_lineitm t_rlin
+      INNER JOIN ttr_tndr_lineitm t_tnd_line ON t_rlin.organization_id = t_tnd_line.organization_id
+        AND t_rlin.rtl_loc_id = t_tnd_line.rtl_loc_id
+        AND t_rlin.business_date = t_tnd_line.business_date
+        AND t_rlin.wkstn_id = t_tnd_line.wkstn_id
+        AND t_rlin.trans_seq = t_tnd_line.trans_seq
+        AND t_rlin.rtrans_lineitm_seq = t_tnd_line.rtrans_lineitm_seq
+      LEFT JOIN tnd_tndr t_tndr ON t_tndr.organization_id = t_tnd_line.organization_id
+        AND /*UPPER*/ t_tndr.tndr_id = /*UPPER*/ t_tnd_line.tndr_id
+      WHERE t_rlin.organization_id = ?
+        AND t_rlin.rtl_loc_id = ?
+        AND t_rlin.business_date BETWEEN ? AND ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t_rlin.wkstn_id, t_rlin.business_date, t_rlin.trans_seq]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.DE.LOAD_TENDERS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.de.gobd.generate.result.DeGobdGenericResult</ResultClass>
+    <ResultField name="Code" type="String" />
+    <ResultField name="Value1" type="String" />
+    <ResultField name="Value2" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT DISTINCT ttr_tndr_lineitm.tndr_id, tnd_tndr.description, tnd_tndr.currency_id
+        FROM ttr_tndr_lineitm
+        INNER JOIN tnd_tndr
+          ON ttr_tndr_lineitm.organization_id = tnd_tndr.organization_id
+          AND /*UPPER*/ ttr_tndr_lineitm.tndr_id = /*UPPER*/ tnd_tndr.tndr_id
+        WHERE ttr_tndr_lineitm.organization_id = ?
+          AND ttr_tndr_lineitm.rtl_loc_id = ?
+          AND ttr_tndr_lineitm.business_date BETWEEN ? AND ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY ttr_tndr_lineitm.tndr_id]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.DE.LOAD_EMPLOYEES" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.de.gobd.generate.result.DeGobdGenericResult</ResultClass>
+    <ResultField name="Code" type="String" />
+    <ResultField name="Value1" type="String" />
+    <ResultField name="Value2" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT DISTINCT trn_trans.operator_party_id, crm_party.first_name, crm_party.last_name
+        FROM trn_trans
+        LEFT JOIN crm_party
+          ON trn_trans.organization_id = crm_party.organization_id
+        AND trn_trans.operator_party_id = crm_party.party_id
+            WHERE trn_trans.organization_id = ?
+              AND trn_trans.rtl_loc_id = ?
+              AND trn_trans.business_date BETWEEN ? AND ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY trn_trans.operator_party_id]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.DE.LOAD_ITEMS" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.de.gobd.generate.result.DeGobdGenericResult</ResultClass>
+    <ResultField name="Code" type="String" />
+    <ResultField name="Value1" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT DISTINCT trl_sale_lineitm.item_id, itm_item.description
+          FROM trl_sale_lineitm
+          LEFT JOIN itm_item
+            ON trl_sale_lineitm.organization_id = itm_item.organization_id
+            AND /*UPPER*/ trl_sale_lineitm.item_id = itm_item.item_id
+            WHERE trl_sale_lineitm.organization_id = ?
+              AND trl_sale_lineitm.rtl_loc_id = ?
+              AND trl_sale_lineitm.business_date BETWEEN ? AND ?
+              AND /*UPPER*/ trl_sale_lineitm.sale_lineitm_typcode IN ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessFromDate" />
+      <Parameter name="argBusinessToDate" />
+      <Parameter name="@argLineTypes" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY trl_sale_lineitm.item_id]]></Suffix>
+  </Query>
+
+  <Query name="COUNTRYPACK.DE.LOAD_FIRST_AVAIL_DATE" pmType="STORE_STANDARD">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="Date" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT MIN(business_date)
+          FROM trn_trans
+          WHERE trn_trans.organization_id = ?
+            AND trn_trans.rtl_loc_id = ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  
+  <Query name="COUNTRYPACK.IT.XML_ELECTRONIC_INVOICE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.countrypack.civc.SaleInvoiceId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+          JOIN  civc_invoice_report i_r
+            ON  i_r.organization_id = t.organization_id
+            AND i_r.rtl_loc_id = t.rtl_loc_id
+            AND i_r.wkstn_id = t.wkstn_id
+            AND i_r.business_year = t.business_year
+            AND i_r.sequence_id = t.sequence_id
+            AND i_r.sequence_nbr = t.sequence_nbr
+          LEFT JOIN  civc_invoice_report_p i_r_p
+            ON  i_r_p.organization_id = i_r.organization_id
+            AND i_r_p.rtl_loc_id = i_r.rtl_loc_id
+            AND i_r_p.wkstn_id = i_r.wkstn_id
+            AND i_r_p.business_year = i_r.business_year
+            AND i_r_p.sequence_id = i_r.sequence_id
+            AND i_r_p.sequence_nbr = i_r.sequence_nbr
+            AND i_r_p.invoice_copy_nbr = i_r.invoice_copy_nbr
+            AND i_r_p.property_code = ?
+          WHERE t.void_flag = 0
+            AND t.organization_id = ?
+            AND t.rtl_loc_id IN ?
+            AND i_r.invoice_copy_nbr = ?
+            AND i_r_p.property_code IS NULL
+      ]]></WhereClause>
+      <Parameter name="argPropertyCode" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="@argRetailLocId" />
+      <Parameter name="argInvoiceCopyNbr" />
+    </SQL>
+  </Query>
+  
+  <!-- Spain query START -->
+  <Query name="COUNTRYPACK.ES.GET_TRANSACTIONS_FOR_SII" >
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.trn.PosTransactionId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[        
+          JOIN  trn_trans_p trans_p
+            ON  trans_p.organization_id = t.organization_id
+            AND trans_p.rtl_loc_id = t.rtl_loc_id
+            AND trans_p.wkstn_id = t.wkstn_id
+            AND trans_p.business_date = t.business_date
+            AND trans_p.trans_seq = t.trans_seq
+          WHERE t.organization_id = ?
+          AND   t.rtl_loc_id = ?
+          AND   t.begin_datetime > ?
+          AND   /*UPPER*/ t.trans_statcode = 'COMPLETE'       
+          AND   /*UPPER*/ trans_p.property_code = 'ES_DOCUMENT_TYPE'
+          AND   /*UPPER*/ trans_p.string_value IN('FACTURA_COMPLETA', 'FACTURA_SIMPLIFICADA', 'FACTURA_RECTIFICATIVA', 'FACTURA_RECTIFICATIVA_SIMPLIFICADA')
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+      <Parameter name="argStartDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.trans_seq ASC]]></Suffix>
+  </Query>
+  
+  <Query name="COUNTRYPACK.ES.GET_LAST_COMPLETION_OF_SII" >
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.trn.PosTransactionId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[        
+          JOIN  trn_trans_p trans_p
+            ON  trans_p.organization_id = t.organization_id
+            AND trans_p.rtl_loc_id = t.rtl_loc_id
+            AND trans_p.wkstn_id = t.wkstn_id
+            AND trans_p.business_date = t.business_date
+            AND trans_p.trans_seq = t.trans_seq
+          WHERE t.organization_id = ?
+          AND   t.rtl_loc_id = ?
+          AND   /*UPPER*/ t.trans_statcode = 'COMPLETE' 
+          AND   /*UPPER*/ trans_p.property_code = 'ES_SII_TAX_EXPORT_COMPLETE' 
+          AND   /*UPPER*/ trans_p.decimal_value = 1
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRtlLocId" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY t.trans_seq DESC]]></Suffix>
+    <Property>
+      <Key dtype="String">MaxRows</Key>
+      <Value dtype="String"><![CDATA[1]]></Value>
+    </Property>
+  </Query>
+  
+  <Query name="COUNTRYPACK.ES.SII_ERRORS" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="organization_id" type="Long" />
+    <ResultField name="rtl_loc_id" type="Long" />
+    <ResultField name="business_date" type="Date" />
+    <ResultField name="wkstn_id" type="Integer" />
+    <ResultField name="trans_seq" type="Integer" />
+    <ResultField name="ES_SII_FILE_NAME" type="String" />
+    <ResultField name="ES_DOCUMENT_NUMBER" type="String" />
+    <ResultField name="ES_SII_ERROR_STATUS" type="String" />
+    <ResultField name="ES_SII_ERROR_DESCRIPTION" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        WITH error_report AS
+        (
+          SELECT *
+          FROM
+          (
+            SELECT 
+              organization_id, 
+              rtl_loc_id, 
+              business_date, 
+              wkstn_id, 
+              trans_seq, 
+              string_value, 
+              property_code
+            FROM trn_trans_p
+          )
+          PIVOT
+          (
+            MAX(string_value)
+            FOR property_code IN (
+                                'ES_SII_FILE_NAME' ES_SII_FILE_NAME, 
+                                'ES_DOCUMENT_NUMBER' ES_DOCUMENT_NUMBER, 
+                                'ES_SII_ERROR_STATUS' ES_SII_ERROR_STATUS, 
+                                'ES_SII_ERROR_DESCRIPTION' ES_SII_ERROR_DESCRIPTION
+                                )
+          )
+        )
+        
+        SELECT * 
+        FROM error_report
+        WHERE ES_SII_ERROR_STATUS IS NOT NULL
+        AND organization_id = ?
+        AND rtl_loc_id = ?
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Expression trigger="argBusinessDateStart" parameters="argBusinessDateStart, argBusinessDateEnd"><![CDATA[business_date BETWEEN ? AND ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY business_date, ES_SII_FILE_NAME, ES_DOCUMENT_NUMBER]]></Suffix>
+  </Query>
+  <!-- Spain query END -->
+
+</QuerySet>

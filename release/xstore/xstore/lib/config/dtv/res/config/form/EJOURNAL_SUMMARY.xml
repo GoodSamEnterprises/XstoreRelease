@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Thu Feb 22 11:41:57 EST 2007 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">EJOURNAL_SUMMARY</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <Touch ref="CANCEL_BACK" paintTouch="true" />
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCustomerMaintHeaderPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter>
+        <param_name dtype="String">setOpaque</param_name>
+        <param_value dtype="Boolean">true</param_value>
+      </ComponentParameter>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+0,0,1,0</param_value>
+      </ComponentParameter>
+      <ColorGroup bgColorRef="_colorTransactionInformationPanel"/>
+      <FormViewCell>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_electronicJournal</TextKey>
+        <Font fontSize="+4"/>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">-2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewPanel componentID="TabbedPaneContext">
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">-2.0, -1.0, -2.0, -1.0, -2.0, -1.0, -2.0, -1.0, -2.0, -1.0, -2.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+          <Parameter name="setMargins">
+            <param_value dtype="InsetsRef">_marginCustomerMaintHeaderPanel</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <ComponentParameter name="setPreferredSize">
+          <param_value dtype="DimensionRef" >_sizeFormSubheader</param_value>
+        </ComponentParameter>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalNbrStart</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">registerIdStart</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 0, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalDateStartDate</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">3, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">startDate</Resource>
+          <FormatterType dtype="String">DateMedium</FormatterType>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 0, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalDateStartTime</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">5, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">startTime</Resource>
+          <FormatterType dtype="String">TimeMedium</FormatterType>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">6, 0, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalCashierNbr</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">7, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">cashierStart</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalTranNbrEnd</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">1, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">registerIdEnd</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 1, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalDateEndDate</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">3, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">endDate</Resource>
+          <FormatterType dtype="String">DateMedium</FormatterType>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 1, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalDateEndTime</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">5, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">endTime</Resource>
+          <FormatterType dtype="String">TimeMedium</FormatterType>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">7, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">cashierEnd</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">8, 0, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalTranType</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">9, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">tranType</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">8, 1, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formEjournalTenderType</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">9, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">tender</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">10, 0, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_formTranSearchCustomerIdName1</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">11, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">custIdOrName</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">10, 1, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">overLimitMessage</Resource>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 2, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">summaryListModel</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Font fontStyle="BOLD" />
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">TRANSACTION_SUMMARY</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">TRANSACTION_SUMMARY</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action dataKey="ELECTRONIC_JOURNAL_DETAIL" text="_menuEjournalViewDetail" keyStroke="F4" />
+      <Action dataKey="REPRINT_RECEIPT" text="_menuEjournalReprint" keyStroke="F5" privilege="EJOURNAL_REPRINT_RECEIPT" />        
+      <Action dataKey="ISSUE_GIFT_RECEIPT_PRINT_SELECTION" text="_menuEjournalGiftReceipt" keyStroke="F6" privilege="EJOURNAL_GIFT_RECEIPT" />
+      <Action dataKey="ISSUE_REBATE_RECEIPT" text="_menuEjournalRebateReceipt" keyStroke="F7" privilege="EJOURNAL_REBATE_RECEIPT" />
+      <Action dataKey="POST_VOID_EJOURNAL" text="_menuEjournalPostVoid" keyStroke="F9" privilege="EJOURNAL_POST_VOID">
+        <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+          <Parameter name="state" value="OPEN" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.TillAttachedAccessCheck" />
+      </Action>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

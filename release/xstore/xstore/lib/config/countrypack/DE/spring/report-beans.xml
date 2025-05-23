@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <context:annotation-config />
+
+  <!-- Report Beans for DE -->
+  <!-- BEGIN: Report Framework Beans -->
+  <beans profile="retail" >
+
+    <bean id="COUNTRYPACK.DE.GOBD_SUMMARY_REPORT" class="dtv.pos.framework.reporting.ReportDefinition">
+      <property name="title" value="_countrypack.de.gobd.summaryReport" />
+      <property name="dataTemplate" value="classpath:countrypack/DE/report/gobdsummary/GobdSummary.xdt" />
+      <property name="layoutTemplate" value="classpath:countrypack/DE/report/gobdsummary/GobdSummary.rtf" />
+    </bean>
+
+    <bean id="COUNTRYPACK.DE.GOBD_DETAIL_REPORT" class="dtv.pos.framework.reporting.ReportDefinition">
+      <property name="title" value="_countrypack.de.gobd.detailReport" />
+      <property name="dataTemplate" value="classpath:countrypack/DE/report/gobddetail/GobdDetail.xdt" />
+      <property name="layoutTemplate" value="classpath:countrypack/DE/report/gobddetail/GobdDetail.rtf" />
+    </bean>
+
+  </beans>
+  <!-- END: Report Definition Beans -->
+</beans>

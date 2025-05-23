@@ -1,0 +1,2915 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <Query name="COUNTRYPACK.DAILYREPORT.SYSTEM_TOTALS" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="SystemSales" type="BigDecimal" />
+    <ResultField name="SystemReturns" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT
+          SUM(system_sales + roundtotal_sales) AS system_sales, 
+          SUM(system_returns + roundtotal_returns) AS system_returns
+        FROM (SELECT t.organization_id, t.rtl_loc_id, t.business_date, t.wkstn_id, t.trans_seq,
+                MIN(CASE WHEN t.total >=0 AND ? = 0 THEN COALESCE(t.roundtotal, 0) ELSE 0 END) AS roundtotal_sales, 
+                MIN(CASE WHEN t.total < 0 AND ? = 0 THEN COALESCE(t.roundtotal, 0) ELSE 0 END) AS roundtotal_returns,
+                SUM(CASE WHEN t.total >=0 THEN COALESCE(l.extended_amt, 0) ELSE 0 END) AS system_sales, 
+                SUM(CASE WHEN t.total < 0 THEN COALESCE(l.extended_amt, 0) ELSE 0 END) AS system_returns
+              FROM trn_trans t
+              LEFT JOIN trn_trans_p x
+              ON x.organization_id = t.organization_id
+                AND x.rtl_loc_id = t.rtl_loc_id
+                AND x.business_date = t.business_date
+                AND x.wkstn_id = t.wkstn_id
+                AND x.trans_seq = t.trans_seq
+                AND x.property_code = 'FP_PRINTER_ID' 
+              LEFT JOIN trn_trans_p y
+              ON y.organization_id = t.organization_id
+                AND y.rtl_loc_id = t.rtl_loc_id
+                AND y.business_date = t.business_date
+                AND y.wkstn_id = t.wkstn_id
+                AND y.trans_seq = t.trans_seq
+                AND y.property_code = 'FP_SESSION_NBR' 
+              INNER JOIN trl_sale_lineitm l
+              ON l.organization_id = t.organization_id
+                AND l.rtl_loc_id = t.rtl_loc_id
+                AND l.business_date = t.business_date
+                AND l.wkstn_id = t.wkstn_id
+                AND l.trans_seq = t.trans_seq
+              INNER JOIN trl_rtrans_lineitm r
+              ON r.organization_id = l.organization_id
+                AND r.rtl_loc_id = l.rtl_loc_id
+                AND r.business_date = l.business_date
+                AND r.wkstn_id = l.wkstn_id
+                AND r.trans_seq = l.trans_seq
+                AND r.rtrans_lineitm_seq = l.rtrans_lineitm_seq
+              LEFT JOIN trn_post_void_trans v
+              ON v.voided_org_id = t.organization_id
+                AND v.voided_rtl_store_id = t.rtl_loc_id
+                AND v.voided_business_date = t.business_date
+                AND v.voided_wkstn_id = t.wkstn_id
+                AND v.voided_trans_id = t.trans_seq              
+              LEFT JOIN (SELECT a.organization_id, a.item_id, a.selling_group_id
+                         FROM itm_item_options a
+                         INNER JOIN loc_org_hierarchy b
+                         ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                         INNER JOIN (SELECT a.organization_id, a.item_id, MAX(b.level_order) level_order
+                         FROM itm_item_options a
+                         INNER JOIN loc_org_hierarchy b
+                         ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                         WHERE a.organization_id = ? AND CONCAT(CONCAT(a.LEVEL_CODE, '::'), a.LEVEL_VALUE) IN ?
+                         GROUP BY a.organization_id, a.item_id) c
+                         ON c.organization_id = a.ORGANIZATION_ID AND c.ITEM_ID = a.ITEM_ID AND c.level_order = b.level_order
+                         WHERE a.organization_id = ? AND CONCAT(CONCAT(a.LEVEL_CODE, '::'), a.LEVEL_VALUE) IN ?) o
+              ON o.organization_id = l.organization_id
+                AND o.item_id = /*UPPER*/ l.item_id
+              WHERE t.organization_id = ?
+                AND t.rtl_loc_id = ?
+                AND t.business_date = ?
+                AND (t.post_void_flag = 0 OR v.wkstn_id <> t.wkstn_id)
+                AND r.void_flag = 0
+                AND /*UPPER*/ t.trans_typcode = ?
+                AND /*UPPER*/ t.trans_statcode= ?
+                AND /*UPPER*/ x.string_value = ?
+                AND /*UPPER*/ y.string_value = ?
+                AND (o.selling_group_id IS NULL OR /*UPPER*/ o.selling_group_id NOT IN ?)
+                AND t.fiscal_number IS NOT NULL
+              GROUP BY t.organization_id, t.rtl_loc_id, t.business_date, t.wkstn_id, t.trans_seq
+  ]]></Statement>
+      <Parameter name="argRoundingAsTender" />
+      <Parameter name="argRoundingAsTender" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="@argLvlNodeList" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="@argLvlNodeList" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransTypeCode" />
+      <Parameter name="argStateCode" />
+      <Parameter name="argFiscalPrinterId" />
+      <Parameter name="argFiscalSessionNumber" />
+      <Parameter name="@argNonTaxableSellingGroups" />
+      <Expression trigger="argWorkStationId"><![CDATA[t.wkstn_id = ?]]></Expression>
+    </SQL>   
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        UNION        
+              SELECT t.organization_id, t.rtl_loc_id, t.business_date, t.wkstn_id, t.trans_seq,
+                MIN(CASE WHEN t.total >=0 AND ? = 0 THEN COALESCE(t.roundtotal, 0) ELSE 0 END) AS roundtotal_sales, 
+                MIN(CASE WHEN t.total < 0 AND ? = 0 THEN COALESCE(t.roundtotal, 0) ELSE 0 END) AS roundtotal_returns,
+                SUM(CASE WHEN t.total >=0 THEN COALESCE(l.extended_amt, 0) * -1 ELSE 0 END) AS system_sales, 
+                SUM(CASE WHEN t.total < 0 THEN COALESCE(l.extended_amt, 0) * -1 ELSE 0 END) AS system_returns
+              FROM trn_post_void_trans v
+              INNER JOIN trn_trans t
+              ON v.voided_org_id = t.organization_id
+                AND v.voided_rtl_store_id = t.rtl_loc_id
+                AND v.voided_business_date = t.business_date
+                AND v.voided_wkstn_id = t.wkstn_id
+                AND v.voided_trans_id = t.trans_seq
+              LEFT JOIN trn_trans_p x
+              ON x.organization_id = t.organization_id
+                AND x.rtl_loc_id = t.rtl_loc_id
+                AND x.business_date = t.business_date
+                AND x.wkstn_id = t.wkstn_id
+                AND x.trans_seq = t.trans_seq
+                AND x.property_code = 'FP_PRINTER_ID' 
+              LEFT JOIN trn_trans_p y
+              ON y.organization_id = t.organization_id
+                AND y.rtl_loc_id = t.rtl_loc_id
+                AND y.business_date = t.business_date
+                AND y.wkstn_id = t.wkstn_id
+                AND y.trans_seq = t.trans_seq
+                AND y.property_code = 'FP_SESSION_NBR' 
+              INNER JOIN trn_trans k
+              ON v.organization_id = k.organization_id
+                AND v.rtl_loc_id = k.rtl_loc_id
+                AND v.business_date = k.business_date
+                AND v.wkstn_id = k.wkstn_id
+                AND v.trans_seq = k.trans_seq 
+              LEFT JOIN trn_trans_p h
+              ON h.organization_id = k.organization_id
+                AND h.rtl_loc_id = k.rtl_loc_id
+                AND h.business_date = k.business_date
+                AND h.wkstn_id = k.wkstn_id
+                AND h.trans_seq = k.trans_seq
+                AND h.property_code = 'FP_PRINTER_ID' 
+              LEFT JOIN trn_trans_p j
+              ON j.organization_id = k.organization_id
+                AND j.rtl_loc_id = k.rtl_loc_id
+                AND j.business_date = k.business_date
+                AND j.wkstn_id = k.wkstn_id
+                AND j.trans_seq = k.trans_seq
+                AND j.property_code = 'FP_SESSION_NBR' 
+              INNER JOIN trl_sale_lineitm l
+              ON l.organization_id = t.organization_id
+                AND l.rtl_loc_id = t.rtl_loc_id
+                AND l.business_date = t.business_date
+                AND l.wkstn_id = t.wkstn_id
+                AND l.trans_seq = t.trans_seq
+              INNER JOIN trl_rtrans_lineitm r
+              ON r.organization_id = l.organization_id
+                AND r.rtl_loc_id = l.rtl_loc_id
+                AND r.business_date = l.business_date
+                AND r.wkstn_id = l.wkstn_id
+                AND r.trans_seq = l.trans_seq
+                AND r.rtrans_lineitm_seq = l.rtrans_lineitm_seq
+              LEFT JOIN (SELECT a.organization_id, a.item_id, a.selling_group_id
+                         FROM itm_item_options a
+                         INNER JOIN loc_org_hierarchy b
+                         ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                         INNER JOIN (SELECT a.organization_id, a.item_id, MAX(b.level_order) level_order
+                         FROM itm_item_options a
+                         INNER JOIN loc_org_hierarchy b
+                         ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                         WHERE a.organization_id = ? AND CONCAT(CONCAT(a.LEVEL_CODE, '::'), a.LEVEL_VALUE) IN ?
+                         GROUP BY a.organization_id, a.item_id) c
+                         ON c.organization_id = a.ORGANIZATION_ID AND c.ITEM_ID = a.ITEM_ID AND c.level_order = b.level_order
+                         WHERE a.organization_id = ? AND CONCAT(CONCAT(a.LEVEL_CODE, '::'), a.LEVEL_VALUE) IN ?) o
+              ON o.organization_id = l.organization_id
+                AND o.item_id = /*UPPER*/ l.item_id
+              WHERE t.organization_id = ?
+                AND t.rtl_loc_id = ?
+                AND t.business_date = ?
+                AND t.post_void_flag = 1
+                AND r.void_flag = 0
+                AND /*UPPER*/ t.trans_typcode = ?
+                AND /*UPPER*/ t.trans_statcode= ?
+                AND /*UPPER*/ h.string_value = ?
+                AND /*UPPER*/ j.string_value = ?
+                AND (o.selling_group_id IS NULL OR /*UPPER*/ o.selling_group_id NOT IN ?)
+                AND k.fiscal_number IS NOT NULL
+                AND (t.wkstn_id <> v.wkstn_id OR /*UPPER*/ y.string_value <> /*UPPER*/ j.string_value)
+              GROUP BY t.organization_id, t.rtl_loc_id, t.business_date, t.wkstn_id, t.trans_seq
+              ]]></Statement>
+      <Parameter name="argRoundingAsTender" />
+      <Parameter name="argRoundingAsTender" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="@argLvlNodeList" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="@argLvlNodeList" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransTypeCode" />
+      <Parameter name="argStateCode" />
+      <Parameter name="argFiscalPrinterId" />
+      <Parameter name="argFiscalSessionNumber" />
+      <Parameter name="@argNonTaxableSellingGroups" />
+      <Expression trigger="argWorkStationId"><![CDATA[v.wkstn_id = ?]]></Expression>
+    </SQL>
+    <Suffix dtype="String"><![CDATA[) t]]></Suffix>
+  </Query>
+  <Query name="LAST_STORE_CLOSE_TRANSACTION" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.trn.PosTransactionId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[        
+        WHERE t.organization_id = ?
+          AND t.wkstn_id = ?
+          AND t.rtl_loc_id = ?
+          AND t.business_date = ?
+          AND t.trans_seq = (
+            SELECT MAX(m.trans_seq)
+            FROM trn_trans m
+            WHERE m.organization_id = t.organization_id
+              AND m.wkstn_id = t.wkstn_id
+              AND m.rtl_loc_id = t.rtl_loc_id
+              AND m.business_date = t.business_date
+              AND /*UPPER*/ m.trans_statcode = 'COMPLETE'
+              AND /*UPPER*/ m.trans_typcode = 'SYSTEM_CLOSE'
+          )       
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DAILYREPORT_HEADER_FOR_TRANSACTION" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       DELETE FROM crpt_daily_header
+       WHERE  organization_id = ?
+          AND wkstn_id = ?
+          AND rtl_loc_id = ?
+          AND business_date = ?
+          AND trans_seq = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSeq" />
+    </SQL>
+  </Query>
+  <Query name="DELETE_DAILYREPORT_DETAILS_FOR_TRANSACTION" pmType="TRANSACTION">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       DELETE FROM crpt_daily_detail 
+       WHERE  organization_id = ?
+          AND wkstn_id = ?
+          AND rtl_loc_id = ?
+          AND business_date = ?
+          AND trans_seq = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSeq" />
+    </SQL>
+  </Query>
+  <Query name="DAILYREPORT.REPORT.DOCUMENT_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="docCount" type="BigDecimal" />
+    <ResultField name="docCountTot" type="BigDecimal" />
+    <ResultField name="docType" type="String" />
+    <ResultField name="itmDescription" type="String" />
+    <ResultField name="qty" type="BigDecimal" />
+    <ResultField name="netAmount" type="BigDecimal" />
+    <ResultField name="grossAmount" type="BigDecimal" />
+    <ResultField name="fiscal" type="Boolean" />
+    <ResultField name="skipSum" type="Boolean" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT coalesce(SUM(num01), 0) AS docCount,
+               coalesce(CASE WHEN (/*UPPER*/ txt01 = 'TAXABLE') AND (/*UPPER*/ txt02 = 'RETURNS_WITH_SALES') THEN 0 ELSE SUM(num01) END, 0) AS docCountTot,
+               txt02 AS docType, 
+               txt03 AS itmDescription, 
+               coalesce(SUM(num02), 0) AS qty, 
+               coalesce(SUM(num03), 0) AS netAmount,
+               coalesce(SUM(num04), 0) AS grossAmount, 
+               MIN(CASE WHEN /*UPPER*/ txt01 = 'TAXABLE' THEN 1 ELSE 0 END) AS fiscal, 
+               MIN(CASE WHEN (/*UPPER*/ txt01 = 'TAXABLE') AND (/*UPPER*/ txt02 = 'RETURNS_WITH_SALES') THEN 1 ELSE 0 END) AS skipSum
+        FROM crpt_daily_detail
+        WHERE organization_id = ?
+        AND rtl_loc_id = ?
+        AND wkstn_id = ?
+        AND business_date = ?
+        AND trans_seq = ?
+        AND record_type = 'DOCUMENT'
+        GROUP BY txt01, txt02, txt03
+        ORDER BY CASE WHEN /*UPPER*/ txt01 = 'TAXABLE' THEN 1 ELSE 0 END DESC,
+          CASE
+            WHEN /*UPPER*/ txt02 = 'SALES' THEN 100 
+            WHEN /*UPPER*/ txt02 = 'SALES_WITH_INVOICE' THEN 90
+            WHEN /*UPPER*/ txt02 = 'RETURNS_WITH_SALES' THEN 80
+            WHEN /*UPPER*/ txt02 = 'ONLY_RETURNS' THEN 70
+            WHEN /*UPPER*/ txt02 = 'ONLY_RETURNS_WITH_CN' THEN 60
+            ELSE 50
+          END DESC, txt02, txt03
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.FISCAL_PRINTER_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="workstation" type="Long" />
+    <ResultField name="device" type="String" />
+    <ResultField name="closureNumber" type="String" />
+    <ResultField name="income" type="BigDecimal" />
+    <ResultField name="return" type="BigDecimal" />
+    <ResultField name="systemIncome" type="BigDecimal" />
+    <ResultField name="systemReturn" type="BigDecimal" />
+    <ResultField name="manualIncome" type="BigDecimal" />
+    <ResultField name="manualReturn" type="BigDecimal" />
+    <ResultField name="manualVoidedIncome" type="BigDecimal" />
+    <ResultField name="manualVoidedReturn" type="BigDecimal" />
+    <ResultField name="incomeDiscrepancy" type="BigDecimal" />
+    <ResultField name="returnDiscrepancy" type="BigDecimal" />
+    <ResultField name="notes" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT d.ref_wkstn_id AS workstation, txt02 AS device, txt03 AS closureNumber,
+               num09 AS income,
+               num10 AS returns,
+               num01 AS systemIncome,
+               num02 AS systemReturns,
+               num03 AS manualIncome,
+               num04 AS manualReturn,
+               num05 AS manualVoidedIncome,
+               num06 AS manualVoidedReturn,
+               num07 AS incomeDiscrepancy,
+               num08 AS returnDiscrepancy,
+               txt01 AS notes
+        FROM crpt_daily_detail d
+        WHERE d.organization_id = ?
+        AND d.rtl_loc_id = ?
+        AND d.wkstn_id = ?
+        AND d.business_date = ?
+        AND d.trans_seq = ?
+        AND d.record_type = 'WORKSTATION'
+        ORDER BY d.ref_wkstn_id, d.txt02, d.txt03, d.trans_seq
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+  </Query>
+
+
+  <Query name="DAILYREPORT.REPORT.TAX_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="rate" type="BigDecimal" />
+    <ResultField name="taxableAmount" type="BigDecimal" />
+    <ResultField name="taxAmount" type="BigDecimal" />
+    <ResultField name="totalAmount" type="BigDecimal" />
+    <ResultField name="description" type="String" />
+    <ResultField name="exemptionReasonCode" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT num03 * 100 AS rate, 
+               COALESCE(SUM(num01), 0) AS taxableAmount, 
+               COALESCE(SUM(num02), 0) AS taxAmount, 
+               COALESCE(SUM(num01), 0) + COALESCE(SUM(num02), 0) AS totalAmount,
+               MIN(txt02) AS Description, txt03 AS exemptionReasonCode
+        FROM crpt_daily_detail
+        WHERE organization_id = ?
+        AND rtl_loc_id = ?
+        AND wkstn_id = ?
+        AND business_date = ?
+        AND trans_seq = ?
+        AND record_type = 'TAX'
+        GROUP BY num03, txt03
+        ORDER BY CASE WHEN txt03 is null THEN 100 ELSE 90 END DESC, num03 ASC
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.TENDER_DISCREPANCY_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="expectedValueCurr" type="BigDecimal" />
+    <ResultField name="expectedValueLocalCurr" type="BigDecimal" />
+    <ResultField name="expectedCurrRate" type="BigDecimal" />
+    <ResultField name="countedValueCurr" type="BigDecimal" />
+    <ResultField name="diffValueCurr" type="BigDecimal" />
+    <ResultField name="countedValueLocalCurr" type="BigDecimal" />
+    <ResultField name="localCurrRate" type="BigDecimal" />
+    <ResultField name="diffValueLocalCurr" type="BigDecimal" />
+    <ResultField name="tenderType" type="String" />
+    <ResultField name="currency" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT
+              expectedValueCurr,
+              expectedValueLocalCurr,
+              CASE WHEN expectedValueCurr = 0 THEN NULL ELSE expectedValueCurr / expectedValueLocalCurr END expectedCurrRate,
+              countedValueCurr,
+              diffValueCurr,
+              countedValueLocalCurr,
+              CASE WHEN countedValueLocalCurr = 0 THEN NULL ELSE countedValueCurr / countedValueLocalCurr END localCurrRate,
+              diffValueLocalCurr,
+              tenderType,
+              CASE WHEN currency = '*' THEN NULL ELSE currency END currency
+        FROM (SELECT 
+               txt01, txt02,
+               coalesce(SUM(num01), 0) - coalesce(SUM(num02), 0) AS expectedValueCurr,
+               coalesce(SUM(num03), 0) - coalesce(SUM(num04), 0) AS expectedValueLocalCurr,
+               coalesce(SUM(num01), 0) AS countedValueCurr,
+               coalesce(SUM(num02), 0) AS diffValueCurr,
+               coalesce(SUM(num03), 0) AS countedValueLocalCurr,
+               coalesce(SUM(num04), 0) AS diffValueLocalCurr,
+               MIN(txt04) AS tenderType,
+               MIN(txt03) AS currency
+              FROM crpt_daily_detail
+              WHERE organization_id = ?
+              AND rtl_loc_id = ?
+              AND wkstn_id = ?
+              AND business_date = ?
+              AND trans_seq = ?
+              AND record_type = 'TENDER_DISCREPANCY'
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY txt01, txt02) dt ORDER BY txt01, txt02]]></Suffix>
+  </Query>
+  <Query name="DAILYREPORT.REPORT.TILL_CASH_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="currency" type="String" />
+    <ResultField name="dailyOpening" type="BigDecimal" />
+    <ResultField name="cash" type="BigDecimal" />
+    <ResultField name="paidIn" type="BigDecimal" />
+    <ResultField name="paidOut" type="BigDecimal" />
+    <ResultField name="cashPickup" type="BigDecimal" />
+    <ResultField name="cashTransfer" type="BigDecimal" />
+    <ResultField name="tillDiscrepancy" type="BigDecimal" />
+    <ResultField name="tillToSafeDeposit" type="BigDecimal" />
+    <ResultField name="floatAmount" type="BigDecimal" />
+    <ResultField name="tenderExchangeIn" type="BigDecimal" />
+    <ResultField name="tenderExchangeOut" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT txt01 AS currency, coalesce(SUM(num01), 0) AS dailyOpening, coalesce(SUM(num02), 0) AS cash, 
+               coalesce(SUM(num03), 0) AS paidIn, coalesce(SUM(num04), 0) AS paidOut, coalesce(SUM(num05), 0) AS cashPickup, 
+               coalesce(SUM(num06), 0) AS cashTransfer, coalesce(SUM(num07), 0) AS tillDiscrepancy, 
+               coalesce(SUM(num08), 0) AS tillToSafeDeposit, coalesce(SUM(num09), 0) AS floatAmount, 
+               coalesce(SUM(num10), 0) AS tenderExchangeIn, coalesce(SUM(num11), 0) AS tenderExchangeOut
+        FROM crpt_daily_detail
+        WHERE organization_id = ?
+        AND rtl_loc_id = ?
+        AND wkstn_id = ?
+        AND business_date = ?
+        AND trans_seq = ?
+        AND record_type = 'TILL_SUMMARY'
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY txt01 ORDER BY txt01]]></Suffix>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.SAFE_CASH_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="currency" type="String" />
+    <ResultField name="previousSafeBalance" type="BigDecimal" />
+    <ResultField name="dailySafeDeposit" type="BigDecimal" />
+    <ResultField name="cashPickup" type="BigDecimal" />
+    <ResultField name="cashTransfer" type="BigDecimal" />
+    <ResultField name="storeBankCashTransfer" type="BigDecimal" />
+    <ResultField name="bankDeposit" type="BigDecimal" />
+    <ResultField name="safeBalance" type="BigDecimal" />
+    <ResultField name="floatAmount" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT txt01 AS currency, coalesce(SUM(num01), 0) AS previousSafeBalance, coalesce(SUM(num02), 0) AS dailySafeDeposit, 
+               coalesce(SUM(num03), 0) AS cashPickup, coalesce(SUM(num04), 0) AS cashTransfer, coalesce(SUM(num05), 0) AS storeBankCashTransfer, 
+               coalesce(SUM(num06), 0) AS bankDeposit, coalesce(SUM(num07), 0) AS safeBalance, coalesce(SUM(num08), 0) AS floatAmount
+        FROM crpt_daily_detail
+        WHERE organization_id = ?
+        AND rtl_loc_id = ?
+        AND wkstn_id = ?
+        AND business_date = ?
+        AND trans_seq = ?
+        AND record_type = 'SAFE_SUMMARY'
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY txt01 ORDER BY txt01]]></Suffix>
+  </Query>
+  <Query name="DAILYREPORT.REPORT.TENDER_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="expectedValueCurr" type="BigDecimal" />
+    <ResultField name="expectedValueLocalCurr" type="BigDecimal" />
+    <ResultField name="expectedCurrRate" type="BigDecimal" />
+    <ResultField name="tenderType" type="String" />
+    <ResultField name="currency" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT COALESCE(SUM(num01), 0) AS expectedValueCurr, 
+               COALESCE(SUM(num02), 0) AS expectedValueLocalCurr, 
+               CASE WHEN  COALESCE(SUM(num02), 0) = 0 THEN NULL ELSE COALESCE(SUM(num01), 0) /  COALESCE(SUM(num02), 0) END expectedCurrRate,
+               MIN(txt04) AS tenderType, 
+               MIN(CASE WHEN /*UPPER*/ txt03 = '*' THEN NULL ELSE txt03 END) currency
+        FROM crpt_daily_detail
+        WHERE organization_id = ?
+        AND rtl_loc_id = ?
+        AND wkstn_id = ?
+        AND business_date = ?
+        AND trans_seq = ?
+        AND record_type = 'TENDER_PAYMENT'
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY txt01, txt02 ORDER BY txt01, txt02]]></Suffix>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.DISCOUNT_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="discountValue" type="BigDecimal" />
+    <ResultField name="description" type="String" />
+    <ResultField name="discountId" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT coalesce(SUM(num01), 0) AS discountValue, MIN(txt03) AS Description, txt02 AS discountId
+        FROM crpt_daily_detail
+        WHERE organization_id = ?
+        AND rtl_loc_id = ?
+        AND wkstn_id = ?
+        AND business_date = ?
+        AND trans_seq = ?
+        AND record_type = 'DISCOUNT'
+        GROUP BY txt02
+        ORDER BY txt02
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.CASH_MOVEMENT_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="type" type="String" />
+    <ResultField name="transactionSequence" type="Long" />
+    <ResultField name="workstation" type="Long" />
+    <ResultField name="description" type="String" />
+    <ResultField name="reasonCode" type="String" />
+    <ResultField name="currency" type="String" />
+    <ResultField name="amount" type="BigDecimal" />
+    <ResultField name="notes" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT txt01 AS type, count01 AS transactionSequence, ref_wkstn_id AS workstation, txt02 AS Description, 
+               txt03 AS reasonCode, txt04 AS currency, coalesce(num01, 0) AS amount, txt05
+        FROM crpt_daily_detail
+        WHERE organization_id = ?
+        AND rtl_loc_id = ?
+        AND wkstn_id = ?
+        AND business_date = ?
+        AND trans_seq = ?
+        AND record_type = 'CASH_MOVEMENT'
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY ref_wkstn_id, count01]]></Suffix>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.INVOICE_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="type" type="String" />
+    <ResultField name="invoiceNumber" type="Long" />
+    <ResultField name="workstation" type="Long" />
+    <ResultField name="transactionSequence" type="Long" />
+    <ResultField name="voided" type="BigDecimal" />
+    <ResultField name="total" type="BigDecimal" />
+    <ResultField name="firstName" type="String" />
+    <ResultField name="lastName" type="String" />
+    <ResultField name="name" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT d.txt01 AS type, 
+               d.count02 AS invoiceNumber, 
+               d.ref_wkstn_id AS workstation,
+          d.count01 AS transactionSequence, 
+          d.num01 AS voided,
+          coalesce(d.num02, 0) AS total,
+          d.txt02 AS firstName, 
+          d.txt03 AS lastName,
+                   CASE WHEN COALESCE(/*UPPER*/ d.txt02,' ') <> ' ' OR COALESCE(/*UPPER*/ d.txt03,' ') <> ' '
+         THEN CONCAT(d.txt02, CONCAT('::', d.txt03))END AS name
+        FROM crpt_daily_detail d
+        WHERE d.organization_id = ?
+        AND d.rtl_loc_id = ?
+        AND d.wkstn_id = ?
+        AND d.business_date = ?
+        AND d.trans_seq = ?
+        AND d.record_type = 'FISCAL_DOCUMENT'
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY ref_wkstn_id, txt01, count02]]></Suffix>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTENDED_TRANSACTION_SUMMARY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="type" type="String" />
+    <ResultField name="id" type="String" />
+    <ResultField name="workstation" type="Long" />
+    <ResultField name="transactionSequence" type="Long" />
+    <ResultField name="status" type="String" />
+    <ResultField name="firstName" type="String" />
+    <ResultField name="lastName" type="String" />
+    <ResultField name="name" type="String" />
+    <ResultField name="balanceToDate" type="BigDecimal" />
+    <ResultField name="todayDeposit" type="BigDecimal" />
+    <ResultField name="totalValue" type="BigDecimal" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT txt01 AS type, txt02 AS id, ref_wkstn_id AS workstation, count01 AS transactionSequence, txt03 AS status, 
+               txt04 AS firstName, 
+               txt05 AS lastName,
+               CASE 
+                  WHEN COALESCE(/*UPPER*/ txt04,' ') <> ' ' OR COALESCE(txt05 ,' ') <> ' '
+                  THEN CONCAT(txt04, CONCAT('::', txt05 ))END AS name,
+               coalesce(num01, 0) AS balanceToDate, 
+               coalesce(num02, 0) AS todayDeposit, 
+               coalesce(num03, 0) AS totalValue
+        FROM crpt_daily_detail
+        WHERE organization_id = ?
+        AND rtl_loc_id = ?
+        AND wkstn_id = ?
+        AND business_date = ?
+        AND trans_seq = ?
+        AND record_type = 'EXTENDED_TRANSACTION'
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argTransactionSequence" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY ref_wkstn_id, txt01, txt02, count01]]></Suffix>
+  </Query>
+
+  <!-- ************************************************************************************************************* -->
+
+  <!-- Note that custom columns could be added to the result set of a .EXTRACT. query by naming them as P_ + a 
+    custom property name. For instance: <ResultField name="P_CustomName" type="String" /> The preceeding value will 
+    be saved into the crpt_daily_detail_p table as a string property with property_code = CustomName. -->
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.TRANSACTION" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Count01" type="Long" /> <!-- minTransactionSequence -->
+    <ResultField name="Count02" type="Long" /> <!-- maxTransactionSequence -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT t1.wkstn_id, 'TRANSACTION', MIN(t1.trans_seq) AS minTransactionSequence, MAX(t1.trans_seq) AS maxTransactionSequence
+        FROM trn_trans t1
+        LEFT JOIN (
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id, 
+                 MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+          FROM crpt_daily_detail t1
+          WHERE record_type = 'TRANSACTION'
+          GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id
+        ) t2 
+          ON t2.organization_id = t1.organization_id 
+          AND t2.rtl_loc_id = t1.rtl_loc_id 
+          AND t2.business_date = t1.business_date 
+          AND t2.ref_wkstn_id = t1.wkstn_id
+        WHERE t1.post_void_flag = 0 
+        AND /*UPPER*/ t1.trans_statcode = 'COMPLETE'
+        AND NOT (SELECT MAX(trans_seq) FROM trn_trans WHERE /*UPPER*/ trans_typcode = 'SYSTEM_CLOSE') IS NULL
+        AND t1.organization_id = ?
+        AND t1.rtl_loc_id = ?
+        AND t1.business_date = ?
+        AND (t1.trans_seq > t2.last_trans_seq OR t2.last_trans_seq IS NULL)
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY t1.organization_id, t1.rtl_loc_id, t1.wkstn_id, t1.business_date, t1.wkstn_id]]></Suffix>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.DOCUMENT" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Text01" type="String" /> <!-- fiscal -->
+    <ResultField name="Text02" type="String" /> <!-- doctype -->
+    <ResultField name="Text03" type="String" /> <!-- itm description -->
+    <ResultField name="Number01" type="BigDecimal" /> <!-- counter -->
+    <ResultField name="Number02" type="BigDecimal" /> <!-- quantity -->
+    <ResultField name="Number03" type="BigDecimal" /> <!-- extendedAmount -->
+    <ResultField name="Number04" type="BigDecimal" /> <!-- grossAmount -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      WITH daily_report_documents AS
+      (
+        SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t7.only_returns,
+          CASE
+            WHEN t3.organization_id IS NULL THEN 'NO_INV'
+            ELSE 'INV'
+          END invoice,
+          COALESCE(t9.item_typcode, t6.rtrans_lineitm_typcode) item_typcode,
+          CASE 
+            WHEN (NOT /*UPPER*/ t8.selling_group_id IN ?
+                  OR t8.selling_group_id IS NULL
+                  AND tb.organization_id IS NULL)
+              THEN 'TAXABLE'
+            ELSE 'NON_TAXABLE'
+          END fiscal,
+          CASE
+            WHEN (NOT /*UPPER*/ t8.selling_group_id IN ?
+                  OR t8.selling_group_id IS NULL
+                  AND tb.organization_id IS NULL)
+              THEN NULL
+            ELSE COALESCE(t5.item_id, 'TENDER')
+          END doc_type,
+          CASE
+            WHEN (NOT /*UPPER*/ t8.selling_group_id IN ?
+                  OR t8.selling_group_id IS NULL 
+                  AND tb.organization_id IS NULL)
+              THEN NULL
+            ELSE COALESCE(t9.description, tb.tndr_id, '')
+          END itm_description,
+          COALESCE(t5.return_flag, 0) return_flag,
+          COALESCE(SUM(t5.quantity *
+            CASE
+              WHEN t5.return_flag=0 THEN 1
+              ELSE -1
+            END), 0) quantity,
+          SUM(
+            CASE
+              WHEN tb.organization_id IS NULL THEN t5.extended_amt
+              ELSE tb.amt * -1 
+            END) extended_amt,
+          SUM(
+            CASE
+              WHEN tb.organization_id IS NULL THEN t5.gross_amt
+              ELSE tb.amt * -1
+            END) gross_amt,
+          SUM(
+            CASE
+              WHEN tb.organization_id IS NULL THEN t5.vat_amt
+              ELSE 0
+            END) vat_amt
+        FROM
+        (
+          SELECT t1.*
+          FROM trn_trans t1
+          INNER JOIN
+          (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id,
+              MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+            FROM crpt_daily_detail t1
+            WHERE t1.organization_id = ?
+              AND t1.rtl_loc_id      = ?
+              AND t1.business_date   = ?
+              AND t1.record_type     = 'TRANSACTION'
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id
+          ) t2
+          ON t2.organization_id = t1.organization_id
+            AND t2.rtl_loc_id = t1.rtl_loc_id
+            AND t2.business_date = t1.business_date
+            AND t2.ref_wkstn_id = t1.wkstn_id
+          WHERE t1.post_void_flag = 0
+            AND /*UPPER*/ t1.trans_statcode = 'COMPLETE'
+            AND /*UPPER*/ t1.trans_typcode = 'RETAIL_SALE'
+            AND t1.trans_seq BETWEEN t2.first_trans_seq AND t2.last_trans_seq
+        ) t1
+        INNER JOIN trl_rtrans t2
+        ON t2.organization_id = t1.organization_id
+          AND t2.rtl_loc_id = t1.rtl_loc_id
+          AND t2.business_date = t1.business_date
+          AND t2.wkstn_id = t1.wkstn_id
+          AND t2.trans_seq = t1.trans_seq
+        INNER JOIN trl_rtrans_lineitm t6
+        ON t6.organization_id = t1.organization_id
+          AND t6.rtl_loc_id = t1.rtl_loc_id
+          AND t6.business_date = t1.business_date
+          AND t6.wkstn_id = t1.wkstn_id
+          AND t6.trans_seq = t1.trans_seq
+        LEFT JOIN trl_sale_lineitm t5
+        ON t5.organization_id = t6.organization_id
+          AND t5.rtl_loc_id = t6.rtl_loc_id
+          AND t5.business_date = t6.business_date
+          AND t5.wkstn_id = t6.wkstn_id
+          AND t5.trans_seq = t6.trans_seq
+          AND t5.rtrans_lineitm_seq = t6.rtrans_lineitm_seq
+        LEFT JOIN itm_item t9
+        ON t9.organization_id = t6.organization_id
+          AND t9.item_id = /*UPPER*/ t5.item_id
+        LEFT JOIN (SELECT a.organization_id, a.item_id, a.selling_group_id
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   INNER JOIN (SELECT a.organization_id, a.item_id, MAX(b.level_order) level_order
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   GROUP BY a.organization_id, a.item_id) c
+                   ON c.organization_id = a.ORGANIZATION_ID AND c.ITEM_ID = a.ITEM_ID AND c.level_order = b.level_order) t8
+        ON t8.organization_id = t5.organization_id
+          AND t8.item_id = /*UPPER*/ t5.item_id
+        INNER JOIN
+        (
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq,
+          CASE
+            WHEN MIN(CAST(return_flag AS INT)) = 0 THEN 0
+            ELSE 1
+          END only_returns
+          FROM trl_sale_lineitm t1
+          INNER JOIN trl_rtrans_lineitm t6
+          ON t6.organization_id = t1.organization_id
+            AND t6.rtl_loc_id = t1.rtl_loc_id
+            AND t6.business_date = t1.business_date
+            AND t6.wkstn_id = t1.wkstn_id
+            AND t6.trans_seq = t1.trans_seq
+            AND t6.rtrans_lineitm_seq = t1.rtrans_lineitm_seq
+            AND t6.void_flag = 0
+          GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq
+        ) t7
+        ON t7.organization_id = t2.organization_id
+          AND t7.rtl_loc_id = t2.rtl_loc_id
+          AND t7.business_date = t2.business_date
+          AND t7.wkstn_id = t2.wkstn_id
+          AND t7.trans_seq = t2.trans_seq
+        LEFT JOIN civc_invoice_xref t3
+        ON t3.organization_id = t1.organization_id
+          AND t3.trans_rtl_loc_id = t1.rtl_loc_id
+          AND t3.trans_business_date = t1.business_date
+          AND t3.trans_wkstn_id = t1.wkstn_id
+          AND t3.trans_trans_seq = t1.trans_seq
+        LEFT JOIN civc_invoice t4
+        ON t4.organization_id = t3.organization_id
+          AND t4.rtl_loc_id = t3.rtl_loc_id
+          AND t4.business_year = t3.business_year
+          AND t4.sequence_id = t3.sequence_id
+          AND t4.sequence_nbr = t3.sequence_nbr
+        LEFT JOIN
+        (
+          SELECT * FROM ttr_tndr_lineitm WHERE /*UPPER*/ tndr_id = 'ACCOUNT_CREDIT'
+        ) tb
+        ON tb.organization_id = t6.organization_id
+          AND tb.rtl_loc_id = t6.rtl_loc_id
+          AND tb.business_date = t6.business_date
+          AND tb.wkstn_id = t6.wkstn_id
+          AND tb.trans_seq = t6.trans_seq
+          AND tb.rtrans_lineitm_seq = t6.rtrans_lineitm_seq
+        WHERE COALESCE (t4.void_flag, 0) = 0
+          AND (/*UPPER*/ t5.sale_lineitm_typcode IN ('SALE', 'SEND_SALE', 'SHP_SALE', 'LAYAWAY', 'SPECIAL_ORDER', 'WORK_ORDER', 'PRESALE', 'ONHOLD')
+            OR t5.sale_lineitm_typcode IS NULL)
+          AND (t5.extended_amt <> 0 OR NOT tb.organization_id IS NULL)
+          AND t6.void_flag = 0
+          AND (/*UPPER*/ t6.rtrans_lineitm_typcode = 'ITEM' OR /*UPPER*/ t6.rtrans_lineitm_typcode = 'TENDER' AND NOT tb.organization_id IS NULL)
+        
+        GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t8.selling_group_id, t7.only_returns,
+          CASE
+            WHEN t3.organization_id IS NULL THEN 'NO_INV'
+            ELSE 'INV'
+          END,
+          t5.return_flag, t9.item_typcode, t6.rtrans_lineitm_typcode, tb.organization_id, t5.item_id, t9.description, tb.tndr_id
+      )
+                ]]></Statement>
+      <Parameter name="@argNonTaxableSellingGroups" />
+      <Parameter name="@argNonTaxableSellingGroups" />
+      <Parameter name="@argNonTaxableSellingGroups" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+    <!-- This query extracts the count of the sales without invoices -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      
+        SELECT t1.wkstn_id, 'DOCUMENT', t1.fiscal, t1.doctype, t1.itm_description,
+          SUM(counter) counter, SUM(quantity) quantity, SUM(extended_amt) extended_amt, SUM(gross_amt) gross_amt
+        FROM
+        (
+          SELECT t1.wkstn_id, t1.fiscal,
+          CASE
+            WHEN t1.doc_type IS NULL THEN 'SALES'
+            ELSE t1.doc_type
+          END doctype, t1.itm_description,
+          COUNT(*) AS counter, 0 AS quantity, 0 AS extended_amt, 0 AS gross_amt
+          FROM
+          (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+            FROM daily_report_documents t1
+            WHERE t1.only_returns = 0
+              AND t1.invoice ='NO_INV'
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+          ) t1
+          GROUP BY t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'SALES'
+              ELSE t1.doc_type
+            END,
+            t1.itm_description
+            
+          HAVING COUNT(*) > 0
+                ]]></Statement>
+    </SQL>
+    <!-- This query extracts the count of the sales with invoices -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+
+          SELECT t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'SALES_WITH_INVOICE'
+              ELSE t1.doc_type
+            END doctype,
+            t1.itm_description,
+            COUNT(*), 0, 0, 0
+          FROM
+          (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+            FROM daily_report_documents t1
+            WHERE t1.only_returns = 0
+              AND t1.invoice ='INV'
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+          ) t1
+          GROUP BY t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'SALES_WITH_INVOICE'
+              ELSE t1.doc_type
+            END,
+            t1.itm_description
+            
+          HAVING COUNT(*) > 0
+                ]]></Statement>
+    </SQL>
+    <!-- This query extracts the count of the returns with sales (that implies without invoices) -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+
+          SELECT t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'RETURNS_WITH_SALES'
+              ELSE t1.doc_type
+            END doctype,
+            t1.itm_description,
+            COUNT(*), 0, 0, 0
+          FROM
+          (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+            FROM daily_report_documents t1
+            WHERE t1.only_returns = 0
+              AND t1.invoice = 'NO_INV'
+              AND t1.return_flag = 1
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+          ) t1
+          GROUP BY t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'RETURNS_WITH_SALES'
+              ELSE t1.doc_type
+            END,
+            t1.itm_description
+  
+          HAVING COUNT(*) > 0
+                ]]></Statement>
+    </SQL>
+    <!-- This query extracts the count of the returns without sales AND without invoices -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+        
+          SELECT t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'ONLY_RETURNS'
+              ELSE t1.doc_type
+            END doctype,
+            t1.itm_description,
+            COUNT(*), 0, 0, 0
+          FROM
+          (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+            FROM daily_report_documents t1
+            WHERE t1.only_returns = 1
+              AND t1.invoice = 'NO_INV'
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+          ) t1
+          GROUP BY t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'ONLY_RETURNS'
+              ELSE t1.doc_type
+            END,
+            t1.itm_description
+
+          HAVING COUNT(*) > 0
+                ]]></Statement>
+    </SQL>
+    <!-- This query extracts the count of the returns without sales AND with invoices -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+        
+          SELECT t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'ONLY_RETURNS_WITH_CN'
+              ELSE t1.doc_type
+            END doctype,
+            t1.itm_description,
+            COUNT(*), 0, 0, 0
+          FROM
+          (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+            FROM daily_report_documents t1
+            WHERE t1.only_returns = 1
+              AND t1.invoice = 'INV'
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.fiscal, t1.doc_type, t1.itm_description
+          ) t1
+          GROUP BY t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'ONLY_RETURNS_WITH_CN'
+              ELSE t1.doc_type
+            END,
+            t1.itm_description
+            
+          HAVING COUNT(*) > 0
+                ]]></Statement>
+    </SQL>
+    <!-- This query extracts the sales without invoices -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+
+          SELECT t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'SALES'
+              ELSE t1.doc_type
+            END doctype,
+            t1.itm_description,
+            0,
+            SUM(
+              CASE
+                WHEN /*UPPER*/ t1.ITEM_TYPCODE = 'NON_PHYSICAL' THEN 0
+                ELSE t1.quantity
+              END),
+            SUM(extended_amt),
+            SUM(gross_amt)
+          FROM daily_report_documents t1
+          WHERE t1.only_returns = 0
+            AND t1.invoice = 'NO_INV'
+            AND t1.return_flag = 0
+          GROUP BY t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'SALES'
+              ELSE t1.doc_type
+            END,
+            t1.itm_description
+
+          HAVING SUM(t1.quantity) <> 0 OR SUM(extended_amt) <> 0 OR SUM(gross_amt) <> 0
+                ]]></Statement>
+    </SQL>
+    <!-- This query extracts the sales with invoices -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+
+          SELECT t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'SALES_WITH_INVOICE'
+              ELSE t1.doc_type
+            END doctype,
+            t1.itm_description,
+            0,
+            SUM(
+              CASE
+                WHEN /*UPPER*/ t1.ITEM_TYPCODE = 'NON_PHYSICAL' THEN 0
+                ELSE t1.quantity
+              END),
+            SUM(extended_amt),
+            SUM(gross_amt)
+          FROM daily_report_documents t1
+          WHERE t1.only_returns=0
+            AND t1.invoice = 'INV'
+            AND t1.return_flag = 0
+          GROUP BY t1.wkstn_id, t1.fiscal,
+          CASE
+            WHEN t1.doc_type IS NULL THEN 'SALES_WITH_INVOICE'
+            ELSE t1.doc_type
+          END,
+          t1.itm_description
+          
+          HAVING SUM(t1.quantity) <> 0 OR SUM(extended_amt) <> 0 OR SUM(gross_amt) <> 0
+                ]]></Statement>
+    </SQL>
+    <!-- This query extracts the returns with sales (that implies without invoices) -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+
+          SELECT t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'RETURNS_WITH_SALES'
+              ELSE t1.doc_type
+            END doctype,
+            t1.itm_description,
+            0,
+            SUM(
+              CASE
+                WHEN /*UPPER*/ t1.ITEM_TYPCODE = 'NON_PHYSICAL' THEN 0
+                ELSE t1.quantity
+              END),
+            SUM(extended_amt),
+            SUM(gross_amt)
+          FROM daily_report_documents t1
+          WHERE t1.only_returns=0
+            AND t1.invoice = 'NO_INV'
+            AND t1.return_flag = 1
+          GROUP BY t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'RETURNS_WITH_SALES'
+              ELSE t1.doc_type
+            END,
+            t1.itm_description
+
+          HAVING SUM(t1.quantity) <> 0 OR SUM(extended_amt) <> 0 OR SUM(gross_amt) <> 0
+                ]]></Statement>
+    </SQL>
+    <!-- This query extracts the returns without sales AND without invoices -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+
+          SELECT t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'ONLY_RETURNS'
+              ELSE t1.doc_type
+            END doctype,
+            t1.itm_description,
+            0,
+            SUM(
+              CASE
+                WHEN /*UPPER*/ t1.ITEM_TYPCODE = 'NON_PHYSICAL' THEN 0
+                ELSE t1.quantity
+              END),
+            SUM(extended_amt),
+            SUM(gross_amt)
+          FROM daily_report_documents t1
+          WHERE t1.only_returns = 1
+            AND t1.invoice ='NO_INV'
+          GROUP BY t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'ONLY_RETURNS'
+              ELSE t1.doc_type
+            END,
+            t1.itm_description
+
+          HAVING SUM(t1.quantity) <> 0 OR SUM(extended_amt) <> 0 OR SUM(gross_amt) <> 0
+                ]]></Statement>
+    </SQL>
+    <!-- This query extracts the returns returns without sales AND with invoices -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          UNION
+
+          SELECT t1.wkstn_id, t1.fiscal,
+            CASE
+              WHEN t1.doc_type IS NULL THEN 'ONLY_RETURNS_WITH_CN'
+              ELSE t1.doc_type
+            END doctype,
+            t1.itm_description,
+            0,
+            SUM(COALESCE(
+              CASE
+               WHEN /*UPPER*/ t1.ITEM_TYPCODE = 'NON_PHYSICAL' THEN 0
+               ELSE t1.quantity
+              END, 0)),
+            SUM(extended_amt),
+            SUM(gross_amt)
+            FROM daily_report_documents t1
+            WHERE t1.only_returns = 1
+              AND t1.invoice = 'INV'
+            GROUP BY t1.wkstn_id, t1.fiscal,
+              CASE
+                WHEN t1.doc_type IS NULL THEN 'ONLY_RETURNS_WITH_CN'
+                ELSE t1.doc_type
+              END,
+              t1.itm_description
+
+            HAVING SUM(t1.quantity) <> 0 OR SUM(extended_amt) <> 0 OR SUM(gross_amt) <> 0
+                ]]></Statement>
+    </SQL>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        UNION
+
+        SELECT wkstn_id, 'TAXABLE' fiscal, 'SALES' doctype, null itm_description, 0 counter, 0 quantity, 0 extended_amt, 0 gross_amt
+        FROM daily_report_documents
+        GROUP BY wkstn_id
+        
+        UNION
+        
+        SELECT wkstn_id, 'TAXABLE' fiscal, 'SALES_WITH_INVOICE' doctype, null itm_description, 0 counter, 0 quantity, 0 extended_amt, 0 gross_amt
+        FROM daily_report_documents
+        GROUP BY wkstn_id
+        
+        UNION
+        
+        SELECT wkstn_id, 'TAXABLE' fiscal, 'RETURNS_WITH_SALES' doctype, null itm_description, 0 counter, 0 quantity, 0 extended_amt, 0 gross_amt        
+        FROM daily_report_documents
+        GROUP BY wkstn_id
+        
+        UNION
+        
+        SELECT wkstn_id, 'TAXABLE' fiscal, 'ONLY_RETURNS' doctype, null itm_description, 0 counter, 0 quantity, 0 extended_amt, 0 gross_amt        
+        FROM daily_report_documents
+        GROUP BY wkstn_id
+        
+        UNION
+        
+        SELECT wkstn_id, 'TAXABLE' fiscal, 'ONLY_RETURNS_WITH_CN' doctype, null itm_description, 0 counter, 0 quantity, 0 extended_amt, 0 gross_amt        
+        FROM daily_report_documents
+        GROUP BY wkstn_id 
+        ) t1
+        GROUP BY t1.wkstn_id, t1.fiscal, t1.doctype, t1.itm_description
+        ORDER BY t1.wkstn_id, t1.fiscal, t1.doctype, t1.itm_description
+                ]]></Statement>
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.FISCAL_PRINTER" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Count01" type="Long" /> <!-- transactionSequence -->
+    <ResultField name="Text03" type="String" /> <!-- fiscalSessionNumber -->
+    <ResultField name="Text02" type="String" /> <!-- fiscalDeviceId -->
+    <ResultField name="Number01" type="BigDecimal" /> <!-- systemIncome -->
+    <ResultField name="Number02" type="BigDecimal" /> <!-- systemReturn -->
+    <ResultField name="Number03" type="BigDecimal" /> <!-- manualIncome -->
+    <ResultField name="Number04" type="BigDecimal" /> <!-- manualReturn -->
+    <ResultField name="Number05" type="BigDecimal" /> <!-- manualVoidedIncome -->
+    <ResultField name="Number06" type="BigDecimal" /> <!-- manualVoidedReturn -->
+    <ResultField name="Number07" type="BigDecimal" /> <!-- incomeDiscrepancy -->
+    <ResultField name="Number08" type="BigDecimal" /> <!-- returnDiscrepancy -->
+    <ResultField name="Number09" type="BigDecimal" /> <!-- fiscalPrinterIncome -->
+    <ResultField name="Number10" type="BigDecimal" /> <!-- fiscalPrinterReturn -->
+    <ResultField name="Text01" type="String" /> <!-- description -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT t1.wkstn_id, 'WORKSTATION', t1.trans_seq, y.string_value fiscal_session_number, x.string_value device_id,
+               SUM(coalesce(case WHEN t3.property_code = 'CRPT_DAILY_INCOME' THEN t3.decimal_value ELSE 0 END, 0)),
+               SUM(coalesce(case WHEN t3.property_code = 'CRPT_DAILY_RETURN' THEN t3.decimal_value ELSE 0 END, 0)),
+               SUM(coalesce(case WHEN t3.property_code = 'CRPT_DAILY_MANUAL_INCOME' THEN t3.decimal_value ELSE 0 END, 0)),
+               SUM(coalesce(case WHEN t3.property_code = 'CRPT_DAILY_MANUAL_RETURN' THEN t3.decimal_value ELSE 0 END, 0)),
+               SUM(coalesce(case WHEN t3.property_code = 'CRPT_DAILY_MANUAL_VOID_INCOME' THEN t3.decimal_value ELSE 0 END, 0)),
+               SUM(coalesce(case WHEN t3.property_code = 'CRPT_DAILY_MANUAL_VOID_RETURN' THEN t3.decimal_value ELSE 0 END, 0)),
+               SUM(coalesce(case WHEN t3.property_code = 'CRPT_DAILY_INCOME_DISCREPANCY' THEN t3.decimal_value ELSE 0 END, 0)),
+               SUM(coalesce(case WHEN t3.property_code = 'CRPT_DAILY_RETURN_DISCREPANCY' THEN t3.decimal_value ELSE 0 END, 0)),
+               SUM(coalesce(case WHEN t3.property_code = 'FP_DAILY_TOTAL_SALES' THEN t3.decimal_value ELSE 0 END, 0)-
+                  coalesce(case WHEN t3.property_code = 'FP_DAILY_TOTAL_VOIDS' THEN t3.decimal_value ELSE 0 END, 0)),
+               SUM(coalesce(case WHEN t3.property_code = 'FP_DAILY_TOTAL_RETURNS' THEN t3.decimal_value ELSE 0 END, 0)),
+               MAX(case WHEN t3.property_code = 'CRPT_DAILY_MANUAL_NOTES' THEN t3.string_value ELSE '' END)
+      FROM trn_trans t1
+      INNER JOIN
+      (
+        SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id,
+          MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+        FROM crpt_daily_detail t1
+        WHERE t1.organization_id = ?
+          AND t1.rtl_loc_id      = ?
+          AND t1.business_date   = ?
+          AND t1.record_type     = 'TRANSACTION'
+        GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id
+      ) t2
+      ON t2.organization_id = t1.organization_id
+        AND t2.rtl_loc_id = t1.rtl_loc_id
+        AND t2.business_date = t1.business_date
+        AND t2.ref_wkstn_id = t1.wkstn_id
+      INNER JOIN trn_trans_p t3
+        ON t3.organization_id = t1.organization_id
+        AND t3.rtl_loc_id = t1.rtl_loc_id
+        AND t3.business_date = t1.business_date
+        AND t3.wkstn_id = t1.wkstn_id
+        AND t3.trans_seq = t1.trans_seq
+        AND t3.property_code in ('CRPT_DAILY_INCOME', 'CRPT_DAILY_RETURN', 'CRPT_DAILY_MANUAL_INCOME', 'CRPT_DAILY_MANUAL_RETURN',
+                                'CRPT_DAILY_MANUAL_VOID_INCOME', 'CRPT_DAILY_MANUAL_VOID_RETURN', 'CRPT_DAILY_INCOME_DISCREPANCY',
+                                'CRPT_DAILY_RETURN_DISCREPANCY', 'CRPT_DAILY_MANUAL_NOTES', 'FP_DAILY_TOTAL_SALES', 'FP_DAILY_TOTAL_RETURNS', 'FP_DAILY_TOTAL_VOIDS')
+      LEFT JOIN trn_trans_p x
+      ON x.organization_id = t1.organization_id
+        AND x.rtl_loc_id = t1.rtl_loc_id
+        AND x.business_date = t1.business_date
+        AND x.wkstn_id = t1.wkstn_id
+        AND x.trans_seq = t1.trans_seq
+        AND x.property_code = 'FP_PRINTER_ID'
+      LEFT JOIN trn_trans_p y
+      ON y.organization_id = t1.organization_id
+        AND y.rtl_loc_id = t1.rtl_loc_id
+        AND y.business_date = t1.business_date
+        AND y.wkstn_id = t1.wkstn_id
+        AND y.trans_seq = t1.trans_seq
+        AND y.property_code = 'FP_SESSION_NBR'
+      WHERE t1.post_void_flag = 0
+        AND /*UPPER*/ t1.trans_statcode = 'COMPLETE'
+        AND /*UPPER*/ t1.trans_typcode = 'WORKSTATION_END_DAY'
+        AND t1.trans_seq BETWEEN t2.first_trans_seq AND t2.last_trans_seq
+      GROUP BY t1.wkstn_id, t1.trans_seq, y.string_value, x.string_value
+              ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.TAX" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Text03" type="String" /> <!-- exempt_reason_description -->
+    <ResultField name="Text02" type="String" /> <!-- tax_group_description -->
+    <ResultField name="Number03" type="BigDecimal" /> <!-- raw_tax_percentage -->
+    <ResultField name="Number01" type="BigDecimal" /> <!-- taxable_amt -->
+    <ResultField name="Number02" type="BigDecimal" /> <!-- tax_amt -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT t1.wkstn_id, 'TAX',
+        t8.description exempt_reason_description,
+        t1.tax_group_description, t1.raw_tax_percentage,
+        SUM(t1.taxable_amt) - SUM(t1.tax_amt) taxable_amt,
+        SUM(t1.tax_amt) tax_amt
+      FROM
+      (
+        SELECT t1.organization_id, t1.wkstn_id,
+          COALESCE(t2.tax_exemption_id, t3.tax_exemption_id, '') tax_exempt,
+          t3.tax_group_id,
+          COALESCE(t7.name, t7.description) tax_group_description,
+          CASE when t3.raw_tax_percentage = 0 THEN COALESCE(t3.tax_override_percentage, 0) ELSE t3.raw_tax_percentage END raw_tax_percentage,
+          SUM(t3.taxable_amt + t3.tax_exempt_amt) taxable_amt,
+          SUM(t3.tax_amt) tax_amt,
+          SUM(t3.taxable_amt + t3.tax_amt) gross_amt
+        FROM
+        (
+          SELECT t1.* FROM trn_trans t1
+          INNER JOIN
+          (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id,
+              MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+
+            FROM crpt_daily_detail t1
+
+            WHERE organization_id  = ?
+              AND rtl_loc_id       = ?
+              AND business_date    = ?
+              AND t1.record_type   = 'TRANSACTION'
+
+            GROUP BY organization_id, rtl_loc_id, business_date, ref_wkstn_id
+        ) t2
+        ON t2.organization_id= t1.organization_id
+          AND t2.rtl_loc_id = t1.rtl_loc_id
+          AND t2.business_date = t1.business_date
+          AND t2.ref_wkstn_id = t1.wkstn_id
+
+        WHERE t1.post_void_flag = 0
+        AND /*UPPER*/ t1.trans_statcode   = 'COMPLETE'
+        AND /*UPPER*/ t1.trans_typcode    = 'RETAIL_SALE'
+        AND t1.trans_seq BETWEEN t2.first_trans_seq AND t2.last_trans_seq
+      ) t1
+
+      INNER JOIN trl_rtrans t2
+      ON t2.organization_id = t1.organization_id
+        AND t2.rtl_loc_id = t1.rtl_loc_id
+        AND t2.business_date = t1.business_date
+        AND t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+
+      INNER JOIN trl_rtrans_lineitm t6
+      ON t6.organization_id = t1.organization_id
+        AND t6.rtl_loc_id = t1.rtl_loc_id
+        AND t6.business_date = t1.business_date
+        AND t6.wkstn_id = t1.wkstn_id
+        AND t6.trans_seq = t1.trans_seq
+
+      INNER JOIN trl_sale_lineitm t5
+      ON t5.organization_id = t6.organization_id
+        AND t5.rtl_loc_id = t6.rtl_loc_id
+        AND t5.business_date = t6.business_date
+        AND t5.wkstn_id = t6.wkstn_id
+        AND t5.trans_seq = t6.trans_seq
+        AND t5.rtrans_lineitm_seq = t6.rtrans_lineitm_seq
+
+      INNER JOIN trl_sale_tax_lineitm t3
+      ON t3.organization_id = t6.organization_id
+        AND t3.rtl_loc_id = t6.rtl_loc_id
+        AND t3.business_date = t6.business_date
+        AND t3.wkstn_id = t6.wkstn_id
+        AND t3.trans_seq = t6.trans_seq
+        AND t3.rtrans_lineitm_seq = t6.rtrans_lineitm_seq
+
+      INNER JOIN tax_tax_GROUP t7
+      ON t7.organization_id = t3.organization_id
+        AND t7.tax_group_id = /*UPPER*/ t3.tax_group_id
+
+      INNER JOIN (SELECT a.organization_id, a.item_id, a.selling_group_id
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   INNER JOIN (SELECT a.organization_id, a.item_id, MAX(b.level_order) level_order
+                   FROM itm_item_options a
+                   INNER JOIN loc_org_hierarchy b
+                   ON b.organization_id = a.ORGANIZATION_ID AND b.org_code = a.LEVEL_CODE AND b.org_value = a.LEVEL_VALUE
+                   GROUP BY a.organization_id, a.item_id) c
+                   ON c.organization_id = a.ORGANIZATION_ID AND c.ITEM_ID = a.ITEM_ID AND c.level_order = b.level_order) t9
+      ON t9.organization_id = t5.organization_id
+        AND t9.item_id = /*UPPER*/ t5.item_id
+
+      WHERE /*UPPER*/ t5.sale_lineitm_typcode IN ('SALE', 'SEND_SALE', 'SHP_SALE', 'LAYAWAY', 'PRESALE', 'WORK_ORDER' )
+        AND t5.extended_amt <> 0
+        AND t6.void_flag = 0
+        AND /*UPPER*/ t6.rtrans_lineitm_typcode = 'ITEM'
+        AND (
+          t9.selling_group_id IS NULL
+          OR NOT /*UPPER*/ t9.selling_group_id IN ?)
+      GROUP BY t1.organization_id, t1.wkstn_id,
+        COALESCE(t2.tax_exemption_id, t3.tax_exemption_id, ''),
+        t3.tax_group_id,
+        COALESCE(t7.name, t7.description),
+        CASE WHEN t3.raw_tax_percentage = 0 THEN COALESCE(t3.tax_override_percentage, 0) ELSE t3.raw_tax_percentage END
+    ) t1
+    LEFT JOIN tax_tax_exemption t5
+    ON t5.organization_id = t1.organization_id
+      AND t5.tax_exemption_id = t1.tax_exempt
+    LEFT JOIN com_reason_code t8
+    ON t8.organization_id = t1.organization_id
+      AND t8.reason_typcode = 'TAX_EXEMPT'
+      AND t8.reason_code = /*UPPER*/ t5.reascode
+              ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="@argNonTaxableSellingGroups" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY t1.wkstn_id, t5.reascode, t8.description, t1.tax_group_id, t1.tax_group_description, t1.raw_tax_percentage]]></Suffix>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.TENDER_DISCREPANCY" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Text01" type="String" /> <!-- tenderType -->
+    <ResultField name="Text02" type="String" /> <!-- tndr_id -->
+    <ResultField name="Text03" type="String" /> <!-- currencyId -->
+    <ResultField name="Text04" type="String" /> <!-- description -->
+    <ResultField name="Number01" type="BigDecimal" /> <!-- amt -->
+    <ResultField name="Number02" type="BigDecimal" /> <!-- difference_amt -->
+    <ResultField name="Number03" type="BigDecimal" /> <!-- local_currency_amt -->
+    <ResultField name="Number04" type="BigDecimal" /> <!-- local_currency_difference_amt -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT t1.wkstn_id, 'TENDER_DISCREPANCY',
+        t2.tndr_typcode, t2.tndr_id,
+        t3.currency_id, t3.description,
+        SUM(t2.amt + t7.amt) amt, SUM(t2.difference_amt + t7.difference_amt) difference_amt, 
+        SUM(t2.local_currency_amt + t7.local_currency_amt) local_currency_amt,
+        SUM(
+          CASE
+            WHEN t2.amt = 0 THEN t2.difference_amt / CASE WHEN COALESCE(t4.rate, 1) = 0 THEN 1 ELSE COALESCE(t4.rate, 1) END
+            ELSE t2.difference_amt * (t2.local_currency_amt / t2.amt)
+          END + t7.local_currency_difference_amt) local_currency_difference_amt
+      FROM
+      (
+        SELECT t1.*
+        FROM trn_trans t1
+        LEFT JOIN
+        (
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id,
+            MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+          FROM crpt_daily_detail t1
+
+          WHERE t1.organization_id = ?
+            AND t1.rtl_loc_id      = ?
+            AND t1.business_date   = ?
+            AND t1.record_type     = 'TRANSACTION'
+
+          GROUP BY t1.organization_id, t1.rtl_loc_id,
+            t1.business_date, t1.ref_wkstn_id
+        ) t2
+        
+        ON t2.organization_id = t1.organization_id
+          AND t2.rtl_loc_id = t1.rtl_loc_id
+          AND t2.business_date = t1.business_date
+          AND t2.ref_wkstn_id = t1.wkstn_id
+
+        INNER JOIN tsn_tndr_control_trans t3
+        ON t3.organization_id = t1.organization_id
+          AND t3.rtl_loc_id = t1.rtl_loc_id
+          AND t3.business_date = t1.business_date
+          AND t3.wkstn_id = t1.wkstn_id
+          AND t3.trans_seq = t1.trans_seq
+  
+        WHERE t1.post_void_flag   = 0
+          AND /*UPPER*/ t1.trans_statcode   = 'COMPLETE'
+          AND /*UPPER*/ t1.trans_typcode    = 'TENDER_CONTROL'
+          AND /*UPPER*/ t3.typcode          = 'ENDCOUNT'
+          AND t1.trans_seq BETWEEN t2.first_trans_seq AND t2.last_trans_seq
+      ) t1
+
+      INNER JOIN tsn_tndr_tndr_count t2
+      ON t2.organization_id = t1.organization_id
+        AND t2.rtl_loc_id = t1.rtl_loc_id
+        AND t2.business_date = t1.business_date
+        AND t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+
+      INNER JOIN tnd_tndr t3
+      ON t3.organization_id = t2.organization_id
+        AND t3.tndr_id = t2.tndr_id
+
+      LEFT JOIN tnd_exchange_rate t4
+      ON t4.organization_id = t3.organization_id
+        AND t4.target_currency = /*UPPER*/ t3.currency_id
+        AND t4.base_currency = ?
+      
+      INNER JOIN (          
+        SELECT t0.organization_id, t0.rtl_loc_id, t0.business_date, t0.wkstn_id, t0.trans_seq, t0.tndr_typcode, 
+          t0.amt - t6.local_currency_amt local_currency_amt, t0.difference_amt - t6.difference_amt local_currency_difference_amt, 
+          (t0.amt - t6.local_currency_amt) * t6.rate amt, (t0.difference_amt - t6.difference_amt) * t6.rate difference_amt
+        FROM tsn_tndr_typcode_count t0
+        INNER JOIN (
+          SELECT t2.organization_id, t2.rtl_loc_id, t2.business_date, t2.wkstn_id, t2.trans_seq, t2.tndr_typcode, 
+            SUM(t2.local_currency_amt) local_currency_amt, SUM(t2.difference_amt) difference_amt,
+            MIN(CASE WHEN t2.amt = 0 THEN 1 / CASE WHEN COALESCE(t4.rate, 1) = 0 THEN 1 ELSE coalesce(t4.rate, 1) END 
+              ELSE t2.local_currency_amt / t2.amt END) rate
+          FROM tsn_tndr_tndr_count t2
+          INNER JOIN tnd_tndr t3 
+            ON t3.organization_id = t2.organization_id 
+            AND t3.tndr_id = t2.tndr_id 
+          LEFT JOIN tnd_exchange_rate t4 
+            ON t4.organization_id = t3.organization_id 
+            AND t4.target_currency = /*UPPER*/ t3.currency_id 
+            AND t4.base_currency = ? 
+          GROUP BY t2.organization_id, t2.rtl_loc_id, t2.business_date, t2.wkstn_id, t2.trans_seq, t2.tndr_typcode
+        ) t6
+        ON t6.organization_id = t0.organization_id 
+        AND t6.rtl_loc_id = t0.rtl_loc_id 
+        AND t6.business_date = t0.business_date 
+        AND t6.wkstn_id = t0.wkstn_id 
+        AND t6.trans_seq = t0.trans_seq 
+        AND /*UPPER*/ t6.tndr_typcode = t0.tndr_typcode
+      ) t7
+      ON t7.organization_id = t2.organization_id 
+      AND t7.rtl_loc_id = t2.rtl_loc_id 
+      AND t7.business_date = t2.business_date 
+      AND t7.wkstn_id = t2.wkstn_id 
+      AND t7.trans_seq = t2.trans_seq 
+      AND /*UPPER*/ t7.tndr_typcode = t2.tndr_typcode
+      
+              ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argLocalCurrrencyId" />
+      <Parameter name="argLocalCurrrencyId" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[GROUP BY t1.wkstn_id, t2.tndr_typcode, t2.tndr_id, t3.currency_id, t3.description]]></Suffix>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.TENDER" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Text01" type="String" /> <!-- tenderType -->
+    <ResultField name="Text02" type="String" /> <!-- tndr_id -->
+    <ResultField name="Text03" type="String" /> <!-- currencyId -->
+    <ResultField name="Text04" type="String" /> <!-- description -->
+    <ResultField name="Number01" type="BigDecimal" /> <!-- foreign_amt -->
+    <ResultField name="Number02" type="BigDecimal" /> <!-- amt -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT t2.wkstn_id, 'TENDER_PAYMENT', 
+        t3.tndr_typcode, t2.tndr_id, 
+        t3.currency_id, t3.description,
+        SUM(t2.foreign_amt) foreign_amt, SUM(t2.amt) amt 
+      FROM
+      (
+        SELECT t1.organization_id, t1.wkstn_id, t2.tndr_id, 
+          SUM(t2.amt) amt, SUM(coalesce(t2.foreign_amt, t2.amt)) foreign_amt
+        FROM
+        (
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq
+          FROM trn_trans t1
+          INNER JOIN
+          (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id,
+              MAX(t1.count01) first_trans_seq,  MAX(t1.count02) last_trans_seq
+
+            FROM crpt_daily_detail t1
+
+            WHERE t1.organization_id = ?
+              AND t1.rtl_loc_id      = ?
+              AND t1.business_date   = ?
+              AND t1.record_type     = 'TRANSACTION'
+
+            GROUP BY organization_id, rtl_loc_id, business_date, ref_wkstn_id
+          ) t2
+          ON t2.organization_id = t1.organization_id
+            AND t2.rtl_loc_id = t1.rtl_loc_id
+            AND t2.business_date = t1.business_date
+            AND t2.ref_wkstn_id = t1.wkstn_id
+
+          WHERE t1.post_void_flag = 0
+            AND /*UPPER*/ t1.trans_statcode = 'COMPLETE'
+            AND /*UPPER*/ t1.trans_typcode = 'RETAIL_SALE'
+            AND t1.trans_seq BETWEEN t2.first_trans_seq AND t2.last_trans_seq
+        ) t1
+        INNER JOIN ttr_tndr_lineitm t2
+        ON t2.organization_id = t1.organization_id
+          AND t2.rtl_loc_id     = t1.rtl_loc_id
+          AND t2.business_date  = t1.business_date
+          AND t2.wkstn_id       = t1.wkstn_id
+          AND t2.trans_seq      = t1.trans_seq
+        INNER JOIN trl_rtrans_lineitm t3
+          ON t3.organization_id     = t2.organization_id
+          AND t3.rtl_loc_id         = t2.rtl_loc_id
+          AND t3.business_date      = t2.business_date
+          AND t3.wkstn_id           = t2.wkstn_id
+          AND t3.trans_seq          = t2.trans_seq
+          AND t3.rtrans_lineitm_seq = t2.rtrans_lineitm_seq
+          AND t3.void_flag          = 0
+        GROUP BY t1.organization_id, t1.wkstn_id, tndr_id
+      ) t2
+      INNER JOIN tnd_tndr t3
+      ON t3.organization_id = t2.organization_id
+        AND t3.tndr_id = /*UPPER*/ t2.tndr_id
+              ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[
+      GROUP BY t2.organization_id, t2.wkstn_id, t3.tndr_typcode, t2.tndr_id, t3.currency_id, t3.description
+      ORDER BY t2.organization_id, t2.wkstn_id, t3.tndr_typcode, t2.tndr_id, t3.currency_id, t3.description]]></Suffix>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.TILL" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Text01" type="String" />
+    <ResultField name="description" type="String" />
+    <ResultField name="Number01" type="BigDecimal" />
+    <ResultField name="Number02" type="BigDecimal" />
+    <ResultField name="Number03" type="BigDecimal" />
+    <ResultField name="Number04" type="BigDecimal" />
+    <ResultField name="Number05" type="BigDecimal" />
+    <ResultField name="Number06" type="BigDecimal" />
+    <ResultField name="Number07" type="BigDecimal" /> <!-- tillDiscrepancyAmt -->
+    <ResultField name="Number08" type="BigDecimal" /> <!-- tillToSafeDepositAmt -->
+    <ResultField name="Number09" type="BigDecimal" /> <!-- floatAmt -->
+    <ResultField name="Number10" type="BigDecimal" /> <!-- tenderExchangeInAmt -->
+    <ResultField name="Number11" type="BigDecimal" /> <!-- tenderExchangeOutAmt -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        WITH transactions AS (
+          SELECT t1.*
+          FROM trn_trans t1
+          INNER JOIN (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id, MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+            FROM crpt_daily_detail t1
+            WHERE t1.record_type = 'TRANSACTION'
+            AND organization_id = ? 
+            AND rtl_loc_id = ? 
+            AND business_date = ?
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id
+            ) t2 
+              ON t2.organization_id = t1.organization_id 
+              AND t2.rtl_loc_id = t1.rtl_loc_id 
+              AND t2.business_date = t1.business_date 
+              AND t2.ref_wkstn_id = t1.wkstn_id
+          WHERE t1.post_void_flag = 0 
+          AND /*UPPER*/ t1.trans_statcode = 'COMPLETE' 
+          AND /*UPPER*/ t1.trans_typcode in ('RETAIL_SALE', 'TENDER_CONTROL', 'TENDER_EXCHANGE')
+          AND t1.trans_seq between t2.first_trans_seq AND t2.last_trans_seq
+        )
+        SELECT t1.wkstn_id, 'TILL_SUMMARY', t2.currency_id, t2.description, SUM(daily_opening_amt) daily_opening_amt, 
+          SUM(cash_amt) cash_amt, SUM(paid_in_amt) paid_in_amt, SUM(paid_out_amt) paid_out_amt,
+          SUM(cash_pickup_amt) cash_pickup_amt, SUM(cash_transfer_amt) cash_transfer_amt,
+          SUM(till_discrepancy_amt) till_discrepancy_amt, SUM(till_to_safe_deposit_amt) till_to_safe_deposit_amt,
+          SUM(float_amt) float_amt, SUM(tender_exchange_in_amt) tender_exchange_in_amt, 
+          SUM(tender_exchange_out_amt) tender_exchange_out_amt
+        FROM (
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, SUM(t3.amt) daily_opening_amt, 0 additional_openings_amt, 0 cash_amt, 0 paid_out_amt, 0 paid_in_amt, 
+                 0 tender_exchange_in_amt, 0 tender_exchange_out_amt, 0 cash_pickup_amt, 0 cash_transfer_amt, 0 till_discrepancy_amt, 0 till_to_safe_deposit_amt, 0 float_amt
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN (
+            SELECT t1.wkstn_id, MIN(t1.trans_seq) trans_seq
+            FROM transactions t1
+            WHERE /*UPPER*/ trans_typcode = 'TENDER_CONTROL'
+            GROUP BY wkstn_id
+          ) t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          WHERE /*UPPER*/ t1.typcode = 'BEGINCOUNT'
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, 0, SUM(t3.amt) additional_openings_amt, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN (
+            SELECT t1.wkstn_id, MIN(t1.trans_seq) trans_seq
+            FROM transactions t1
+            WHERE /*UPPER*/ t1.trans_typcode = 'TENDER_CONTROL'
+            GROUP BY t1.wkstn_id
+          ) t2
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq < t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          WHERE /*UPPER*/ t1.typcode = 'BEGINCOUNT'
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t2.tndr_id, 0, 0, SUM(coalesce(t2.foreign_amt, t2.amt)), 0, 0, 0, 0, 0, 0, 0, 0, 0
+          FROM transactions t1
+          INNER JOIN ttr_tndr_lineitm t2 
+            ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id 
+            AND t2.business_date = t1.business_date 
+            AND t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN trl_rtrans_lineitm t3
+            ON t3.organization_id = t2.organization_id
+            AND t3.rtl_loc_id = t2.rtl_loc_id
+            AND t3.business_date = t2.business_date
+            AND t3.wkstn_id = t2.wkstn_id
+            AND t3.trans_seq = t2.trans_seq
+            AND t3.rtrans_lineitm_seq = t2.rtrans_lineitm_seq
+            AND t3.void_flag = 0
+          WHERE /*UPPER*/ t1.trans_typcode = 'RETAIL_SALE' 
+          AND /*UPPER*/ t2.tndr_id in (
+            SELECT t1.tndr_id 
+            FROM tnd_tndr t1
+            WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY')
+          GROUP BY t1.organization_id, t1.wkstn_id, t2.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, 0, 0, 0, SUM(t3.amt), 0, 0, 0, 0, 0, 0, 0, 0
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN transactions t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN ttr_tndr_lineitm t3
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          INNER JOIN trl_rtrans_lineitm t4
+            ON t4.organization_id = t3.organization_id
+            AND t4.rtl_loc_id = t3.rtl_loc_id
+            AND t4.business_date = t3.business_date
+            AND t4.wkstn_id = t3.wkstn_id
+            AND t4.trans_seq = t3.trans_seq
+            AND t4.rtrans_lineitm_seq = t3.rtrans_lineitm_seq
+            AND t4.void_flag = 0
+          WHERE /*UPPER*/ t2.trans_typcode = 'TENDER_CONTROL' 
+          AND /*UPPER*/ t1.typcode = 'PAID_OUT'
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, 0, 0, 0, 0, SUM(t3.amt), 0, 0, 0, 0, 0, 0, 0
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN transactions t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN ttr_tndr_lineitm t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          INNER JOIN trl_rtrans_lineitm t4
+            ON t4.organization_id = t3.organization_id
+            AND t4.rtl_loc_id = t3.rtl_loc_id
+            AND t4.business_date = t3.business_date
+            AND t4.wkstn_id = t3.wkstn_id
+            AND t4.trans_seq = t3.trans_seq
+            AND t4.rtrans_lineitm_seq = t3.rtrans_lineitm_seq
+            AND t4.void_flag = 0
+          WHERE /*UPPER*/ t2.trans_typcode = 'TENDER_CONTROL' 
+          AND /*UPPER*/ t1.typcode = 'PAID_IN'
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+          
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t1.tndr_id, 0, 0, 0, 0, 0, SUM(coalesce(t1.foreign_amt, t1.amt)), 0, 0, 0, 0, 0, 0
+          FROM ttr_tndr_lineitm t1
+          INNER JOIN transactions t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN trl_rtrans_lineitm t3
+            ON t3.organization_id = t1.organization_id
+            AND t3.rtl_loc_id = t1.rtl_loc_id
+            AND t3.business_date = t1.business_date
+            AND t3.wkstn_id = t1.wkstn_id
+            AND t3.trans_seq = t1.trans_seq
+            AND t3.rtrans_lineitm_seq = t1.rtrans_lineitm_seq
+            AND t3.void_flag = 0
+          WHERE /*UPPER*/ t1.tndr_id in (
+            SELECT t1.tndr_id 
+            FROM tnd_tndr t1
+            WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY')
+          AND /*UPPER*/ t2.trans_typcode = 'TENDER_EXCHANGE' 
+          AND coalesce(t1.foreign_amt, t1.amt) > 0
+          GROUP BY t1.organization_id, t1.wkstn_id, t1.tndr_id
+          
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t1.tndr_id, 0, 0, 0, 0, 0, 0, SUM(abs(coalesce(t1.foreign_amt, t1.amt))), 0, 0, 0, 0, 0
+          FROM ttr_tndr_lineitm t1
+          INNER JOIN transactions t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN trl_rtrans_lineitm t3
+            ON t3.organization_id = t1.organization_id
+            AND t3.rtl_loc_id = t1.rtl_loc_id
+            AND t3.business_date = t1.business_date
+            AND t3.wkstn_id = t1.wkstn_id
+            AND t3.trans_seq = t1.trans_seq
+            AND t3.rtrans_lineitm_seq = t1.rtrans_lineitm_seq
+            AND t3.void_flag = 0
+          WHERE /*UPPER*/ t1.tndr_id in (
+            SELECT t1.tndr_id 
+            FROM tnd_tndr t1
+            WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY')
+          AND /*UPPER*/ t2.trans_typcode = 'TENDER_EXCHANGE' 
+          AND coalesce(t1.foreign_amt, t1.amt) < 0
+          GROUP BY t1.organization_id, t1.wkstn_id, t1.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, 0, 0, 0, 0, 0, 0, 0, SUM(t3.amt), 0, 0, 0, 0
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN transactions t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          WHERE /*UPPER*/ t2.trans_typcode = 'TENDER_CONTROL' 
+          AND /*UPPER*/ t1.typcode = 'CASH_PICKUP'
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, 0, 0, 0, 0, 0, 0, 0, 0, SUM(t3.amt), 0, 0, 0
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN transactions t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          WHERE /*UPPER*/ t2.trans_typcode = 'TENDER_CONTROL' 
+          AND /*UPPER*/ t1.typcode = 'CASH_TRANSFER'
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, 0, 0, 0, 0, 0, 0, 0, 0, 0, SUM(t3.difference_amt), 0, 0
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN transactions t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          WHERE /*UPPER*/ t2.trans_typcode = 'TENDER_CONTROL' 
+          AND /*UPPER*/ t1.typcode = 'ENDCOUNT' AND t3.tndr_id in (
+            SELECT t1.tndr_id 
+            FROM tnd_tndr t1
+            WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY')
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+                 SUM(case when t4.change_allowed_when_foreign = 1 or not t3.deposit_amt is null THEN t3.deposit_amt ELSE t3.amt END), 0
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN transactions t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          INNER JOIN tnd_tndr_options t4 
+            ON t4.organization_id = t3.organization_id 
+            AND t4.tndr_id = t3.tndr_id
+          WHERE /*UPPER*/ t2.trans_typcode = 'TENDER_CONTROL' 
+          AND /*UPPER*/ t1.typcode = 'ENDCOUNT' 
+          AND t3.tndr_id in (
+            SELECT t1.tndr_id 
+            FROM tnd_tndr t1
+            WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY')
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SUM(t3.amt), 0
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN transactions t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          INNER JOIN tnd_tndr_options t4 
+            ON t4.organization_id = t3.organization_id 
+            AND t4.tndr_id = t3.tndr_id
+          WHERE /*UPPER*/ t2.trans_typcode = 'TENDER_CONTROL' 
+          AND /*UPPER*/ t1.typcode = 'MIDCOUNT' 
+          AND t3.tndr_id in (
+            SELECT t1.tndr_id 
+            FROM tnd_tndr t1
+            WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY')
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.wkstn_id, t3.tndr_id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, SUM(t3.amt - t3.deposit_amt)
+          FROM tsn_tndr_control_trans t1
+          INNER JOIN (
+            SELECT t1.wkstn_id, MAX(t1.trans_seq) trans_seq
+            FROM transactions t1
+            INNER JOIN tsn_tndr_control_trans t2 
+              ON t2.organization_id = t1.organization_id 
+              AND t2.rtl_loc_id = t1.rtl_loc_id 
+              AND t2.business_date = t1.business_date 
+              AND t2.wkstn_id = t1.wkstn_id 
+              AND t2.trans_seq = t1.trans_seq
+            WHERE /*UPPER*/ t1.trans_typcode = 'TENDER_CONTROL' 
+            AND /*UPPER*/ t2.typcode = 'ENDCOUNT'
+            GROUP BY t1.wkstn_id
+          ) t2 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          WHERE t3.tndr_id in (
+            SELECT t1.tndr_id 
+            FROM tnd_tndr t1
+            WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY')
+          GROUP BY t1.organization_id, t1.wkstn_id, t3.tndr_id
+        ) t1
+        INNER JOIN tnd_tndr t2 
+          ON t2.organization_id = t1.organization_id 
+          AND t2.tndr_id = /*UPPER*/ t1.tndr_id
+        GROUP BY t1.wkstn_id, t2.currency_id, t2.description
+        ORDER BY t1.wkstn_id, t2.currency_id, t2.description
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.SAFE" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Text01" type="String" />
+    <ResultField name="Text02" type="String" />
+    <ResultField name="Number01" type="BigDecimal" /> <!-- initial_safe_balance -->
+    <ResultField name="Number02" type="BigDecimal" /> <!-- till_to_safe_deposit_amt -->
+    <ResultField name="Number03" type="BigDecimal" /> <!-- cash_pickup_amt -->
+    <ResultField name="Number04" type="BigDecimal" /> <!-- cash_transfer_amt -->
+    <ResultField name="Number05" type="BigDecimal" /> <!-- store_bank_cash_deposit -->
+    <ResultField name="Number06" type="BigDecimal" /> <!-- bank_deposit -->
+    <ResultField name="Number07" type="BigDecimal" /> <!-- final_safe_balance -->
+    <ResultField name="Number08" type="BigDecimal" /> <!-- float_amount -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+  WITH transactions AS (
+    SELECT t1.*
+    FROM trn_trans t1
+    INNER JOIN (
+      SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id, MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+      FROM crpt_daily_detail t1
+      WHERE t1.record_type = 'TRANSACTION'
+        AND t1.organization_id = ? AND t1.rtl_loc_id = ? AND t1.business_date = ?
+      GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id
+    ) t2
+    ON t2.organization_id = t1.organization_id
+      AND t2.rtl_loc_id = t1.rtl_loc_id
+      AND t2.business_date = t1.business_date
+      AND t2.ref_wkstn_id = t1.wkstn_id
+
+    WHERE t1.post_void_flag = 0
+      AND /*UPPER*/ t1.trans_statcode = 'COMPLETE' 
+      AND t1.trans_seq between t2.first_trans_seq
+      AND t2.last_trans_seq
+  )
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+    <!-- This query groups all the data FROM the following single queries -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+  SELECT 0, 'SAFE_SUMMARY', t2.currency_id, t1.tndr_id, SUM(COALESCE(previous_safe_balance, final_safe_balance + bank_deposit - store_bank_cash_deposit + cash_transfer_amt + cash_pickup_amt - till_to_safe_deposit_amt)) initial_safe_balance, 
+    SUM(till_to_safe_deposit_amt) till_to_safe_deposit_amt, SUM(cash_pickup_amt) cash_pickup_amt, SUM(cash_transfer_amt) cash_transfer_amt, 
+    SUM(store_bank_cash_deposit) store_bank_cash_deposit, SUM(bank_deposit) bank_deposit, SUM(final_safe_balance) final_safe_balance , SUM(float_amount) float_amount
+  FROM (
+    SELECT t1.organization_id, t1.tndr_id, SUM(till_to_safe_deposit_amt) till_to_safe_deposit_amt, SUM(cash_pickup_amt) cash_pickup_amt, SUM(cash_transfer_amt) cash_transfer_amt, 
+      SUM(store_bank_cash_deposit) store_bank_cash_deposit, SUM(bank_deposit) bank_deposit, SUM(float_amount) float_amount, SUM(final_safe_balance) final_safe_balance 
+    FROM (
+        ]]></Statement>
+    </SQL>
+    <!-- Deposit In Safe amount for ENDCOUNT of the current business date -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      SELECT t1.organization_id, t3.tndr_id, SUM(case when t4.change_allowed_when_foreign = 1 OR NOT t3.deposit_amt IS NULL THEN t3.deposit_amt ELSE t3.amt end) till_to_safe_deposit_amt, 
+      0 cash_pickup_amt, 0 cash_transfer_amt, 0 store_bank_cash_deposit, 0 bank_deposit, 0 float_amount, 0 final_safe_balance
+      FROM tsn_tndr_control_trans t1
+      INNER JOIN transactions t2
+      ON t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+      INNER JOIN tsn_tndr_tndr_count t3
+      ON t3.organization_id = t1.organization_id
+        AND t3.rtl_loc_id = t1.rtl_loc_id
+        AND t3.business_date = t1.business_date
+        AND t3.wkstn_id = t1.wkstn_id
+        AND t3.trans_seq = t1.trans_seq
+      INNER JOIN tnd_tndr_options t4
+      ON t4.organization_id = t3.organization_id
+        AND t4.tndr_id = t3.tndr_id
+      WHERE t1.organization_id = ? AND /*UPPER*/ t1.typcode in ('ENDCOUNT') AND t3.tndr_id IN (
+        SELECT t1.tndr_id FROM tnd_tndr t1 WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY' AND t1.organization_id = ?
+      )
+      GROUP BY t1.organization_id, t3.tndr_id
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <!-- Deposit In Safe amount for MIDCOUNT of the current business date -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      UNION
+  
+      SELECT t1.organization_id, t3.tndr_id, SUM(t3.amt), 0, 0, 0, 0, 0, 0
+      FROM tsn_tndr_control_trans t1
+      INNER JOIN transactions t2
+      ON t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+      INNER JOIN tsn_tndr_tndr_count t3
+      ON t3.organization_id = t1.organization_id
+        AND t3.rtl_loc_id = t1.rtl_loc_id
+        AND t3.business_date = t1.business_date
+        AND t3.wkstn_id = t1.wkstn_id
+        AND t3.trans_seq = t1.trans_seq
+      WHERE t1.organization_id = ? AND /*UPPER*/ t1.typcode IN ('MIDCOUNT')
+        AND t3.tndr_id IN (
+         SELECT t1.tndr_id FROM tnd_tndr t1 WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY' AND t1.organization_id = ?
+        )
+      GROUP BY t1.organization_id, t3.tndr_id
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <!-- Cash Pickup amount of the current business date -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      UNION
+  
+      SELECT t1.organization_id, t3.tndr_id, 0, SUM(t3.amt), 0, 0, 0, 0, 0
+      FROM tsn_tndr_control_trans t1
+      INNER JOIN transactions t2
+      ON t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+      INNER JOIN tsn_tndr_tndr_count t3
+      ON t3.organization_id = t1.organization_id
+        AND t3.rtl_loc_id = t1.rtl_loc_id
+        AND t3.business_date = t1.business_date
+        AND t3.wkstn_id = t1.wkstn_id
+        AND t3.trans_seq = t1.trans_seq
+      WHERE t1.organization_id = ? AND /*UPPER*/ t1.typcode = 'CASH_PICKUP'
+      GROUP BY t1.organization_id, t3.tndr_id
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <!-- Cash Transfer amount of the current business date -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      UNION
+  
+      SELECT t1.organization_id, t3.tndr_id, 0, 0, SUM(t3.amt), 0, 0, 0, 0
+      FROM tsn_tndr_control_trans t1
+      INNER JOIN transactions t2
+      ON t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+      INNER JOIN tsn_tndr_tndr_count t3
+      ON t3.organization_id = t1.organization_id
+        AND t3.rtl_loc_id = t1.rtl_loc_id
+        AND t3.business_date = t1.business_date
+        AND t3.wkstn_id = t1.wkstn_id
+        AND t3.trans_seq = t1.trans_seq
+      WHERE t1.organization_id = ? AND /*UPPER*/ t1.typcode = 'CASH_TRANSFER'
+      GROUP BY t1.organization_id, t3.tndr_id
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <!-- Store Bank Cash Deposit amount of the current business date -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+       UNION
+    
+      SELECT t1.organization_id, t3.tndr_id, 0, 0, 0, SUM(t3.amt), 0, 0, 0
+      FROM tsn_tndr_control_trans t1
+      INNER JOIN transactions t2
+      ON t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+      INNER JOIN tsn_tndr_tndr_count t3
+      ON t3.organization_id = t1.organization_id
+        AND t3.rtl_loc_id = t1.rtl_loc_id
+        AND t3.business_date = t1.business_date
+        AND t3.wkstn_id = t1.wkstn_id
+        AND t3.trans_seq = t1.trans_seq
+      WHERE t1.organization_id = ? AND /*UPPER*/ t1.typcode = 'STORE_BANK_CASH_DEPOSIT'
+      GROUP BY t1.organization_id, t3.tndr_id
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <!-- Bank Deposit amount of the current business date -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      UNION
+    
+      SELECT t1.organization_id, t3.tndr_id, 0, 0, 0, 0, SUM(t3.amt), 0, 0
+      FROM tsn_tndr_control_trans t1
+      INNER JOIN transactions t2
+      ON t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+      INNER JOIN tsn_tndr_tndr_count t3
+      ON t3.organization_id = t1.organization_id
+        AND t3.rtl_loc_id = t1.rtl_loc_id
+        AND t3.business_date = t1.business_date
+        AND t3.wkstn_id = t1.wkstn_id
+        AND t3.trans_seq = t1.trans_seq
+      WHERE t1.organization_id = ? AND /*UPPER*/ t1.typcode = 'BANK_DEPOSIT'
+      GROUP BY t1.organization_id, t3.tndr_id
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <!-- Float amount of the current business date -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      UNION
+  
+      SELECT t1.organization_id, t3.tndr_id, 0, 0, 0, 0, 0, SUM(t3.amt - t3.deposit_amt), 0
+      FROM tsn_tndr_control_trans t1
+      INNER JOIN (
+        SELECT t1.wkstn_id, MAX(t1.trans_seq) trans_seq
+        FROM transactions t1
+        INNER JOIN tsn_tndr_control_trans t2
+        ON t2.organization_id = t1.organization_id
+          AND t2.rtl_loc_id = t1.rtl_loc_id
+          AND t2.business_date = t1.business_date
+          AND t2.wkstn_id = t1.wkstn_id
+          AND t2.trans_seq = t1.trans_seq
+        WHERE t1.organization_id = ? AND /*UPPER*/ t1.trans_typcode = 'TENDER_CONTROL'
+          AND /*UPPER*/ t2.typcode = 'ENDCOUNT'
+        GROUP BY t1.wkstn_id
+      ) t2
+      ON t2.wkstn_id = t1.wkstn_id
+        AND t2.trans_seq = t1.trans_seq
+      INNER JOIN tsn_tndr_tndr_count t3
+      ON t3.organization_id = t1.organization_id
+        AND t3.rtl_loc_id = t1.rtl_loc_id
+        AND t3.business_date = t1.business_date
+        AND t3.wkstn_id = t1.wkstn_id
+        AND t3.trans_seq = t1.trans_seq
+      WHERE t1.organization_id = ? AND /*UPPER*/ t1.typcode in ('ENDCOUNT')
+        AND t3.tndr_id in (
+        SELECT t1.tndr_id FROM tnd_tndr t1 WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY' AND t1.organization_id = ?
+      )
+    
+      GROUP BY t1.organization_id, t3.tndr_id
+        ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <!-- Final Balance amount of the current business date -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+      UNION
+    
+      SELECT t1.organization_id, t1.tndr_id, 0, 0, 0, 0, 0, 0, SUM(t1.actual_media_amt)
+      FROM tsn_session_tndr t1
+      WHERE t1.session_id = 0
+      AND t1.tndr_id in (
+        SELECT t1.tndr_id 
+        FROM tnd_tndr t1
+        WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY' AND t1.organization_id = ?
+      )
+      AND t1.organization_id =? AND t1.rtl_loc_id = ?
+      GROUP BY t1.organization_id, t1.tndr_id
+    ) t1
+    GROUP BY t1.organization_id, t1.tndr_id
+  ) t1
+  
+  INNER JOIN tnd_tndr t2
+  ON t2.organization_id = t1.organization_id
+    AND t2.tndr_id = t1.tndr_id
+
+  LEFT JOIN (
+    SELECT t1.organization_id, t1.tndr_id, COALESCE(SUM(num07), SUM(decimal_value)) previous_safe_balance
+    FROM (
+      SELECT t1.organization_id, t3.txt02 tndr_id, t3.num07, null decimal_value 
+      FROM (
+        SELECT t1.organization_id, t1.rtl_loc_id, t1.wkstn_id, max(dailyreport_id) dailyreport_id
+        FROM crpt_daily_header t1 
+        WHERE organization_id = ? 
+        AND rtl_loc_id = ? 
+        GROUP BY t1.organization_id, t1.rtl_loc_id, t1.wkstn_id
+      ) t1
+      INNER JOIN crpt_daily_header t2 
+      ON t2.organization_id = t1.organization_id 
+      AND t2.rtl_loc_id = t1.rtl_loc_id 
+      AND t2.dailyreport_id = t1.dailyreport_id 
+      INNER JOIN crpt_daily_detail t3 
+      ON t3.organization_id = t2.organization_id 
+      AND t3.rtl_loc_id = t2.rtl_loc_id 
+      AND t3.business_date = t2.business_date 
+      AND t3.wkstn_id = t2.wkstn_id 
+      AND t3.trans_seq = t2.trans_seq 
+      WHERE t3.record_type = 'SAFE_SUMMARY' 
+  
+      UNION 
+  
+      SELECT t1.organization_id, t1.tndr_id, null num07, t1.decimal_value 
+      FROM tsn_session_tndr_p t1 
+      WHERE t1.organization_id = ? 
+      AND t1.session_id = 0 
+      AND t1.property_code = 'INITIAL_SAFE_BALANCE' 
+      AND t1.organization_id = ? 
+      AND t1.rtl_loc_id = ? 
+      AND t1.tndr_id in (
+          SELECT t1.tndr_id 
+          FROM tnd_tndr t1 
+          WHERE /*UPPER*/ t1.tndr_typcode = 'CURRENCY' 
+          AND t1.organization_id = ? 
+      )
+    ) t1
+    GROUP BY t1.organization_id, t1.tndr_id
+  ) t4
+  ON t4.organization_id=t1.organization_id AND t4.tndr_id=t1.tndr_id
+  GROUP BY t1.organization_id, t1.tndr_id, t2.currency_id
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.DISCOUNT" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Text01" type="String" /> <!-- discount type -->
+    <ResultField name="Text02" type="String" /> <!-- discountId -->
+    <ResultField name="Text03" type="String" /> <!-- description -->
+    <ResultField name="Number01" type="BigDecimal" /> <!-- amount -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT t1.wkstn_id, 'DISCOUNT', 
+          t4.rtl_price_mod_reascode,
+          CASE
+            WHEN /*UPPER*/ t4.rtl_price_mod_reascode = 'DEAL' THEN t4.deal_id
+            WHEN /*UPPER*/ t4.rtl_price_mod_reascode = 'PRICE_OVERRIDE' THEN t4.price_change_reascode
+            ELSE t7.discount_code
+          END dsc_id,
+          CASE
+            WHEN /*UPPER*/ t4.rtl_price_mod_reascode = 'DEAL' THEN t5.description
+            WHEN /*UPPER*/ t4.rtl_price_mod_reascode = 'PRICE_OVERRIDE' THEN t6.description
+            ELSE t7.description
+          END discount_des,
+          SUM(t4.extended_amt) amt
+        FROM
+        (
+          SELECT t1.* FROM trn_trans t1
+          INNER JOIN
+          (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id,
+              MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+            FROM crpt_daily_detail t1
+            WHERE t1.organization_id = ?
+              AND t1.rtl_loc_id = ?
+              AND t1.business_date = ?
+              AND t1.record_type     = 'TRANSACTION'
+      
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id
+          ) t2
+          ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id
+            AND t2.business_date = t1.business_date
+            AND t2.ref_wkstn_id = t1.wkstn_id
+          WHERE t1.post_void_flag = 0
+            AND /*UPPER*/ t1.trans_statcode = 'COMPLETE'
+            AND /*UPPER*/ t1.trans_typcode = 'RETAIL_SALE'
+            AND t1.trans_seq BETWEEN t2.first_trans_seq AND t2.last_trans_seq
+        ) t1
+        INNER JOIN trl_rtrans t2
+        ON t2.organization_id   = t1.organization_id
+          AND t2.rtl_loc_id     = t1.rtl_loc_id
+          AND t2.business_date  = t1.business_date
+          AND t2.wkstn_id       = t1.wkstn_id
+          AND t2.trans_seq      = t1.trans_seq
+        INNER JOIN trl_rtrans_lineitm t3
+        ON t3.organization_id   = t1.organization_id
+          AND t3.rtl_loc_id     = t1.rtl_loc_id
+          AND t3.business_date  = t1.business_date
+          AND t3.wkstn_id       = t1.wkstn_id
+          AND t3.trans_seq      = t1.trans_seq
+        INNER JOIN trl_rtl_price_mod t4
+        ON t4.organization_id       = t1.organization_id
+          AND t4.rtl_loc_id         = t1.rtl_loc_id
+          AND t4.business_date      = t1.business_date
+          AND t4.wkstn_id           = t1.wkstn_id
+          AND t4.trans_seq          = t1.trans_seq
+          AND t4.rtrans_lineitm_seq = t3.rtrans_lineitm_seq
+        LEFT JOIN prc_deal t5
+        ON t5.organization_id = t4.organization_id
+          AND t5.deal_id        = /*UPPER*/ t4.deal_id
+        LEFT JOIN com_reason_code t6
+        ON t6.organization_id = t4.organization_id
+          AND t6.reason_code    = /*UPPER*/ t4.price_change_reascode
+          AND t6.reason_typcode = 'PRICE_CHANGE'
+        LEFT JOIN dsc_discount t7
+        ON t7.organization_id = t4.organization_id
+          AND t7.discount_code = /*UPPER*/ t4.discount_code
+
+        WHERE t4.amt <> 0
+          AND (/*UPPER*/ t4.rtl_price_mod_reascode not in ('PRICE_OVERRIDE', 'PROMPT_PRICE_CHANGE') or (coalesce(t4.amt, 0) + coalesce(t4.price_change_amt, 0) <> 0))        
+          AND t3.void_flag = 0
+  GROUP BY t1.wkstn_id,
+    t4.rtl_price_mod_reascode,
+    t4.deal_id,
+    t5.description,
+    t4.discount_reascode,
+    t4.price_change_reascode,
+    t6.description,
+    t7.discount_code,
+    t7.description
+              ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.INVOICE" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Text01" type="String" /> <!-- invoiceType -->
+    <ResultField name="Text02" type="String" /> <!-- firstName -->
+    <ResultField name="Text03" type="String" /> <!-- lastName -->
+    <ResultField name="Count01" type="Long" /> <!-- transactionSequence -->
+    <ResultField name="Count02" type="Long" /> <!-- sequenceNumber -->
+    <ResultField name="Number01" type="BigDecimal" /> <!-- voidFlag -->
+    <ResultField name="Number02" type="BigDecimal" /> <!-- total -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT t1.wkstn_id, 'FISCAL_DOCUMENT', t3.invoice_type, t4.first_name, t4.last_name,
+        t1.trans_seq, t3.sequence_nbr, t3.void_flag, t1.total
+        FROM (
+          SELECT t1.*
+          FROM trn_trans t1
+          INNER JOIN (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id, MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+            FROM crpt_daily_detail t1
+            WHERE t1.record_type = 'TRANSACTION'
+            AND t1.organization_id = ? 
+            AND t1.rtl_loc_id = ? 
+            AND t1.business_date = ?
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id
+          ) t2 
+            ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id 
+            AND t2.business_date = t1.business_date 
+            AND t2.ref_wkstn_id = t1.wkstn_id
+          WHERE /*UPPER*/ t1.trans_statcode = 'COMPLETE' 
+          AND /*UPPER*/ t1.trans_typcode = 'RETAIL_SALE'
+          AND t1.trans_seq between t2.first_trans_seq AND t2.last_trans_seq
+        ) t1
+        INNER JOIN civc_invoice_xref t2 
+          ON t2.organization_id = t1.organization_id 
+          AND t2.trans_rtl_loc_id = t1.rtl_loc_id 
+          AND t2.trans_business_date = t1.business_date 
+          AND t2.trans_wkstn_id = t1.wkstn_id 
+          AND t2.trans_trans_seq = t1.trans_seq
+        INNER JOIN civc_invoice t3 
+          ON t3.organization_id = t2.organization_id 
+          AND t3.rtl_loc_id = t2.rtl_loc_id 
+          AND t3.business_year = t2.business_year 
+          AND t3.wkstn_id = t2.wkstn_id
+          AND t3.sequence_nbr = t2.sequence_nbr
+          AND t3.sequence_id = t2.sequence_id
+        INNER JOIN crm_party t4 
+          ON t4.organization_id = t3.organization_id 
+          AND t4.party_id = t3.party_id
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.CASH_MOVEMENT" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Count01" type="Long" /> <!-- transactionSequence -->
+    <ResultField name="Text01" type="String" /> <!-- typeCode -->
+    <ResultField name="Text02" type="String" /> <!-- description -->
+    <ResultField name="Text03" type="String" /> <!-- reasonCode -->
+    <ResultField name="Text04" type="String" /> <!-- currency -->
+    <ResultField name="Text05" type="String" /> <!-- note -->
+    <ResultField name="Number01" type="BigDecimal" /> <!-- amount -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        WITH transactions AS (
+          SELECT t1.*
+          FROM trn_trans t1
+          INNER JOIN (
+            SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id, MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+            FROM crpt_daily_detail t1
+            WHERE t1.record_type = 'TRANSACTION'
+            AND t1.organization_id = ? 
+            AND t1.rtl_loc_id = ? 
+            AND t1.business_date = ?
+            GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id
+          ) t2 
+            ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id 
+            AND t2.business_date = t1.business_date 
+            AND t2.ref_wkstn_id = t1.wkstn_id
+          WHERE t1.post_void_flag = 0 
+          AND /*UPPER*/ t1.trans_statcode = 'COMPLETE' 
+          AND /*UPPER*/ t1.trans_typcode in ('TENDER_CONTROL', 'TENDER_EXCHANGE')
+          AND t1.trans_seq between t2.first_trans_seq AND t2.last_trans_seq
+        )
+        SELECT t1.wkstn_id, 'CASH_MOVEMENT', t1.trans_seq, t1.typcode, 
+          t2.description, t1.reascode, t2.currency_id, t3.note, t1.amt 
+        FROM (
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.typcode, t4.reascode, 
+                 t5.description reascode_des, t3.tndr_id, t3.amt, t3.tndr_statcode
+          FROM transactions t2
+          INNER JOIN tsn_tndr_control_trans t1 
+            ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id 
+            AND t2.business_date = t1.business_date 
+            AND t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN ttr_tndr_lineitm t3
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          INNER JOIN trl_rtrans_lineitm t6
+            ON t6.organization_id = t3.organization_id
+            AND t6.rtl_loc_id = t3.rtl_loc_id
+            AND t6.business_date = t3.business_date
+            AND t6.wkstn_id = t3.wkstn_id
+            AND t6.trans_seq = t3.trans_seq
+            AND t6.rtrans_lineitm_seq = t3.rtrans_lineitm_seq
+            AND t6.void_flag = 0
+          INNER JOIN tsn_tndr_control_trans t4 
+            ON t4.organization_id = t1.organization_id 
+            AND t4.rtl_loc_id = t1.rtl_loc_id 
+            AND t4.business_date = t1.business_date 
+            AND t4.wkstn_id = t1.wkstn_id 
+            AND t4.trans_seq = t1.trans_seq
+          LEFT JOIN com_reason_code t5 
+            ON t5.organization_id = t1.organization_id 
+            AND t5.reason_typcode = 'PAID_OUT' 
+            AND t5.reason_code = /*UPPER*/ t4.reascode
+          WHERE /*UPPER*/ t1.typcode = 'PAID_OUT'
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.typcode, t4.reascode, t5.description reascode_des, 
+                 t3.tndr_id, t3.amt, t3.tndr_statcode
+          FROM transactions t2
+          INNER JOIN tsn_tndr_control_trans t1 
+            ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id 
+            AND t2.business_date = t1.business_date 
+            AND t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN ttr_tndr_lineitm t3
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          INNER JOIN trl_rtrans_lineitm t6
+            ON t6.organization_id = t3.organization_id
+            AND t6.rtl_loc_id = t3.rtl_loc_id
+            AND t6.business_date = t3.business_date
+            AND t6.wkstn_id = t3.wkstn_id
+            AND t6.trans_seq = t3.trans_seq
+            AND t6.rtrans_lineitm_seq = t3.rtrans_lineitm_seq
+            AND t6.void_flag = 0
+          INNER JOIN tsn_tndr_control_trans t4 
+            ON t4.organization_id = t1.organization_id 
+            AND t4.rtl_loc_id = t1.rtl_loc_id 
+            AND t4.business_date = t1.business_date 
+            AND t4.wkstn_id = t1.wkstn_id 
+            AND t4.trans_seq = t1.trans_seq
+          LEFT JOIN com_reason_code t5 
+            ON t5.organization_id = t1.organization_id 
+            AND t5.reason_typcode = 'PAID_IN' 
+            AND t5.reason_code = /*UPPER*/ t4.reascode
+          WHERE /*UPPER*/ t1.typcode = 'PAID_IN'
+          
+          UNION 
+          
+          SELECT t3.organization_id, t3.rtl_loc_id, t3.business_date, t3.wkstn_id, t3.trans_seq, t2.trans_typcode, '' reascode, '' reascode_des, t3.tndr_id, 
+                 coalesce(t3.foreign_amt, t3.amt), t3.tndr_statcode
+          FROM transactions t2
+          INNER JOIN tsn_tndr_control_trans t1 
+            ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id 
+            AND t2.business_date = t1.business_date 
+            AND t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN ttr_tndr_lineitm t3
+            ON t2.organization_id = t3.organization_id 
+            AND t2.rtl_loc_id = t3.rtl_loc_id 
+            AND t2.business_date = t3.business_date 
+            AND t2.wkstn_id = t3.wkstn_id 
+            AND t2.trans_seq = t3.trans_seq
+          INNER JOIN trl_rtrans_lineitm t4
+            ON t4.organization_id = t3.organization_id
+            AND t4.rtl_loc_id = t3.rtl_loc_id
+            AND t4.business_date = t3.business_date
+            AND t4.wkstn_id = t3.wkstn_id
+            AND t4.trans_seq = t3.trans_seq
+            AND t4.rtrans_lineitm_seq = t3.rtrans_lineitm_seq
+            AND t4.void_flag = 0
+          WHERE /*UPPER*/ t3.tndr_id in (
+            SELECT t3.tndr_id 
+            FROM tnd_tndr t3
+            WHERE /*UPPER*/ t3.tndr_typcode = 'CURRENCY')
+          AND /*UPPER*/ t1.typcode = 'TENDER_EXCHANGE'
+          
+          UNION 
+          
+          SELECT t3.organization_id, t3.rtl_loc_id, t3.business_date, t3.wkstn_id, t3.trans_seq, t2.trans_typcode, '' reascode, '' reascode_des, t3.tndr_id, 
+                 coalesce(t3.foreign_amt, t3.amt), t3.tndr_statcode
+          FROM transactions t2
+          INNER JOIN tsn_tndr_control_trans t1 
+            ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id 
+            AND t2.business_date = t1.business_date 
+            AND t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN ttr_tndr_lineitm t3 
+            ON t2.organization_id = t3.organization_id 
+            AND t2.rtl_loc_id = t3.rtl_loc_id 
+            AND t2.business_date = t3.business_date 
+            AND t2.wkstn_id = t3.wkstn_id 
+            AND t2.trans_seq = t3.trans_seq
+          INNER JOIN trl_rtrans_lineitm t4
+            ON t4.organization_id = t3.organization_id
+            AND t4.rtl_loc_id = t3.rtl_loc_id
+            AND t4.business_date = t3.business_date
+            AND t4.wkstn_id = t3.wkstn_id
+            AND t4.trans_seq = t3.trans_seq
+            AND t4.rtrans_lineitm_seq = t3.rtrans_lineitm_seq
+            AND t4.void_flag = 0
+          WHERE /*UPPER*/ t3.tndr_id in (
+            SELECT t3.tndr_id 
+            FROM tnd_tndr t3
+            WHERE /*UPPER*/ t3.tndr_typcode = 'CURRENCY')
+          AND /*UPPER*/ t1.typcode = 'TENDER_EXCHANGE'
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.typcode, '' reascode, '' reascode_des, t3.tndr_id, t3.amt, t4.tndr_statcode
+          FROM transactions t2
+          INNER JOIN tsn_tndr_control_trans t1 
+            ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id 
+            AND t2.business_date = t1.business_date 
+            AND t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          LEFT JOIN ttr_tndr_lineitm t4
+            ON t4.organization_id = t1.organization_id 
+            AND t4.rtl_loc_id = t1.rtl_loc_id 
+            AND t4.business_date = t1.business_date 
+            AND t4.wkstn_id = t1.wkstn_id 
+            AND t4.trans_seq = t1.trans_seq
+          LEFT JOIN trl_rtrans_lineitm t5
+            ON t5.organization_id = t4.organization_id
+            AND t5.rtl_loc_id = t4.rtl_loc_id
+            AND t5.business_date = t4.business_date
+            AND t5.wkstn_id = t4.wkstn_id
+            AND t5.trans_seq = t4.trans_seq
+            AND t5.rtrans_lineitm_seq = t4.rtrans_lineitm_seq
+          WHERE /*UPPER*/ t1.typcode = 'CASH_PICKUP'
+            AND (t5.void_flag = 0 OR t4.organization_id IS NULL)
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.typcode, '' reascode, '' reascode_des, t3.tndr_id, t3.amt, t4.tndr_statcode
+          FROM transactions t2
+          INNER JOIN tsn_tndr_control_trans t1 
+            ON t2.organization_id = t1.organization_id 
+            AND t2.rtl_loc_id = t1.rtl_loc_id 
+            AND t2.business_date = t1.business_date 
+            AND t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          LEFT JOIN ttr_tndr_lineitm t4 
+            ON t4.organization_id = t1.organization_id 
+            AND t4.rtl_loc_id = t1.rtl_loc_id 
+            AND t4.business_date = t1.business_date 
+            AND t4.wkstn_id = t1.wkstn_id 
+            AND t4.trans_seq = t1.trans_seq
+          LEFT JOIN trl_rtrans_lineitm t5
+            ON t5.organization_id = t4.organization_id
+            AND t5.rtl_loc_id = t4.rtl_loc_id
+            AND t5.business_date = t4.business_date
+            AND t5.wkstn_id = t4.wkstn_id
+            AND t5.trans_seq = t4.trans_seq
+            AND t5.rtrans_lineitm_seq = t4.rtrans_lineitm_seq
+          WHERE /*UPPER*/ t1.typcode = 'CASH_TRANSFER'
+            AND (t5.void_flag = 0 OR t4.organization_id IS NULL)
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.typcode, '' reascode, '' reascode_des, t3.tndr_id, t3.amt, t4.tndr_statcode
+          FROM transactions t2
+          INNER JOIN tsn_tndr_control_trans t1 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          LEFT JOIN ttr_tndr_lineitm t4 
+            ON t4.organization_id = t1.organization_id 
+            AND t4.rtl_loc_id = t1.rtl_loc_id 
+            AND t4.business_date = t1.business_date 
+            AND t4.wkstn_id = t1.wkstn_id 
+            AND t4.trans_seq = t1.trans_seq
+          LEFT JOIN trl_rtrans_lineitm t5
+            ON t5.organization_id = t4.organization_id
+            AND t5.rtl_loc_id = t4.rtl_loc_id
+            AND t5.business_date = t4.business_date
+            AND t5.wkstn_id = t4.wkstn_id
+            AND t5.trans_seq = t4.trans_seq
+            AND t5.rtrans_lineitm_seq = t4.rtrans_lineitm_seq
+          WHERE /*UPPER*/ t1.typcode = 'STORE_BANK_CASH_DEPOSIT'
+            AND (t5.void_flag = 0 OR t4.organization_id IS NULL)
+        
+          UNION 
+          
+          SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.wkstn_id, t1.trans_seq, t1.typcode, '' reascode, '' reascode_des, t3.tndr_id, t3.amt, t4.tndr_statcode
+          FROM transactions t2
+          INNER JOIN tsn_tndr_control_trans t1 
+            ON t2.wkstn_id = t1.wkstn_id 
+            AND t2.trans_seq = t1.trans_seq
+          INNER JOIN tsn_tndr_tndr_count t3 
+            ON t3.organization_id = t1.organization_id 
+            AND t3.rtl_loc_id = t1.rtl_loc_id 
+            AND t3.business_date = t1.business_date 
+            AND t3.wkstn_id = t1.wkstn_id 
+            AND t3.trans_seq = t1.trans_seq
+          LEFT JOIN ttr_tndr_lineitm t4
+            ON t4.organization_id = t1.organization_id 
+            AND t4.rtl_loc_id = t1.rtl_loc_id 
+            AND t4.business_date = t1.business_date 
+            AND t4.wkstn_id = t1.wkstn_id 
+            AND t4.trans_seq = t1.trans_seq
+          LEFT JOIN trl_rtrans_lineitm t5
+            ON t5.organization_id = t4.organization_id
+            AND t5.rtl_loc_id = t4.rtl_loc_id
+            AND t5.business_date = t4.business_date
+            AND t5.wkstn_id = t4.wkstn_id
+            AND t5.trans_seq = t4.trans_seq
+            AND t5.rtrans_lineitm_seq = t4.rtrans_lineitm_seq
+          WHERE /*UPPER*/ t1.typcode = 'BANK_DEPOSIT'
+            AND (t5.void_flag = 0 OR t4.organization_id IS NULL)
+        ) t1
+        INNER JOIN tnd_tndr t2 
+          ON t2.organization_id = t1.organization_id 
+          AND t2.tndr_id = /*UPPER*/ t1.tndr_id
+        LEFT JOIN trn_trans_notes t3 
+          ON t3.organization_id = t1.organization_id 
+          AND t3.rtl_loc_id = t1.rtl_loc_id 
+          AND t3.business_date = t1.business_date 
+          AND t3.trans_seq = t1.trans_seq
+        WHERE amt <> 0
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+
+  <Query name="DAILYREPORT.REPORT.EXTRACT.EXTENDED_TRANSACTION" pmType="DAILYREPORT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">oracle.retail.xstore.countrypack.common.dailyreport.DailyReportExtractDataQueryResult</ResultClass>
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="RecordType" type="String" />
+    <ResultField name="Count01" type="Long" /> <!-- transactionSequence -->
+    <ResultField name="Count02" type="Long" /> <!-- party_id -->
+    <ResultField name="Text01" type="String" /> <!-- custAcctCode -->
+    <ResultField name="Text02" type="String" /> <!-- custAcctId -->
+    <ResultField name="Text03" type="String" /> <!-- custAcctStatcode -->
+    <ResultField name="Text04" type="String" /> <!-- firstName -->
+    <ResultField name="Text05" type="String" /> <!-- lastName -->
+    <ResultField name="Text06" type="String" /> <!-- cust_id -->
+    <ResultField name="Number01" type="BigDecimal" /> <!-- balance -->
+    <ResultField name="Number02" type="BigDecimal" /> <!-- deposit -->
+    <ResultField name="Number03" type="BigDecimal" /> <!-- totalValue -->
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+  SELECT
+    t1.wkstn_id, 'EXTENDED_TRANSACTION', t1.trans_seq,td.party_id, 
+    td.cust_acct_code, td.cust_acct_id, te.cust_acct_statcode, 
+    tc.first_name, tc.last_name, tc.cust_id,
+    CASE
+      WHEN td.cust_acct_code IN ('SENDSALE') THEN 0 
+      WHEN td.cust_acct_code IN ('SPECIAL_ORDER', 'PRESALE', 'LAYAWAY') THEN te.acct_total - te.total_payment_amt 
+      ELSE te.active_acct_total
+    END balance,
+    CASE
+      WHEN td.cust_acct_code IN ('SENDSALE') THEN te.acct_total 
+      ELSE te.total_payment_amt
+    END deposit, 
+    te.acct_total value
+  FROM (
+    SELECT t1.* FROM trn_trans t1
+    INNER JOIN (
+      SELECT t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id, MAX(t1.count01) first_trans_seq, MAX(t1.count02) last_trans_seq
+      FROM crpt_daily_detail t1
+      WHERE t1.record_type = 'TRANSACTION'
+        AND t1.organization_id = ?
+        AND t1.rtl_loc_id = ?
+        AND t1.business_date = ?
+      GROUP BY t1.organization_id, t1.rtl_loc_id, t1.business_date, t1.ref_wkstn_id
+    ) t2
+    ON t2.organization_id = t1.organization_id
+      AND t2.rtl_loc_id = t1.rtl_loc_id
+      AND t2.business_date = t1.business_date
+      AND t2.ref_wkstn_id = t1.wkstn_id
+    WHERE t1.post_void_flag = 0 
+      AND /*UPPER*/ t1.trans_statcode = 'COMPLETE'
+      AND /*UPPER*/ t1.trans_typcode = 'RETAIL_SALE'
+      AND t1.trans_seq between t2.first_trans_seq AND t2.last_trans_seq
+    ) t1
+    INNER JOIN (
+      SELECT t1.organization_id, t1.trans_rtl_loc_id, t1.trans_business_date, t1.trans_wkstn_id, t1.trans_trans_seq,
+        t1.cust_acct_code, t1.cust_acct_id, t1.journal_seq, t1.party_id
+      FROM cat_cust_acct_journal t1
+      INNER JOIN (
+        SELECT organization_id, trans_rtl_loc_id, trans_business_date, trans_wkstn_id, trans_trans_seq,
+          cust_acct_code, cust_acct_id, MAX(journal_seq) journal_seq 
+      FROM cat_cust_acct_journal
+      GROUP BY organization_id, trans_rtl_loc_id, trans_business_date, trans_wkstn_id, trans_trans_seq, cust_acct_code, cust_acct_id
+    ) t2
+    ON t2.organization_id = t1.organization_id
+      AND t2.trans_rtl_loc_id = t1.rtl_loc_id
+      AND t2.trans_business_date = t1.trans_business_date
+      AND t2.trans_wkstn_id = t1.trans_wkstn_id
+      AND t2.trans_trans_seq = t1.trans_trans_seq
+      AND t2.cust_acct_code = t1.cust_acct_code
+      AND t2.cust_acct_id = t1.cust_acct_id
+      AND t2.journal_seq = t1.journal_seq
+    ) td
+    ON td.organization_id = t1.organization_id
+      AND td.trans_rtl_loc_id = t1.rtl_loc_id
+      AND td.trans_business_date = t1.business_date
+      AND td.trans_wkstn_id = t1.wkstn_id
+      AND td.trans_trans_seq = t1.trans_seq
+    INNER JOIN cat_cust_item_acct_journal te
+    ON te.organization_id = td.organization_id
+      AND te.cust_acct_code = td.cust_acct_code
+      AND te.cust_acct_id = td.cust_acct_id
+      AND te.journal_seq=td.journal_seq
+    INNER JOIN crm_party tc
+    ON tc.organization_id = td.organization_id
+      AND tc.party_id = td.party_id
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+  </Query>
+</QuerySet>

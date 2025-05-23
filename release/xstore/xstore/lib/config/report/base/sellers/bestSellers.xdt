@@ -1,0 +1,141 @@
+<dataTemplate name="BestSellers" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="MIN" value="_rptMin"/>
+    <label name="MAX" value="_rptMax"/>
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="CRITERIA_REGISTER" value="_rptRegisterColon"/>
+    <label name="CRITERIA_DEPARTMENT" value="_merchLevel1WithColon"/>
+    <label name="CRITERIA_SORT_ORDER" value="_rptSellersSortOrderColon"/>
+    <label name="CRITERIA_REPORT_BY" value="_rptSellersItemOrStyleColon"/>
+    <label name="STYLE" value="_rptStyle"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="NET_SALES" value="_rptNetSales"/>
+    <label name="QUANTITY" value="_rptQuantityHeading"/>
+    <label name="TOTAL" value="_rptTotal"/>
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startReg" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptStartReg;Text;Numeric;maximumIntegerDigits=8]]></parameterDescription>
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endReg" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptEndReg;Text;Numeric;maximumIntegerDigits=8]]></parameterDescription>
+      <defaultValueExpression><![CDATA[99999999]]></defaultValueExpression>
+    </parameter>
+    <parameter name="itemOrStyle" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSellersItemOrStyle;Combo;dtv.pos.reporting.fill.SoftEnumFactory;ITEM=_rptItem|STYLE=_rptStyle]]></parameterDescription>
+      <defaultValueExpression><![CDATA["ITEM"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="merchLevel1" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_merchLevel1;Combo;dtv.pos.inventory.level.MerchLevel1ListLoader;all=_rptParamSelectionAll]]></parameterDescription>
+      <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>
+    <parameter name="sortOrder" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSellersSortOrder;Combo;dtv.pos.reporting.fill.SoftEnumFactory;AMT=_rptNetSales|QTY=_rptQuantityHeading]]></parameterDescription>
+      <defaultValueExpression><![CDATA["AMT"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="ascDesc" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSellersAscDesc;Combo;dtv.pos.reporting.fill.SoftEnumFactory;DESC=_rptSellersDescending|ASC=_rptSellersAscending]]></parameterDescription>
+      <defaultValueExpression><![CDATA["DESC"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+
+  <dataSource>
+    <queryReference name="Q_ITEM" key="BEST_SELLERS_BY_ITEM_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>itemOrStyle</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>merchLevel1</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>sortOrder</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>item_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>qty</ResultField>
+        <ResultField>amt</ResultField>
+        <ResultField>sort_data</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_STYLE" key="BEST_SELLERS_BY_STYLE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>itemOrStyle</Parameter>
+        <Parameter>merchLevel1</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>startReg</Parameter>
+        <Parameter>endReg</Parameter>
+        <Parameter>sortOrder</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group_id</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>qty</ResultField>
+        <ResultField>amt</ResultField>
+        <ResultField>sort_data</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_ITEM_OR_STYLE">
+      <group name="G_DETAIL" source="Q_ITEM">
+        <element name="ITEM_ID" value="item_id"/>
+        <element name="ITEM_DESC" value="description"/>
+        <element name="ITEM_QTY" value="qty" formatter="Decimal"/>
+        <element name="ITEM_AMOUNT" value="amt" formatter="Money"/>
+        <element name="SORT_DATA" value="sort_data"/>
+      </group>
+      <group name="G_DETAIL" source="Q_STYLE">
+        <element name="ITEM_ID" value="item_id"/>
+        <element name="ITEM_DESC" value="description"/>
+        <element name="ITEM_QTY" value="qty" formatter="Decimal"/>
+        <element name="ITEM_AMOUNT" value="amt" formatter="Money"/>
+        <element name="SORT_DATA" value="sort_data"/>
+      </group>
+    </group>
+    <group name="G_ITEM_TOTAL" source="Q_ITEM">
+      <element name="ITEM_QTY" value="qty" formatter="Decimal" function="SUM"/>
+      <element name="ITEM_AMOUNT" value="amt" formatter="Money" function="SUM"/>
+    </group>
+    <group name="G_STYLE_TOTAL" source="Q_STYLE">
+      <element name="ITEM_QTY" value="qty" formatter="Decimal" function="SUM"/>
+      <element name="ITEM_AMOUNT" value="amt" formatter="Money" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

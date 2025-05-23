@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       profile="xstore"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+        
+ <!-- 
+  <bean id="ipcRootService" class="dtv.ipc.server.RootService" />
+  <bean id="ipcReportService" class="dtv.pos.reporting.run.ReportService" />
+  <bean id="ipcShutdownCommandService" class="dtv.pos.framework.keycommands.ShutdownCommand" />
+  -->
+
+  <bean id="ipcClientAuthenticator" class="dtv.util.password.env.ClientAuthenticator"/>
+
+  <bean id="ipcTaskService" class="dtv.pos.framework.comm.TaskService" />
+  <bean id="ipcUserLockOutService" class="dtv.pos.security.IPCLockoutMessageHandler" />
+  <bean id="ipcProducePasswordService" class="dtv.pos.security.IPCProducePasswdsHandler" />
+  <bean id="ipcSetDBStatusService" class="dtv.data2.access.status.SetDBStatusService" />
+  <bean id="remoteReceiptPrintService" class="dtv.hardware.posprinting.RemotePrintHandler" />
+  <bean id="bringXstoreToFrontService" class="dtv.pos.framework.BringXstoreToFrontService" />
+  <bean id="environmentErrorStatusService" class="dtv.pos.framework.comm.EnvironmentErrorStatusService" />
+  <bean id="trainingModeStatusService" class="dtv.pos.assistance.TrainingModeStatusService"/>
+
+  <bean id="ipcServiceLocatorFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.ipc.server.IIpcServiceLocator" />
+      <property name="serviceMappings">
+        <props>
+        <!-- ??UNUSED??
+          <prop key="/">ipcRootService</prop>
+          <prop key="/reportRunner">ipcReportService</prop>
+          <prop key="/shutdownxstore">ipcShutdownCommandService</prop>
+          <prop key="/storeCalendar">storeCalendar</prop>
+         -->
+          <prop key="/appstatus">ipcTaskService</prop>
+          <prop key="/userlockout">ipcUserLockOutService</prop>
+          <prop key="/producepasswds">ipcProducePasswordService</prop>
+          <prop key="/remotePrintService">remoteReceiptPrintService</prop>
+          <prop key="/setDBStatus">ipcSetDBStatusService</prop>
+          <!-- not mobile compatible -->
+          <prop key="/bringToFront">bringXstoreToFrontService</prop>
+          <prop key="/environmentErrorStatus">environmentErrorStatusService</prop>
+          <prop key="/trainingModeStatus">trainingModeStatusService</prop>
+        </props>
+      </property>
+    </bean>
+</beans>

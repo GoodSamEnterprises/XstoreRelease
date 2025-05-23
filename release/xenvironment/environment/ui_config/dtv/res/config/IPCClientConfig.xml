@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	IPCClientConfigs are a collection of client calls to the Xenvironment Engine for invoking remote functionality
+ -->
+<IPCClientConfigs
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="IPCClientConfig.xsd">
+  <client_config servicename="Initialize" address="https://127.0.0.1" port="9096"
+                 extension="/gui/xenvinit"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>Initialize</methodName><params><param><name>Initialize</name><value>Initialize</value></param></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+
+  <client_config servicename="RemoveMarker" address="https://127.0.0.1" port="9096" extension="/gui"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>RemoveMarker</methodName><params><param><name>marker_file</name><value>%marker_file%</value></param></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+  <client_config servicename="AlertDetail" address="https://127.0.0.1" port="9096" extension="/gui"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>AlertDetail</methodName><params><param><name>Alert_ID</name><value>%Alert_ID%</value></param></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+  <client_config servicename="IPC_RUN_ATOM" address="https://127.0.0.1" port="9096"
+                 extension="/gui/ipcrunatom"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>%ATOM%</methodName><params></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+  <client_config servicename="AtomName" address="https://127.0.0.1" port="9096" extension="/gui/ipcrunatom"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>AtomName</methodName><params></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+  <client_config servicename="UIInitialization" address="https://127.0.0.1" port="9096" extension="/xenvinit"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>Initialize</methodName><params><param><name>storeno</name><value>101</value></param><param><name>registerno</name><value>1</value></param><param><name>registercount</name><value>12</value></param></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+  <client_config servicename="ViewProcessLog" address="https://127.0.0.1" port="9096" extension="/xpyviewlog"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>Initialize</methodName><params><param><name>storeno</name><value>27</value></param><param><name>registerno</name><value>1</value></param></params></methodCall></ns0:Body></ns0:Envelope>"]]>
+    </message>
+  </client_config>
+
+  <client_config servicename="Repoll" address="https://127.0.0.1" port="9096" extension="/gui" enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>repoll</methodName><params></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+  <client_config servicename="testlong" address="https://127.0.0.1" port="9096" extension="/gui"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>update-feeds-normal</methodName><params></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+  <client_config servicename="IPC_LOCK_USER" address="https://127.0.0.1" port="9096" extension="/gui"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>IPC_LOCK_USER</methodName><params><param><name>LOCKED_USER</name><value>%LOCKED_USER%</value></param></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+  <client_config servicename="IPC_GENERATE_PASSWORD_FILE" address="https://127.0.0.1" port="9096" extension="/gui"
+                 enabled="true">
+    <message>
+      <![CDATA[<ns0:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/"><ns0:Header><xhead><msg_id>0001</msg_id><msg_type>IPCRequest</msg_type><destination>SERVER</destination><priority>1</priority><source>POS</source><create_timestamp /><charset>850</charset></xhead></ns0:Header><ns0:Body><methodCall><methodName>IPC_GENERATE_PASSWORD_FILE</methodName><params></params></methodCall></ns0:Body></ns0:Envelope>]]>
+    </message>
+  </client_config>
+</IPCClientConfigs>

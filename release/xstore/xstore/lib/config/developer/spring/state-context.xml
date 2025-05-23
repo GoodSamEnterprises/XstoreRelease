@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="CTX_RecursiveEntry" class="com.micros_retail.xfgclient.statemachine.context.Context" >
+    <property name="interpreterKeyword" ref="KW_RecursiveEntry" />
+    <property name="inputFormatter" ref="INPFMTTR_StringDecimal" />
+    <property name="deviceModes" >
+      <list>
+        <ref bean="DVMDE_Scanner_Inactive" />
+        <ref bean="DVMDE_Scale_Inactive" />
+        <ref bean="DVMDE_Msr_Inactive" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

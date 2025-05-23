@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+  default-init-method="init">
+
+  <!-- Spring beans that are singletons or framework beans can be defined in this file. Any realm-specific beans 
+    (validations, services, workers, etc) should be defined in their relevant Spring file that should be in the same 
+    directory as this file. -->
+
+  <context:annotation-config />
+  
+  <beans profile="dataserver">
+    <bean id="theAllmightyThor" class="dtv.util.temp.InjectionHammerInitializer" />
+
+    <bean id="eventManager" class="dtv.event.EventManager" />
+    <bean id="stationState" class="dtv.pos.iframework.security.StationState" />
+    
+    <bean id="mbeanInfoHelper" class="dtv.jmx.MBeanInfoHelper" />
+    
+	<bean id="workerBeanLocator" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.pos.framework.worker.WorkerLocator" />
+    </bean>
+    <bean id="workerList" class="dtv.pos.framework.worker.WorkerList" scope="prototype" />
+    
+    <bean id="actionFactory" class="dtv.pos.framework.action.XstActionFactory">
+      <constructor-arg>
+        <bean class="com.micros.xstore.config.impl.ActionConfigMgr">
+          <constructor-arg ref="actionCascader" />
+        </bean>
+      </constructor-arg>
+      <property name="actionCascader" ref="actionCascader" />
+    </bean>
+    
+    <!-- IPC Data Service -->
+    <bean id="ipcDataService" class="dtv.data2.dataserver.DataService" />
+    <bean id="ipcServer" class="dtv.ipc.server.Server">
+      <property name="port" value="9091" />
+      <property name="keyAlias" value="xstore" />
+    </bean>
+    <bean id="ipcClientAuthenticator" class="dtv.util.password.env.ClientAuthenticator"/>
+    <bean id="ipcServiceLocatorFactory" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+      <property name="serviceLocatorInterface" value="dtv.ipc.server.IIpcServiceLocator" />
+      <property name="serviceMappings">
+        <props>
+          <prop key="/dataserver">ipcDataService</prop>
+         </props>
+      </property>
+    </bean>
+    
+  </beans>
+  
+  <beans>
+    <bean id="trainingModeHelper" class="dtv.pos.assistance.NotTrainingModeHelper" />
+  </beans>
+</beans>

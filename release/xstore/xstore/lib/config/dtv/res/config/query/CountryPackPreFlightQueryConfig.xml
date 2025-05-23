@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <Query name="COUNTRYPACK.INVOICE.PREFLIGHT.SEQ_INVOICE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT sequence_nbr FROM civc_invoice
+        WHERE organization_id = ?
+          AND rtl_loc_id = ?
+          AND wkstn_id = ?
+          AND business_year = ?
+          AND sequence_id = ?
+          AND sequence_nbr >= ?
+          AND sequence_nbr <= ?
+          AND sequence_nbr >= ?
+          AND business_date >= ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessYear" />
+      <Parameter name="argSequenceId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argStartDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY sequence_nbr DESC]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="COUNTRYPACK.ES.PREFLIGHT.SEQ_INVOICE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          select tp.string_value
+          from trn_trans_p tp
+            inner join trn_trans t
+            on tp.organization_id = t.organization_id
+            and tp.rtl_loc_id = t.rtl_loc_id
+            and tp.wkstn_id = t.wkstn_id
+            and tp.trans_seq = t.trans_seq
+            and tp.business_date = t.business_date
+          where tp.property_code = 'ES_DOCUMENT_NUMBER'
+          and /*UPPER*/ t.trans_statcode='COMPLETE'
+          and t.organization_id = ?
+          and t.rtl_loc_id = ?
+          and t.wkstn_id = ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value <= ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value like ?
+          and t.business_date >= ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+      <Parameter name="argStartDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[order by tp.string_value desc]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="COUNTRYPACK.IT.PREFLIGHT.SEQ_FISCAL_DB_CREDIT_NOTE_NUMBER" pmType="RESERVED_STORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          select tp.string_value
+          from trn_trans_p tp
+            inner join trn_trans t
+            on tp.organization_id = t.organization_id
+            and tp.rtl_loc_id = t.rtl_loc_id
+            and tp.wkstn_id = t.wkstn_id
+            and tp.trans_seq = t.trans_seq
+            and tp.business_date = t.business_date
+          where tp.property_code = 'SEQ_DB_CREDIT_NOTE'
+          and t.organization_id = ?
+          and t.rtl_loc_id = ?
+          and t.wkstn_id = ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value <= ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value like ?
+          and t.business_date >= ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+      <Parameter name="argStartDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[order by tp.string_value desc]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="COUNTRYPACK.IT.PREFLIGHT.SEQ_FISCAL_FILE_CREDIT_NOTE_NUMBER" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          select tp.string_value
+          from trn_trans_p tp
+            inner join trn_trans t
+            on tp.organization_id = t.organization_id
+            and tp.rtl_loc_id = t.rtl_loc_id
+            and tp.wkstn_id = t.wkstn_id
+            and tp.trans_seq = t.trans_seq
+            and tp.business_date = t.business_date
+          where tp.property_code = 'SEQ_FILE_CREDIT_NOTE'
+          and t.organization_id = ?
+          and t.rtl_loc_id = ?
+          and t.wkstn_id = ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value <= ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value like ?
+          and t.business_date >= ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+      <Parameter name="argStartDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[order by tp.string_value desc]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="COUNTRYPACK.DAILYREPORT.PREFLIGHT.SEQ" pmType="RESERVED_STORE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT dailyreport_id FROM crpt_daily_header
+          WHERE organization_id = ?
+          and rtl_loc_id = ?
+          and dailyreport_id >= ?
+          and dailyreport_id <= ?
+          and dailyreport_id >= ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY dailyreport_id DESC]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="COUNTRYPACK.PT.PREFLIGHT.SEQUENCE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          select tp.string_value
+          from trn_trans_p tp
+            inner join trn_trans t
+            on tp.organization_id = t.organization_id
+            and tp.rtl_loc_id = t.rtl_loc_id
+            and tp.wkstn_id = t.wkstn_id
+            and tp.trans_seq = t.trans_seq
+            and tp.business_date = t.business_date
+          where tp.property_code = 'PT_DOCUMENT_NUMBER'
+          and /*UPPER*/ t.trans_statcode='COMPLETE'
+          and t.organization_id = ?
+          and t.rtl_loc_id = ?
+          and t.wkstn_id = ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value <= ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value like ?
+          and t.business_date >= ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+      <Parameter name="argStartDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[order by tp.string_value desc]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="COUNTRYPACK.DE.PREFLIGHT.SEQUENCE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          select t.fiscal_number
+          from trn_trans t
+          where
+            /*UPPER*/ t.trans_statcode='COMPLETE'
+            and t.organization_id = ?
+            and t.rtl_loc_id = ?
+            and t.wkstn_id = ?
+            and /*UPPER*/ t.fiscal_number >= ?
+            and /*UPPER*/ t.fiscal_number <= ?
+            and /*UPPER*/ t.fiscal_number >= ?
+            and t.business_date = ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argBusinessDate" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[order by CAST(t.fiscal_number AS INT) desc]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="COUNTRYPACK.BR.PREFLIGHT_NFE_QUEUE_SEQ" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select queue_seq, organization_id, rtl_loc_id, wkstn_id from cpaf_nfe_queue where organization_id = ? and rtl_loc_id = ? and wkstn_id = ? and queue_seq >= ? and queue_seq <= ? and queue_seq >= ? order by queue_seq desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="COUNTRYPACK.BR.PREFLIGHT_NFE_SEQ_PROD" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select nnf, organization_id, rtl_loc_id, queue_seq from cpaf_nfe_queue where organization_id = ? and rtl_loc_id = ? and series_id = ? and environment_id = 1 and nnf >= ? and nnf <= ? and nnf >= ? and model = 55 order by nnf desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argSeriesId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="COUNTRYPACK.BR.PREFLIGHT_NFE_SEQ_TEST" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select nnf, organization_id, rtl_loc_id, queue_seq from cpaf_nfe_queue where organization_id = ? and rtl_loc_id = ? and series_id = ? and environment_id = 2 and nnf >= ? and nnf <= ? and nnf >= ? and model = 55 order by nnf desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argSeriesId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="COUNTRYPACK.BR.PREFLIGHT_NFCE_SEQ_PROD" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select nnf, organization_id, rtl_loc_id, queue_seq from cpaf_nfe_queue where organization_id = ? and rtl_loc_id = ? and series_id = ? and environment_id = 1 and nnf >= ? and nnf <= ? and nnf >= ? and model <> 55 order by nnf desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argSeriesId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="COUNTRYPACK.BR.PREFLIGHT_NFCE_SEQ_TEST" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select nnf, organization_id, rtl_loc_id, queue_seq from cpaf_nfe_queue where organization_id = ? and rtl_loc_id = ? and series_id = ? and environment_id = 2 and nnf >= ? and nnf <= ? and nnf >= ?  and model <> 55 order by nnf desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argSeriesId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.PREFLIGHT.SALE_SEQUENCE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          select tp.string_value
+          from trn_trans_p tp
+            inner join trn_trans t
+            on tp.organization_id = t.organization_id
+            and tp.rtl_loc_id = t.rtl_loc_id
+            and tp.wkstn_id = t.wkstn_id
+            and tp.trans_seq = t.trans_seq
+            and tp.business_date = t.business_date
+          where tp.property_code = 'FR_DOCUMENT_NUMBER'
+          and /*UPPER*/ t.trans_statcode='COMPLETE'
+          and t.organization_id = ?
+          and t.rtl_loc_id = ?
+          and t.wkstn_id = ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value <= ?
+          and /*UPPER*/ tp.string_value >= ?
+          and /*UPPER*/ tp.string_value like ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY tp.string_value DESC]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.PREFLIGHT.REPRINT_DUPLICATE_SEQUENCE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+              SELECT reprint_id
+              FROM cfra_rcpt_dup re
+              WHERE re.organization_id = ?
+                   AND re.rtl_loc_id = ?
+                   AND re.wkstn_id = ?
+                   AND /*UPPER*/ re.reprint_id >= ?
+                   AND /*UPPER*/ re.reprint_id <= ?
+                   AND /*UPPER*/ re.reprint_id >= ?
+                   AND /*UPPER*/ re.reprint_id like ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY re.reprint_id DESC]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="COUNTRYPACK.FR.PREFLIGHT.EVENT_LOG_SEQUENCE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+              SELECT unique_id
+              FROM cfra_technical_event_log te
+              WHERE te.organization_id = ?
+                   AND te.rtl_loc_id = ?
+                   AND te.wkstn_id = ?
+                   AND /*UPPER*/ te.unique_id >= ?
+                   AND /*UPPER*/ te.unique_id <= ?
+                   AND /*UPPER*/ te.unique_id >= ?
+                   AND /*UPPER*/ te.unique_id like ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Suffix dtype="String"><![CDATA[ORDER BY te.unique_id DESC]]></Suffix>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+</QuerySet>

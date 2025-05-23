@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xcenter"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:int="http://www.springframework.org/schema/integration"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-2.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+  <!--  
+ *******************************
+ Message Route: take an incoming QueryRequest (Transaction lookup) from Xstore and convert that
+ to the CwCustHistIn message.  Then, transform the CwOrderOut response message to an Xstore
+ transaction and return.
+ ******************************* -->
+  <bean id="xcenterFilter" class="com.micros_retail.xcenter.servlet.filter.XcenterFilter">
+    <property name="statusReporterLocater">
+      <bean class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+        <property name="serviceLocatorInterface" value="com.micros_retail.xcenter.servlet.filter.IStatusReporterLocator" />
+        <property name="serviceMappings">
+          <props>
+            <prop key="/dtx">dtxStatusReporter</prop>
+            <prop key="/replication">replicationStatusReporter</prop>
+            <prop key="/broadcaster">broadcasterStatusReporter</prop>
+          </props>
+        </property>
+      </bean>
+    </property>
+  </bean>
+ 
+  <bean id="getByIdServlet" class="com.micros_retail.xcenter.servlet.GetByIdServletHandler" />
+  <bean id="makePersistentServlet" class="com.micros_retail.xcenter.servlet.MakePersistentServletHandler" />
+  <bean id="getByQueryServlet" class="com.micros_retail.xcenter.servlet.GetByQueryServletHandler" />
+  <bean id="getConfigPathServlet" class="com.micros_retail.xcenter.servlet.GetConfigPathServletHandler" />
+  <bean id="reportDeployStatusServlet" class="com.micros_retail.xcenter.servlet.ReportDeployStatusServletHandler" />
+  <bean id="postEventLogEntryServlet" class="com.micros_retail.xcenter.servlet.PostEventLogEntryServletHandler" />
+  <bean id="getSystemDateTimeServlet" class="com.micros_retail.xcenter.servlet.GetSystemDateTimeServletHandler" />
+ 
+  <bean id="getUpdatesServlet" class="com.micros_retail.xcenter.servlet.GetUpdatesServletHandler">
+    <property name="responseBuilder">
+      <bean class="com.micros_retail.xcenter.update.UpdateResponseBuilder">
+        <property name="deploymentConfigBuilder">
+          <bean class="com.micros_retail.xcenter.update.DeploymentConfigBuilder" />
+        </property>
+        <property name="manifestBuilder">
+          <bean class="com.micros_retail.xcenter.update.DeploymentManifestsBuilder" />
+        </property>
+      </bean>
+    </property>
+  </bean>
+ 
+  <bean id="broadcasterStatusReporter" class="com.micros_retail.xcenter.servlet.filter.BroadcasterStatus" scope="prototype" />
+  <bean id="dtxStatusReporter" class="com.micros_retail.xcenter.servlet.filter.DtxStatus" scope="prototype" />
+  <bean id="replicationStatusReporter" class="com.micros_retail.xcenter.servlet.filter.ReplicationStatus" scope="prototype" />
+ 
+  <bean id="persistenceCommandFactory" class="com.micros_retail.xcenter.persistence.PersistenceCommandFactory" />
+ 
+  <!-- The default scope is exactly what we need : singleton -->
+  <bean id="replicationCentralStore" class="com.micros_retail.xcenter.replication.ReplicationCentralStore" />
+
+  <bean id="replicationResequencingPublisher" class="com.micros_retail.xcenter.replication.ReplicationResequencingPublisher"
+    init-method="init" destroy-method="destroy" depends-on="dataFactoryAssistant" />
+
+  <bean id="eventManager" class="dtv.event.EventManager" />
+  <bean id="xcenterJdbcPersistenceStrategy" class="com.micros_retail.xcenter.persistence.XcenterJDBCPersistenceStrategy" scope="prototype" />
+  
+  <bean id="serenadeLookupProcessor" class="com.micros_retail.xcenter.serenade.order.lookup.SerenadeLookupProcessor">
+    <property name="configInfo" ref="serenadeServiceConfig" />
+    <property name="endpoint" ref="serenadeEndpoint" />
+    <property name="requestConverter" ref="serenadeRequestConverter" />
+    <property name="responseConverter" ref="serenadeResponseConverter" />
+  </bean>
+  
+  <bean id="serenadeRequestConverter" class="com.micros_retail.xcenter.serenade.order.lookup.SerenadeRequestConverter" />
+  <bean id="serenadeResponseConverter" class="com.micros_retail.xcenter.serenade.order.lookup.SerenadeResponseConverter" />
+  
+  <bean id="serenadeToXstoreTransactionAdapter" class="com.micros_retail.xcenter.serenade.order.lookup.XStoreTransactionFactory" />
+</beans>

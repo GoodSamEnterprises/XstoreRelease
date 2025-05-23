@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+  <Query name="PREFLIGHT.ALL_GUID_SEQ" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT guid, organization_id, tbl FROM
+          (SELECT shift_id AS guid, organization_id, 'sch_shift' AS tbl FROM sch_shift
+          UNION 
+          SELECT time_off_seq AS guid, organization_id, 'sch_emp_time_off' AS tbl FROM sch_emp_time_off 
+          UNION 
+          SELECT schedule_seq AS guid, organization_id, 'sch_schedule' AS tbl FROM sch_schedule 
+          UNION 
+          SELECT journal_seq AS guid, organization_id, 'trl_returned_item_journal' AS tbl FROM trl_returned_item_journal 
+          UNION 
+          SELECT note_seq AS guid, organization_id, 'cat_acct_note' AS tbl FROM cat_acct_note 
+          UNION 
+          SELECT history_seq AS guid, organization_id, 'cat_charge_acct_history' AS tbl FROM cat_charge_acct_history 
+          UNION 
+          SELECT note_seq AS guid, organization_id, 'crm_customer_notes' AS tbl FROM crm_customer_notes
+          UNION 
+          SELECT note_seq AS guid, organization_id, 'hrs_employee_notes' AS tbl FROM hrs_employee_notes) tbl_union
+        WHERE tbl_union.organization_id = ? 
+          AND tbl_union.guid >= ? 
+          AND tbl_union.guid <= ? 
+          AND tbl_union.guid >= ? 
+          AND tbl_union.guid like ? 
+        ORDER BY guid DESC
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_CUSTOMER" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select crm_party.cust_id, crm_party.party_id, crm_party.organization_id from crm_party where organization_id = ? and /*UPPER*/ crm_party.cust_id >= ? and /*UPPER*/ crm_party.cust_id <= ? and /*UPPER*/ crm_party.cust_id >= ? and /*UPPER*/ crm_party.cust_id like ? order by crm_party.cust_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.CUSTOMER_ACCOUNT_JOURNAL_SEQ" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select journal_seq, organization_id, cust_acct_code, cust_acct_id from cat_cust_acct_journal where organization_id = ? and journal_seq >= ? and journal_seq <= ? and journal_seq >= ? and journal_seq like ? order by journal_seq desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.DEPOSIT_BANK_TENDER_REPOSITORY" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+select r.tndr_repository_id, r.typcode, r.rtl_loc_id, r.organization_id
+  from tsn_tndr_repository r
+ where r.organization_id = ?
+   and r.rtl_loc_id      = ?
+   and /*UPPER*/ r.typcode         = 'BANK']]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.DOCUMENT_SEQUENCE_NUMBER" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select document_id, organization_id, document_type, series_id from doc_document where organization_id = ? and document_id >= ? and document_id <= ? and document_id >= ? and document_id like ? order by document_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.PARTY_ZERO" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select party_id from crm_party where organization_id = ? and party_id = '0']]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.SECURITY_PRIVILEGES" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[SELECT 1 FROM sec_privilege WHERE organization_id = ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.PAYROLL_NOTES_SEQ" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select note_seq, organization_id, party_id, week_ending_date from thr_payroll_notes where organization_id = ? and note_seq >= ? and note_seq <= ? and note_seq >= ? and note_seq like ? order by note_seq desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.PROMO_GIFT_CARD" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+select discount_code
+  from dsc_discount
+ where organization_id = ?
+   and discount_code = '11'
+   and /*UPPER*/ typcode = 'COUPON_VOUCHER'
+   and /*UPPER*/ app_mthd_code = 'LINE_ITEM'
+   and /*UPPER*/ calculation_mthd_code = 'AUTHORIZE'
+   and max_trans_count is null]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.SEQ_ADDRESS" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select com_address.address_id, com_address.organization_id from com_address where com_address.organization_id = ? and com_address.address_id >= ? and com_address.address_id <= ? and com_address.address_id >= ? and com_address.address_id like ? order by com_address.address_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_AUTH" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select attempt_seq, organization_id, rtl_loc_id, wkstn_id, business_date, trans_seq, rtrans_lineitm_seq from ttr_tndr_auth_log where organization_id = ? and rtl_loc_id = ? and wkstn_id = ? and business_date >= ? and attempt_seq >= ? and attempt_seq <= ? and attempt_seq >= ? order by attempt_seq desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_EMPLOYEE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select hrs_employee.employee_id, hrs_employee.party_id, hrs_employee.organization_id from hrs_employee where organization_id = ? and hrs_employee.employee_id >= ? and hrs_employee.employee_id <= ? and hrs_employee.employee_id >= ? and hrs_employee.employee_id like ? order by hrs_employee.employee_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_GIFT_CERTIFICATE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select ttr_voucher.serial_nbr, ttr_voucher.organization_id from ttr_voucher where voucher_typcode = 'GIFT_CERTIFICATE' and organization_id = ? and ttr_voucher.serial_nbr >= ? and ttr_voucher.serial_nbr <= ? and ttr_voucher.serial_nbr >= ? and ttr_voucher.serial_nbr like ? order by ttr_voucher.serial_nbr desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_INVCTL_DOCUMENT" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select invctl_document_id, organization_id, rtl_loc_id, document_typcode from inv_invctl_document where organization_id = ? and rtl_loc_id = ? and invctl_document_id >= ? and invctl_document_id <= ? and invctl_document_id >= ? and invctl_document_id like ? order by invctl_document_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_INV_COUNT" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        select
+          inv_count_id,
+          organization_id,
+          rtl_loc_id,
+          inv_count_typcode
+        from
+          inv_count
+        where
+          organization_id = ?
+          and rtl_loc_id = ?
+          and inv_count_id >= ?
+          and inv_count_id <= ?
+          and inv_count_id >= ?
+          and inv_count_id like ?
+        order by
+          inv_count_id desc
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_INV_CTL_CONTROL" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select control_number, organization_id, rtl_loc_id, document_typcode, invctl_document_id, carton_id from inv_carton where organization_id = ? and rtl_loc_id = ? and control_number is not null and /*UPPER*/ control_number >= ? and /*UPPER*/ control_number <= ? and /*UPPER*/ control_number >= ? and /*UPPER*/ control_number like ? order by control_number desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_LAYAWAY" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select cust_acct_id, organization_id, cust_acct_code from cat_cust_acct where organization_id = ? and cust_acct_code = 'LAYAWAY' and cust_acct_id >= ? and cust_acct_id LIKE ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+    <Suffix dtype="String"><![CDATA[order by cust_acct_id desc]]></Suffix>
+  </Query>
+  <Query name="PREFLIGHT.SEQ_MERCHANDISE_CREDIT_CARD" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select ttr_voucher.serial_nbr, ttr_voucher.organization_id from ttr_voucher where voucher_typcode = 'MERCHANDISE_CREDIT_CARD' and organization_id = ? and ttr_voucher.serial_nbr >= ? and ttr_voucher.serial_nbr <= ? and ttr_voucher.serial_nbr >= ? and ttr_voucher.serial_nbr like ? order by ttr_voucher.serial_nbr desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_PARTY" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select crm_party.party_id, crm_party.organization_id from crm_party where organization_id = ? and crm_party.party_id >= ? and crm_party.party_id <= ? and crm_party.party_id >= ? order by crm_party.party_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_PRIVATE_CREDIT_CLIENT_ORDER_ID" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select string_value, organization_id, rtl_loc_id, wkstn_id, business_date, rtrans_lineitm_seq, property_code from trl_rtrans_lineitm_p where organization_id = ? and property_code = 'CLIENT_ORDER_ID' and /*UPPER*/ string_value >= ? and /*UPPER*/ string_value <= ? and /*UPPER*/ string_value >= ? and /*UPPER*/ string_value like ? order by string_value desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_SAVED_REPORT" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select report_id, organization_id, owner_type_enum, owner_id from com_report_data where organization_id = ?  and report_id >= ? and report_id <= ? and report_id >= ? and report_id like ? order by report_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_SESSION" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select tsn_session.session_id, tsn_session.organization_id from tsn_session where organization_id = ? and rtl_loc_id = ? and tsn_session.session_id >= ? and tsn_session.session_id <= ? and tsn_session.session_id >= ? order by tsn_session.session_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_SHIPPING_CARTON" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select carton_id, organization_id, rtl_loc_id, document_typcode, invctl_document_id from inv_carton where organization_id = ? and rtl_loc_id = ?  and carton_id >= ? and carton_id <= ? and carton_id >= ? and carton_id like ? order by carton_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_SEND_SALE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select cust_acct_id, organization_id, cust_acct_code from cat_cust_acct where organization_id = ? and cust_acct_code IN ('SHIP_SALE', 'SEND_SALE') and cust_acct_id >= ? and cust_acct_id LIKE ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+    <Suffix dtype="String"><![CDATA[order by cust_acct_id desc]]></Suffix>
+  </Query>
+  <Query name="PREFLIGHT.SEQ_SP_ORDER" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select cust_acct_id, organization_id, cust_acct_code from cat_cust_acct where organization_id = ? and cust_acct_code = 'SPECIAL_ORDER' and cust_acct_id >= ? and cust_acct_id LIKE ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+    <Suffix dtype="String"><![CDATA[order by cust_acct_id desc]]></Suffix>
+  </Query>
+  <Query name="PREFLIGHT.SEQ_STATE_JOURNAL" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select state_journal_id, status_typcode, organization_id from loc_state_journal where organization_id = ? and rtl_loc_id = ? and wkstn_id = ? and state_journal_id >= ? and state_journal_id <= ? and state_journal_id >= ? and state_journal_id like ? order by state_journal_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_STORECREDIT" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select ttr_voucher.serial_nbr, ttr_voucher.organization_id from ttr_voucher where voucher_typcode = 'STORE_CREDIT' and organization_id = ? and ttr_voucher.serial_nbr >= ? and ttr_voucher.serial_nbr <= ? and ttr_voucher.serial_nbr >= ? and ttr_voucher.serial_nbr like ? order by ttr_voucher.serial_nbr desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_TAXEXEMPTION" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select tax_tax_exemption.tax_exemption_id, tax_tax_exemption.organization_id from tax_tax_exemption where organization_id = ? and tax_tax_exemption.tax_exemption_id >= ? and tax_tax_exemption.tax_exemption_id <= ? and tax_tax_exemption.tax_exemption_id >= ? and tax_tax_exemption.tax_exemption_id like ? order by tax_tax_exemption.tax_exemption_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_TIMECARD_ENTRY_ID" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select timecard_entry_id, organization_id, rtl_loc_id, business_date, wkstn_id, party_id from thr_timecard_entry where organization_id = ? and rtl_loc_id = ?  and business_date >= ? and wkstn_id = ? and timecard_entry_id >= ? and timecard_entry_id <= ? and timecard_entry_id >= ? order by timecard_entry_id desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_TRANSACTION" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.TransactionIdSearchResult</ResultClass>
+    <ResultField name="TransactionSequence" type="Long" />
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="RetailLocationId" type="Long" />
+    <ResultField name="WorkstationId" type="Long" />
+    <ResultField name="BusinessDate" type="Date" />
+    <ResultField name="TransactionDate" type="Date" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[select trn_trans.trans_seq, trn_trans.organization_id, trn_trans.rtl_loc_id, trn_trans.wkstn_id, trn_trans.business_date, trn_trans.trans_date from trn_trans where organization_id = ? and rtl_loc_id = ? and wkstn_id = ? and business_date >= ? and trn_trans.trans_seq >= ? order by trn_trans.trans_seq asc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argBusinessDate" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.SEQ_UNAPPLIED_VOUCHER" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select serial_nbr, organization_id, voucher_typcode from ttr_voucher where voucher_typcode = 'UNAPPLIED_VOUCHER' and organization_id = ? and serial_nbr >= ? and serial_nbr <= ? and serial_nbr >= ? and serial_nbr like ? order by serial_nbr desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_WARRANTY" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select warranty_nbr, organization_id, warranty_typcode from itm_warranty where organization_id = ? and warranty_nbr >= ? and warranty_nbr <= ? and warranty_nbr >= ? and warranty_nbr like ? order by warranty_nbr desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_WARRANTY_JOURNAL" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select journal_seq, organization_id, warranty_typcode, warranty_nbr from itm_warranty_journal where organization_id = ? and journal_seq >= ? and journal_seq <= ? and journal_seq >= ? and journal_seq like ? order by journal_seq desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.SEQ_WORK_ORDER" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select cust_acct_id from cat_cust_acct where organization_id = ? and cust_acct_code = 'WORK_ORDER' and cust_acct_id >= ? and cust_acct_id LIKE ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+    <Suffix dtype="String"><![CDATA[order by cust_acct_id desc]]></Suffix>
+  </Query>
+  <Query name="PREFLIGHT.SESSION_TENDERS_ALL_PRESENT" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+        SELECT t.tndr_id FROM tnd_tndr t WHERE t.tndr_id NOT IN (
+        SELECT st.tndr_id
+          FROM tsn_session
+               INNER JOIN tsn_tndr_repository r ON tsn_session.organization_id = r.organization_id AND tsn_session.rtl_loc_id = r.rtl_loc_id AND /*UPPER*/ tsn_session.tndr_repository_id = r.tndr_repository_id
+               INNER JOIN tsn_session_tndr st ON st.organization_id = tsn_session.organization_id AND st.rtl_loc_id = tsn_session.rtl_loc_id AND st.session_id = tsn_session.session_id
+         WHERE r.organization_id = ?
+           AND r.rtl_loc_id = ?
+           AND /*UPPER*/ r.typcode = 'STOREBANK')
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.SESSION_TENDERS_ALL_VALID" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          SELECT tsn_session.tndr_repository_id, tsn_session.session_id, st.tndr_id, t.tndr_id
+            FROM tsn_session 
+                 INNER JOIN tsn_tndr_repository r ON tsn_session.organization_id = r.organization_id AND tsn_session.rtl_loc_id = r.rtl_loc_id AND /*UPPER*/ tsn_session.tndr_repository_id = r.tndr_repository_id
+                 INNER JOIN tsn_session_tndr st ON st.organization_id = tsn_session.organization_id AND st.rtl_loc_id = tsn_session.rtl_loc_id AND st.session_id = tsn_session.session_id
+                 LEFT JOIN tnd_tndr t ON t.organization_id = st.organization_id AND t.tndr_id = st.tndr_id
+           WHERE r.organization_id = ?
+             AND r.rtl_loc_id = ?
+             AND t.tndr_id IS NULL         
+       ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.STORE_BANK_SESSION" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[          
+            SELECT tr.tndr_repository_id, s.session_id, s.statcode
+              FROM tsn_tndr_repository tr INNER JOIN tsn_session s
+                ON s.organization_id = tr.organization_id
+               AND s.rtl_loc_id = tr.rtl_loc_id
+             WHERE tr.organization_id = ?
+               AND tr.rtl_loc_id = ?
+               AND /*UPPER*/ tr.typcode = 'STOREBANK'          
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.STORE_BANK_SESSION_TENDERS" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+        SELECT tsn_session.tndr_repository_id, tsn_session.session_id, st.tndr_id
+          FROM tsn_session
+               INNER JOIN tsn_tndr_repository r ON tsn_session.organization_id = r.organization_id AND tsn_session.rtl_loc_id = r.rtl_loc_id AND /*UPPER*/ tsn_session.tndr_repository_id = r.tndr_repository_id
+               INNER JOIN tsn_session_tndr st ON st.organization_id = tsn_session.organization_id AND st.rtl_loc_id = tsn_session.rtl_loc_id AND st.session_id = tsn_session.session_id
+         WHERE r.organization_id = ?
+           AND r.rtl_loc_id = ?
+           AND /*UPPER*/ r.typcode = 'STOREBANK'        
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.STORE_BANK_TENDER_REPOSITORY_ASSIGNED" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        select r.tndr_repository_id
+          from tsn_tndr_repository r
+         where r.organization_id = ?
+           and r.rtl_loc_id      = ?
+           and /*UPPER*/ r.typcode         = 'STOREBANK'
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.TILL_TENDER_REPOSITORY_EXIST" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        select r.tndr_repository_id, r.typcode, r.rtl_loc_id, r.organization_id
+          from tsn_tndr_repository r
+         where r.organization_id = ?
+           and r.rtl_loc_id      = ?
+           and /*UPPER*/ r.typcode         = 'TILL'
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.TILL_TENDER_REPOSITORY_FOR_REGISTER" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        select r.tndr_repository_id, r.typcode, r.rtl_loc_id, r.organization_id
+          from tsn_tndr_repository r
+         where r.organization_id = ?
+           and r.rtl_loc_id      = ?
+           and /*UPPER*/ r.typcode         = 'TILL'
+           and r.dflt_wkstn_id = ?
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+    </SQL>
+  </Query>
+  <Query name="PREFLIGHT.TIMECARD_COMMENT_SEQ" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select comment_seq, organization_id, rtl_loc_id, wkstn_id, party_id, week_ending_date from thr_timecard_entry_comment where organization_id = ? and rtl_loc_id = ?  and wkstn_id = ? and comment_seq >= ? and comment_seq <= ? and comment_seq >= ? order by comment_seq desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argRetailLocationId" />
+      <Parameter name="argWorkstationId" />
+      <Parameter name="argMinimum" />
+      <Parameter name="argMaximum" />
+      <Parameter name="argNextSequence" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.VOUCHER_HISTORY_SEQ" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select history_seq, organization_id, voucher_typcode, serial_nbr from ttr_voucher_history where organization_id = ? and history_seq >= ? and history_seq LIKE ? order by history_seq desc]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+  <Query name="PREFLIGHT.ORG_HIERARCHY_ROOT" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        SELECT 1 FROM loc_org_hierarchy 
+          WHERE organization_id = ?
+            AND org_code = '*'
+            AND org_value = '*'
+            AND parent_code IS NULL
+            AND parent_value IS NULL]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+  </Query>
+
+  <Query name="PREFLIGHT.SEQ_PRESALE" pmType="PREFLIGHT_SEQUENCE">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[select cust_acct_id, organization_id, cust_acct_code from cat_cust_acct where organization_id = ? and cust_acct_code = 'PRESALE' and cust_acct_id >= ? and cust_acct_id LIKE ?]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argNextSequence" />
+      <Parameter name="argPattern" />
+    </SQL>
+    <Property key="MaxRows" value="1" />
+    <Suffix dtype="String"><![CDATA[order by cust_acct_id desc]]></Suffix>
+  </Query>
+
+  <Query name="PREFLIGHT.MISSING_TNDR_TYPE" pmType="PREFLIGHT">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+		select t.tndr_typcode, t.tndr_id
+		  from tnd_tndr t 
+		    left join tnd_tndr_typcode c 
+		      on t.organization_id = c.organization_id 
+		      and /*UPPER*/ t.tndr_typcode = c.tndr_typcode
+		where t.organization_id = ?
+		  and c.tndr_typcode is null
+	      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+</QuerySet>

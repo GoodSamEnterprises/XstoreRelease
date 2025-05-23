@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <RegisterConfig dtype="Default">
+  </RegisterConfig>
+  <SystemConfig dtype="Default">
+    <Tax dtype="Default">
+      <EnableVatTaxSummaryPrint dtype="Boolean">true</EnableVatTaxSummaryPrint>
+      <DisableChangeTaxAmount dtype="Boolean">true</DisableChangeTaxAmount>
+      <SelectTaxPercentFromList dtype="Boolean">true</SelectTaxPercentFromList>
+      <IgnoreTaxGroups dtype="String"></IgnoreTaxGroups>
+    </Tax>
+    <OnScreenKeyboard dtype="Default">
+      <Layout dtype="String">qwerty_it</Layout>
+    </OnScreenKeyboard>
+    <MeasurementUnits dtype="Default">
+      <!-- VALUES:  CELSIUS, FAHRENHEIT, KELVIN -->
+      <Temperature dtype="String">CELSIUS</Temperature>
+      <!-- VALUES:  IMPERIAL, METRIC -->
+      <Length dtype="String">METRIC</Length>
+    </MeasurementUnits>
+    <LocalCurrencyId dtype="String">EUR</LocalCurrencyId>
+    <InvoiceConfig dtype="Default">
+      <EnableInvoicing dtype="Boolean">true</EnableInvoicing>
+    </InvoiceConfig>
+    <FiscalConfig dtype="Default">
+      <CashLimits dtype="Default">
+        <OverridableLimit dtype="BigDecimal">2999.99</OverridableLimit>
+        <NotOverridableLimit dtype="BigDecimal">14999.99</NotOverridableLimit>
+      </CashLimits>
+      <Country dtype="Default">
+        <It dtype="Default">
+          <AmountLimitRegistrationTriggerValue dtype="BigDecimal">3600.00</AmountLimitRegistrationTriggerValue>
+        </It>
+      </Country>
+      <FiscalPrinterConfig dtype="Default">
+        <!-- This is the maximum number of seconds the fp datetime can differ from the system datetime  -->
+        <!-- 0 not enabled  -->
+        <!-- 7200 = 2h -->
+        <MaxDateTimeOffset dtype="Integer">7200</MaxDateTimeOffset>
+      </FiscalPrinterConfig>
+    </FiscalConfig>
+    <MixedTransactionSettings dtype="Default">
+      <AllowNegativeTotalInExchangeTransaction dtype="Boolean">false</AllowNegativeTotalInExchangeTransaction>
+      <!-- Assiging a value which is less than or equal to zero will disable the mixing rule below. -->
+      <MaximumAllowedTotal dtype="BigDecimal">9999999</MaximumAllowedTotal>
+      <AllowSaleItemTypeInMixedTransaction dtype="Default">
+        <!-- What this section really means is the inverse of "Must this item type be exclusive in a
+             transaction?" For example, if SALE is set to false, then SALE type items only can be
+             added to transactions with no items or with other SALE type items. -->
+        <LAYAWAY dtype="Boolean">false</LAYAWAY>
+        <SPECIALORDER dtype="Boolean">false</SPECIALORDER>
+        <ORDER dtype="Boolean">false</ORDER>
+        <SENDSALE dtype="Boolean">false</SENDSALE>
+        <WORKORDER dtype="Boolean">false</WORKORDER>
+      </AllowSaleItemTypeInMixedTransaction>
+    </MixedTransactionSettings>
+    <OpenClose dtype="Default">
+      <EndOfDayTimeCheckEnabled dtype="Boolean">true</EndOfDayTimeCheckEnabled>
+      <EndOfDayTime dtype="String">02:00</EndOfDayTime>
+    </OpenClose>
+    <TaxFreeConfig dtype="Default">
+      <FintraxConfig dtype="Default">
+        <ShopCountryCode dtype="String">380</ShopCountryCode>
+        <MinAmountThreshold dtype="BigDecimal">154.95</MinAmountThreshold>
+        <MandatoryFields dtype="String">lastName,firstName,countryCode</MandatoryFields>
+        <OptionalFields dtype="String">street,city,postalCode,identityDocumentType,identityDocumentNumber,birthDate,identityDocumentCountryCode,emailAddress,finalDestination,arrivalDate,departureDate</OptionalFields>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">day</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </FintraxConfig>
+      <GlobalBlueConfig dtype="Default">
+        <IsZeroVATItemAllowed dtype="Boolean">true</IsZeroVATItemAllowed>
+        <MandatoryFields dtype="String">identityDocumentType,identityDocumentNumber,identityDocumentCountryCode,lastName,firstName,countryCode,birthDate</MandatoryFields>
+        <OptionalFields dtype="String">mobileNumber,street,postalCode,city,emailAddress,departureDate</OptionalFields>
+        <AvailableIdentificationDocumentType dtype="String">Passport,IdentityCard</AvailableIdentificationDocumentType>        
+        <MaximumAge dtype="PositiveInteger">110</MaximumAge>
+        <MinimumAgeWarning dtype="PositiveInteger">18</MinimumAgeWarning>
+        <ZeroVatPropertyCode dtype="String">IT_TF_TAXAGENCYCODE</ZeroVatPropertyCode>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">day</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">day</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </GlobalBlueConfig>
+    </TaxFreeConfig>
+  </SystemConfig>
+</Store>

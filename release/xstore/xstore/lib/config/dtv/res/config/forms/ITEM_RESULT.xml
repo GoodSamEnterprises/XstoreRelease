@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormSet xmlns="http://micros.com/xstore/config/form" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormConfig.xsd">
+  
+  <Form name="ITEM_RESULT" type="MULTI_PURPOSE_VIEW" formLayoutRef="TOP_TO_BOTTOM_TRANSPARENT">
+    <Header viewAction="ABORT_CHANGES_TOUCH">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="itemResultsHeaderLayout" />
+    </Header>
+    
+    <Page name="ProductInformation" text="_productInformation" displayOrder="10">
+      <Panel startX="0" width="65" startY="0" height="5" fieldLayoutRef="productMerchHierarchyLabelLayout" />
+      <Panel startX="3" width="37" startY="5" height="24" fieldLayoutRef="productMerchHierarchyLayout" />
+      <Panel startX="40" width="25" startY="5" height="24" fieldLayoutRef="productStyleInfoLayout" />
+      
+      <Panel startX="0" width="65" startY="29" height="5" fieldLayoutRef="productVendorInfoLabelLayout" />
+      <Panel startX="3" width="27" startY="34" height="16" fieldLayoutRef="productVendorInfoLayout1" />
+      <Panel startX="30" width="35" startY="34" height="16" fieldLayoutRef="productVendorInfoLayout2" />
+      
+      <Panel startX="0" width="65" startY="50" height="5" fieldLayoutRef="productAttributeLabelLayout" />
+      <Panel startX="3" width="27" startY="55" height="24" fieldLayoutRef="productAttributeLayout1" />
+      <Panel startX="30" width="35" startY="55" height="24" fieldLayoutRef="productAttributeLayout2" />
+      
+      <Panel startX="0" width="65" startY="79" height="5" fieldLayoutRef="productSalesLabelLayout" />
+      <Panel startX="3" width="27" startY="84" height="16" fieldLayoutRef="productSalesLayout1" />
+      <Panel startX="30" width="35" startY="84" height="16" fieldLayoutRef="productSalesLayout2" />
+      
+      <Panel startX="65" width="35" startY="0" height="70" fieldLayoutRef="productImageHeaderLayout" />
+      <Panel startX="65" width="35" startY="70" height="30" fieldLayoutRef="productImageDetailLayout" />
+    </Page>
+    
+    <Page name="ProductInventoryStock" text="_itemInventoryData" displayOrder="20">
+      <Panel startX="0" width="50" startY="0" height="50" fieldLayoutRef="productInventoryStockLayout" padding="0, 4, 4, 0" />
+      <Panel startX="50" width="50" startY="0" height="50" fieldLayoutRef="productKitComponentsLayout" padding="0, 0, 4, 4" />
+      <Panel startX="0" width="100" startY="50" height="50" fieldLayoutRef="productSerialNumbersLayout" padding="4, 0, 0, 0" />
+    </Page>
+    
+    <Page name="ProductRelatedItems" text="_itemResultRelatedItems" displayOrder="30">
+      <Panel startX="0" width="50" startY="0" height="100" fieldLayoutRef="productInStyleLayout" padding="0, 4, 0, 0" />
+      <Panel startX="50" width="50" startY="0" height="50" fieldLayoutRef="productCrossReferenceItemsLayout" padding="0, 0, 4, 4" />
+      <Panel startX="50" width="50" startY="50" height="50" fieldLayoutRef="productSubstituteItemsLayout" padding="4, 0, 0, 4" />
+    </Page>
+    
+    <Page name="ItemGrid" text="_styleGrid" conditionRef="itemhasDimensionsRule" displayOrder="40">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="itemGridLayout" />
+      
+      <ActionGroups view="ITEM_GRID_ACTIONS" edit="ITEM_GRID_ACTIONS" />
+    </Page>
+    
+    <Page name="ProductPriceInformation" text="_itemResultPriceInformation" displayOrder="50">
+      <Panel startX="0" width="100" startY="0" height="100" fieldLayoutRef="productPriceInfoLayout" />
+    </Page>
+    
+    <Page name="ProductSalesHistory" text="_salesHistory" displayOrder="60">
+      <Panel startX="0" width="50" startY="0" height="100" fieldLayoutRef="productWeeklySalesLayout" padding="0, 4, 0, 0" />
+      <Panel startX="50" width="50" startY="0" height="50" fieldLayoutRef="productYearlySalesLayout" padding="0, 0, 4, 4" />
+      <Panel startX="50" width="50" startY="50" height="50" fieldLayoutRef="productSalesTrendLayout" padding="4, 0, 0, 4" />
+    </Page>
+    
+    <ActionGroup name="ITEM_GRID_ACTIONS">
+      <Action ref="CANCEL_BACK" />
+      <Action dataKey="PRIOR" text="_itemResultPreviousGridPage" keyStroke="F8">
+        <VisibilityRule class="dtv.pos.inventory.lookup.GridPageNextPriorRule">
+          <Parameter name="status" value="FIRST" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+          <Parameter name="FormFactor" value="handheld" />
+          <Parameter name="FormFactor" value="tablet" />
+        </VisibilityRule>
+      </Action>
+      <Action dataKey="NEXT" text="_itemResultNextGridPage" keyStroke="F9">
+        <VisibilityRule class="dtv.pos.inventory.lookup.GridPageNextPriorRule">
+          <Parameter name="status" value="LAST" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+          <Parameter name="FormFactor" value="handheld" />
+          <Parameter name="FormFactor" value="tablet" />
+        </VisibilityRule>
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    
+    <ActionGroup name="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <!-- visibility determined by opChain parameters -->
+      <Action dataKey="ITEM_SELECTION" text="_addItem" keyStroke="F2">
+        <VisibilityRule class="dtv.pos.inventory.lookup.AddItemVisibilityRule" />
+      </Action>
+<!-- available if defined the order config.path -->
+      <Action ref="ITEM_RESULT::ORDER_ITEM" />
+      <Action dataKey="PRINT_RAIN_CHECK" text="_printRainCheck" keyStroke="F4">
+        <VisibilityRule class="dtv.pos.raincheck.PrintRainCheckVisibilityRule" />
+        <VisibilityRule class="dtv.pos.framework.action.access.CurrentUserAccCheck">
+          <Parameter name="privilege" value="PRINT_RAIN_CHECKS" />
+        </VisibilityRule>
+      </Action>
+      <Action dataKey="LOCATE_ITEM" text="_inventoryLocator" keyStroke="F9" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+  </Form>
+  
+</FormSet>

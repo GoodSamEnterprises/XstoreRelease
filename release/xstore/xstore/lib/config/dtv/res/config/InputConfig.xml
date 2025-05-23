@@ -1,0 +1,1293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InputTypeList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="InputConfig.xsd">
+  <InputRules dtype="ClassMap">
+    <ClassKeyPair key="CheckDigitRule">
+      <Value dtype="Class">dtv.hardware.inputrules.CheckDigitRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="LengthRule">
+      <Value dtype="Class">dtv.hardware.inputrules.LengthRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="LengthRangeRule">
+      <Value dtype="Class">dtv.hardware.inputrules.LengthRangeRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="RangeRule">
+      <Value dtype="Class">dtv.hardware.inputrules.RangeRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="SubstringRule">
+      <Value dtype="Class">dtv.hardware.inputrules.SubstringRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="ScannerSourceRule">
+      <Value dtype="Class">dtv.hardware.inputrules.ScannerSourceRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="MsrSourceRule">
+      <Value dtype="Class">dtv.hardware.inputrules.MsrSourceRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="IsErrorRule">
+      <Value dtype="Class">dtv.hardware.inputrules.IsErrorRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="SymbologyRule">
+      <Value dtype="Class">dtv.hardware.inputrules.SymbologyRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="DriversLicenseSwipeRule">
+      <Value dtype="Class">dtv.hardware.dl.DriversLicenseSwipeRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="PINPadSourceRule">
+      <Value dtype="Class">dtv.hardware.ppad.PinPadSourceRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="SigCapSourceRule">
+      <Value dtype="Class">dtv.hardware.sigcap.SigCapSourceRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="ExpDateStringEqualsRule">
+      <Value dtype="Class">dtv.hardware.inputrules.ExpDateStringEqualsRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="InputInstanceOfRule">
+      <Value dtype="Class">dtv.hardware.inputrules.InputInstanceOfRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="GiftCardVendorIdEqualsRule">
+      <!-- this rule checks if the first 3 digits of account number match a configured value -->
+      <Value dtype="Class">dtv.hardware.inputrules.GiftCardVendorIdEqualsRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="GiftCardSeriesNumEqualsRule">
+      <!-- this rule checks if the last 2 digits of account number match a configured value -->
+      <Value dtype="Class">dtv.hardware.inputrules.GiftCardSeriesNumEqualsRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="ServiceCodeRule">
+      <Value dtype="Class">dtv.hardware.inputrules.ServiceCodeRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="BinFileRule">
+      <Value dtype="Class">dtv.tenderauth.binfile.BinFileRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="PinPadExistsRule">
+      <Value dtype="Class">dtv.hardware.ppad.PinPadExistsRule</Value>
+    </ClassKeyPair>
+
+    <ClassKeyPair key="RegExRule">
+      <Value dtype="Class">dtv.hardware.inputrules.RegExRule</Value>
+    </ClassKeyPair>
+  </InputRules>
+  
+
+  <InputType name="DRIVERS_LICENSE_SWIPE">
+    <Event dtype="Class">dtv.hardware.dl.DriversLicenseSwipeEvent</Event>
+    <Type dtype="String">INPUT_DRIVERS_LICENSE</Type>
+    <InputRuleList>
+        <InputRule RuleType="MsrSourceRule"/>
+        <InputRule RuleType="DriversLicenseSwipeRule"/>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="DRIVERS_LICENSE_BARCODE">
+    <Event dtype="Class">dtv.hardware.dl.DriversLicenseBarcodeEvent</Event>
+    <Type dtype="String">INPUT_DRIVERS_LICENSE</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+        <InputRule RuleType="SubstringRule">
+          <Parameter name="start" value="0"/>
+          <Parameter name="end" value="1"/>
+          <Parameter name="value" value="$"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="ANSWER">
+    <Event dtype="Class">dtv.hardware.events.AnswerEvent</Event>
+    <InputRuleList>
+      <InputRule RuleType="InputInstanceOfRule">
+        <Parameter name="class" value="dtv.hardware.question.IAnswer"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="SIGNATURE">
+    <Event dtype="Class">dtv.hardware.events.SignatureEvent</Event>
+    <InputRuleList>
+      <InputRule RuleType="SigCapSourceRule"/>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MSR_ERROR">
+    <Event dtype="Class">dtv.hardware.events.MsrErrorEvent</Event>
+    <InputRuleList>
+      <InputRule RuleType="MsrSourceRule"/>
+      <InputRule RuleType="IsErrorRule"/>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="PIN_ENTRY">
+    <Event dtype="Class">dtv.hardware.ppad.PinEntryEvent</Event>
+    <InputRuleList>
+      <InputRule RuleType="PINPadSourceRule"/>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MASTERCARD_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">MASTERCARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="3"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MASTERCARD1">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">MASTERCARD</Type>
+    <!-- allow additional match to possibly pick up debit -->
+    <AdditionalMatchAllowed dtype="String">DEBIT</AdditionalMatchAllowed>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="50"/>
+        <Parameter name="range_end" value="55"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MASTERCARD2">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">MASTERCARD</Type>
+    <!-- allow additional match to possibly pick up debit -->
+    <AdditionalMatchAllowed dtype="String">DEBIT</AdditionalMatchAllowed>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="19"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="50"/>
+        <Parameter name="range_end" value="55"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MASTERCARD3">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">MASTERCARD</Type>
+    <!-- allow additional match to possibly pick up debit -->
+    <AdditionalMatchAllowed dtype="String">DEBIT</AdditionalMatchAllowed>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="2221"/>
+        <Parameter name="range_end" value="2720"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="VISA_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">VISA</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="3"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="VISA1">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">VISA</Type>
+    <!-- allow additional match to possibly pick up debit -->
+    <AdditionalMatchAllowed dtype="String">DEBIT</AdditionalMatchAllowed>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="4"/>
+        <Parameter name="range_end" value="4"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="VISA2">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">VISA</Type>
+    <!-- allow additional match to possibly pick up debit -->
+    <AdditionalMatchAllowed dtype="String">DEBIT</AdditionalMatchAllowed>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="4"/>
+        <Parameter name="range_end" value="4"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="AMEX_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">AMERICAN_EXPRESS</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="4"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="AMEX1">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">AMERICAN_EXPRESS</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="34"/>
+        <Parameter name="range_end" value="37"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="AMEX2">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">AMERICAN_EXPRESS</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="34"/>
+        <Parameter name="range_end" value="37"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="BOARDING_PASS_SCAN">
+    <Event dtype="Class">dtv.hardware.events.BoardingPassScanEvent</Event>
+    <Type dtype="String">BOARDING_PASS_SCAN</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="PDF 417"/>
+        <Parameter name="symbology" value="QR CODE"/>
+        <Parameter name="symbology" value="AZTEC"/>
+        <Parameter name="symbology" value="DATAMATRIX"/>
+      </InputRule>
+      <InputRule RuleType="LengthRangeRule">
+        <Parameter name="minimum" value="44"/>
+        <Parameter name="maximum" value="300"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="DISCOVER_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">DISCOVER</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="3"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="DISCOVER">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">DISCOVER</Type>
+    <InputRuleList>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+      <InputRule RuleType="BinFileRule">
+        <Parameter name="binFile" value="res/binfile/discovercard.txt"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="JCB">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">JCB</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="35"/>
+        <Parameter name="range_end" value="35"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="JCB2">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">JCB</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="1800"/>
+        <Parameter name="range_end" value="1800"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="JCB3">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">JCB</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="2131"/>
+        <Parameter name="range_end" value="2131"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="JCB_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">JCB</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="3"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="DINERS_CLUB">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">DISCOVER</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="14"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="36"/>
+        <Parameter name="range_end" value="36"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="PRIVATE_LABEL">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">PRIVATE_LABEL</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="6034"/>
+        <Parameter name="range_end" value="6034"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MERCH_CC">
+    <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+    <Type dtype="String">MERCHANDISE_CREDIT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="0000"/>
+        <Parameter name="range_end" value="0000"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="FDMS_GIFT_CARD1">
+    <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+    <Type dtype="String">XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="7"/>
+        <Parameter name="range_end" value="7"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <!-- This is used when swiping the gift card since the bin range is not the same as
+       the account number when manually entered  -->
+  <InputType name="FDMS_GIFT_CARD2">
+    <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+    <Type dtype="String">XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="601056"/>
+        <Parameter name="range_end" value="601056"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="TRAN_SCAN">
+    <Event dtype="Class">dtv.hardware.events.TransactionScanEvent</Event>
+    <Type dtype="String">INPUT_RECEIPT</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Code 93"/>
+        <Parameter name="symbology" value="Code93"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="21"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="T"/>
+        <Parameter name="range_end" value="T"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="TRAN_SCANv1">
+    <Event dtype="Class">dtv.hardware.events.TransactionScanEvent</Event>
+    <Type dtype="String">INPUT_RECEIPT</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Code 93"/>
+        <Parameter name="symbology" value="Code93"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="19"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="T"/>
+        <Parameter name="range_end" value="T"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="CUST_CARD_MSR">
+    <Event dtype="Class">dtv.hardware.events.CustomerCardEvent</Event>
+    <Type dtype="String">INPUT_CUSTOMER_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="MsrSourceRule"/>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="9"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="23"/>
+        <Parameter name="range_end" value="23"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="CUST_CARD_SCAN">
+    <Event dtype="Class">dtv.hardware.events.CustomerCardEvent</Event>
+    <Type dtype="String">INPUT_CUSTOMER_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="9"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="23"/>
+        <Parameter name="range_end" value="23"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="EMP_CARD_MSR_BIN">
+    <Event dtype="Class">dtv.hardware.events.EmployeeCardEvent</Event>
+    <Type dtype="String">INPUT_EMPLOYEE_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="MsrSourceRule" />
+      <InputRule RuleType="BinFileRule">
+        <Parameter name="binFile" value="res/binfile/emp-msr.txt"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="EMP_CARD_SCAN_BIN">
+    <Event dtype="Class">dtv.hardware.events.EmployeeCardEvent</Event>
+    <Type dtype="String">INPUT_EMPLOYEE_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule" />
+      <InputRule RuleType="BinFileRule">
+        <Parameter name="binFile" value="res/binfile/emp-scan.txt"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="GIFT_CERT">
+    <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+    <Type dtype="String">GIFT_CERTIFICATE</Type>
+    <InputRuleList>      
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="GC"/>
+        <Parameter name="range_end" value="GC"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MALL_CERT">
+    <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+    <Type dtype="String">MALL_CERTIFICATE</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRangeRule">
+        <Parameter name="minimum" value="1"/>
+        <Parameter name="maximum" value="50"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="COUPON1">
+    <Event dtype="Class">dtv.hardware.events.CouponScanEvent</Event>
+    <Type dtype="String">INPUT_COUPON</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="9"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="051"/>
+        <Parameter name="range_end" value="051"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MANUFACTURER_COUPON_UPC-A">
+    <Event dtype="Class">dtv.hardware.events.SmartCouponEvent</Event>
+    <Type dtype="String">MANUFACTURER_COUPON</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="UPC-A"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="12"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="5"/>
+        <Parameter name="range_end" value="5"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MANUFACTURER_COUPON_MANUAL">
+    <Event dtype="Class">dtv.hardware.events.SmartCouponEvent</Event>
+    <Type dtype="String">MANUFACTURER_COUPON</Type>
+    <InputRuleList>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="12"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="5"/>
+        <Parameter name="range_end" value="5"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="IN-STORE_COUPON_EAN13">
+    <Event dtype="Class">dtv.hardware.events.SmartCouponEvent</Event>
+    <Type dtype="String">IN-STORE_COUPON</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="EAN 13"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="99"/>
+        <Parameter name="range_end" value="99"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="IN-STORE_COUPON_MANUAL">
+    <Event dtype="Class">dtv.hardware.events.SmartCouponEvent</Event>
+    <Type dtype="String">IN-STORE_COUPON</Type>
+    <InputRuleList>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="99"/>
+        <Parameter name="range_end" value="99"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="LAYAWAY_SCAN">
+    <Event dtype="Class">dtv.hardware.events.LayawayScanEvent</Event>
+    <Type dtype="String">INPUT_LAYAWAY_ID</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="L"/>
+        <Parameter name="range_end" value="L"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="14"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="SPECIAL_ORDER_SCAN">
+    <Event dtype="Class">dtv.hardware.events.SpecialOrderScanEvent</Event>
+    <Type dtype="String">INPUT_SP_ORDER_ID</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="S"/>
+        <Parameter name="range_end" value="S"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="14"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+  
+  <InputType name="WORK_ORDER_SCAN">
+    <Event dtype="Class">dtv.hardware.events.WorkOrderScanEvent</Event>
+    <Type dtype="String">INPUT_WORK_ORDER_ID</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="W"/>
+        <Parameter name="range_end" value="W"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="14"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="PRESALE_SCAN">
+    <Event dtype="Class">dtv.hardware.events.ConfigurableCustAcctScanEvent</Event>
+    <Type dtype="String">INPUT_CCA_PRESALE_ID</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="P"/>
+        <Parameter name="range_end" value="P"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="14"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="ONHOLD_SCAN">
+    <Event dtype="Class">dtv.hardware.events.ConfigurableCustAcctScanEvent</Event>
+    <Type dtype="String">INPUT_CCA_ONHOLD_ID</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="OH"/>
+        <Parameter name="range_end" value="OH"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="STORE_CREDIT_SCAN">
+    <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+    <Type dtype="String">STORE_CREDIT</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="SC"/>
+        <Parameter name="range_end" value="SC"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="STORE_CREDIT_MANUAL">
+    <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+    <Type dtype="String">STORE_CREDIT</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="SC"/>
+        <Parameter name="range_end" value="SC"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="ENCODED_PRICE_SCAN">
+    <Event dtype="Class">dtv.hardware.events.EncodedPriceScanEvent</Event>
+    <Type dtype="String">INPUT_ENCODED_PRICE</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Code 93"/>
+        <Parameter name="symbology" value="Code93"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="8"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="P"/>
+        <Parameter name="range_end" value="P"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="ASN_SCAN">
+    <Event dtype="Class">dtv.hardware.events.ShippingDocumentEvent</Event>
+    <Type dtype="String">ASN</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Code 93"/>
+        <Parameter name="symbology" value="Code93"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="ASN"/>
+        <Parameter name="range_end" value="ASN"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="STORE_TRANSFER_SCAN">
+    <Event dtype="Class">dtv.hardware.events.ShippingDocumentEvent</Event>
+    <Type dtype="String">STORE_TRANSFER</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Code 93"/>
+        <Parameter name="symbology" value="Code93"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="TF"/>
+        <Parameter name="range_end" value="TF"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="RETURN_TO_VENDOR_SCAN">
+    <Event dtype="Class">dtv.hardware.events.ShippingDocumentEvent</Event>
+    <Type dtype="String">RETURN_TO_VENDOR</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Code 93"/>
+        <Parameter name="symbology" value="Code93"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="RTV"/>
+        <Parameter name="range_end" value="RTV"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="SHIPMENT_OUT_SCAN">
+    <Event dtype="Class">dtv.hardware.events.ShippingDocumentEvent</Event>
+    <Type dtype="String">SHIPMENT_OUT</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Code 93"/>
+        <Parameter name="symbology" value="Code93"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="SH"/>
+        <Parameter name="range_end" value="SH"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="CARTON_SCAN">
+    <Event dtype="Class">dtv.hardware.events.CartonScanEvent</Event>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <!-- EAN-128 is the same as UCC128 -->
+        <Parameter name="symbology" value="EAN-128"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="6"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="ITEM_SCAN">
+    <Event dtype="Class">dtv.hardware.events.ItemScanEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MSR_OTHER">
+    <Event dtype="Class">dtv.hardware.events.MsrSwipeEvent</Event>
+    <Type dtype="String">INPUT_MSR_OTHER</Type>
+    <InputRuleList>
+      <InputRule RuleType="MsrSourceRule"/>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="WARRANTY_SCAN">
+    <Event dtype="Class">dtv.pos.warranty.hardware.WarrantyScanEvent</Event>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="WA"/>
+        <Parameter name="range_end" value="WA"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <!-- all vouchers <START> -->
+  <InputType name="RELATE_GIFT_CARD">
+    <Event dtype="Class">dtv.tenderauth.storedvalue.xpay.RelateGiftCardSwipedEvent</Event>
+    <Type dtype="String">XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="ExpDateStringEqualsRule">
+        <Parameter name="value" value="7222"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="RELATE_GIFT_CARD_MANUAL">
+    <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+    <Type dtype="String">XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+      <!-- InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="80"/>
+        <Parameter name="range_end" value="89"/>
+      </InputRule-->
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="PAYMENTECH_GIFT_CARD">
+      <Event dtype="Class">dtv.hardware.events.VoucherEvent</Event>
+      <Type dtype="String">XPAY_GIFT_CARD</Type>
+      <InputRuleList>   
+        <InputRule RuleType="LengthRule">
+          <Parameter name="length" value="19"/>
+        </InputRule>
+        <InputRule RuleType="RangeRule">
+          <Parameter name="range_start" value="603571"/>
+          <Parameter name="range_end" value="603571"/>
+        </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="COUPON_GIFT_CARD">
+    <Event dtype="Class">dtv.hardware.events.CouponVoucherEvent</Event>
+    <Type dtype="String">COUPON_VOUCHER</Type>
+    <InputRuleList>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+      <InputRule RuleType="BinFileRule">
+        <!-- check that the number IS in the BIN file -->
+        <Parameter name="binFile" value="res/binfile/coupongiftcards.txt"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="HOUSE_ACCOUNT">
+    <Event dtype="Class">dtv.hardware.events.AccountReceivableEvent</Event>
+    <Type dtype="String">HOUSE_ACCOUNT</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="3"/>
+        <Parameter name="range_end" value="3"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="DEBIT">
+    <Event dtype="Class">dtv.hardware.events.CreditCardEvent</Event>
+    <Type dtype="String">DEBIT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="MsrSourceRule"/>
+      <InputRule RuleType="PinPadExistsRule" />
+      <InputRule RuleType="BinFileRule">
+        <Parameter name="binFile" value="res/binfile/debit.txt"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="BOUNCE_BACK_COUPON">
+    <Event dtype="Class">dtv.hardware.events.CouponScanEvent</Event>
+    <Type dtype="String">BOUNCE_BACK_COUPON</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="20"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="C"/>
+        <Parameter name="range_end" value="C"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="XPAY_GIFT_CARD_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="4"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="ISSUE_XPAY_GIFT_CARD_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">ISSUE_XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="4"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="RELOAD_XPAY_GIFT_CARD_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">RELOAD_XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="4"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="MERCHANDISE_CREDIT_CARD_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="4"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="ISSUE_MERCHANDISE_CREDIT_CARD_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">ISSUE_XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="4"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="RELOAD_MERCHANDISE_CREDIT_CARD_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">RELOAD_XPAY_GIFT_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="4"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="ISSUE_XPAY_POINTS_CARD_CID">
+    <Event dtype="Class">dtv.hardware.events.CidEvent</Event>
+    <Type dtype="String">ISSUE_XPAY_POINTS_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="4"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="RAIN_CHECK_INPUT">
+    <Event dtype="Class">dtv.hardware.events.RainCheckScanEvent</Event>
+    <Type dtype="String">INPUT_RAINCHECK_ID</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="RC"/>
+        <Parameter name="range_end" value="RC"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="TRANSARMOR_UTILITY">
+    <Event dtype="Class">dtv.hardware.events.TransArmorUtilityEvent</Event>
+    <Type dtype="String">TRANSARMOR_UTILITY</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="515111"/>
+        <Parameter name="range_end" value="515111"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="RELATE_LOYALTY_CARD">
+    <Event dtype="Class">dtv.xst.crm.relate.impl.loyalty.event.RelateCustomerCardEvent</Event>
+    <Type dtype="String">RELATE_LOYALTY</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="RELATE_LOYALTY_CARD_SCAN">
+    <Event dtype="Class">dtv.xst.crm.relate.impl.loyalty.event.RelateCardScanEvent</Event>
+    <Type dtype="String">RELATE_LOYALTY</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="XSTORE_ORDER_SCAN">
+    <Event dtype="Class">dtv.xst.xom.impl.order.event.OrderScanEvent</Event>
+    <Type dtype="String">XSTORE_ORDER</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule" />
+      <InputRule RuleType="SymbologyRule">
+      	<Parameter name="symbology" value="Code 93"/>
+        <Parameter name="symbology" value="Code93"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13" />
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="SERENADE_ORDER_SCAN">
+    <Event dtype="Class">dtv.xst.xom.impl.order.event.SerenadeOrderScanEvent</Event>
+    <Type dtype="String">SERENADE_ORDER</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule" />
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="15" />
+      </InputRule>
+      <InputRule RuleType="RegExRule">
+        <Parameter name="Expression" value="\d{3}-\d{8}-\d{2}" />
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+  
+   <InputType name="CASHDRAWER_SCAN">
+    <Event dtype="Class">dtv.hardware.events.CashDrawerScanEvent</Event>
+    <Type dtype="String">CASHDRAWER_SCAN</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <!-- EAN-128 is the same as UCC128 -->
+        <Parameter name="symbology" value="Code 128"/>
+        <Parameter name="symbology" value="Code128"/>
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="5"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <ProcessingOrder>
+    <Entry name="FDMS_GIFT_CARD1" order="100" enabled="true" />
+    <Entry name="FDMS_GIFT_CARD2" order="200" enabled="true" />
+    <Entry name="DRIVERS_LICENSE_SWIPE" order="500" enabled="true" />
+    <Entry name="DRIVERS_LICENSE_BARCODE" order="600" enabled="true" />
+    <Entry name="MANUFACTURER_COUPON_UPC-A" order="700" enabled="true" />
+    <Entry name="IN-STORE_COUPON_EAN13" order="800" enabled="true" />
+    <Entry name="CUST_CARD_MSR" order="900" enabled="true" />
+    <Entry name="CUST_CARD_SCAN" order="1000" enabled="true" />
+    <Entry name="ANSWER" order="1100" enabled="true" />
+    <Entry name="SIGNATURE" order="1200" enabled="true" />
+    <Entry name="MSR_ERROR" order="1300" enabled="true" />
+    <Entry name="PIN_ENTRY" order="1400" enabled="true" />
+    <Entry name="MASTERCARD1" order="1500" enabled="true" />
+    <Entry name="MASTERCARD2" order="1600" enabled="true" />
+    <Entry name="MASTERCARD3" order="1650" enabled="true" />
+    <Entry name="TRANSARMOR_UTILITY" order="1700" enabled="true" />
+    <Entry name="VISA1" order="1800" enabled="true" />
+    <Entry name="VISA2" order="1900" enabled="true" />
+    <Entry name="AMEX1" order="2000" enabled="true" />
+    <Entry name="AMEX2" order="2100" enabled="true" />
+    <Entry name="DISCOVER" order="2200" enabled="true" />
+    <Entry name="JCB" order="2400" enabled="true" />
+    <Entry name="JCB2" order="2500" enabled="true" />
+    <Entry name="JCB3" order="2600" enabled="true" />
+    <Entry name="DINERS_CLUB" order="2700" enabled="true" />
+    <Entry name="DEBIT" order="2800" enabled="true" />
+    <Entry name="COUPON_GIFT_CARD" order="2900" enabled="true" />
+    <Entry name="PRIVATE_LABEL" order="3000" enabled="true" />
+    <Entry name="MERCH_CC" order="3100" enabled="true" />
+    <Entry name="TRAN_SCAN" order="3200" enabled="true" />
+
+    <!-- enabled with ":order" config path -->
+    <Entry name="XSTORE_ORDER_SCAN" order="3300" enabled="false" />
+    <Entry name="SERENADE_ORDER_SCAN" order="3400" enabled="false" />
+
+    <Entry name="STORE_CREDIT_SCAN" order="3500" enabled="true" />
+    <Entry name="GIFT_CERT" order="3600" enabled="true" />
+    <Entry name="HOUSE_ACCOUNT" order="3700" enabled="true" />
+    <Entry name="BOUNCE_BACK_COUPON" order="3800" enabled="true" />
+    <Entry name="LAYAWAY_SCAN" order="3900" enabled="true" />
+    <Entry name="SPECIAL_ORDER_SCAN" order="4000" enabled="true" />  
+    <Entry name="WORK_ORDER_SCAN" order="4050" enabled="true" />
+    <Entry name="PRESALE_SCAN" order="4100" enabled="true" />
+    <Entry name="ONHOLD_SCAN" order="4200" enabled="true" />
+    <Entry name="ENCODED_PRICE_SCAN" order="4300" enabled="true" />
+    <Entry name="ASN_SCAN" order="4400" enabled="true" />
+    <Entry name="STORE_TRANSFER_SCAN" order="4500" enabled="true" />
+    <Entry name="RETURN_TO_VENDOR_SCAN" order="4600" enabled="true" />
+    <Entry name="SHIPMENT_OUT_SCAN" order="4700" enabled="true" />
+    <Entry name="CARTON_SCAN" order="4800" enabled="true" />
+    <Entry name="WARRANTY_SCAN" order="4900" enabled="true" />
+    <Entry name="RAIN_CHECK_INPUT" order="5000" enabled="true" />
+    <Entry name="EMP_CARD_MSR_BIN" order="5100" enabled="true" />
+    <Entry name="EMP_CARD_SCAN_BIN" order="5200" enabled="true" />
+    <Entry name="BOARDING_PASS_SCAN" order="5300" enabled="true" />
+    
+    <!-- enabled with ":ipcashdrawer" config path -->
+    <Entry name="CASHDRAWER_SCAN" order="5350" enabled="false" />
+    
+    <Entry name="ITEM_SCAN" order="5400" enabled="true" />
+    <Entry name="MANUFACTURER_COUPON_MANUAL" order="5500" enabled="true" />
+    <Entry name="IN-STORE_COUPON_MANUAL" order="5600" enabled="true" />
+    <Entry name="STORE_CREDIT_MANUAL" order="5700" enabled="true" />
+    <Entry name="PAYMENTECH_GIFT_CARD" order="5800" enabled="true" />
+    <Entry name="RELATE_GIFT_CARD" order="5900" enabled="true" />
+
+    <!-- enabled with ":relate" config path -->
+    <Entry name="RELATE_LOYALTY_CARD_SCAN" order="6000" enabled="false" />
+    <Entry name="RELATE_LOYALTY_CARD" order="6100" enabled="false" />
+
+    <Entry name="RELATE_GIFT_CARD_MANUAL" order="6200" enabled="true" />
+    <Entry name="AMEX_CID" order="6300" enabled="true" />
+    <Entry name="DISCOVER_CID" order="6400" enabled="true" />
+    <Entry name="VISA_CID" order="6500" enabled="true" />
+    <Entry name="MASTERCARD_CID" order="6600" enabled="true" />
+    <Entry name="JCB_CID" order="6700" enabled="true" />
+    <Entry name="XPAY_GIFT_CARD_CID" order="6800" enabled="true" />
+    <Entry name="ISSUE_XPAY_GIFT_CARD_CID" order="6900" enabled="true" />
+    <Entry name="RELOAD_XPAY_GIFT_CARD_CID" order="7000" enabled="true" />
+    <Entry name="MERCHANDISE_CREDIT_CARD_CID" order="7100" enabled="true" />
+    <Entry name="ISSUE_MERCHANDISE_CREDIT_CARD_CID" order="7200" enabled="true" />
+    <Entry name="RELOAD_MERCHANDISE_CREDIT_CARD_CID" order="7300" enabled="true" />
+    <Entry name="ISSUE_XPAY_POINTS_CARD_CID" order="7400" enabled="true" />
+    <Entry name="MALL_CERT" order="7500" enabled="true" />
+    <Entry name="MSR_OTHER" order="7600" enabled="true" />
+  </ProcessingOrder>
+</InputTypeList>

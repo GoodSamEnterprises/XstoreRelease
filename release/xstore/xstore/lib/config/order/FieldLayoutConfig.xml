@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FieldLayoutSet xmlns="http://micros.com/xstore/config/form/fieldlayout" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FieldLayoutConfig.xsd">
+ 
+  <FieldLayout name="orderDeliveryInfoLayout" type="ListLayout">
+    <Row>
+      <Column start="0" width="20" fieldRef="telephoneLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="50" fieldRef="telephoneExt" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="emailAddressLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="80" fieldRef="emailAddress" />
+    </Row>
+    <Row>   
+      <Column start="0" width="20" fieldRef="commonNameLabel" horizontalAlignment="Right" />
+      <Column start="20" width="15" fieldRef="salutation" />
+      <Column start="35" width="25" fieldRef="firstName" required="true" />
+      <Column start="60" width="10" fieldRef="middleName" />
+      <Column start="70" width="30" fieldRef="lastName" required="true" />
+    </Row>
+    <Row>
+      <Column start="20" width="15" fieldRef="prefixLabel" horizontalAlignment="Center" />
+      <Column start="35" width="25" fieldRef="firstNameShortLabel" horizontalAlignment="Center" />
+      <Column start="60" width="10" fieldRef="middleShortLabel" horizontalAlignment="Center" />
+      <Column start="70" width="30" fieldRef="lastNameShortLabel" horizontalAlignment="Center" />     
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="organizationNameLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="80" fieldRef="organizationName" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="address1Label" horizontalAlignment="Right"/>
+      <Column start="20" width="80" fieldRef="address1" required="true" />
+    </Row>
+    <Row>
+      <Column start="20" width="80" fieldRef="address2" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="apartmentLabel" visibilityGroup="apartmentVisibility"
+              horizontalAlignment="Right"/>
+      <Column start="20" width="80" fieldRef="apartment" visibilityGroup="apartmentVisibility" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="statePostalLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="20" fieldRef="postalCode" required="true" />
+      <Column start="40" width="60" fieldRef="state" required="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="20" fieldRef="cityCountryLabel" horizontalAlignment="Right"/>
+      <Column start="20" width="30" fieldRef="city" required="true" />
+      <Column start="50" width="50" fieldRef="country" />
+    </Row>
+  </FieldLayout>
+  <FieldLayout name="orderLocateItemLayout" type="SimpleLayout">
+   <Row>
+      <Column fieldRef="orderCityLabel" horizontalAlignment="Right" />
+      <Column fieldRef="city" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderStateLabel" horizontalAlignment="Right" />
+      <Column fieldRef="state" />
+    </Row>
+    <Row>
+      <Column fieldRef="orderPostalCodelabel" horizontalAlignment="Right" />
+      <Column fieldRef="postalCode" refreshOnChange="true"/>
+    </Row>
+    <Row>
+      <Column/>
+      <Column fieldRef="country" horizontalAlignment="Right" visibilityGroup="hideOnlyInHandHeldRule"/>
+    </Row>
+    <Row>
+      <Column fieldRef="orderMilesLabel" horizontalAlignment="Right" fontRef="formDiminishedFont"/>
+      <Column fieldRef="orderMiles" required="true" />
+    </Row>
+  </FieldLayout> 
+</FieldLayoutSet>

@@ -1,0 +1,93 @@
+<dataTemplate name="TechnicalEventLog" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+    
+    <label name="CRITERIA_VALUE_ALL" value="_rptParamSelectionAll"/>
+    <label name="CRITERIA_REGISTER" value="_rptRegisterColon"/>
+    <label name="CRITERIA_EVENT_TYPE" value="_countrypack.fr.jetReportEventTypeColon"/>
+    <label name="CRITERIA_OPERATOR_CODE" value="_countrypack.fr.jetReportOperatorCodeColon"/>
+    
+
+    <label name="DATE" value="_countrypack.fr.jetReportDate"/>
+    <label name="TIME" value="_countrypack.fr.jetReportTime"/>
+    <label name="REGISTER" value="_countrypack.fr.jetReportWorkstationId"/>
+    <label name="UNIQUE_ID" value="_countrypack.fr.jetReportUniqueId"/>    
+    <label name="OPERATOR_CODE" value="_countrypack.fr.jetReportOperatorCode"/>
+    <label name="EVENT_TYPE" value="_countrypack.fr.jetReportEventType"/>
+    <label name="INFORMATION" value="_countrypack.fr.jetReportInformation"/>    
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+    </parameter>    
+    <parameter name="workstationId" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_countrypack.fr.jetReportFormRegisterID;Text;Numeric;maximumIntegerDigits=8]]></parameterDescription>      
+    </parameter>
+    <parameter name="eventCode" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_countrypack.fr.jetReportFormEventType;Combo;oracle.retail.xstore.countrypack.fr.eventlog.FrEventCodeLoader;all=_rptParamSelectionAll]]></parameterDescription>
+      <!-- defaultValueExpression><![CDATA[""]]></defaultValueExpression -->
+    </parameter>
+    <parameter name="employeeId" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_countrypack.fr.jetReportFormOperatorCode;Text;Simple;maxCharacters=30]]></parameterDescription>
+      <!-- defaultValueExpression><![CDATA[0]]></defaultValueExpression -->
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_TECHNICAL_EVENT_LOG" key="COUNTRYPACK.TECHNICAL_EVENT_LOG_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>workstationId</Parameter>
+        <Parameter>eventCode</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>event_timestamp</ResultField>
+        <ResultField>wkstn_id</ResultField>
+        <ResultField>type_desc</ResultField>
+        <ResultField>unique_id</ResultField>
+        <ResultField>operator_code</ResultField>
+        <ResultField>event_code</ResultField>
+       	<ResultField>description</ResultField>
+       	<ResultField>informations</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_TECHNICAL_EVENT_LOG" source="Q_TECHNICAL_EVENT_LOG">
+      <element name="DATE" value="event_timestamp" formatter="DateMedium"/>
+      <element name="TIME" value="event_timestamp" formatter="TimeShort"/> 
+      <element name="REG" value="wkstn_id"/>
+      <element name="UNIQUE_ID" value="unique_id"/>
+      <element name="OPERATOR_CODE" value="operator_code"/>
+      <element name="EVENT_CODE" value="event_code"/>
+      <element name="DESCRIPTION" value="description"/>
+      <element name="INFORMATION" value="informations"/>   
+    </group>
+  </dataStructure>
+</dataTemplate>

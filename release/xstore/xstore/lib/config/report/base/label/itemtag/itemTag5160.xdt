@@ -1,0 +1,39 @@
+<dataTemplate name="itemTag5160" xmlns="http://micros.com/xstore/config/report">
+
+  <labels>
+    <!-- Common Text -->
+
+    <!-- Template-specific Text -->
+    
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+  
+    <!-- User Parameters -->
+
+  </parameters>
+  
+  <dataSource>
+    <dataReference name="O_LABEL_ITEM">
+      <ResultFields>
+        <ResultField>Item.getParentItemId</ResultField>
+        <ResultField>Item.getItemDimensionValue(1)</ResultField>
+        <ResultField>Item.getItemDimensionValue(2)</ResultField>
+        <ResultField>ItemId</ResultField>
+        <ResultField>ShelfPrice</ResultField>
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+  
+  <dataStructure>
+    <group name="G_DETAIL" source="O_LABEL_ITEM">
+      <element name="PARENT_ITEM_ID" value="Item.getParentItemId"/>
+      <element name="ITEM_DIM1_VALUE" value="Item.getItemDimensionValue(1)"/>
+      <element name="ITEM_DIM2_VALUE" value="Item.getItemDimensionValue(2)"/>
+      <element name="ITEM_ID" value="ItemId"/>
+      <element name="ITEM_ID_BARCODE" value="ItemId" barcode="Code93"/>
+      <element name="SHELF_PRICE" value="ShelfPrice" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

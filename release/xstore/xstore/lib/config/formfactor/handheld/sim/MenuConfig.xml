@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+  
+  <MenuItem name="XSTOREM::XSTOREM_MENU" text="_menuXstoremMainMenu" displayType="ICON_LIST" category="General" keywords="exclude">
+    <MenuOption ref="XSTOREM::SALE" />
+    <MenuOption ref="XSTOREM::ITEM_LOOKUP" />
+    <MenuOption ref="XSTOREM::TIME_CLOCK" />
+    <MenuOption ref="XSTOREM::ADMIN" />
+  </MenuItem>
+  
+  <MenuItem name="ADMIN::BACK_OFFICE_OPTIONS" text="_menuTopText" rootText="_menuTopTextRoot" displayType="LIST" category="Back Office" keywords="universal,back_office,inventory,back_office_only,report_customer,report_inventory,report_employee,report_till,report_system,report" >
+    <MenuOption>
+      <Action ref="ADMIN::OPEN_REGISTER" />
+      <Action ref="ADMIN::CLOSE_REGISTER" />
+    </MenuOption>
+
+    <MenuOption ref="CUSTOMER::MAINTAIN" />
+    <MenuOption ref="ADMIN::REINIT_HARDWARE" />
+    <MenuOption ref="ADMIN::EFTLINK_ADMIN" /> 
+    <SubMenu ref="TILL::OPTIONS" />
+  </MenuItem>
+  
+</MenuSet>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="KEY_TenderCash" class="com.micros_retail.xfgclient.key.LocalCurrencyTenderKey">
+    <property name="label" value="_xfgclient.key.tendercash.label" />
+    <property name="code" value="1" />
+  </bean>
+
+  <bean id="KEY_TenderEC" class="com.micros_retail.xfgclient.key.TenderKey">
+    <property name="label" value="_xfgclient.key.tenderec.label" />
+    <property name="code" value="2" />
+    <property name="tenderId" value="DEBIT_CARD" />
+  </bean>
+
+  <bean id="KEY_TenderCC" class="com.micros_retail.xfgclient.key.TenderKey">
+    <property name="label" value="_xfgclient.key.tendercc.label" />
+    <property name="code" value="3" />
+    <property name="tenderId" value="CREDIT_CARD" />
+  </bean>
+
+  <bean id="KEY_TravelersCheck" class="com.micros_retail.xfgclient.key.TenderKey">
+    <property name="label" value="_xfgclient.key.tendertravelerscheck.label" />
+    <property name="code" value="5" />
+    <property name="tenderCategory" value="TRAVELERS_CHECK" />
+  </bean>
+
+  <bean id="KEY_TenderCoupon" class="com.micros_retail.xfgclient.key.TenderKey">
+    <property name="label" value="_xfgclient.key.tendercoupon.label" />
+    <property name="code" value="6" />
+    <property name="tenderId" value="COUPON" />
+  </bean>
+
+  <bean id="KEY_TenderUSDCurrency" class="com.micros_retail.xfgclient.key.TenderKey">
+    <property name="label" value="_xfgclient.key.tenderusdcurreny.label" />
+    <property name="code" value="7" />
+    <property name="tenderId" value="USD_CURRENCY" />
+  </bean>
+
+  <bean id="KEY_TenderCADCurrency" class="com.micros_retail.xfgclient.key.TenderKey">
+    <property name="label" value="_xfgclient.key.tendercadcurreny.label" />
+    <property name="code" value="8" />
+    <property name="tenderId" value="CAD_CURRENCY" />
+  </bean>
+
+  <bean id="KEY_Giftcard" class="com.micros_retail.xfgclient.key.TenderKey">
+    <property name="label" value="_xfgclient.key.tendergiftcard.label" />
+    <property name="code" value="9" />
+    <property name="tenderId" value="XPAY_GIFT_CARD" />
+  </bean>
+
+  <bean id="KEY_HouseAccount" class="com.micros_retail.xfgclient.key.TenderKey">
+    <property name="label" value="_xfgclient.key.houseaccount.label" />
+    <property name="code" value="10" />
+    <property name="tenderId" value="HOUSE_ACCOUNT" />
+  </bean>
+
+  <bean id="KEY_TenderEURCurrency" class="com.micros_retail.xfgclient.key.TenderKey">
+    <property name="label" value="_xfgclient.key.tendercash.label" />
+    <property name="code" value="11" />
+    <property name="tenderId" value="EUR_CURRENCY" />
+  </bean>
+
+</beans>

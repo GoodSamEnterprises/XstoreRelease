@@ -1,0 +1,163 @@
+<dataTemplate name="UnfulfillableOrderStatus" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+  
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodColon"/>
+    <label name="ORDER" value="_orderDetailOrderHeader"/>
+    <label name="ORDER_ID" value="_rptIDColon"/>
+    <label name="ORDER_STATUS" value="_orderStatusColon"/>
+    <label name="ORDER_TYPE" value="_orderTypeColon"/>
+    <label name="SUBTOTAL" value="_orderDetailSubtotalColon"/>
+    <label name="ORDER_DATE" value="_orderDateColon"/>
+    <label name="FREIGHT" value="_orderDetailFreightAmountColon"/>
+    <label name="BALANCE_DUE" value="_orderBalanceDueColon"/>
+    <label name="ORDER_ORIG" value="_orderPlacementLocationColon"/>
+    <label name="TAX" value="_orderDetailTaxColon"/>
+    <label name="PAYMENTS" value="_orderPaymentsColon"/>
+    <label name="REF_NUM" value="_orderReferenceNumberColon"/>
+    <label name="TOTAL" value="_orderDetailTotalColon"/>
+    <label name="COMMENTS" value="_orderDetailCommentsColon"/>
+    
+    <label name="CUSTOMER" value="_orderDetailCustomerHeader"/>  
+    <label name="SOLD_TO" value="_orderDetailSoldToColon"/>  
+    <label name="PHONE" value="_orderDetailPhoneColon"/>  
+    <label name="EMAIL" value="_orderDetailEmailColon"/>  
+    <label name="COMPANY" value="_orderDetailCompanyColon"/>  
+
+    <label name="ITEM_STATUS" value="_rptStatus"/>
+    <label name="ITEM_ID" value="_rptID"/>
+    <label name="ITEM_DESC" value="_rptDescription"/>
+    <label name="UNT_PRC" value="_rptUnitPrice"/>
+    <label name="ITEM_QTY" value="_rptQuantity"/>
+    <label name="EXT_PRC" value="_rptNetAmount"/>   
+    <label name="SRC" value="_orderSourceColon"/>   
+    <label name="DELTO" value="_orderReportDeliveryFulfillment"/>  
+    <label name="PCKUP" value="_orderReportPickupFulfillment"/> 
+    <label name="REQ_SHIPVIA" value="_orderSelectedShipViaColon"/> 
+    <label name="SHIPVIA" value="_orderShipViaColon"/> 
+    
+    <label name="TYPE_PICKUP" value="_dtv.xst.xom.impl.order.OrderType.STANDARD_PICKUP"/> 
+    <label name="TYPE_TRANSFER_PICKUP" value="_dtv.xst.xom.impl.order.OrderType.DELAYED_PICKUP "/> 
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="merchLevel1Code" class="java.lang.String" isForPrompting="false" include_in_output="false"/>
+
+    <!-- User Parameters -->    
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange">
+      <parameterDescription><![CDATA[_orderDateSearch;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <dataReference name="D_ORD">
+      <ResultFields>   
+        <ResultField>OrderId</ResultField>     
+        <ResultField>OrderType</ResultField>    
+        <ResultField>StatusCode</ResultField>    
+        <ResultField>OrderDate</ResultField>    
+        <ResultField>Subtotal</ResultField>    
+        <ResultField>BalanceDue</ResultField>    
+        <ResultField>OrderLocationId</ResultField> 
+        <ResultField>OrderLocationObject.getStoreName</ResultField>      
+        <ResultField>TaxAmount</ResultField>    
+        <ResultField>Customer</ResultField>   
+        <ResultField>Customer.getOrganizationName</ResultField>   
+        <ResultField>Customer.getTelephone1</ResultField>  
+        <ResultField>Customer.getTelephone2</ResultField>   
+        <ResultField>Customer.getEmailAddress</ResultField>  
+        <ResultField>Notes</ResultField>   
+        <ResultField>ReferenceNumber</ResultField>        
+        <ResultField>Total</ResultField>
+        <ResultField>ShippingFeeAmount</ResultField>
+        <ResultField>TotalPaymentAmount</ResultField>
+      </ResultFields>
+    </dataReference>
+    <dataReference name="D_ORD_LINE" key="OrderLines">
+      <ResultFields>   
+        <ResultField>ItemId</ResultField>     
+        <ResultField>Quantity</ResultField>    
+        <ResultField>StatusCode</ResultField>    
+        <ResultField>UnitPrice</ResultField>    
+        <ResultField>ExtendedPrice</ResultField>   
+        <ResultField>Item.getDescription</ResultField>      
+        <ResultField>Notes</ResultField>    
+        <ResultField>SourceModifier.getLocationId</ResultField> 
+        <ResultField>SourceModifier.getLocationName1</ResultField> 
+        <ResultField>SourceModifier.getLocationName2</ResultField> 
+        <ResultField>FulfillmentModifier.getLocationId</ResultField> 
+        <ResultField>FulfillmentModifier</ResultField> 
+        <ResultField>FulfillmentModifier.getAddress</ResultField> 
+        <ResultField>SelectedShipMethodObject.getShipperMethodDesc</ResultField> 
+        <ResultField>ActualShipMethodObject.getShipperMethodDesc</ResultField>    
+        <ResultField>TrackingNumber</ResultField>    
+        <ResultField>FulfillmentType</ResultField>   
+        <ResultField>OrderId</ResultField>   
+        <ResultField>Void</ResultField>  
+      </ResultFields>
+    </dataReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_ORD" source="D_ORD">   
+      <element name="ORDID" value="OrderId" />
+      <element name="ORDTYPE_RAW" value="OrderType"/>
+      <element name="ORDTYPE" value="OrderType" translation-prefix="_dtv.xst.xom.impl.order.OrderType."/>
+      <element name="STATUS" value="StatusCode" translation-prefix="_dtv.xst.xom.impl.order.OrderStatus."/>
+      <element name="ORDDATE" value="OrderDate" formatter="DateShort"/>
+      <element name="SUBTOT" value="Subtotal" formatter="Money"/>
+      <element name="BALDUE" value="BalanceDue" formatter="Money"/>
+      <element name="LOCID" value="OrderLocationId" />
+      <element name="LOCNAME" value="OrderLocationObject.getStoreName" />
+      <element name="TAX" value="TaxAmount" formatter="Money"/>
+      <element name="CUST" value="Customer" formatter="BasicName"/>
+      <element name="ORG" value="Customer.getOrganizationName" />
+      <element name="TELE1" value="Customer.getTelephone1" formatter="Phone"/>
+      <element name="TELE2" value="Customer.getTelephone2" formatter="Phone"/>  
+      <element name="EMAIL" value="Customer.getEmailAddress" />    
+      <element name="NOTES" value="Notes" />
+      <element name="REFNBR" value="ReferenceNumber" />
+      <element name="TOT" value="Total" formatter="Money"/>
+      <element name="FREIGHT" value="ShippingFeeAmount" formatter="Money"/>
+      <element name="PAYMENT" value="TotalPaymentAmount" formatter="Money"/>
+    </group>
+    <group name="G_ORD_LINE" source="D_ORD_LINE">   
+        <element name="ITMID" value="ItemId" />
+        <element name="QTY" value="Quantity" formatter="Decimal"/>
+        <element name="STATUS" value="StatusCode" translation-prefix="_dtv.xst.xom.impl.order.OrderLineStatus."/>
+        <element name="UNTPRC" value="UnitPrice" formatter="Money"/>    
+        <element name="EXTPRC" value="ExtendedPrice" formatter="Money"/>   
+        <element name="ITMDSC" value="Item.getDescription" />   
+        <element name="NOTES" value="Notes" />   
+        <element name="SRCLOCID" value="SourceModifier.getLocationId" />   
+        <element name="SRCLOCNM1" value="SourceModifier.getLocationName1" />  
+        <element name="SRCLOCNM2" value="SourceModifier.getLocationName2" />  
+        <element name="FULLOCID" value="FulfillmentModifier.getLocationId"/>   
+        <element name="FULLOCNM" value="FulfillmentModifier" formatter="BasicName"/>   
+        <element name="FULADDR" value="FulfillmentModifier.getAddress" formatter="BasicAddress"/>   
+        <element name="SELSHIPMTH" value="SelectedShipMethodObject.getShipperMethodDesc" /> 
+        <element name="ACTSHIPMTH" value="ActualShipMethodObject.getShipperMethodDesc" /> 
+        <element name="TRKNM" value="TrackingNumber" />  
+        <element name="FULTYPE" value="FulfillmentType" />  
+        <element name="ORDID" value="OrderId" /> 
+        <element name="VOID" value="Void" />  
+    </group>
+  </dataStructure>
+</dataTemplate>

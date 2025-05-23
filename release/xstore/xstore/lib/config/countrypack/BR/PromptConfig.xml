@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<PromptSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PromptConfig.xsd">  
+<!--   Base config overrides start -->
+
+  <!-- Disallow blind and unverified returns -->
+  <Prompt name="RETURN_VERIFICATION_NOT_FOUND" type="Notify" title="_return" message="_countrypack.br.returns.unverifiedReturnsNotAllowed">
+    <Action ref="NO_BACK" />
+  </Prompt>
+  <Prompt name="RETURN_TRANSACTION_LIST" type="List" title="_returnTransactionsTitle" message="_returnTransactionsMsg">
+    <ListViewType dtype="String">RETURN_TRANSACTION_LIST</ListViewType>
+    <ActionDisplayType dtype="String">POPUP</ActionDisplayType>
+<!--     <Action dataKey="CONTINUE" text="_continueBlindReturn" keyStroke="Escape" privilege="RETURN_ITEM_NOT_IN_HISTORY" /> -->    
+    <Action ref="CANCEL_BACK" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="ITEM_NOT_IN_HISTORY" type="NotifyYesNo" title="_itemNotInHistoryTitle" message="_countrypack.br.returns.itemNotInHistoryMsg">
+<!--     <Action ref="YES" privilege="RETURN_ITEM_NOT_IN_HISTORY" /> -->
+    <Action ref="CANCEL_OK" />
+  </Prompt>  
+  <Prompt name="ITEM_NOT_FOUND_RETURN_VERIFICATION" type="Notify" title="_return" message="_promptmsg162">
+    <Action visible="false" dataKey="ITEM_SELECTION" keyStroke="Escape" />
+<!--     <Action dataKey="BLIND_RETURN" text="_continueAsReturnWithoutReceipt" keyStroke="F5" /> -->
+    <Action dataKey="ITEM_SELECTION" text="_backToItemSelection" keyStroke="F6" />
+    <Action dataKey="SEARCH_TRANS" text="_searchFromAnotherTransaction" keyStroke="F7" />
+  </Prompt>
+  <Prompt name="ITEM_NOT_RETURNABLE_RETURN_VERIFICATION" type="Notify" title="_return" message="_promptmsg162">
+    <Action dataKey="OVERRIDE" text="_managerOverride" keyStroke="F4" />
+<!--     <Action dataKey="BLIND_RETURN" text="_continueAsReturnWithoutReceipt" keyStroke="F5" /> -->
+    <Action dataKey="ITEM_SELECTION" text="_backToItemSelection" keyStroke="F6" />
+    <Action dataKey="SEARCH_TRANS" text="_searchFromAnotherTransaction" keyStroke="F7" />
+  </Prompt>
+  
+  <!--   Base config overrides end -->
+  
+  <!-- ************************************************* -->
+  <!-- BRAZIL -->
+  <!-- ************************************************* -->
+
+  <!-- prompt for capturing AUTH_CODE for non integrated credit/debit tender -->
+  <Prompt name="BR::CAPTURE_AUTH_CODE" type="Text" title="_countrypack.br.tender.authcode.title" message="_countrypack.br.tender.authcode.msg">
+    <DataField ref="Integer">
+      <Parameter name="maximumIntegerDigits">
+        <param_value dtype="Integer">6</param_value>
+      </Parameter>
+    </DataField>
+  </Prompt>
+  <!-- prompt for capturing AUTH_DOC for non integrated credit/debit tender -->
+  <Prompt name="BR::CAPTURE_AUTH_DOC" type="Text" title="_countrypack.br.tender.authdoc.title" message="_countrypack.br.tender.authdoc.msg">
+    <DataField ref="Integer">
+      <Parameter name="maximumIntegerDigits">
+        <param_value dtype="Integer">6</param_value>
+      </Parameter>
+    </DataField>
+  </Prompt>
+  <Prompt name="BR::CAPTURE_NBR_OF_SPLITS" type="Text" title="_countrypack.br.tender.nbr_of_splits.title" message="_countrypack.br.tender.nbr_of_splits.msg">
+    <DataField ref="Integer">
+      <Parameter name="maximumIntegerDigits">
+        <param_value dtype="Integer">2</param_value>
+      </Parameter>
+    </DataField>
+  </Prompt>
+  
+  <!-- ###################################################################### -->
+  <!-- ####################### Card Network ########################## -->
+  <!-- ###################################################################### -->
+
+  <Prompt name="BR::CARD_NETWORK" type="List" title="_countrypack.br.fiscal.tender.cardNetwork.title" message="_countrypack.br.fiscal.tender.cardNetwork.msg">
+    <ListViewType dtype="String">BR::CARD_NETWORK</ListViewType>
+  </Prompt>
+  <Prompt name="BR::CARD_NETWORK_EMPTY_LIST" type="NotifyCancel" title="_error" message="_countrypack.br.fiscal.tender.cardNetwork.msg.error" />
+    
+  <Prompt name="COUNTRYPACK.BR.NOTIFY_ROLLBACK_TRAN" type="Notify" title="_countrypack.br.pos.common.notify" message="_countrypack.br.pos.common.dynamicMsg" />
+  <Prompt name="COUNTRYPACK.BR.ITEM_NCM" type="Text" title="_countrypack.br.nfe.itemNcm.title" message="_countrypack.br.nfe.itemNcm.msg">
+    <DataField ref="Numeric">
+      <Parameter name="maximumIntegerDigits">
+        <param_value dtype="Integer">8</param_value>
+      </Parameter>
+    </DataField>
+  </Prompt>
+  <Prompt name="COUNTRYPACK.BR.CFOP" type="List" title="\u00A0" message="_countrypack.br.nfe.item.cfop.msg">
+    <ListViewType dtype="String">NFE_CFOP</ListViewType>
+    <Action dataKey="EXIT" keyStroke="Escape" text="_back" />
+    <Action ref="ACCEPT_ENTER" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.BR.CFOP_EMPTY_LIST" type="NotifyCancel" title="_error" message="_countrypack.br.nfe.item.cfop.error" />
+  <Prompt name="COUNTRYPACK.BR.NFE_PROMPT_NFE_COMMENT" type="LongText" title="_countrypack.br.nfe.ejournal.prompt.comment.title"
+    message="_countrypack.br.nfe.ejournal.prompt.comment.message">
+    <Action dataKey="EXIT" text="_back" keyStroke="Escape" />
+    <Action dataKey="ACCEPT" text="_countrypack.br.nfe.prompt.infcpl.save" keyStroke="F8" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.BR.NFE_PROMPT_NFCE_COMMENT" type="LongText" title="_countrypack.br.nfe.ejournal.prompt.comment.title"
+    message="_countrypack.br.nfe.ejournal.prompt.comment.message">
+    <Action dataKey="ACCEPT" text="_countrypack.br.nfe.prompt.infcpl.save" keyStroke="F8" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.BR.CUSTOMER_INFO_IN_NF" type="NotifyYesNo" title="_countrypack.br.customer.info.inNf.title" message="_countrypack.br.customer.info.inNf.msg" />
+  <Prompt name="COUNTRYPACK.BR.CUSTOMER_INFO_DIFF" type="NotifyYesNo" title="_countrypack.br.customer.info.inNf.title" message="_countrypack.br.customer.info.inNf.diff.msg" />
+  <Prompt name="COUNTRYPACK.BR.CUSTOMER_TAX_ID_ENTRY" type="Text" title="_countrypack.br.customer.info.taxid.title" message="_countrypack.br.customer.info.taxid.msg">
+    <IconGroup icon="_imagePromptSerial" />
+  </Prompt>
+  <Prompt name="COUNTRYPACK.BR.CUSTOMER_TAX_ID_INVALID" type="Notify" title="_countrypack.br.customer.info.taxid.title" message="_countrypack.br.customer.info.taxid.msg.invalid" />
+  <Prompt name="COUNTRYPACK.BR.NFE_SEARCH_NO_MATCHES" type="NotifyCancel" title="_countrypack.br.nfe.maintenance.op.NfeSearchOp.SearchTitle"
+    message="_countrypack.br.nfe.maintenance.op.NfeSearchOp.SearchNoneFound" />
+  <Prompt name="COUNTRYPACK.BR.NFE_MODIFY_NFE" type="NotifyYesNo" title="_countrypack.br.nfe.inventory.modify.nfe.title" message="_countrypack.br.nfe.inventory.modify.nfe.message" />
+  <Prompt name="COUNTRYPACK.BR.NFE_PROMPT_REPRINT" type="NotifyYesNo" title="_countrypack.br.nfe.prompt.reprint.title" message="_countrypack.br.nfe.prompt.reprint.message" />
+  <Prompt name="COUNTRYPACK.BR.NFE_MAINT_REVERSAL" type="NotifyYesNo" title="_countrypack.br.nfe.maintenance.reverse.promptYesNo.title" message="_countrypack.br.nfe.maintenance.reverse.promptYesNo.msg" />
+  <Prompt name="COUNTRYPACK.BR.STANDALONE_OPERATION_COMPLETED" type="Notify" title="_countrypack.br.sat.operationCompleted.title"
+    message="_countrypack.br.sat.operationCompleted.msg" />
+  <Prompt name="COUNTRYPACK.BR.STANDALONE_OPERATION_FAILED" type="NotifyCancel" title="_countrypack.br.sat.operationFailed.title"
+    message="_countrypack.br.sat.operationFailed.msg" />
+  <!-- ************************************************* -->
+  <!-- /BRAZIL  -->
+  <!-- ************************************************* -->
+  
+</PromptSet>

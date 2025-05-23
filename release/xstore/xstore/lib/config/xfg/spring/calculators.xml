@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <!-- these are overwritten in xfg due to performance issues of the base implementation -->
+  <bean id="taxModifierCalculator" class="com.micros_retail.xfgclient.tax.TaxModifierCalculator" scope="prototype" />
+  <bean id="transactionTaxCalculator" class="com.micros_retail.xfgclient.tax.TransactionTaxCalculator" scope="prototype" />
+  <bean id="retailTransactionTotalCalculator" class="com.micros_retail.xfgclient.pricing.RetailTransactionTotalCalculator" scope="prototype" />
+
+  <!-- these 2 are xfg specific and manage the data for the transaction audit trail updates -->
+  <bean id="dealSummaryCalculator" class="com.micros_retail.xfgclient.pricing2.DealSummaryCalculator" scope="prototype" />
+  <bean id="dealSummaryChangeCalculator" class="com.micros_retail.xfgclient.pricing2.DealSummaryChangeCalculator" scope="prototype" />
+
+  <!--  the xfg version of this calculator needs to be initialized at a different point in time than the one of xstore -->
+  <!--  this bean must not be a prototype but it needs to be lazily initialized -->
+  <bean id="availableAwardBalanceCalculator" class="com.micros_retail.xfgclient.customer.award.XfgAvailableAwardBalanceCalculator" lazy-init="true" />
+
+  <bean id="calculators" class="org.springframework.beans.factory.config.ListFactoryBean" scope="prototype">
+    <property name="targetListClass" value="java.util.ArrayList" />
+    <property name="sourceList">
+      <list value-type="dtv.pos.pricing.AbstractCalculator">
+        <ref bean="priceChangeCalculator" />
+        <ref bean="unitPriceResetCalculator" />
+        <ref bean="dealCalculator" />
+        <ref bean="discountsCalculator" />
+        <ref bean="warrantyPriceCalculator" />
+        <ref bean="thresholdDealCalculator" />
+        <ref bean="baseTaxableAmountCalculator" />
+        <ref bean="discountTaxabilityCalculator" />
+        <ref bean="outofDoorDiscountCalculator" />
+        <ref bean="foodStampCalculator" />
+        <ref bean="dealSummaryCalculator" />
+        <ref bean="dealSummaryChangeCalculator" />
+        <ref bean="transTaxableAmtCalculator" />
+        <ref bean="taxModifierCalculator" />
+        <ref bean="newOrderSynchronizer" />
+        <ref bean="transactionTaxCalculator" />
+        <ref bean="salesTotalCalculator" />
+        <ref bean="retailTransactionTotalCalculator" />
+        <ref bean="availableAwardBalanceCalculator" />
+        <ref bean="customerAccountCalculator" />
+      </list>
+    </property>
+  </bean>
+
+</beans>

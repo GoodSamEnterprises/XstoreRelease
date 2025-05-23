@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+
+<!-- BASE OVVERRIDES START -->
+  <Action name="ADMIN::POST_VOID" category="Back Office" keywords="back_office" text="_postvoid" chainKey="POST_VOID">
+<!--         disable post void for Brazil -->
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AlwaysNotOverridableVisibilityRule" />
+    <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+      <Parameter name="state" value="OPEN" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TillAttachedAccessCheck" />
+  </Action>
+  
+  <Action name="RETURN" category="Return" keywords="register_extended,~send_sale" text="_menutext53" chainKey="NEW_RETURN" privilege="RETURN_ITEM">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowMixedInTransWithSaleItemTypeRule">
+      <Parameter name="type" value="RETURN" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.NotExceedTotalMaxReturnAmtThresholdCheck">
+      <Parameter name="privilege" value="RETURN_EXCEED_MAX_THRESHOLD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.BasicSaleTypeAvailabilityAccCheck">
+      <Parameter name="type" value="RETURN" />
+    </VisibilityRule>
+    <!-- BR added start -->
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.visibilityrules.HasSaleNfeVisibilityRule" inverted="true" />
+    <!-- BR added end -->
+  </Action>
+  <Action name="RETAIL::RESUME_TRANSACTION" category="Register" keywords="sale" text="_menutext140" chainKey="RESUME_TRANSACTION">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.NoTranAccCheck" />
+    <VisibilityRule class="dtv.pos.flight.op.visiblilityrules.AnyFlightInformationVisibilityRule" />
+    <!-- BR added start -->
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.visibilityrules.HasNfeVisibilityRule" inverted="true" />
+    <!-- BR added end -->
+  </Action>
+  <Action name="RETAIL::SUSPEND_TRANSACTION" category="Register" keywords="register_extended" text="_menutext66" chainKey="SUSPEND_TRANSACTION">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyTenderAccCheck" inverted="true" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.NoTranAccCheck" inverted="true" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.ValidSuspendableTransVisibilityRule" />
+    <VisibilityRule class="dtv.pos.flight.op.visiblilityrules.AnyFlightInformationVisibilityRule" />
+    <!-- BR added start -->
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.visibilityrules.HasNfeVisibilityRule" inverted="true" />
+    <!-- BR added end -->
+  </Action>  
+  <Action name="CUSTOMER::ATTACH" category="Register" keywords="sale" text="_menutext11" chainKey="CUST_ASSOCIATION">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TranHasCustAccCheck" inverted="true" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowReturnModeVisibilityRule" />
+    <!-- BR added start -->
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.visibilityrules.HasNfeVisibilityRule" inverted="true" />
+    <!-- BR added end -->
+  </Action>
+  <Action name="CUSTOMER::DETACH" category="Register" keywords="sale" text="_menutext101" chainKey="REMOVE_CUST_ASSOC">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TranHasCustAccCheck" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.NoARLineItemVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.NoOrderLineItemVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowRemoveCustomerVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.NoTaxExemptVisibilityRule" />
+    <VisibilityRule class="dtv.pos.customer.NoCurrentCustomerAccountsRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowReturnModeVisibilityRule" />
+    <!-- BR added start -->
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.visibilityrules.HasNfeVisibilityRule" inverted="true" />
+    <!-- BR added end -->
+  </Action>
+  
+  <!-- Disable completely change tax options -->
+  <Action name="RETAIL::MENU.MODIFY_LINE_TAX" category="Register" keywords="exclude,actionForSelectedListItem" text="_menutextChangeItemTax" privilege="CHANGE_TAX">
+    <IconGroup icon="_iconMenuChange" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AlwaysNotOverridableVisibilityRule" />
+  </Action>
+  <Action name="RETAIL::MENU.MODIFY_TRANS_TAX" category="Register" keywords="exclude" text="_menutextChangeTranTax" privilege="CHANGE_TAX">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AlwaysNotOverridableVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" />
+  </Action>
+  
+  <!-- Remove training mode option -->
+<!--   <Action name="ADMIN::TRAINING_MODE_ENTER" category="Anywhere" keywords="back_office" text="_trainingmodeMenuKeyEntry" chainKey="NON_EXISTENT_TRAINING_MODE_ENTER"> -->
+<!--     <VisibilityRule class="dtv.pos.assistance.access.TrainingModeEnabledAccessCheck" /> -->
+<!--     <VisibilityRule class="dtv.pos.assistance.access.TrainingModeActiveRule" inverted="true" /> -->
+<!--   </Action> -->
+<!--   <Action name="ADMIN::TRAINING_MODE_EXIT" category="Anywhere" keywords="back_office" text="_trainingmodeMenuKeyExit" chainKey="NON_EXISTENT_TRAINING_MODE_EXIT"> -->
+<!--     <VisibilityRule class="dtv.pos.assistance.access.TrainingModeActiveRule" /> -->
+<!--   </Action> -->
+  
+<!-- BASE OVVERRIDES END -->
+  <Action name="COUNTRYPACK::BR::ADMIN::NFE_MAINTENANCE" category="Back Office" keywords="back_office_only" text="_countrypack.br.nfe.maintenance.menuText" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE">
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+    </VisibilityRule>
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_BACKOFFICE" text="_countrypack.br.nfe.maintenance.detail.button.edit" keyStroke="F3">
+    <VisibilityRule class="dtv.pos.appmanagement.CurrentAppVisibilityRule">
+      <Parameter name="type" value="BACK_OFFICE" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.OnlyNfeAllowVisibilityRule" />
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.CheckNfeStatusVisibilityRule">
+      <Parameter name="statusCode" value="OPEN" />
+      <Parameter name="statusCode" value="REJECTED" />
+      <Parameter name="statusCode" value="ERROR" />
+      <Parameter name="statusCode" value="SKIP_FAILED" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.CheckNfeCurrentWorkstationVisibilityRule" />
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_REGISTER" text="_countrypack.br.nfe.maintenance.detail.button.edit" keyStroke="F3">
+    <VisibilityRule class="dtv.pos.appmanagement.CurrentAppVisibilityRule">
+      <Parameter name="type" value="REGISTER" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.EditAllowedOlnyForNFe">
+      <Parameter name="statusCode" value="OPEN" />
+      <Parameter name="statusCode" value="REJECTED" />
+      <Parameter name="statusCode" value="ERROR" />
+      <Parameter name="statusCode" value="SKIP_FAILED" />
+    </VisibilityRule>
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT" text="_countrypack.br.nfe.maintenance.detail.button.edit" keyStroke="F3">
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.OnlyNfeAllowVisibilityRule" />
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.CheckNfeStatusVisibilityRule">
+      <Parameter name="statusCode" value="OPEN" />
+      <Parameter name="statusCode" value="REJECTED" />
+      <Parameter name="statusCode" value="ERROR" />
+      <Parameter name="statusCode" value="SKIP_FAILED" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.CheckNfeCurrentWorkstationVisibilityRule" />
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::ITEM_EDIT" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_ITEM_EDIT" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_BACKOFFICE" category="Back Office" keywords="back_office_only" text="_countrypack.br.nfe.maintenance.detail.items.button.edit">
+    
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::TOTAL_EDIT" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_TOTAL_EDIT" category="Back Office" keywords="back_office_only" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_BACKOFFICE">
+
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::DESTINATION_EDIT" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_DESTINATION_EDIT" category="Back Office" keywords="back_office_only" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_BACKOFFICE">
+
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::INF_CPL_EDIT" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_INF_CPL_EDIT" category="Back Office" keywords="back_office_only" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_BACKOFFICE">
+	
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::RESUBMIT_NFE" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_RESUBMIT_NFE" category="Back Office" keywords="back_office_only" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_BACKOFFICE" text="_countrypack.br.nfe.maintenance.retry.buttonText" keyStroke="F5">
+	
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::TRAN_DETAIL" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_TRAN_DETAIL" text="_countrypack.br.nfe.maintenance.detail.button" keyStroke="F3">
+    <VisibilityRule class="dtv.pos.appmanagement.CurrentAppVisibilityRule">
+      <Parameter name="type" value="BACK_OFFICE" />
+    </VisibilityRule>
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::REPRINT_NFE" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_REPRINT_NFE" category="Back Office" keywords="back_office_only" text="_countrypack.br.nfe.maintenance.reprint.buttonText" keyStroke="F6" >
+    <VisibilityRule class="dtv.pos.appmanagement.CurrentAppVisibilityRule">
+      <Parameter name="type" value="BACK_OFFICE" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.OnlyNfeAllowVisibilityRule" />
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.CheckNfeStatusVisibilityRule">
+      <Parameter name="statusCode" value="CONTING" />
+      <Parameter name="statusCode" value="APPROVED" />
+    </VisibilityRule>
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::EMAIL_NFE" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_EMAIL_NFE" text="_countrypack.br.nfe.maintenance.email.button" keyStroke="F7">
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.NfeEmailEnabledVisibilityRule" />
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.OnlyNfeAllowVisibilityRule" />
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.CheckNfeStatusVisibilityRule">
+      <Parameter name="statusCode" value="CONTING" />
+      <Parameter name="statusCode" value="APPROVED" />
+    </VisibilityRule>
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::MAINTENANCE::REVERSE_NFE" chainKey="COUNTRYPACK.BR.NFE_MAINTENANCE_REVERSE_NFE" category="Back Office" keywords="back_office_only" text="_countrypack.br.nfe.maintenance.reverse.buttonText" keyStroke="F8">
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.NfeCancelAllowedVisibilityRule">
+      <Parameter name="statusCode" value="OPEN" />
+      <Parameter name="statusCode" value="REJECTED" />
+      <Parameter name="statusCode" value="ERROR" />
+      <Parameter name="statusCode" value="SKIP_FAILED" />
+      <Parameter name="statusCode" value="CONTING" />
+      <Parameter name="statusCode" value="APPROVED" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.maintenance.visibilityrules.CheckNfeCurrentWorkstationVisibilityRule" />
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::SALE::ABORT_RESUBMIT_NFE" chainKey="COUNTRYPACK.BR.NFE_SALE_ABORT_RESUBMIT_NFE" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_REGISTER" text="_countrypack.br.nfe.maintenance.saleResub.cancTrans.buttonText" keyStroke="F2" chainType="STACK">
+  	
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::SALE::RESUBMIT_NFE" chainKey="COUNTRYPACK.BR.NFE_SALE_RESUBMIT_NFE" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_REGISTER" text="_countrypack.br.nfe.maintenance.retry.buttonText" keyStroke="F5" chainType="STACK" />
+  <Action name="COUNTRYPACK::BR::NFE::SALE::ITEM_EDIT" chainKey="COUNTRYPACK.BR.NFE_SALE_ITEM_EDIT" text="_countrypack.br.nfe.maintenance.detail.button.edit" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_REGISTER" chainType="STACK" >
+    
+  </Action>  
+  <Action name="COUNTRYPACK::BR::NFE::SALE::TOTAL_EDIT" chainKey="COUNTRYPACK.BR.NFE_SALE_TOTAL_EDIT" text="_countrypack.br.nfe.maintenance.detail.button.edit" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_REGISTER" chainType="STACK" >
+     
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::SALE::DESTINATION_EDIT" chainKey="COUNTRYPACK.BR.NFE_SALE_DESTINATION_EDIT" text="_countrypack.br.nfe.maintenance.detail.button.edit" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_REGISTER" chainType="STACK" >
+     
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE::SALE::INF_CPL_EDIT" chainKey="COUNTRYPACK.BR.NFE_SALE_INF_CPL_EDIT" text="_countrypack.br.nfe.maintenance.detail.button.edit" ref="COUNTRYPACK::BR::NFE::MAINTENANCE::NFE_EDIT_REGISTER" chainType="STACK" >
+     
+  </Action>
+  <Action name="COUNTRYPACK::BR::NFE_SALE" category="Register" keywords="sale" text="_countrypack.br.nfe.menu.sale" keyStroke="F12" chainKey="COUNTRYPACK.BR.NFE_SALE" >
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.nfe.visibilityrules.HasNfeVisibilityRule" inverted="true" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnySaleReturnLineItemVisibilityRule" inverted="true" />
+  </Action>
+  <Action name="COUNTRYPACK::BR::ADMIN::SAT_LOCK" category="Back Office" keywords="back_office_only" text="_countrypack.br.sat.lock.sat" chainKey="COUNTRYPACK.BR.SAT_MAINTENANCE_LOCK">
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+    </VisibilityRule>
+  </Action>
+  <Action name="COUNTRYPACK::BR::ADMIN::SAT_UNLOCK" category="Back Office" keywords="back_office_only" text="_countrypack.br.sat.unlock.sat" chainKey="COUNTRYPACK.BR.SAT_MAINTENANCE_UNLOCK">
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+    </VisibilityRule>
+  </Action>
+  <Action name="COUNTRYPACK::BR::ADMIN::SAT_SHOW_LOG" category="Back Office" keywords="back_office_only" text="_countrypack.br.sat.extract.ast.log" chainKey="COUNTRYPACK.BR.SAT_MAINTENANCE_SHOW_LOG">
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+    </VisibilityRule>
+  </Action>
+  <Action name="COUNTRYPACK::BR::ADMIN::SAT" category="Back Office" keywords="back_office_only" text="_countrypack.br.sat.admin.menuText" displayType="LIST">
+    <VisibilityRule class="dtv.pos.framework.action.access.HideForFormFactorRule" >
+      <Parameter name="FormFactor" value="handheld" />
+    </VisibilityRule>
+    <VisibilityRule class="oracle.retail.xstore.countrypack.br.sat.visibilityrules.SatEnabledVisibilityRule" />
+  </Action>
+  <Action name="NFE_SAVE" category="" keywords="exclude" dataKey="SAVE" text="_saveChanges" keyStroke="F8" />
+  
+</ActionSet>

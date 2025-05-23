@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/ServiceHandlers.xsd">
+  <Service name="RXM_DIGITAL_CART">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://localhost:17015/ShoppingCartBean/ShoppingCartService?WSDL</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <SiteId dtype="String">rxm_site_id</SiteId>
+    </Parameters>
+  </Service>
+  <Service name="RXM_ASSOCIATED_ITEMS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://localhost:17015/TargetedItemsBean/TargetedItemsService?WSDL</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RXM_ITEM_INFORMATION">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">https://localhost:17015/ItemInformationBean/ItemInformationService?WSDL</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+</Services>

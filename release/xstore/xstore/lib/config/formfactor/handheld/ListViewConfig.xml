@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ListViewConfig.xsd">
+
+<!-- XstoreMobile does not play nice with column headers set up to span multiple rows, as we
+     currently employ a brittle design that infers the logical connection between column labels
+     and data in the rows/cells of data.  The logical inference is made by the fact that the
+     column labels and columns in each row need to be defined in the same order.  In other words,
+     for the various <Element...> for SHIPPING_LABELS, each one had better define row data in
+     the same order as these header labels (i.e. item id, description, ship qty, shipped qty).
+     
+     The fact that this config technique is being used to have column labels span rows is really a
+     terrible design in Xstore anyway, and it really should be done properly.  As it is, we're forced
+     to take a text label like _shippingQtyToShip, and split it up between _shippingQtyToShip1 and
+     _shippingQtyToShip (look at this SHIPPING_ITEMS  Header definition in the base ListViewConfig.xml
+     to see what I mean).  This is not legitimate I18N.
+     
+     In the future we may need to explore some better way to establish a concrete, logical association
+     between column headers and data (something like we did with FormViewCell config by introducing
+     the "ResourceLink" attribute).  -->
+  <Header name="SHIPPING_ITEMS">
+    <Row>
+      <Column start="0" width="20" translatable="_shippingItemListItemId" />
+      <Column start="20" width="50" translatable="_shippingItemListDescription" />
+      <Column start="72" width="11" translatable="_shippingQtyToShip" alignment="RIGHT" />
+      <Column start="87" width="11" translatable="_shippingQtyShipped" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="SHIPPING_ITEMS">
+    <RendererClass dtype="Class">dtv.pos.inventory.InvDocViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="100" method="getItemId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItemDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="50" method="getExpectedCount" formatter="Decimal" />
+      <Column start="50" width="50" method="getTempUnitCount" formatter="Decimal" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getSerialNumbersString" />
+    </Row>
+    <Row>
+      <Column start="0" width="45">
+        <EvaluatedFormattable method="getItemDimensionValue">
+          <method_param dtype="Integer">1</method_param>
+        </EvaluatedFormattable>
+      </Column>
+      <Column start="45" width="27">
+        <EvaluatedFormattable method="getItemDimensionValue">
+          <method_param dtype="Integer">2</method_param>
+        </EvaluatedFormattable>
+      </Column>
+      <Column start="72" width="20">
+        <EvaluatedFormattable method="getItemDimensionValue">
+          <method_param dtype="Integer">3</method_param>
+        </EvaluatedFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="100">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.workorder.inventory.CustAccountModifierCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  
+  
+  <!-- For SHIPPING_INVENTORY_CONTROL_DOCUMENT and INVENTORY_CONTROL_DOCUMENT, these configs are the same as base
+       Xstore (or, they should be), except that we removed the dtv.pos.inventory.receive.PlaceCreatedCellDataHandler. -->
+  <Element name="SHIPPING_INVENTORY_CONTROL_DOCUMENT">
+    <Row>
+      <Column start="0" width="100">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.inventory.type.DocTypeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getDestinationName" />
+    </Row>
+    <Row>
+      <Column start="0" width="40">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.inventory.type.DocStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="40" width="60" method="getDocumentId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getExpectedShipDate" formatter="DateMedium" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getDescription" />
+    </Row>
+  </Element>
+  <Element name="INVENTORY_CONTROL_DOCUMENT">
+    <Row>
+      <Column start="0" width="55">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.inventory.type.DocTypeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="55" width="45">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.inventory.type.DocStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="75" method="getDocumentId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getDescription" />
+    </Row>
+  </Element>
+  <Header name="INVENTORY_COUNT_MAIN">
+    <Row>
+      <Column start="0" width="11" translatable="_invCountSheetNumber" />
+      <Column start="13" width="29" translatable="_invCountBucket" />
+      <Column start="42" width="40" translatable="_invCountSection" />
+      <Column start="82" width="18" translatable="_invCountSheetStatus" />
+    </Row>
+  </Header>
+  <Element name="INVENTORY_COUNT_MAIN">
+    <Row>
+      <Column start="0" width="40" method="getCountSheetNumber" />
+      <Column start="41" width="50" method="getInventoryBucketName" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getSectionId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.inventory.count.CountSheetStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <Element name="INVENTORY_COUNT_SELECT_SHEET">
+    <Row>
+      <Column start="0" width="100" method="getCountSheetNumber" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getInventoryBucketName" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getSectionId" />
+    </Row>
+  </Element>
+  <Element name="INVENTORY_COUNT_SHEET_ITEMS">
+    <Row>
+      <Column start="0" width="100" method="getItemId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getQuantity" formatter="Decimal" alignment="LEFT" />
+    </Row>
+  </Element>
+  <Element name="INVENTORY_ADJUSTMENT_ITEMS">
+    <Row>
+      <Column start="0" width="100" method="getItemId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItemDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="40" method="getTempUnitCount" alignment="LEFT" formatter="Decimal" />
+      <Column start="40" width="60" wrapText="true" method="getSerialNumbersString" />
+    </Row>
+  </Element>
+  <Header name="ITEM_TRANSFER_LIST">
+    <Row>
+      <Column start="0" width="23" translatable="_itemTransferItemId" />
+      <Column start="25" width="40" translatable="_itemTransferItemDescription" />
+      <Column start="66" width="15" translatable="_itemTransferLocationQuantity" alignment="RIGHT" />
+      <Column start="84" width="16" translatable="_itemTransferTransferQuantity" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="ITEM_TRANSFER_LIST">
+    <Row>
+      <Column start="0" width="100" method="getItemId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItemDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getCurrentQuantity" alignment="LEFT" formatter="Decimal" />
+    </Row>
+    <Row>
+      <Column start="0" width="50" method="getTransferQuantity" alignment="LEFT" formatter="Decimal" />
+      <Column start="50" width="50" method="getSerialNumber" />
+    </Row>
+  </Element>
+  <Element name="ITEM_RESULTS_LIST">
+    <Row>
+      <Column start="0" width="100" method="getItemId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getDescription" wrapText="true" />
+    </Row>
+  </Element>
+  <Element name="CYCLE_COUNT_ITEM_LIST">
+    <Row>
+      <Column start="0" width="100" method="getLevelCode" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getId" />
+      </Row>
+    <Row>
+      <Column start="0" width="100" method="getDescription" wrapText="true" />
+    </Row>
+  </Element>
+  <!-- mobile needs to 'insert' the headers into the element data since this list view type is
+       used in a list prompt - which has no headers in mobile. -->
+  <Header name="INV_CTL_DOC_EXCEPTION_LIST" />
+  <Element name="INV_CTL_DOC_EXCEPTION_LIST">
+    <RendererClass dtype="Class">dtv.pos.inventory.InvDocViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="100" method="getItemId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItemDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="50">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_invItemExceptionExpected</Translatable>
+          <EvaluatedFormattable method="getExpectedCount" formatter="Decimal" />           
+        </AppendingFormattable>
+      </Column>
+      <Column start="50" width="50">
+        <AppendingFormattable separator="\u00A0">
+          <Translatable>_invItemExceptionCounted</Translatable>
+          <EvaluatedFormattable method="getTempUnitCount" formatter="Decimal" />           
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="33">
+        <EvaluatedFormattable method="getItemDimensionValue">
+          <method_param dtype="Integer">1</method_param>
+        </EvaluatedFormattable>
+      </Column>
+      <Column start="33" width="33">
+        <EvaluatedFormattable method="getItemDimensionValue">
+          <method_param dtype="Integer">2</method_param>
+        </EvaluatedFormattable>
+      </Column>
+      <Column start="66" width="34">
+        <EvaluatedFormattable method="getItemDimensionValue">
+          <method_param dtype="Integer">3</method_param>
+        </EvaluatedFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getSerialNumbersString" />
+    </Row>
+  </Element>
+  
+  <Header name="RECEIVING_ITEMS">
+    <Row>
+      <Column start="0" width="20" translatable="_receivingItemListItemId" />
+      <Column start="20" width="30" translatable="_receivingItemListDescription" />
+      <Column start="64" width="16" translatable="_receivingItemListExpected" alignment="RIGHT"/>
+      <Column start="83" width="14" translatable="_receivingItemListCounted" alignment="RIGHT" />
+    </Row>
+  </Header>
+  <Element name="RECEIVING_ITEMS">
+    <RendererClass dtype="Class">dtv.pos.inventory.InvDocViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="100" method="getItemId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItemDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="50" method="getExpectedCount" formatter="Decimal" />
+      <Column start="50" width="50" method="getTempUnitCount" formatter="Decimal" />
+    </Row>
+    <Row>
+      <Column start="0" width="33">
+        <EvaluatedFormattable method="getItemDimensionValue">
+          <method_param dtype="Integer">1</method_param>
+        </EvaluatedFormattable>
+      </Column>
+      <Column start="33" width="33">
+        <EvaluatedFormattable method="getItemDimensionValue">
+          <method_param dtype="Integer">2</method_param>
+        </EvaluatedFormattable>
+      </Column>
+      <Column start="66" width="34">
+        <EvaluatedFormattable method="getItemDimensionValue">
+          <method_param dtype="Integer">3</method_param>
+        </EvaluatedFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getSerialNumbersString" />
+    </Row>
+  </Element>
+  
+  <Element name="RECEIVING_CARTONS">
+    <Row>
+      <Column start="0" width="100" method="getTempCartonStatusCode">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.inventory.receive.CartonTempStatusCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getCartonId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getUnvoidedQuantityCount" formatter="Integer" />
+    </Row>
+  </Element>
+  
+  <Element name="APPLIED_DISCOUNT_LIST">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="10" icon="_imageDiscountIcon" />
+      <Column start="11" width="49" wrapText="true">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.discount.AppliedDiscountCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="60" width="30" method="getExtendedAmount.negate" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  
+  <Element name="COMMISSIONED_EMPLOYEE">
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="10" icon="_imageCommissionedAssociate" />
+      <Column start="11" width="89">
+         <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getEmployeeParty.getFirstName" />
+          <EvaluatedFormattable method="getEmployeeParty.getLastName" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+  </Element>
+  
+  <Element name="DEAL_PRICE_MODIFIER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="10" icon="_imageDealIcon" />
+      <Column start="11" width="59" method="getDescription" wrapText="true" />
+      <Column start="70" width="20" method="getExtendedAmount.negate" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  
+  <Element name="LINE_ITEM_COMMENTS_LIST">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="10" icon="_imageCommentIcon"></Column> 
+      <Column start="11" width="89" wrapText="true" method="getNote" />
+    </Row>
+  </Element>
+  
+  <Element name="SALE_LINE_ITEM" iconKey="imageFromItemUrl">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="100" method="getCompositeSaleReturnLineItemTypeCode">
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItemDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="35">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.sale.ItemDimensionCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="DimensionIndex" value="1" />
+      </Column>
+      <Column start="30" width="30">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.sale.ItemDimensionCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="DimensionIndex" value="2" />
+      </Column>
+      <Column start="60" width="40">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.sale.ItemDimensionCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="DimensionIndex" value="3" />
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="25" method="getItemId" />
+      <Column start="25" width="25" method="getPreDealAmount" alignment="RIGHT" formatter="Money" />
+      <Column start="55" width="8" alignment="CENTER"> 
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.returns.QuantityDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="65" width="32" alignment="RIGHT">
+        <FontRef fontKey="_fontListLarge" />
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.ExtPriceDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="97" width="3" alignment="RIGHT">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.tax.TaxCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="100">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.nonphysical.SerialNumberCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall" />
+      <Column start="10" width="70" wrapText="true">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.kits.KitComponentCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <Element name="WARRANTY_LINE_ITEM" iconKey="imageFromItemUrl">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="100" translatable="_warranty" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItemDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="25" method="getItemId" />
+      <Column start="25" width="25" method="getPreDealAmount" alignment="RIGHT" formatter="Money" />
+      <Column start="55" width="8" alignment="CENTER"> 
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.returns.QuantityDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="65" width="35" alignment="RIGHT">
+        <FontRef fontKey="_fontListLarge" />
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.ExtPriceDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="100">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.warranty.WarrantyCustomerCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <Element name="GIFT_RECEIPT_ITEM_SELECTION">
+    <Row>
+      <Column start="0" width="100" method="getItemId" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getFinalPrice" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="ORIG_CREDITCARD_LIST">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <FontRef fontKey="fontListLarge" />
+    <Row>
+      <Column start="0" width="30" method="getTenderStatusCodeTranslated" />
+      <Column start="30" width="70" method="getTender.getTenderDescriptionTranslated" />
+    </Row>
+    <Row>
+      <Column start="20" width="65" method="getMaskAccountNumberDao" />
+      <Column start="55" width="45" method="getAmount" formatter="Money" alignment="RIGHT" />
+    </Row>
+  </Element>
+  <Element name="SUSPEND_TRANSACTION_LIST">
+    <Row>
+      <Column start="0" width="20" method="getTransactionSequence" />
+      <Column start="25" width="10" method="getWorkstationId" />
+      <Column start="35" width="30" method="getTransStartTime" formatter="TimeShort" />
+      <Column start="70" width="30" method="getCashierId" alignment="LEFT" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getCustomerDisplayName" />
+    </Row>
+  </Element>
+  <Element name="EMPLOYEE_SELECTION">
+    <Row>
+      <Column start="0" width="10" >
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.timeclock.ClockedInCellDataHandler</CellDataHandlerFactoryClass>
+        <Icon dtype="IconRef">_imageListClockedIn</Icon>
+      </Column>
+      <Column start="12" width="88" >
+        <AppendingFormattable separator=",\u00A0">
+          <EvaluatedFormattable method="getLastName" />
+          <EvaluatedFormattable method="getFirstName" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="13" width="100" method="getEmployeeId" />
+    </Row>
+  </Element>
+  <Element name="WARRANTY_PLAN">
+    <Row>
+      <Column start="0" width="100" method="a.getDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <Column start="0" width="40" method="a.getNonPhysicalItemSubtype" />
+      <Column start="40" width="60" alignment="RIGHT" method="a.getComputedPriceAmt" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="GROUP_DISCOUNT_ITEM_SELECTION">
+    <Row>
+      <Column start="0" width="25" method="getItem.getItemId" />
+      <Column start="25" width="75" method="getUnitPrice" formatter="Money" alignment="RIGHT"/>
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItem.getDescription" wrapText="true" />
+    </Row>
+  </Element>
+  <Element name="TAX_EXEMPTION">
+    <Row>
+      <Column start="0" width="40" method="getCertificateHolderName" />
+      <Column start="40" width="60" method="getReasonCodeObject.getDescription" />
+    </Row>
+    <Row>
+      <Column start="0" width="40" method="getExpirationDate" formatter="DateMedium" />
+      <Column start="40" width="60" method="getCertificateNbr" />
+    </Row>
+  </Element>
+  <Element name="CUSTOMER_ACCOUNT_LIST">
+    <Row>
+      <Column start="0" width="70">
+        <AppendingFormattable separator=",\u00A0">
+          <EvaluatedFormattable method="getLastName" />
+          <EvaluatedFormattable method="getFirstName" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="70" width="30" method="getAccountSetupDate" formatter="DateMedium" />
+    </Row>
+    <Row>
+      <Column start="0" width="70" method="getAccountId" />
+      <Column start="70" width="30" method="getAccountBalanceDue" formatter="Money" />
+    </Row>
+    <Row>
+      <Column start="0" width="100">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.customer.account.AccountStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <Element name="RETURN_PRICE_HISTORY_SELECTION">
+    <Row>
+      <Column start="0" width="50" method="getItemId" />
+      <Column start="50" width="50" method="getPrice" formatter="Money" />
+    </Row>
+    <Row>
+      <Column start="0" width="50">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.HistoricalPriceStartDateHandler</CellDataHandlerFactoryClass>
+        <Parameter name="Formatter" value="DateMedium" />
+      </Column>
+      <Column start="50" width="50">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.HistoricalPriceEndDateHandler</CellDataHandlerFactoryClass>
+        <Parameter name="Formatter" value="DateMedium" />
+      </Column>
+    </Row>
+  </Element>
+  <Element name="PREFLIGHT_CHECK">
+    <Row>
+      <Column start="0" width="70" method="getCheck.getName" />
+      <Column start="75" width="25" method="getCheck.getLevel.getName" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" wrapText="true" method="getMessage" />
+    </Row>
+  </Element>
+  
+  
+ <Element name="ORDER_SALE_LINE_ITEM" iconKey="imageFromItemUrl">
+    <RendererClass dtype="Class">dtv.pos.order.OrderListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="100"> 
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.ItemTypeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItemDescription" wrapText="true" />
+    </Row>
+     <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="20" method="getItemId"/>
+      <Column start="20" width="25" method="getPreDealAmount" alignment="RIGHT" formatter="Money"/>
+      <Column start="50" width="8" alignment="CENTER">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.returns.QuantityDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="60" width="37" alignment="RIGHT">
+        <FontRef fontKey="_fontListLarge" />
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.ExtPriceDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="97" width="3" alignment="RIGHT">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.tax.TaxCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+<!--     <Row> -->
+<!--       <Column start="65" width="4"> -->
+<!--         <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.giftreceipt.GiftReceiptCellDataHandler</CellDataHandlerFactoryClass> -->
+<!--         <Icon dtype="IconRef">_imageListGift</Icon> -->
+<!--       </Column> -->
+<!--       <Column start="83" width="4"> -->
+<!--         <CellDataHandlerFactoryClass dtype="Class">dtv.pos.pricing.PriceDataHandler</CellDataHandlerFactoryClass> -->
+<!--         <Parameter name="PROMO_PRICE"> -->
+<!--           <param_value dtype="IconRef">_imageListPriceMarkedDown</param_value> -->
+<!--         </Parameter> -->
+<!--         <Parameter name="AIRPORT_PRICE"> -->
+<!--           <param_value dtype="IconRef">_imageListAirportPrice</param_value> -->
+<!--         </Parameter> -->
+<!--         <Parameter name="CLEARANCE_PRICE"> -->
+<!--           <param_value dtype="IconRef">_imageListPriceClearance</param_value> -->
+<!--         </Parameter> -->
+<!--       </Column> -->
+<!--     </Row> -->
+    <Row>
+<!--       <Column start="16" width="4"> -->
+<!--         <CellDataHandlerFactoryClass dtype="Class">dtv.pos.warranty.WarrantyDeclinedCellDataHandler</CellDataHandlerFactoryClass> -->
+<!--         <Parameter> -->
+<!--           <param_name dtype="String">WARRANTY</param_name> -->
+<!--           <param_value dtype="IconRef">_imageListWarrantyDeclined</param_value> -->
+<!--         </Parameter> -->
+<!--       </Column> -->
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="20" translatable="_orderIdColon" />
+      <Column start="21" width="40" method="getOrderModifier.getOrderId" />
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="100">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.nonphysical.SerialNumberCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="30" width="70">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.item.PropertyCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="ItemPropertyKey" value="GIFT_REGISTRY_NAME" />
+        <Parameter name="LabelTranslationKey" value="_giftRegistryLineItemLabel" />
+      </Column>
+    </Row>
+  </Element>
+ 
+ <Element name="ORDER_LINE_REGISTER" >
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="100"> 
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getItem.getDescription" wrapText="true" />
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="20" method="getItemId"/>
+      <Column start="20" width="25" method="getUnitPrice" alignment="RIGHT" formatter="Money"/>
+      <Column start="50" width="8"  method="getQuantity" alignment="CENTER" formatter="Decimal"/>
+      <Column start="60" width="40" method="getExtendedPrice" alignment="RIGHT" formatter="Money">
+        <FontRef fontKey="_fontListLarge" />
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="22" translatable="_orderSourceColon" alignment="RIGHT" />
+      <Column start="25" width="55">
+      <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderSourceLocationCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="22" alignment="RIGHT">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.FulfillmentMethodCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="25" width="55">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getFulfillmentModifier.getLocationId" />
+          <EvaluatedFormattable method="getFulfillmentModifier" formatter="BasicName" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="25" width="55" method="getFulfillmentModifier.getAddress" formatter="BasicAddress" wrapText="true" />
+    </Row>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="22" alignment="RIGHT">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.ShippingMethodCellHandler</CellDataHandlerFactoryClass>
+        <Parameter name="TranslationKey" value="_orderShipViaColon" />
+      </Column>
+      <Column start="25" width="55" method="getSelectedShipMethodObject.getShipperMethodDesc" />
+    </Row>
+    <Row>
+     <FontRef fontKey="_fontListSmall"/>
+      <Column start="25" width="70">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.item.PropertyCellDataHandler</CellDataHandlerFactoryClass>
+        <Parameter name="ItemPropertyKey" value="GIFT_REGISTRY_NAME" />
+        <Parameter name="LabelTranslationKey" value="_giftRegistryLineItemLabel" />
+      </Column>
+    </Row>
+  </Element>
+  <Element name="ORDER_DEAL_PRICE_MODIFIER">
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <FontRef fontKey="_fontListSmall"/>
+      <Column start="0" width="70" method="getDescription" />
+      <Column start="70" width="20" method="getExtendedAmount.negate" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="ORDER_FEE">
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <Column start="20" width="36">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderFeeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="60" width="40" method="getAmount" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="ORDER_PAYMENT">
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <Column start="20" width="36">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderPaymentCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="60" width="40" method="getAmount" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="ORDER_ITEMS_TO_PICKUP">
+    <RendererClass dtype="Class">dtv.pos.order.OrderViewElement</RendererClass>
+    <Row>
+      <Column start="1" width="20" method="getItemId" />
+      <Column start="20" width="52" method="getItem.getDescription" wrapText="true"/>
+      <Column start="72" width="28">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>  
+  <Element name="CANCELLABLE_ITEMS_LIST">
+    <ColorGroup fgColor="0x000000" bgColor="0xFFFFFF" selectionFgColor="0xFFFFFF" selectionBgColor="0x7CAC89"
+      selectionBgColor2="0x7CAC89" />
+    <Row>
+      <Column start="0" width="20" method="getItemId" />
+      <Column start="20" width="52" method="getItem.getDescription" wrapText="true" />
+      <Column start="72" width="28">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <Element name="LOYALTY_CARDS_WITH_DATE">
+    <Row>
+      <Column start="0" width="60" method="getCardNumber" />
+      <Column start="60" width="30" alignment="RIGHT" method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="Decimal" />
+      <Column start="80" width="30" alignment="RIGHT" method="getPrimaryAwardAccount.getAccountBalance" formatter="Money" />
+    </Row>
+    <Row>
+      <Column start="3" width="97">
+        <AppendingFormattable separator=":\u00A0">
+          <Translatable>_loyaltyExpiration</Translatable>
+          <EvaluatedFormattable method="getExpirationDate" formatter="DateMedium" />
+        </AppendingFormattable>
+      </Column>
+    </Row>
+  </Element>
+  <Element name="LOYALTY_CARDS_WITHOUT_DATE">
+    <Row>
+      <Column start="0" width="60" method="getCardNumber" />
+      <Column start="60" width="30" alignment="RIGHT" method="getPrimaryLoyaltyAccount.getAccountBalance" formatter="Decimal" />
+      <Column start="80" width="30" alignment="RIGHT" method="getPrimaryAwardAccount.getAccountBalance" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="VOUCHER_TENDER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="70" method="getTender.getTenderDescriptionTranslated" />
+      <Column start="70" width="30" method="getAmount" alignment="RIGHT" formatter="Money" />
+    </Row>
+    <Row>
+      <Column start="0" width="100">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.register.nonphysical.SerialNumberCellDataHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+  </Element>
+  <Element name="CREDIT_DEBIT_TENDER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="70" method="getTender.getTenderDescriptionTranslated" />
+      <Column start="70" width="30" method="getAmount" formatter="Money" alignment="RIGHT" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getMaskAccountNumberDao" />
+    </Row>
+  </Element>
+  <Element name="TENDER_LINE_ITEM">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="70" method="getTender.getTenderDescriptionTranslated" />
+      <Column start="70" width="30" method="getAmount" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="FOREIGN_CURRENCY_TENDER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="40" method="getTender.getTenderDescriptionTranslated" />
+      <Column start="40" width="30" method="getForeignMoney" alignment="RIGHT" formatter="Money" />
+      <Column start="70" width="30" method="getAmount" alignment="RIGHT" formatter="Money" />
+    </Row>
+  </Element>
+  <Element name="COUPON_TENDER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="70" method="getTender.getTenderDescriptionTranslated" />
+      <Column start="70" width="30" method="getAmount" formatter="Money" alignment="RIGHT"/>
+    </Row>
+  </Element>
+  <Element name="CHECK_TENDER">
+    <RendererClass dtype="Class">dtv.pos.shared.listview.ContextSensitiveListViewElement</RendererClass>
+    <Row>
+      <Column start="0" width="70" method="getTender.getTenderDescriptionTranslated" />
+      <Column start="70" width="30" method="getAmount" formatter="Money" alignment="RIGHT" />
+    </Row>
+    <Row>
+      <Column start="0" width="100" method="getCheckSequenceNumber" />
+    </Row>
+  </Element>
+  <Element name="ORDER_SEARCH_RESULT">
+    <Row>
+      <Column start="0" width="39" method="getOrderId" />
+    </Row>
+    <Row>
+      <Column start="0" width="49">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.maint.OrderTypeCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+      <Column start="50" width="50">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.order.OrderStatusCellHandler</CellDataHandlerFactoryClass>
+      </Column>
+    </Row>
+    <Row>
+      <Column start="0" width="34">
+        <AppendingFormattable separator="\u00A0">
+          <EvaluatedFormattable method="getFirstName" />
+          <EvaluatedFormattable method="getLastName" />
+        </AppendingFormattable>
+      </Column>
+      <Column start="35" width="35" method="getTelephone" formatter="Phone" />
+      <Column start="71" width="29" method="getOrderDate" formatter="DateMedium" />
+    </Row>
+  </Element>
+</ListView>

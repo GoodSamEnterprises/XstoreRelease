@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">MANAGE_IP_CASH_DRAWER</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL-->
+          <param_value dtype="DoubleArray">-1.0</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginFullView</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">false</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+0,0,1,0</param_value>
+      </ComponentParameter>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 3, 1, L, T</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <TextKey dtype="Translatable">_manageIPCashDrawerMenuText</TextKey>
+        <Font fontStyle="BOLD" fontSize="+3" />
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">MANAGE_IP_CASH_DRAWER_DETAIL</FormTabKey>
+      <TabOrder dtype="Integer">20</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormList</Type>
+        <Resource dtype="String">viewList</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">IP_CASH_DRAWER_LIST</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">IP_CASH_DRAWER_LIST</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action dataKey="DISCOVER_DEVICES" text="_manageIPCashDrawerDiscoverDevices" keyStroke="F4" />
+      <Action dataKey="ACTIVATE_DEVICE" text="_manageIPCashDrawerActivateDevice" keyStroke="F5" privilege="MANAGE_IP_CASH_DRAWER" >
+          <VisibilityRule class="dtv.pos.hardware.ipcashdrawer.IpCashDrawerOpenVisibilityRule" />
+          <VisibilityRule class="dtv.pos.hardware.ipcashdrawer.IpCashDrawerActivateVisibilityRule" />
+      </Action>
+      <Action dataKey="DEACTIVATE_DEVICE" text="_manageIPCashDrawerDeactivateDevice" keyStroke="F6" privilege="MANAGE_IP_CASH_DRAWER" >
+          <VisibilityRule class="dtv.pos.hardware.ipcashdrawer.IpCashDrawerOpenVisibilityRule" />
+          <VisibilityRule class="dtv.pos.hardware.ipcashdrawer.IpCashDrawerDeactivateVisibilityRule" />
+      </Action>
+      <Action dataKey="CONFIGURE_DEVICE" text="_manageIPCashDrawerConfigureDevice" keyStroke="F7" privilege="MANAGE_IP_CASH_DRAWER" >
+          <VisibilityRule class="dtv.pos.hardware.ipcashdrawer.IpCashDrawerOpenVisibilityRule" />
+          <VisibilityRule class="dtv.pos.hardware.ipcashdrawer.IpCashDrawerConfigureVisibilityRule" />
+      </Action>
+      <Action dataKey="DELETE_DEVICE" text="_manageIPCashDrawerDeleteDevice" keyStroke="F8" privilege="MANAGE_IP_CASH_DRAWER" >
+          <VisibilityRule class="dtv.pos.hardware.ipcashdrawer.IpCashDrawerOpenVisibilityRule" />
+      </Action>
+      <Action dataKey="RELEASE_DEVICE" text="_manageIPCashDrawerReleaseDevice" keyStroke="F9" privilege="MANAGE_IP_CASH_DRAWER"  >
+          <VisibilityRule class="dtv.pos.hardware.ipcashdrawer.IpCashDrawerReleaseVisibilityRule" />
+      </Action>
+    </ActionGroup>   
+  </FormView>
+</FormViewSet>

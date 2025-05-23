@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://micros.com/xstore/config/action" xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+  
+  <!-- NOTE to XSTORE DEVELOPERS, regarding these XstoreM actions with <IconGroup icon="_whatever"...,
+      the icon properties keys here (for ex. "_imageCart") do not need to have a corresponding
+      icon defined in Xstore's .properties files, so don't worry if these appear to be undefined.  These
+      keys DO need to have corresponding icons defined in the xstoremgwt project (... and they do.  Or, at
+      least they had better!).  -->
+  <Action name="LOGIN::INVENTORY_OPTIONS" category="Back Office" keywords="login" text="_menuTextInventory" chainKey="INVENTORY_OPTIONS_LOGIN" />
+  <Action name="LOGIN::OPEN_REGISTER" category="Back Office" keywords="back_office_only" text="_systemCyclePromptToOpenTitleWkstn" chainKey="WORKSTATION_OPEN_LOGIN">
+    <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+      <Parameter name="state" value="CLOSED" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.systemcycle.access.RollingCloseOrNotClosingVisibilityRule"/>
+  </Action>
+  <Action name="TOUCH::OPEN_REGISTER" keywords="exclude" text="_systemCyclePromptToOpenTitleWkstn" chainKey="WORKSTATION_OPEN_LOGIN" >
+    <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+      <Parameter name="state" value="CLOSED" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.systemcycle.access.ClosingVisibilityRule" />
+  </Action>
+  <Action name="LOGIN::CLOSE_REGISTER" category="Back Office" keywords="back_office_only" text="_systemCyclePromptToCloseTitleWkstn" chainKey="WORKSTATION_CLOSE_LOGIN">
+    <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+      <Parameter name="state" value="OPEN" />
+    </VisibilityRule>
+  </Action>
+  <Action name="LOGIN::CUSTOMER_MAINTENANCE" category="Back Office" keywords="customer" text="_menutext123" chainKey="CUSTOMER_MAINTENANCE_LOGIN" />
+  <Action name="LOGIN::TILL_OPTIONS" category="Back Office" keywords="login" text="_registerTillOptionsMenuText" chainKey="TILL_OPTIONS_LOGIN" >
+     <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+      <Parameter name="state" value="OPEN" />
+     </VisibilityRule>
+  </Action>
+  <Action name="LOGIN::AUTHENTICATE_AND_FINISH" category="Register" keywords="login" text="_registerFunctions" chainKey="REGISTER_LOGIN_FINISH" />
+</ActionSet>

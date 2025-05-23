@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AuthConfig.xsd">
+
+  <!-- ***** AuthProcess EFT_LINK ***************************** -->
+  <AuthProcess name="EFT_LINK" extends="EFT_LINK_HOST" Abstract="true">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.eftlink.EftLinkAuthProcess</AuthProcessClass>
+    <!-- +++++++ EFT LINK marshalling parameters ++++++ -->
+    <Parameter name="authResponseClass">
+      <param_type dtype="Class">dtv.tenderauth.impl.eftlink.response.EftLinkResponse</param_type>
+    </Parameter>
+    <!-- +++++++ EFT LINK communication parameters +++++++ -->
+    <Parameter name="communicator" value="dtv.tenderauth.impl.eftlink.EftLinkCommunicator" />
+    <!-- +++++++ EFT LINK marshalling parameters ++++++ -->
+    <Parameter name="requestConverter" value="dtv.tenderauth.impl.eftlink.EftLinkRequestConverter" />
+    <Parameter name="responseConverter" value="dtv.tenderauth.impl.eftlink.EftLinkResponseConverter" />
+  </AuthProcess>
+  <!-- +++++++ EFT LINK auth request map +++++++ -->
+  <AuthRequestMap name="EFT_LINK">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.eftlink.request.EftLinkCreditDebitRequest" enabled="true">
+      <parameter name="TerminalID" ref="TerminalID" />
+      <!-- RequestType directly maps to the request types EpsRequest class -->
+      <parameter name="RequestType" value="PAYMENT" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="dtv.tenderauth.impl.eftlink.request.EftLinkCreditDebitRequest" enabled="true">
+      <parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="RequestType" value="REFUND" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.eftlink.request.EftLinkCreditDebitRequest" enabled="true">
+      <parameter name="TerminalID" ref="TerminalID" />
+      <parameter name="RequestType" value="REVERSAL" />
+    </AuthRequest>
+    <AuthRequest key="VOID_REFUND_TENDER" class="dtv.tenderauth.impl.eftlink.request.EftLinkCreditDebitRequest" enabled="true">
+      <parameter name="TerminalID" ref="TerminalID" />
+      <parameter name="RequestType" value="REVERSAL" />
+    </AuthRequest>
+  </AuthRequestMap>
+  <!-- +++++++ Auth process EFT LINK STORE SETTINGS +++++++ -->
+  <AuthProcess name="EFT_LINK_STORE_SETTINGS" extends="EFT_LINK" abstract="true">
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-TR" />
+    <Parameter name="TerminalID" value="-DEFAULT-TerminalID-TR" />
+  </AuthProcess> 
+  <!-- +++++++ Auth process EFT LINK CREDIT +++++++ -->
+  <AuthProcess name="EFT_LINK_CREDIT" extends="EFT_LINK">
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="String">1</key>
+          <!-- PARTIAL FAILURE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">2</key>
+          <!-- FAILURE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">3</key>
+          <!-- DEVICE UNAVAILABLE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">4</key>
+          <!-- BUSY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">5</key>
+          <!-- LOGGED OUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">6</key>
+          <!-- ABORTED -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">7</key>
+          <!-- TIMED OUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">8</key>
+          <!-- FORMAT ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">9</key>
+          <!-- PARSING ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">10</key>
+          <!-- COMMUNICATION ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">11</key>
+          <!-- VALIDATION ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">12</key>
+          <!-- MISSING MANDATORY DATA -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">13</key>
+          <!-- UNKNOWN CARD -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="String">14</key>
+          <!-- UNINITIALIZED -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN MULTI IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="RESULT_CODE_1">
+          <!-- message displayed for a partial authirozation success -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgPartialAuth">
+            <Parameter dtype="EvaluatedFormattable" formatter="Money" method="getAmount" />
+            <Parameter dtype="EvaluatedFormattable" formatter="Money" method="getRequest.getAmount" />
+            <Parameter dtype="EvaluatedFormattable" formatter="Money" method="getAmount" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_2">
+          <!-- message displayed for a authorization failuer (actual reason is not specified) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_3">
+          <!-- message displayed for a failure due to requested device is unavailable -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_4">
+          <!-- message displayed for a busy response -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgRETRY">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_5">
+          <!-- message displayed for user logged out before auth request getting approved -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_6">
+          <!-- message displayed for a auth request aborted by the system -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgDACT_HOST_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_7">
+          <!-- message displayed for a auth request timed out -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgCLIENT_AUTH_TIMEOUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_8">
+          <!-- message displayed for a failure due to a format error -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_9">
+          <!-- message displayed for a failure due to a parsing error -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_10">
+          <!-- message displayed for a communication error -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgCOMM_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_11">
+          <!-- message displayed for a validation error -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_12">
+          <!-- message displayed for a missing mandatory data -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_13">
+          <!-- message displayed for a unknown card -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RESULT_CODE_14">
+          <!-- message displayed for a failure due to uninitialize eft link -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when Tender Retail MULTI.EXE is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_eftlinkOfflineMessage">
+            <Parameter dtype="Translatable" name="_trAuthOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+</AuthConfig>

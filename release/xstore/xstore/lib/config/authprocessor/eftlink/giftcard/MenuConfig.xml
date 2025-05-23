@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+
+  <MenuItem name="RETURN::TENDER_OPTIONS" text="_menuReturnTender" displayType="ICON_LIST" category="Tender" keywords="return_tender">
+    <MenuOption ref="RETURN::TENDER_LOCAL_CURRENCY" />    
+    <MenuOption ref="RETURN::TENDER_CREDIT_CARD" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT" />
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT_CARD.ISSUE" /> 
+    <MenuOption ref="RETURN::TENDER_STORE_CREDIT_CARD.RELOAD" />
+    <!-- <MenuOption ref="RETURN::TENDER_GIFT_CARD.ISSUE" /> -->
+    <MenuOption ref="RETURN::TENDER_GIFT_CARD.RELOAD" />
+    <MenuOption ref="RETURN::TENDER_HOME_OFFICE_CHECK" />
+    <MenuOption ref="RETURN::TENDER_HOUSE_ACCOUNT" />
+    <MenuOption ref="RETURN::TENDER_ROOM_CHARGE" />
+
+    <SubMenu actionRef="RETURN::MENU.MODIFY_TENDER">
+      <MenuOption ref="RETURN::CHANGE_TENDER_AMOUNT" />
+      <MenuOption ref="RETURN::VOID_TENDER" />
+    </SubMenu>
+
+    <MenuOption ref="RETURN::BACK_TO_SALE" />
+    <MenuOption ref="RETAIL::CHECK_SALE_COMPLETE" />
+  </MenuItem>  
+</MenuSet>

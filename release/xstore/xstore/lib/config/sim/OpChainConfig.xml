@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/OpChainConfig.xsd">
+  <OpChain name="SALE_COMPLETE_FINISH.INVENTORY" />
+  <OpChain name="COMPLETE_WORK_ORDER">
+    <PromptOp class="dtv.pos.framework.op.PromptYesNoOp" key="COMPLETE_WORK_ORDER_CONFIRM" />
+    <Op class="dtv.pos.workorder.account.MarkWorkOrderAsReadyForPickupOp" />
+  </OpChain>
+  
+  <!-- Distributed Orders Chain -->
+  <OpChain name="ORDER_RESERVE_ORDER_INVENTORY" />
+  <OpChain name="ORDER_UNRESERVE_ORDER_INVENTORY" />
+  <OpChain name="ORDER_ALLOCATE_ITEMS_INVENTORY" />
+  <OpChain name="ORDER_REJECT_RESERVED_ORDER" />
+  <OpChain name="ORDER_PREPARE_TO_SHIP_ORDER">
+    <Op class="dtv.pos.order.maint.ValidateStatusHasNotChangedOp" />
+    <PromptOp class="dtv.pos.framework.op.PromptYesNoOp" key="ORDER_CONFIRM_SHIP" />
+    <WorkerOp workersBean="shipOrderWorkers" />
+  </OpChain>
+</OpChainSet>

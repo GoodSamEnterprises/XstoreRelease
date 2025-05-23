@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="KEY_NP0" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="48" />
+    <property name="label" value="_xfgclient.key.np0.label" />
+  </bean>
+
+  <bean id="KEY_NP1" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="49" />
+    <property name="label" value="_xfgclient.key.np1.label" />
+  </bean>
+
+  <bean id="KEY_NP2" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="50" />
+    <property name="label" value="_xfgclient.key.np2.label" />
+  </bean>
+
+  <bean id="KEY_NP3" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="51" />
+    <property name="label" value="_xfgclient.key.np3.label" />
+  </bean>
+
+  <bean id="KEY_NP4" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="52" />
+    <property name="label" value="_xfgclient.key.np4.label" />
+  </bean>
+
+  <bean id="KEY_NP5" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="53" />
+    <property name="label" value="_xfgclient.key.np5.label" />
+  </bean>
+
+  <bean id="KEY_NP6" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="54" />
+    <property name="label" value="_xfgclient.key.np6.label" />
+  </bean>
+
+  <bean id="KEY_NP7" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="55" />
+    <property name="label" value="_xfgclient.key.np7.label" />
+  </bean>
+
+  <bean id="KEY_NP8" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="56" />
+    <property name="label" value="_xfgclient.key.np8.label" />
+  </bean>
+
+  <bean id="KEY_NP9" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="code" value="57" />
+    <property name="label" value="_xfgclient.key.np9.label" />
+  </bean>
+
+  <bean id="KEY_NP00" class="com.micros_retail.xfgclient.key.NumericKey">
+    <property name="label" value="_xfgclient.key.np00.label" />
+    <property name="code" value="1" />
+    <property name="value" value="_xfgclient.key.np00.value" />
+  </bean>
+
+  <bean id="KEY_DecimalSeperator" class="com.micros_retail.xfgclient.key.DecimalSeparatorKey">
+    <property name="code" value="2" />
+    <property name="label" value="_xfgclient.key.decimalseparator.label" />
+  </bean>
+
+  <bean id="KEY_Backspace" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="label" value="_xfgclient.key.backspace.label" />
+    <property name="code" value="8" />
+  </bean>
+
+  <bean id="KEY_Delete" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="label" value="_xfgclient.key.delete.label" />
+    <property name="code" value="127" />
+  </bean>
+
+  <bean id="KEY_Space" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="label" value="_xfgclient.key.space.label" />
+    <property name="code" value="32" />
+  </bean>
+
+  <bean id="KEY_Tab" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="label" value="_xfgclient.key.tab.label" />
+    <property name="code" value="11" />
+  </bean>
+
+  <bean id="KEY_ASC033" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="33" />
+  </bean>
+
+  <bean id="KEY_ASC034" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="34" />
+  </bean>
+
+  <bean id="KEY_ASC035" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="35" />
+  </bean>
+
+  <bean id="KEY_ASC036" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="36" />
+  </bean>
+
+  <bean id="KEY_ASC037" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="37" />
+  </bean>
+
+  <bean id="KEY_ASC038" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="38" />
+  </bean>
+
+  <bean id="KEY_ASC039" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="39" />
+  </bean>
+
+  <bean id="KEY_ASC040" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="40" />
+  </bean>
+
+  <bean id="KEY_ASC041" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="41" />
+  </bean>
+
+  <bean id="KEY_ASC042" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="42" />
+  </bean>
+
+  <bean id="KEY_ASC043" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="43" />
+    <property name="value" value="_xfgclient.key.043.value" />
+    <property name="label" value="_xfgclient.key.043.label" />
+  </bean>
+
+  <bean id="KEY_ASC044" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="44" />
+  </bean>
+
+  <bean id="KEY_ASC045" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="45" />
+  </bean>
+
+  <bean id="KEY_ASC046" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="46" />
+  </bean>
+
+  <bean id="KEY_ASC047" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="47" />
+  </bean>
+
+  <bean id="KEY_ASC058" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="58" />
+  </bean>
+
+  <bean id="KEY_ASC059" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="59" />
+  </bean>
+
+  <bean id="KEY_ASC060" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="60" />
+  </bean>
+
+  <bean id="KEY_ASC061" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="61" />
+  </bean>
+
+  <bean id="KEY_ASC062" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="62" />
+  </bean>
+
+  <bean id="KEY_ASC063" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="63" />
+  </bean>
+
+  <bean id="KEY_ASC064" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="64" />
+  </bean>
+
+  <bean id="KEY_ASC065" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="65" />
+  </bean>
+
+  <bean id="KEY_ASC066" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="66" />
+  </bean>
+
+  <bean id="KEY_ASC067" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="67" />
+  </bean>
+
+  <bean id="KEY_ASC068" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="68" />
+  </bean>
+
+  <bean id="KEY_ASC069" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="69" />
+  </bean>
+
+  <bean id="KEY_ASC070" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="70" />
+  </bean>
+
+  <bean id="KEY_ASC071" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="71" />
+  </bean>
+
+  <bean id="KEY_ASC072" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="72" />
+  </bean>
+
+  <bean id="KEY_ASC073" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="73" />
+  </bean>
+
+  <bean id="KEY_ASC074" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="74" />
+  </bean>
+
+  <bean id="KEY_ASC075" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="75" />
+  </bean>
+
+  <bean id="KEY_ASC076" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="76" />
+  </bean>
+
+  <bean id="KEY_ASC077" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="77" />
+  </bean>
+
+  <bean id="KEY_ASC078" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="78" />
+  </bean>
+
+  <bean id="KEY_ASC079" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="79" />
+  </bean>
+
+  <bean id="KEY_ASC080" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="80" />
+  </bean>
+
+  <bean id="KEY_ASC081" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="81" />
+  </bean>
+
+  <bean id="KEY_ASC082" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="82" />
+  </bean>
+
+  <bean id="KEY_ASC083" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="83" />
+  </bean>
+
+  <bean id="KEY_ASC084" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="84" />
+  </bean>
+
+  <bean id="KEY_ASC085" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="85" />
+  </bean>
+
+  <bean id="KEY_ASC086" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="86" />
+  </bean>
+
+  <bean id="KEY_ASC087" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="87" />
+  </bean>
+
+  <bean id="KEY_ASC088" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="88" />
+  </bean>
+
+  <bean id="KEY_ASC089" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="89" />
+  </bean>
+
+  <bean id="KEY_ASC090" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="90" />
+  </bean>
+
+  <bean id="KEY_ASC091" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="91" />
+  </bean>
+
+  <bean id="KEY_ASC092" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="92" />
+  </bean>
+
+  <bean id="KEY_ASC093" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="93" />
+  </bean>
+
+  <bean id="KEY_ASC094" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="94" />
+    <property name="value" value="^" />
+  </bean>
+
+  <bean id="KEY_ASC095" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="95" />
+    <property name="value" value="_xfgclient.key.095.value" />
+    <property name="label" value="_xfgclient.key.095.label" />
+  </bean>
+
+  <bean id="KEY_ASC096" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="96" />
+  </bean>
+
+  <bean id="KEY_ASC097" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="97" />
+  </bean>
+
+  <bean id="KEY_ASC098" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="98" />
+  </bean>
+
+  <bean id="KEY_ASC099" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="99" />
+  </bean>
+
+  <bean id="KEY_ASC100" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="100" />
+  </bean>
+
+  <bean id="KEY_ASC101" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="101" />
+  </bean>
+
+  <bean id="KEY_ASC102" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="102" />
+  </bean>
+
+  <bean id="KEY_ASC103" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="103" />
+  </bean>
+
+  <bean id="KEY_ASC104" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="104" />
+  </bean>
+
+  <bean id="KEY_ASC105" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="105" />
+  </bean>
+
+  <bean id="KEY_ASC106" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="106" />
+  </bean>
+
+  <bean id="KEY_ASC107" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="107" />
+  </bean>
+
+  <bean id="KEY_ASC108" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="108" />
+  </bean>
+
+  <bean id="KEY_ASC109" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="109" />
+  </bean>
+
+  <bean id="KEY_ASC110" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="110" />
+  </bean>
+
+  <bean id="KEY_ASC111" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="111" />
+  </bean>
+
+  <bean id="KEY_ASC112" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="112" />
+  </bean>
+
+  <bean id="KEY_ASC113" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="113" />
+  </bean>
+
+  <bean id="KEY_ASC114" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="114" />
+  </bean>
+
+  <bean id="KEY_ASC115" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="115" />
+  </bean>
+
+  <bean id="KEY_ASC116" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="116" />
+  </bean>
+
+  <bean id="KEY_ASC117" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="117" />
+  </bean>
+
+  <bean id="KEY_ASC118" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="118" />
+  </bean>
+
+  <bean id="KEY_ASC119" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="119" />
+  </bean>
+
+  <bean id="KEY_ASC120" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="120" />
+  </bean>
+
+  <bean id="KEY_ASC121" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="121" />
+  </bean>
+
+  <bean id="KEY_ASC122" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="122" />
+  </bean>
+
+  <bean id="KEY_ASC123" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="123" />
+  </bean>
+
+  <bean id="KEY_ASC124" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="124" />
+    <property name="value" value="|" />
+  </bean>
+
+  <bean id="KEY_ASC125" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="125" />
+  </bean>
+
+  <bean id="KEY_ASC126" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="126" />
+  </bean>
+
+  <bean id="KEY_ASC128" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="128" />
+    <property name="value" value="%" />
+  </bean>
+
+  <bean id="KEY_ASC129" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="129" />
+    <property name="value" value="€" />
+  </bean>
+
+  <bean id="KEY_ASC167" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="167" />
+    <property name="value" value="§" />
+  </bean>
+
+  <bean id="KEY_ASC181" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="181" />
+    <property name="value" value="µ" />
+  </bean>
+
+  <bean id="KEY_ASC196" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="196" />
+    <property name="value" value="Ä" />
+  </bean>
+
+  <bean id="KEY_ASC214" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="214" />
+    <property name="value" value="Ö" />
+  </bean>
+
+  <bean id="KEY_ASC220" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="220" />
+    <property name="value" value="Ü" />
+  </bean>
+
+  <bean id="KEY_ASC223" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="223" />
+    <property name="value" value="ß" />
+  </bean>
+
+  <bean id="KEY_ASC228" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="228" />
+    <property name="value" value="ä" />
+  </bean>
+
+  <bean id="KEY_ASC231" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="231" />
+    <property name="value" value="ç" />
+  </bean>
+
+  <bean id="KEY_ASC232" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="232" />
+    <property name="value" value="è" />
+  </bean>
+
+  <bean id="KEY_ASC233" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="233" />
+    <property name="value" value="é" />
+  </bean>
+
+  <bean id="KEY_ASC234" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="234" />
+    <property name="value" value="ê" />
+  </bean>
+
+  <bean id="KEY_ASC246" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="246" />
+    <property name="value" value="ö" />
+  </bean>
+
+  <bean id="KEY_ASC249" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="249" />
+    <property name="value" value="ù" />
+  </bean>
+
+  <bean id="KEY_ASC252" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="252" />
+    <property name="value" value="ü" />
+  </bean>
+
+  <bean id="KEY_ASC50065" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="50065" />
+    <property name="value" value="Ñ" />
+  </bean>
+
+  <bean id="KEY_ASC50097" class="com.micros_retail.xfgclient.key.AlphaKey">
+    <property name="code" value="50097" />
+    <property name="value" value="ñ" />
+  </bean>
+
+</beans>

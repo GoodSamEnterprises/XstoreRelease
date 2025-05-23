@@ -1,0 +1,99 @@
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../dtv/res/config/query/QueryConfig.xsd">
+  <!-- ***************************************************************** -->
+  <!-- ROOTS                                                             -->
+  <!-- ***************************************************************** -->
+  <Query name="tnd_tndr">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM tnd_tndr c
+        WHERE c.organization_id = ?
+        AND c.tndr_id in (select o.tndr_id from tnd_tndr_options o where o.EXPR_DATE < ?)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+  
+  <Query name="tsn_session">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM tsn_session
+          WHERE organization_id = ?
+            AND end_datetime < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+  
+  <Query name="ttr_voucher">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE FROM ttr_voucher
+          WHERE organization_id = ?
+            AND expr_date < ?]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDate" />
+    </SQL>
+  </Query>
+  
+  <!-- ************************************************ -->
+  <!-- tnd_tndr <<< *                                   -->
+  <!-- ************************************************ -->
+  <Query name="tnd_tndr.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From tnd_tndr p 
+                    Where p.organization_id = c.organization_id
+                      And p.tndr_id = c.tndr_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  
+  <!-- ************************************************ -->
+  <!-- tsn_session <<< *                                -->
+  <!-- ************************************************ -->
+  <Query name="tsn_session.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From tsn_session p 
+                    Where p.organization_id = c.organization_id
+                      And p.rtl_loc_id = c.rtl_loc_id
+                      And p.session_id = c.session_id)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+  
+  <!-- ************************************************ -->
+  <!-- ttr_voucher <<< *                                -->
+  <!-- ************************************************ -->
+  <Query name="ttr_voucher.child">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        DELETE {%ALIAS%} FROM {%TABLE%} c
+          WHERE organization_id = ?
+            AND NOT EXISTS
+                  (Select p.* From ttr_voucher p 
+                    Where p.organization_id = c.organization_id
+                      And p.voucher_typcode = c.voucher_typcode
+                      And p.serial_nbr = c.serial_nbr)]]>
+      </Statement>
+      <Parameter name="argOrganizationId" />
+    </SQL>
+  </Query>
+</QuerySet>

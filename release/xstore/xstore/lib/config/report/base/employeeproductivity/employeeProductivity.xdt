@@ -1,0 +1,93 @@
+<dataTemplate name="EmployeeProductivity" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="CRITERIA_EMPLOYEE" value="_rptEmployeeColon"/>
+    <label name="NAME" value="_rptName"/>
+    <label name="ID" value="_rptID"/>
+    <label name="TRANS" value="_rptTransactions"/>
+    <label name="AVG_ITMS" value="_rptItems"/>
+    <label name="AVG_AMT" value="_rptAmount"/>
+    <label name="RETURNS" value="_rptReturns"/>
+    <label name="R_NET" value="_rptReturns"/>
+    <label name="R_PERC" value="_rptReturns"/>
+    <label name="MRKDWN" value="_rptMarkDown"/>
+    <label name="S_NET" value="_rptSales"/>
+    <label name="NET" value="_rptNet"/>
+    <label name="EMPLOYEE" value="_rptEmployee"/>
+    <label name="AVERAGE" value="_rptAverage"/>
+    <label name="PERCENT" value="_rptPercentText"/>
+    <label name="TOTAL" value="_rptTotal"/>
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="employeeId" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptEmployeeProductivityReportEmployeeID;Text;Simple;maxCharacters=30]]></parameterDescription>
+      <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_PROD" key="EMPLOYEE_PRODUCTIVITY_REPORT">
+      <Parameters>
+      <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>employeeId</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>employee_id</ResultField>
+        <ResultField>employee_name</ResultField>
+        <ResultField>trans_count</ResultField>
+        <ResultField>item_avg</ResultField>
+        <ResultField>avg_sale</ResultField>
+        <ResultField>mkdn_percent</ResultField>
+        <ResultField>ret_percent</ResultField>
+        <ResultField>return_amt</ResultField>
+        <ResultField>net_amt</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_PROD" source="Q_PROD">
+      <element name="ID" value="employee_id"/>
+      <element name="EMP" value="employee_name" formatter="LastFirstNameFromString"/>
+      <element name="TTLTRAN" value="trans_count"/>
+      <element name="AVGITM" value="item_avg" formatter="Percent"/>
+      <element name="AVGSALE" value="avg_sale" formatter="Accounting"/>
+      <element name="MKDNPCT" value="mkdn_percent" formatter="Percent"/>
+      <element name="RETPCT" value="ret_percent" formatter="Percent"/>
+      <element name="RET" value="return_amt" formatter="Accounting"/>
+      <element name="SALE" value="net_amt" formatter="Accounting"/>
+    </group>
+    <group name="G_TTLS" source="Q_PROD">
+      <element name="TOTRET" value="return_amt"  function="SUM" formatter="Accounting"/>
+      <element name="TOTSALE" value="net_amt"  function="SUM" formatter="Accounting"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

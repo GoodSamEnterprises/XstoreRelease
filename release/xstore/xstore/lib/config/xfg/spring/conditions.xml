@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="rollingCloseCountAtRegisterOpenRunCondition" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.till.rollingclose.RollingCloseCountAtRegisterOpenRunCondition" />
+    </property>
+  </bean>
+
+  <bean id="rollingCloseNoCountAtRegisterOpenRunCondition" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.till.rollingclose.RollingCloseNoCountAtRegisterOpenRunCondition" />
+    </property>
+  </bean>
+
+  <bean id="rollingCloseRunCondition" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.till.rollingclose.RollingCloseRunCondition" />
+    </property>
+  </bean>
+
+  <bean id="nonRollingCloseRunCondition" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.till.rollingclose.NonRollingCloseRunCondition" />
+    </property>
+  </bean>
+
+  <bean id="rollingCloseEmptyDrawerRunCondition" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.till.rollingclose.RollingCloseEmptyDrawerRunCondition" />
+    </property>
+  </bean>
+
+  <bean id="rollingCloseRegisterCloseCarryOverBalanceRunCondition" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.till.rollingclose.RollingCloseRegisterCloseCarryOverBalanceRunCondition" />
+    </property>
+  </bean>
+  
+  <bean id="rollingCloseFirstRegisterToOpenCondition" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.register.RollingCloseFirstRegisterToOpenCondition" />
+    </property>
+  </bean>
+
+  <bean id="isNonPhysicalItemVoucher" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.register.IsNonPhysicalItem" />
+    </property>
+    <property name="parameters">
+      <map>
+        <entry key="ItemType" value="VOUCHER" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="isTenderVoucherType" class="com.micros_retail.xfgclient.statemachine.condition.register.IsTenderType">
+    <property name="tenderCategory" value="VOUCHER" />
+  </bean>
+
+    <bean id="isTenderCouponType" class="com.micros_retail.xfgclient.statemachine.condition.register.IsTenderType">
+    <property name="tenderCategory" value="COUPON" />
+  </bean>
+
+  <bean id="isInventoryAdjustmentLineItemNotNull" class="com.micros_retail.xfgclient.statemachine.condition.inventory.IsInventoryAdjustmentLineItemNotNull" />
+
+  <bean id="isIssuedVoucherChangeTender" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.tender.change.IsIssuedVoucherChangeTender" />
+    </property>
+  </bean>
+
+  <bean id="isLocalCurrencyChangeTender" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.tender.change.IsLocalCurrencyChangeTender" />
+    </property>
+  </bean>
+
+  <bean id="hasIssuedBounceBackCoupons" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.ejournal.postvoid.condition.HasIssuedBounceBackCoupons" />
+    </property>
+  </bean>
+
+  <bean id="hasIssuedVouchers" class="com.micros_retail.xfgclient.statemachine.condition.RunXFRCondition">
+    <property name="runChainCondition">
+      <bean class="dtv.pos.ejournal.postvoid.condition.HasIssuedVouchers" />
+    </property>
+  </bean>
+
+</beans>

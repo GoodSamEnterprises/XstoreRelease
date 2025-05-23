@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../dtv/res/config/query/QueryConfig.xsd">
+  <Query name="BACKUP_DATABASE" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <ResultField name="ReturnValue" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          {? = call sp_export_database('EXP_DIR', ?, ?, ?)}        
+      ]]></Statement>
+      <Parameter name="argBackupDataFile" />
+      <Parameter name="argBackupDataFile" />
+      <Parameter name="argOutputFile" />
+      <Parameter name="argSourceOwner" />
+    </SQL>
+    <Property>
+      <Key dtype="String">QueryType</Key>
+      <Value dtype="String"><![CDATA[Procedure]]></Value>
+    </Property>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[true]]></Value>
+    </Property>
+  </Query>
+  <Query name="CREATE_DIRECTORY" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          CREATE OR REPLACE DIRECTORY EXP_DIR AS '{$argBackupDir}'        
+      ]]></Statement>
+      <Parameter name="$argBackupDir" />
+    </SQL>
+  </Query>
+  <Query name="REPLACE_TRAINING_ID" pmType="RESERVED_TRAINING">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          {? = call sp_replace_org_id (?)}         
+      ]]></Statement>
+      <Parameter name="argNewOrgId" />
+      <Parameter name="argNewOrgId" />
+    </SQL>
+    <Property>
+      <Key dtype="String">QueryType</Key>
+      <Value dtype="String"><![CDATA[Procedure]]></Value>
+    </Property>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[true]]></Value>
+    </Property>
+  </Query>
+  <Query name="RESTORE_DATABASE" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          {? = call sp_import_database('EXP_DIR', ?, ?, ?, ?, ?, ?, ?, ?, ?)}        
+      ]]></Statement>
+      <Parameter name="argProd" />
+      <Parameter name="argProd" />
+      <Parameter name="argBackupDataFile" />
+      <Parameter name="argOutputFile" />
+      <Parameter name="argSourceOwner" />
+      <Parameter name="argTargetOwner" />
+      <Parameter name="argSourceTablespace" />
+      <Parameter name="argTargetTablespace" />
+      <Parameter name="argSourceIndexTablespace" />
+      <Parameter name="argTargetIndexTablespace" />
+    </SQL>
+    <Property>
+      <Key dtype="String">QueryType</Key>
+      <Value dtype="String"><![CDATA[Procedure]]></Value>
+    </Property>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[true]]></Value>
+    </Property>
+  </Query>
+  <Query name="TEST_CONNECTION_ACTIVE" pmType="RESERVED_MASTER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.dataserver.DataServerQueryResult</ResultClass>
+    <SQL>
+      <Statement dtype="String"><![CDATA[ 
+        SELECT 1 FROM dual
+      ]]></Statement>
+    </SQL>
+    <Property>
+      <Key dtype="String">HasReturnValue</Key>
+      <Value dtype="String"><![CDATA[true]]></Value>
+    </Property>
+  </Query>
+</QuerySet>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Fri Oct 27 18:40:57 EDT 2006 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">EMPLOYEE_BORROW</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, 10.0, FILL, 40.0-->
+          <param_value dtype="DoubleArray">-2.0, 10.0, -1.0, 40.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--40.0, PREFERRED, PREFERRED, PREFERRED, PREFERRED-->
+          <param_value dtype="DoubleArray">40.0, -2.0, -2.0, -2.0, -2.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_empBorrowStartName</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 1, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">fullName</Resource>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_empBorrowStartDate</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">startDate</Resource>
+        <DataField ref="Date" />
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 3, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_empBorrowEndDate</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">endDate</Resource>
+        <DataField ref="Date" />
+        <Font fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_empBorrowTempFlag</TextKey>
+        <Font fontStyle="BOLD" fontSize="+10" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormYesNo</Type>
+        <Resource dtype="String">tempFlag</Resource>
+        <Font fontSize="+10" />
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" text="_promptmsg29" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

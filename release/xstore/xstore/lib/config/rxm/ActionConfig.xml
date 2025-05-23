@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/ActionConfig.xsd">
+  <!-- *****************************************************************************************
+       *****************************************************************************************
+       RXM
+       These actions pertain to the creation and administration of Retail Extension Module
+       *****************************************************************************************
+       ***************************************************************************************** -->
+  <Action name="CUSTOMER::REMOVE_DIGITAL_CART_ITEM" chainKey="REMOVE_DIGITAL_CART_ITEM" chainType="STACK" text="_customerDeleteItemAction" keyStroke="F6">
+    <VisibilityRule class="dtv.pos.customer.digitalcart.DigitalCartButtonsVisibilityRule" />
+  </Action>
+  <Action name="CUSTOMER::PURCHASE_DIGITAL_CART_ITEM" chainKey="PURCHASE_DIGITAL_CART_ITEM" chainType="STACK" text="_customerPurchaseItemAction" keyStroke="F7">
+    <VisibilityRule class="dtv.pos.customer.digitalcart.DigitalCartButtonsVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.CustListItemModeVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.CustListAllowMixedInTransWithSaleItemTypeRule" />
+  </Action>
+  
+  <!-- TOUCH ACTIONS 
+        Please keep all touch actions in one place.
+        - Ensure your touch action has the keyword "exclude"
+        - Ensure your touch action's name starts with "TOUCH::"
+        - To keep it clean don't assign text to a touch action (can't think of any cases where that would be needed)
+        
+        The action doesn't qualify as a touch action 
+          - if it is a part of the MenuConfig.xml
+          - if it is also assigned to buttons (don't rename actions assigned to buttons to TOUCH::OLD_NAME)
+   -->
+    
+  <!-- END OF TOUCH ACTIONS -->
+</ActionSet>

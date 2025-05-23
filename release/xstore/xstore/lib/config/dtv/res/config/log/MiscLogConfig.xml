@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <!-- ***************************************************** -->
+  <!-- ** ROUTING RULES -->
+  <!-- ***************************************************** -->
+  <RoutingRules>
+    <RoutingRule name="HARDWARE_FAULT" document="HARDWARE_ENTRY" file="REMC" enabled="false">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.hardware.log.IHardwareLogModel" />
+      <condition method="getSeverity" comparison="EQUAL" value="Fault" />
+    </RoutingRule>
+    <RoutingRule name="HARDWARE_INFO" document="HARDWARE_ENTRY" file="REMC" enabled="false">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.hardware.log.IHardwareLogModel" />
+      <condition method="getSeverity" comparison="EQUAL" value="Information" />
+    </RoutingRule>
+  </RoutingRules>
+  
+  <!-- ***************************************************** -->
+  <!-- ** LOG DOCUMENT TYPES -->
+  <!-- ***************************************************** -->
+  <LogTypes>
+    <LogType document="HARDWARE_ENTRY" sectionref="HARDWARE_EVENT" />
+  </LogTypes>
+
+  <!-- ***************************************************** -->
+  <!-- ** SECTIONS -->
+  <!-- ***************************************************** -->
+  <sections>
+    <section name="address_common">
+      <xml><![CDATA[
+        <Address>
+          <AddressLine1 Type="Text">#{getAddress1}</AddressLine1>
+          <AddressLine2 Type="Text">#{getAddress2}</AddressLine2>
+          <City>#{getCity}</City>
+          <Territory TypeCode="State">#{getState}</Territory>
+          <PostalCode>#{getPostalCode}</PostalCode>
+          <Country>#{getCountry}</Country>
+          <Apartment>#{getApartment}</Apartment>
+          <dtv:Neighborhood>#{getNeighborhood}</dtv:Neighborhood>
+          <dtv:County>#{getCounty}</dtv:County>
+        </Address>
+      ]]></xml>
+    </section>
+  
+    <section name="HARDWARE_EVENT">
+      <xml><![CDATA[
+        <Event severity="#{getSeverity}">
+          <DateTime>#{getSystemDateTimeStamp}</DateTime>
+          <EventId>#{getEventId}</EventId>
+          <SensorId UPOS="#{getDeviceType.getFamily.getName}">#{getDeviceName}</SensorId>
+          <SensorName>Workstation #{getDeviceType.getName}</SensorName>
+          <RetailStoreID>#{getRetailLocationId}</RetailStoreID>
+          
+          <?iterator method="#{getParameters}"?>
+          <Parameter>
+            <Name>#{getName}</Name>
+            <Value>#{getValue}</Value>
+          </Parameter>
+          <?_iterator?>
+  
+          <?sectionref name="log_related_transaction"?>
+        </Event>
+      ]]></xml>
+    </section>
+    
+    <section name="dao_creation_fields">
+      <xml><![CDATA[
+        <dtv:CreateUserId>#{getCreateUserId}</dtv:CreateUserId>
+        <dtv:CreateDate>#{getCreateDate}[datetime]</dtv:CreateDate>
+      ]]></xml>
+    </section>
+
+    <section name="dao_update_fields">
+      <xml><![CDATA[
+        <dtv:UpdateUserId>#{getUpdateUserId}</dtv:UpdateUserId>
+        <dtv:UpdateDate>#{getUpdateDate}[datetime]</dtv:UpdateDate>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>

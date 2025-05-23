@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="MenuConfig.xsd" xmlns="http://micros.com/xstore/config/menu">
+
+	<MenuItem name="CUSTOMER::MANAGER_OPTIONS" text="_menutextCRMMenu"
+		displayType="LIST" category="Back Office" keywords="universal,customer,report_customer">
+		<MenuOption ref="CUSTOMER::MAINTAIN" />
+		<MenuOption ref="CUSTOMER::REPORT.CUSTOMER_LIST" />
+
+		<SubMenu text="_menuTextOrderOptions">
+			<MenuOption ref="ORDER::VIEW_WORKLIST" />
+			<MenuOption ref="ORDER::SEARCH" />
+			<MenuOption ref="ORDER::REPORT.STATUS" />
+      <MenuOption ref="ORDER::UNFULFILLABLE" />
+		</SubMenu>
+
+		<MenuOption ref="SPECIAL_ORDER::MAINTAIN" />
+		<MenuOption ref="LAYAWAY::MAINTAIN" />
+        <SubMenu ref="WORK_ORDER::OPTIONS" />
+
+		<MenuOption ref="GIFT_REGISTRY::SEARCH" />
+	</MenuItem>
+
+	<MenuItem name="GIFT_REGISTRY::MAINTENANCE" text="_giftRegistryMaintain">
+		<MenuOption ref="GIFT_REGISTRY::CHANGE_QUANTITY" />
+    <MenuOption ref="GIFT_REGISTRY::VOID_ITEM" />
+    <MenuOption ref="GIFT_REGISTRY::UPDATE_REGISTRY" />
+    <MenuOption ref="GIFT_REGISTRY::VIEW_OWNERS" />
+    <MenuOption ref="GIFT_REGISTRY::VIEW_ATTRIBUTES" />
+		<MenuOption ref="GIFT_REGISTRY::VIEW_ADDRESSES" />
+    <MenuOption ref="GIFT_REGISTRY::PRINT_REGISTRY" keyStroke="F9" />
+	</MenuItem>
+
+  <MenuItem name="RETAIL::REGISTER_OPTIONS" text="_registerOptionsMenuText" category="Retail" keywords="universal,sale,register_extended,register_all">
+    <SubMenu ref="BALANCE_INQUIRY::REGISTER_OPTIONS" />
+
+    <MenuOption ref="ADMIN::REPRINT_GIFT_RECEIPTS" />
+    <MenuOption ref="HOUSE_ACCOUNT::MAKE_PAYMENT" />
+    <MenuOption ref="HOUSE_ACCOUNT::MAKE_REVERSAL" />
+
+    <SubMenu ref="RETAIL::MENU.MODIFY_TRANS_TAX_OPTIONS" />
+    
+    <MenuOption ref="SALE::ADD_COUPON" />
+    <MenuOption ref="SALE::REDEEM_RAINCHECK" />
+    <MenuOption>
+      <Action ref="GIFT_REGISTRY::ASSIGN" />
+      <Action ref="GIFT_REGISTRY::REMOVE" />
+    </MenuOption>
+
+    <MenuOption ref="ADMIN::LOCK_REGISTER" />
+  </MenuItem>
+</MenuSet>

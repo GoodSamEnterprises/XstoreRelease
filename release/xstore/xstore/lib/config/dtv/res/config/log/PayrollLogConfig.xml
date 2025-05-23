@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <!-- ***************************************************** -->
+  <!-- ** ROUTING RULES -->
+  <!-- ***************************************************** -->
+  <RoutingRules>
+    <RoutingRule name="PAYROLL_ENTRY" document="PAYROLL_ENTRY" file="PAYROLL">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.pos.payroll.PayrollLogObject" />
+    </RoutingRule>
+  </RoutingRules>
+  
+  <!-- ***************************************************** -->
+  <!-- ** LOG DOCUMENT TYPES -->
+  <!-- ***************************************************** -->
+  <LogTypes>
+    <LogType document="PAYROLL_ENTRY" sectionref="PAYROLL_ENTRY" />
+  </LogTypes>
+  
+  <!-- ***************************************************** -->
+  <!-- ** SECTIONS -->
+  <!-- ***************************************************** -->
+  <sections>
+    <section name="PAYROLL_ENTRY">
+      <xml><![CDATA[
+        <dtv:Payroll>
+          <dtv:StartDate>#{getStartDate}[date]</dtv:StartDate>
+          <dtv:EndDate>#{getEndDate}[date]</dtv:EndDate>
+          <dtv:PostedDate>#{getPostedDate}[date]</dtv:PostedDate>
+          
+          <?iterator method="getEmployeeList"?>
+          <dtv:Employee EmployeeId="#{getEmployeeId}">
+            <dtv:EmployeePayStatus>#{getEmployeeStatus}</dtv:EmployeePayStatus>
+            <dtv:PayrollStoreNumber>#{getStoreNumber}</dtv:PayrollStoreNumber>
+            <dtv:ReviewedDate>#{getReviewedDate}[date]</dtv:ReviewedDate>
+            
+            <?iterator method="getCategoryList"?>
+            <?condition method="getPayrolls" comparison="NOT_EMPTY"?>
+            <dtv:PayrollCategory Category="#{getPayrollCategory}">
+              <?iterator method="getPayrolls"?>
+              <dtv:PayrollDate>#{getPayroll.getBusinessDate}[date]</dtv:PayrollDate>
+              <dtv:Hours>#{getPayroll.getHoursCount}</dtv:Hours>
+              
+              <?iterator method="getWorkCodeSummaryList"?>
+              <dtv:WorkCode code="#{getWorkCode}">
+                <dtv:TotalHours>#{getHours}</dtv:TotalHours>
+              </dtv:WorkCode>
+              <?_iterator?>
+              
+              <?_iterator?>
+            </dtv:PayrollCategory>
+            
+            <?_condition?>
+            <?_iterator?>
+          </dtv:Employee>
+          <?_iterator?>          
+        </dtv:Payroll>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>

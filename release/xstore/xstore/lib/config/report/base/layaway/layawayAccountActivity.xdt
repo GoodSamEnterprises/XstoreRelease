@@ -1,0 +1,160 @@
+<dataTemplate name="LayawayAccountActivity" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+    <label name="DATE" value="_rptDate"/>
+    <label name="SUMMARY" value="_rptSummary"/>
+    <label name="DETAIL" value="_rptDetail"/>
+    <label name="SUMMARY_AND_DETAIL" value="_rptSummaryAndDetailOption"/>
+    <label name="BASE_AGE_ON" value="_rptBaseAgeOnColon"/>
+    <label name="ACCT_STATUS" value="_rptAccountStatus"/>
+    <label name="SORT_ORDER_COLON" value="_rptSortOrderColon"/>
+    <label name="DISPLAY_OPTION" value="_rptDisplayOptionColon"/>
+
+    <label name="LAYAWAY_ID" value="_rptLayawayID"/>
+    <label name="LAYAWAY_ID_COLON" value="_rptLayawayIDColon"/>
+    <label name="TRANS" value="_rptTransaction"/>
+    <label name="CUSTOMER" value="_rptCustomerName"/>
+    <label name="PHONE" value="_rptPhoneNumber"/>
+    <label name="SETUP" value="_rptSetup"/>
+    <label name="LAST_ACT" value="_rptLastActivity"/>
+    <label name="LAST_PMT" value="_rptLastPayment"/>
+    <label name="STATUS" value="_rptStatus"/>
+    <label name="TOTAL" value="_rptTotal"/>
+    <label name="B_TOTAL_COLON" value="_rptTotalBalanceColon"/>
+    <label name="PAYMENT" value="_rptPayment"/>
+    <label name="BALANCE" value="_rptBalance"/>
+
+    <label name="ITEM" value="_rptItem"/>
+    <label name="ASSOC" value="_rptAssociate"/>
+    <label name="QUANTITY" value="_rptQuantity"/>
+    <label name="UNIT_PRICE" value="_rptUnitPrice"/>
+    <label name="EXT_PRICE" value="_rptExtPrice"/>
+
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="baseAgeOn" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptBaseAgeOn;Combo;dtv.pos.reporting.fill.SoftEnumFactory;Setup Date=_rptSetupDate|Last Activity Date=_rptConfigurableCustAcctLastActivityDate|Last Payment Date=_rptConfigurableCustAcctLastPaymentDate]]></parameterDescription>
+        <defaultValueExpression><![CDATA["SETUP_DATE"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="displayOption" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptDisplayOptions;Combo;dtv.pos.reporting.fill.SoftEnumFactory;SUMMARY=_rptSummaryOption|DETAIL=_rptDetailOption|SUMMARY_AND_DETAIL=_rptSummaryAndDetailOption]]></parameterDescription>
+       <defaultValueExpression><![CDATA["SUMMARY"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="accountStatus" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptLayawayActActivityItemAccountStatusSearch;Combo;dtv.pos.register.layaway.LayawaySearchStatusType;all=_rptParamSelectionAll]]></parameterDescription>
+        <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>
+    <parameter name="sortOrder" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptSortOrderParameter;Combo;dtv.pos.reporting.fill.SoftEnumFactory;last_name=_rptSortLastName|setup_date=_rptSetupDate]]></parameterDescription>
+        <defaultValueExpression><![CDATA["crm.last_name"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_LAYAWAY_ACCOUNT_ACTIVITY_SUMMARY" key="LAYAWAY_ACCOUNT_ACTIVITY_SUMMARY_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>accountStatus</Parameter>
+        <Parameter>baseAgeOn</Parameter>
+        <Parameter>sortOrder</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>cust_acct_id</ResultField>
+        <ResultField>customer_name</ResultField>
+        <ResultField>party_id</ResultField>
+        <ResultField>telephone1</ResultField>
+        <ResultField>setup_date</ResultField>
+        <ResultField>last_activity_date</ResultField>
+        <ResultField>last_payment_date</ResultField>
+        <ResultField>cust_acct_statcode</ResultField>
+        <ResultField>acct_total</ResultField>
+        <ResultField>total_payment_amt</ResultField>
+        <ResultField>acct_balance</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_LAYAWAY_ACCOUNT_ACTIVITY_DETAIL" key="LAYAWAY_ACCOUNT_ACTIVITY_DETAIL_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>accountStatus</Parameter>
+        <Parameter>baseAgeOn</Parameter>
+        <Parameter>sortOrder</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>cust_acct_id</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>business_date</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>employee_party_id</ResultField>
+        <ResultField>item_acct_lineitm_statcode</ResultField>
+        <ResultField>item_acct_activity_code</ResultField>
+        <ResultField>quantity</ResultField>
+        <ResultField>unit_price</ResultField>
+        <ResultField>line_typcode</ResultField>
+        <ResultField>extended_amt</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_LAYAWAY_ACCOUNT_ACTIVITY_SUMMARY" source="Q_LAYAWAY_ACCOUNT_ACTIVITY_SUMMARY">
+        <element name="ACCT_ID"    value="cust_acct_id"/>
+        <element name="C_NAME"     value="customer_name"      formatter="LastFirstNameFromString"/>
+        <element name="PHONE"      value="telephone1"         formatter="Phone"/>
+        <element name="SETUP_D"    value="setup_date"         formatter="DateShort"/>
+        <element name="ACT_D"      value="last_activity_date" formatter="DateShort"/>
+        <element name="PMT_D"      value="last_payment_date"  formatter="DateShort"/>
+        <element name="STATUS"     value="cust_acct_statcode" translation-prefix="_dtv.pos.customer.account.type.CustAccountSearchStatusType."/>
+        <element name="ACCT_T"     value="acct_total"         formatter="Money"/>
+        <element name="PMT_T"      value="total_payment_amt"  formatter="Money"/>
+        <element name="BLNC_T"     value="acct_balance"       formatter="Money"/>
+    </group>
+    <group name="G_LAYAWAY_ACCOUNT_ACTIVITY_SUMMARY_TOTALS" source="Q_LAYAWAY_ACCOUNT_ACTIVITY_SUMMARY">
+        <element name="BLNC_TOT"   value="acct_balance"       function="SUM" formatter="Money"/>
+    </group>
+    <group name="G_LAYAWAY_ACCOUNT_ACTIVITY_DETAIL" source="Q_LAYAWAY_ACCOUNT_ACTIVITY_DETAIL">
+        <element name="ACCT_ID"    value="cust_acct_id"/>
+        <element name="TRAN_ID"    value="trans_seq"/>
+        <element name="DATE"       value="business_date" formatter="DateShort"/>
+        <element name="ITEM_ID"    value="item_id"/>
+        <element name="DESC"       value="description"/>
+        <element name="ASSO_ID"    value="employee_party_id"/>
+        <element name="STATUS"     value="item_acct_activity_code" translation-prefix="_dtv.pos.customer.account.type.CustomerItemAccountActivityCodeType."/>
+        <element name="QTY"        value="quantity"/>
+        <element name="U_PRICE"    value="unit_price"   formatter="Money"/>
+        <element name="EXT_A"      value="extended_amt" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

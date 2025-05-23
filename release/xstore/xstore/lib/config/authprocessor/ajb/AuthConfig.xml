@@ -1,0 +1,1768 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AuthConfig.xsd">
+
+  <!-- ***** AuthProcess AJB_HOST **************************************** -->
+  <AuthProcess name="AJB_HOST" Abstract="true">
+    <Parameter name="nodeId" value="FEPZALE1" />
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-IN-AJB_HOST" />
+    <Parameter name="storeNumber" value="999" />
+    <Parameter name="terminalId" value="1" />
+    <Parameter name="maximumCIDRetries" value="3" />
+    <Parameter name="useNodeId" value="false" />
+    <Parameter name="useSTXETX" value="true" />
+    <!-- valid values TAC and RAW -->
+    <Parameter name="MICRFormat" value="RAW" />
+    <Parameter name="communicatorHosts">
+      <param_value dtype="List">
+        <!-- the timeout value in the host string is the connect timeout -->
+        <VpnHost dtype="String">socket://192.168.193.201:24900;timeout=60000;auth=false</VpnHost>
+      </param_value>
+    </Parameter>
+    <!-- following setting can be used to indicate the -->
+    <!-- processor is offline permenantly (or for a long time anyway) -->
+    <Parameter name="connectionEnabled" value="true" />
+    <Parameter name="communicatorReceiveTimeoutMillis" value="45000" />
+    <Parameter name="manualAuthValidation.length.maximum" value="30" />
+  </AuthProcess>
+  <!-- ***** AuthProcess AJB ********************************************* -->
+  <AuthProcess name="AJB" extends="AJB_HOST" Abstract="true">
+    <!-- +++++ AJB communication parameters +++++ -->
+    <Parameter name="communicator" value="dtv.tenderauth.impl.ajb.AjbSocketCommunicator" />
+    <!--<Parameter name="communicator" value="dtv.tenderauth.impl.ajb.AjbFiPayCommunicator" /> -->
+    <!-- the following (communicatorProgress...) control the progress bar -->
+    <!-- progress timing that work well with an IP connection -->
+    <Parameter name="communicatorProgressConnectMillis" value="500" />
+    <Parameter name="communicatorProgressSendingMillis" value="500" />
+    <Parameter name="communicatorProgressWaitMillis" value="6000" />
+    <Parameter name="communicatorProgressReceiveMillis" value="500" />
+    <!-- progress timings that work well with a dial-up connection -->
+    <!-- <Parameter name="communicatorProgressConnectMillis" value="5000" /> 
+    <Parameter name="communicatorProgressSendingMillis" value="500" /> 
+    <Parameter name="communicatorProgressWaitMillis" value="30000" /> 
+    <Parameter name="communicatorProgressReceiveMillis" value="500" /> -->
+    <!-- +++++ AJB message-java marshalling parameters +++++ -->
+    <Parameter name="requestConverter" value="dtv.tenderauth.impl.ajb.AjbRequestConverter" />
+    <Parameter name="responseConverter" value="dtv.tenderauth.impl.ajb.response.AjbResponseConverter" />
+    <!-- +++++ AJB auth record parameters +++++ -->
+    <Parameter name="manualAuthSuccessAdjucationCode" value="AUTHORIZED" />
+    <Parameter name="abortedAuthSuccessAdjucationCode" value="ABORTED" />
+    <!-- +++++ AJB action map -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given RTS result code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">1</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2</key>
+          <!-- CALL CENTER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+            </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3</key>
+          <!-- BANK DOWN -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">5</key>
+          <!-- MODEM/LINE ISSUE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">6</key>
+          <!-- FORMAT ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">8</key>
+          <!-- TRY LATER (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">10</key>
+          <!-- TIMED OUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">14</key>
+          <!-- REQUEST NOT SUPPORTED BY AUTHORIZER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN RTS IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- WHEN A BAD NUMBER IS ENTERED BY THE CASHIER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="BALANCE_INQUIRY_OFFLINE">
+          <!-- WHEN AJB IS OFFLINE for a BALANCE_INQUIRY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess AJB_CREDIT ************************************** -->
+  <AuthProcess name="AJB_CREDIT" extends="AJB" Abstract="true">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.ajb.process.AjbCreditAuthProcess</AuthProcessClass>
+    <!-- not specifying a value will value cause it to be cleared to null -->
+    <Parameter name="clearTrack2With" value="" />
+    <!-- +++++ AJB_CREDIT message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various aciton codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCreditOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="CID_REENTRY">
+          <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authCreditCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgBANK_DOWN">
+              <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+              <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+              <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_5">
+          <!-- message shown for RTS result 5 (MODEM/LINE ISSUE) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgLINE_ISSUE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_6">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditmsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for RTS result 8 (TRY LATER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTRY_LATER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_14">
+          <!-- message shown for RTS result 14 (REQUEST NOT SUPPORTED BY AUTHORIZER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNSUPPORTED_REQUEST">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthRequestMap AJB_CREDIT ************************ -->
+  <AuthRequestMap name="AJB_CREDIT">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.ajb.request.AjbCreditRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="maximumCIDRetries" ref="maximumCIDRetries" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="dtv.tenderauth.impl.ajb.request.AjbCreditRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="maximumCIDRetries" ref="maximumCIDRetries" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="INQUIRE_BALANCE" class="dtv.tenderauth.impl.ajb.request.AjbCreditRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="maximumCIDRetries" ref="maximumCIDRetries" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.voiding.DoNothingVoidTenderAuthRequest" enabled="true" />
+  </AuthRequestMap>
+  <!-- ***** AuthProcess AJB_CREDIT_STORE_SETTINGS************************ -->
+  <AuthProcess name="AJB_CREDIT_STORE_SETTINGS" extends="AJB_CREDIT" Abstract="true">
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-IN-AJB_STORE_SETTINGS" />
+  </AuthProcess>
+  <!-- ***** AuthProcesses that extend AJB_CREDIT_STORE_SETTINGS ********* -->
+  <!-- ***** AuthProcess AJB_VISA **************************************** -->
+  <AuthProcess name="AJB_VISA" extends="AJB_CREDIT_STORE_SETTINGS" />
+  <!-- ***** AuthProcess AJB_MASTERCARD ********************************** -->
+  <AuthProcess name="AJB_MASTERCARD" extends="AJB_CREDIT_STORE_SETTINGS" />
+  <!-- ***** AuthProcess AJB_DINERS_CLUB ********************************* -->
+  <AuthProcess name="AJB_DINERS_CLUB" extends="AJB_CREDIT_STORE_SETTINGS">
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditDinersClubManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCreditDinersClubOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="CID_REENTRY">
+          <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authCreditDinersClubCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgBANK_DOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_5">
+          <!-- message shown for RTS result 5 (MODEM/LINE ISSUE) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgLINE_ISSUE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_6">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for RTS result 8 (TRY LATER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTRY_LATER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_14">
+          <!-- message shown for RTS result 14 (REQUEST NOT SUPPORTED BY AUTHORIZER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNSUPPORTED_REQUEST">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess AJB_JCB ***************************************** -->
+  <AuthProcess name="AJB_JCB" extends="AJB_CREDIT_STORE_SETTINGS">
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditJCBManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCreditJCBOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="CID_REENTRY">
+          <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authCreditJCBCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgBANK_DOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_5">
+          <!-- message shown for RTS result 5 (MODEM/LINE ISSUE) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgLINE_ISSUE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_6">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for RTS result 8 (TRY LATER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTRY_LATER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_14">
+          <!-- message shown for RTS result 14 (REQUEST NOT SUPPORTED BY AUTHORIZER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNSUPPORTED_REQUEST">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess AJB_DISCOVER ************************************ -->
+  <AuthProcess name="AJB_DISCOVER" extends="AJB_CREDIT_STORE_SETTINGS">
+    <!-- +++++ AJB_DISCOVER message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditDISCOVERManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCreditDISCOVEROffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="CID_REENTRY">
+          <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authCreditDISCOVERCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgBANK_DOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_5">
+          <!-- message shown for RTS result 5 (MODEM/LINE ISSUE) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgLINE_ISSUE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_6">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for RTS result 8 (TRY LATER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTRY_LATER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_14">
+          <!-- message shown for RTS result 14 (REQUEST NOT SUPPORTED BY AUTHORIZER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNSUPPORTED_REQUEST">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess AJB_AMERICAN_EXPRESS **************************** -->
+  <AuthProcess name="AJB_AMERICAN_EXPRESS" extends="AJB_CREDIT_STORE_SETTINGS">
+    <!-- +++++ AJB_AMERICAN_EXPRESS message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditAMEXManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCreditAMEXOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="CID_REENTRY">
+          <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authCreditAMEXCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgBANK_DOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_5">
+          <!-- message shown for RTS result 5 (MODEM/LINE ISSUE) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgLINE_ISSUE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_6">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for RTS result 8 (TRY LATER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTRY_LATER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_14">
+          <!-- message shown for RTS result 14 (REQUEST NOT SUPPORTED BY AUTHORIZER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNSUPPORTED_REQUEST">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess AJB_CHECK_STORE_SETTINGS************************* -->
+  <AuthProcess name="AJB_CHECK_STORE_SETTINGS" extends="AJB" Abstract="true">
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-IN-AJB_STORE_SETTINGS" />
+    <Parameter name="disableAuthNumberValidation" value="false" />
+  </AuthProcess>
+  <!-- ***** AuthProcess AJB_CHECK *************************************** -->
+  <AuthProcess name="AJB_CHECK" extends="AJB_CHECK_STORE_SETTINGS">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.ajb.process.AjbCheckAuthProcess</AuthProcessClass>
+    <Parameter name="disableTimeZoneWorkAround" value="false" />
+    <!-- +++++ AJB_CHECK message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCheckManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCheckOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authCheckCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckMsgBANK_DOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_5">
+          <!-- message shown for RTS result 5 (MODEM/LINE ISSUE) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckMsgLINE_ISSUE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_6">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckMsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for RTS result 8 (TRY LATER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckMsgTRY_LATER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_14">
+          <!-- message shown for RTS result 14 (REQUEST NOT SUPPORTED BY AUTHORIZER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckMsgUNSUPPORTED_REQUEST">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCheckMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthRequestMap AJB_CHECK *************************** -->
+  <AuthRequestMap name="AJB_CHECK">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.ajb.request.AjbCheckRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="MICRFormat" ref="MICRFormat" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+      <Parameter name="stateCodeMap">
+        <param_value dtype="Map">
+          <MapEntry key="AB" value="28" />
+          <MapEntry key="AK" value="42" />
+          <MapEntry key="AL" value="41" />
+          <MapEntry key="AR" value="45" />
+          <MapEntry key="AS" value="92" />
+          <MapEntry key="AZ" value="43" />
+          <MapEntry key="BC" value="29" />
+          <MapEntry key="CA" value="46" />
+          <MapEntry key="CO" value="47" />
+          <MapEntry key="CT" value="48" />
+          <MapEntry key="CZ" value="93" />
+          <MapEntry key="DC" value="91" />
+          <MapEntry key="DE" value="77" />
+          <MapEntry key="FL" value="49" />
+          <MapEntry key="GA" value="50" />
+          <MapEntry key="GU" value="94" />
+          <MapEntry key="HI" value="51" />
+          <MapEntry key="IA" value="56" />
+          <MapEntry key="ID" value="52" />
+          <MapEntry key="IL" value="53" />
+          <MapEntry key="IN" value="54" />
+          <MapEntry key="KS" value="57" />
+          <MapEntry key="KY" value="58" />
+          <MapEntry key="LA" value="59" />
+          <MapEntry key="MA" value="62" />
+          <MapEntry key="MB" value="30" />
+          <MapEntry key="MD" value="61" />
+          <MapEntry key="ME" value="60" />
+          <MapEntry key="MI" value="63" />
+          <MapEntry key="MN" value="64" />
+          <MapEntry key="MO" value="67" />
+          <MapEntry key="MS" value="65" />
+          <MapEntry key="MT" value="68" />
+          <MapEntry key="NB" value="31" />
+          <MapEntry key="NC" value="73" />
+          <MapEntry key="ND" value="74" />
+          <MapEntry key="NE" value="69" />
+          <MapEntry key="NF" value="32" />
+          <MapEntry key="NH" value="71" />
+          <MapEntry key="NJ" value="66" />
+          <MapEntry key="NM" value="72" />
+          <MapEntry key="NS" value="34" />
+          <MapEntry key="NT" value="33" />
+          <MapEntry key="NV" value="70" />
+          <MapEntry key="NY" value="55" />
+          <MapEntry key="OH" value="75" />
+          <MapEntry key="OK" value="76" />
+          <MapEntry key="ON" value="35" />
+          <MapEntry key="OR" value="78" />
+          <MapEntry key="PA" value="44" />
+          <MapEntry key="PE" value="36" />
+          <MapEntry key="PQ" value="37" />
+          <MapEntry key="PR" value="95" />
+          <MapEntry key="RI" value="79" />
+          <MapEntry key="SC" value="80" />
+          <MapEntry key="SD" value="81" />
+          <MapEntry key="SK" value="38" />
+          <MapEntry key="TN" value="82" />
+          <MapEntry key="TX" value="83" />
+          <MapEntry key="UT" value="84" />
+          <MapEntry key="VA" value="86" />
+          <MapEntry key="VI" value="96" />
+          <MapEntry key="VT" value="85" />
+          <MapEntry key="WA" value="87" />
+          <MapEntry key="WI" value="89" />
+          <MapEntry key="WV" value="88" />
+          <MapEntry key="WY" value="90" />
+          <MapEntry key="YT" value="39" />
+        </param_value>
+      </Parameter>
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.voiding.DoNothingVoidTenderAuthRequest"
+      enabled="true" />
+  </AuthRequestMap>
+  <!-- ***** AuthProcess AJB_DEBIT ************************************** -->
+  <AuthProcess name="AJB_DEBIT" extends="AJB">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.ajb.process.AjbDebitAuthProcess</AuthProcessClass>
+    <Parameter name="CreditToAccountAllowed" value="true" />
+    <Parameter name="ReversalRequired" value="true" />
+    <Parameter name="CancelAllowed" value="false" />
+    <!-- +++++ AJB_DEBIT message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitManualAuthNotAllowed" />
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCheckOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitManualAuthNotAllowed" />
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authDebitCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitMsgBANK_DOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_5">
+          <!-- message shown for RTS result 5 (MODEM/LINE ISSUE) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitMsgLINE_ISSUE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_6">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitMsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for RTS result 8 (TRY LATER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitMsgTRY_LATER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_14">
+          <!-- message shown for RTS result 14 (REQUEST NOT SUPPORTED BY AUTHORIZER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitMsgUNSUPPORTED_REQUEST">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbDebitMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthRequestMap AJB_DEBIT ****************************** -->
+  <AuthRequestMap name="AJB_DEBIT">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.ajb.request.AjbDebitRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="ReversalRequired" ref="ReversalRequired" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.ajb.request.AjbDebitRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+  </AuthRequestMap>
+  <!-- ***** AuthProcess AJB_GIFT_CARD ********************************** -->
+  <AuthProcess name="AJB_GIFT_CARD" extends="AJB">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.storedvalue.ajb.AjbGiftCardAuthProcess</AuthProcessClass>
+    <Parameter name="communicatorReceiveTimeoutMillis" value="60000" />
+    <!-- +++ AJB_GIFT_CARD message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authGiftCardManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="BALANCE_INQUIRY_OFFLINE">
+          <!-- message displayed from a balance inquiry when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authGiftCardOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authGiftCardOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authManualAuthNumberInvalid">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbGiftCardMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbGiftCardMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authGiftCardCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbGiftCardMsgBANK_DOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_5">
+          <!-- message shown for RTS result 5 (MODEM/LINE ISSUE) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbGiftCardMsgLINE_ISSUE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_6">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbGiftCardMsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for RTS result 8 (TRY LATER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbGiftCardMsgTRY_LATER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbGiftCardMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_14">
+          <!-- message shown for RTS result 14 (REQUEST NOT SUPPORTED BY AUTHORIZER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbGiftCardMsgUNSUPPORTED_REQUEST">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbGiftCardMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthRequestMap AJB_GIFT_CARD ******************************** -->
+  <AuthRequestMap name="AJB_GIFT_CARD">
+    <AuthRequest key="ISSUE" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="TENDER" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+    <AuthRequest key="RELOAD" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+    <AuthRequest key="INQUIRE_BALANCE" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardBalanceRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+    <AuthRequest key="VOID_CASHOUT" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+    <AuthRequest key="CASH_OUT" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+    <AuthRequest key="VOID_RELOAD" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+    <AuthRequest key="VOID_ACTIVATE" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.storedvalue.ajb.AjbGiftCardRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+    </AuthRequest>
+  </AuthRequestMap>
+  <!-- ***** AuthProcess AJB_PRIVATE_CREDIT_MANUAL_SETTINGS ************** -->
+  <AuthProcess name="AJB_PRIVATE_CREDIT_MANUAL_SETTINGS" extends="AJB_CREDIT" Abstract="true">
+    <Parameter name="isManualAuthAmountEditable" value="false" />
+    <Parameter name="needsPreAuth" value="false" />
+  </AuthProcess>
+  <!-- ***** AuthProcess AJB_PRIVATE_CREDIT ****************************** -->
+  <AuthProcess name="AJB_PRIVATE_CREDIT" extends="AJB_PRIVATE_CREDIT_MANUAL_SETTINGS">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.ajb.process.AjbPrivateCreditAuthProcess</AuthProcessClass>
+    <!-- +++++ AJB_PRIVATE_CREDIT message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="PREAUTH_MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthPreauthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authPrivateCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authPrivateCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RTS is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authPrivateCreditOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_AUTH_AMOUNT">
+          <!-- message displayed when an invalid auth amount is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthInvalidManualAmount" />
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="ACCOUNT_LOOKUP_OFFLINE">
+          <!-- message displayed if the authorization server cannot be contacted for an account lookup -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_privateCreditLookupOfflineMessage" />
+        </MapEntry>
+        <MapEntry key="APPLICATION_OFFLINE">
+          <!-- message displayed when private credit application is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authPrivateCreditApplicationOffline">
+            <Parameter dtype="Translatable" name="_authPrivateCreditApplicationOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="RECEIVE_TIMEOUT">
+          <!-- message displayed when private credit application times out -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authPrivateCreditApplicationReceiveTimeout">
+            <Parameter dtype="Translatable" name="_authPrivateCreditApplicationOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2001">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbPrivateCredtiAppMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2002">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbPrivateCreditAppMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authPrivateCreditCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2003">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authPrivateCreditApplicationOffline">
+            <Parameter dtype="Translatable" name="_authPrivateCreditApplicationOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2004">
+          <!-- message shown for RTS result 4 (pending) for a credit app -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbPrivateCreditAppMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authPrivateCreditCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2005">
+          <!-- message shown for RTS credit app result 5 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2006">
+          <!-- message shown for RTS credit app result 6 (Duplicate) 
+            NOTE: this message does not get shown via this method. 
+            The SendCreditAppOp shows it using the PRIVATE_CREDIT_DUPLICATE_ACCOUNT_FOUND prompt -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbPrivateCreditMsgDUPLICATE">
+            <Parameter dtype="EvaluatedFormattable" method="getSocialSecurityNumber" />
+            <Parameter dtype="AppendingFormattable">
+              <Separator dtype="String"><![CDATA[ ]]></Separator>
+              <EvaluatedFormattable>
+                <Method dtype="String">getFirstName</Method>
+              </EvaluatedFormattable>
+              <EvaluatedFormattable>
+                <Method dtype="String">getMiddleInitial</Method>
+              </EvaluatedFormattable>
+              <EvaluatedFormattable>
+                <Method dtype="String">getLastName</Method>
+              </EvaluatedFormattable>
+            </Parameter>
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3001">
+          <!-- message shown for RTS result 1 for account lookup (multiple accounts) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbPrivateCreditLookupMsgMULTIPLE_ACCOUNTS">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3002">
+          <!-- message shown for RTS result 2 for account lookup (account info not found) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbPrivateCreditLookupMsgACCOUNT_NOT_FOUND">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3003">
+          <!-- message shown for RTS result 3 for account lookup (system processing error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbPrivateCreditLookupMsgSYSTEM_PROCESSING_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3004">
+          <!-- message shown for RTS result 4 for account lookup (account is private) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbPrivateCreditLookupMsgACCOUNT_PRIVACY">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for RTS result 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for RTS result 2 (call center) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="Translatable" name="_authPrivateCreditCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1000">
+          <!-- no open to buy -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgNO_OPEN_TO_BUY">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1002">
+          <!-- approval pending -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgPENDING">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for RTS result 3 (BANK DOWN) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgBANK_DOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_5">
+          <!-- message shown for RTS result 5 (MODEM/LINE ISSUE) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgLINE_ISSUE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_6">
+          <!-- message shown for RTS result 6 (FORMAT ERROR) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgFORMAT_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for RTS result 8 (TRY LATER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTRY_LATER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for RTS result 10 (TIMED OUT) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgTIMED_OUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_14">
+          <!-- message shown for RTS result 14 (REQUEST NOT SUPPORTED BY AUTHORIZER) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNSUPPORTED_REQUEST">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_ajbCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseText" />
+            <Parameter dtype="EvaluatedFormattable" method="getResponseCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++++ AJB action map +++++ -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given RTS result code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">1</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2</key>
+          <!-- CALL CENTER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3</key>
+          <!-- BANK DOWN -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">4</key>
+          <!-- PENDING -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">5</key>
+          <!-- MODEM/LINE ISSUE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">6</key>
+          <!-- FORMAT ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">8</key>
+          <!-- TRY LATER (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">10</key>
+          <!-- TIMED OUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">14</key>
+          <!-- REQUEST NOT SUPPORTED BY AUTHORIZER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">1000</key>
+          <!-- NO OPEN TO BUY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">1002</key>
+          <!-- REQUEST IS PENDING -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPOLL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2001</key>
+          <!-- CREDIT APP DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2002</key>
+          <!-- CREDIT APP CALL CENTER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPOLL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2003</key>
+          <!-- CREDIT APP BANK DOWN -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2004</key>
+          <!-- CREDIT APP PENDING -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPOLL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2005</key>
+          <!-- CREDIT APP MESSAGE FORMAT ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2006</key>
+          <!-- CREDIT APP DUPLICATE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <ActionGroup dtype="String">NON_AUTH_COMMAND</ActionGroup>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3001</key>
+          <!-- CREDIT ACCT LOOKUP - MULTIPLE ACCOUNTS -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3002</key>
+          <!-- CREDIT ACCT LOOKUP - NOT FOUND -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3003</key>
+          <!-- CREDIT ACCT LOOKUP - SYSTEM PROCESSING ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3004</key>
+          <!-- CREDIT ACCT LOOKUP - ACCOUNT PRIVACY FLAG -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN RTS IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- WHEN A BAD NUMBER IS ENTERED BY THE CASHIER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="ACCOUNT_LOOKUP_OFFLINE">
+          <!-- WHEN AJB IS OFFLINE for an account lookup -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="APPLICATION_OFFLINE">
+          <!-- WHEN AJB IS OFFLINE for quick credit -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthRequestMap AJB_PRIVATE_CREDIT **************** -->
+  <AuthRequestMap name="AJB_PRIVATE_CREDIT">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.ajb.request.AjbPrivateCreditRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="FIELD_25" ref="privateCreditPlanNumber" />
+      <Parameter name="needsPreAuth" ref="needsPreAuth" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="AUTH_STATUS" class="dtv.tenderauth.impl.ajb.request.AjbPrivateCreditStatusRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="FIELD_25" ref="privateCreditPlanNumber" />
+    </AuthRequest>
+    <AuthRequest key="CREDIT_APP" class="dtv.tenderauth.impl.ajb.request.AjbPrivateCreditApplicationRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="FIELD_11" value="1" />
+    </AuthRequest>
+    <AuthRequest key="CREDIT_APP_STATUS" class="dtv.tenderauth.impl.ajb.request.AjbPrivateCreditApplicationStatusRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="FIELD_11" value="4" />
+    </AuthRequest>
+    <AuthRequest key="ACCOUNT_LOOKUP" class="dtv.tenderauth.impl.ajb.request.AjbPrivateCreditAccountLookupRequest" enabled="true">
+      <Parameter name="nodeId" ref="nodeId" />
+      <Parameter name="FIELD_8" ref="storeNumber" />
+      <Parameter name="FIELD_9" ref="terminalId" />
+      <Parameter name="FIELD_10" value="AcctLookup" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.voiding.DoNothingVoidTenderAuthRequest" enabled="true" />
+  </AuthRequestMap>
+
+</AuthConfig>

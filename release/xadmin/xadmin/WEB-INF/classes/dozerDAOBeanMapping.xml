@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: this file must be named dozerBeanMapping.xml, and it must be somewhere
+     on the classpath accessible to Dozer; given this, then Dozer's DozerBeanMapperSingletonWrapper
+     class should pick up these configs w/o trouble. -->
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+  <configuration>
+    <custom-converters>
+      <converter type="com.micros_retail.xadmin.util.dozer.DozerNullDAOConverter" >
+        <class-a>dtv.data2.access.IDataAccessObject</class-a>
+        <class-b>com.micros_retail.xadmin.util.dozer.NullDataAccessObject</class-b>
+      </converter>
+    </custom-converters>
+  </configuration>
+
+  <mapping>
+    <class-a>dtv.xst.dao.hrs.impl.EmployeeTaskDAO</class-a>
+    <class-b>v7_0.dtv.xst.dao.hrs.impl.EmployeeTaskDAO</class-b>
+    <field>
+      <a>endDate</a>
+      <b>dueDate</b>
+    </field>
+  </mapping>
+
+  <mapping>
+    <class-a>dtv.xst.dao.itm.impl.ItemDAO</class-a>
+    <class-b>v7_1.dtv.xst.dao.itm.impl.ItemDAO</class-b>
+    <field>
+      <a>merchLevel1Id</a>
+      <b>departmentIdDao</b>
+    </field>
+    <field>
+      <a>merchLevel2Id</a>
+      <b>subdepartmentIdDao</b>
+    </field>
+    <field>
+      <a>merchLevel3Id</a>
+      <b>classIdDao</b>
+    </field>
+    <field>
+      <a>merchLevel4Id</a>
+      <b>subclassIdDao</b>
+    </field>
+    <field>
+      <a>description</a>
+      <b>descriptionDao</b>
+    </field>
+  </mapping>
+
+  <mapping>
+    <class-a>dtv.xst.dao.itm.impl.ItemPricesDAO</class-a>
+    <class-b>v7_1.dtv.xst.dao.itm.impl.ItemPricesDAO</class-b>
+    <field>
+      <a>itemPricePropertyCode</a>
+      <b>propertyCode</b>
+    </field>
+  </mapping>
+</mappings>

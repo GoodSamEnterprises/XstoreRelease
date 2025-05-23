@@ -1,0 +1,79 @@
+<dataTemplate name="SalesGoals" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="NOT_AVALIABLE" value="_rptNotAvailable"/>
+    <label name="STATUS_COLON" value="_rptStatusColon"/>
+    <label name="DESCRIPTION" value="_rptDescription"/>
+    <label name="DATE" value="_rptDate"/>
+    <label name="START" value="_rptStart"/>
+    <label name="END" value="_rptEnd"/>
+    <label name="GOALS" value="_rptGoals"/>
+    <label name="SALES" value="_rptSales"/>
+    <label name="PERCENT_TO_GOAL" value="_rptPercentToGoal"/>   
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>    
+    <parameter name="argStatusFilter" class="java.lang.String" isForPrompting="true" include_in_output="true">
+        <parameterDescription><![CDATA[_rptSalesGoalStatus;Combo;dtv.pos.reporting.fill.SoftEnumFactory;%=_rptSalesGoalStatusAll|currently-active=_rptSalesGoalStatusActive|completed%=_rptSalesGoalStatusCompleted|completed-met=_rptSalesGoalStatusCompletedMet|completed-not-met=_rptSalesGoalStatusCompletedNotMet|future=_rptSalesGoalStatusFuture]]></parameterDescription>
+        <defaultValueExpression><![CDATA["%"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>    
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_SALES_GOALS" key="SALES_GOALS_REPORT">
+      <Parameters>
+        <Parameter>systemDate</Parameter>
+        <Parameter>organizationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>argStatusFilter</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>description</ResultField>
+        <ResultField>effective_date</ResultField>
+        <ResultField>end_date</ResultField>
+        <ResultField>sales_goal_value</ResultField>
+        <ResultField>to_date</ResultField>
+        <ResultField>percent_to_goal</ResultField>
+        <ResultField>status</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_SALES_GOALS" source="Q_SALES_GOALS">
+      <element name="DESCRIPTION" value="description"/>    
+      <element name="START_DATE" value="effective_date"  formatter="DateTimeShort"/>
+      <element name="END_DATE" value="end_date" formatter="DateTimeShort"/>
+      <element name="GOALS" value="sales_goal_value" formatter="Money"/>
+      <element name="SALES" value="to_date" formatter="Money"/>
+      <element name="PERCENT_TO_GOAL" value="percent_to_goal" formatter="Percent"/>
+      <element name="PERCENT_TO_GOAL_RAW" value="percent_to_goal"/>
+      <element name="STATUS" value="status"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

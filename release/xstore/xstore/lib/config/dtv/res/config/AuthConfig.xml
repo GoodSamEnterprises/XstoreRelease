@@ -1,0 +1,2233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AuthConfig.xsd">
+  <!-- ***** AuthProcess XPAY_HOST *************************************** -->
+  <AuthProcess name="XPAY_HOST" Abstract="true">
+    <Parameter name="communicatorHosts">
+      <param_value dtype="List">
+        <!-- the timeout value in the host string is the connect timeout -->
+        <IPHost dtype="String">http://127.0.0.1:9092/soap;timeout=60000;urn=uri:xpay</IPHost>
+      </param_value>
+    </Parameter>
+    <!-- following setting can be used to indicate the -->
+    <!-- processor is offline permenantly (or for a long time anyway) -->
+    <Parameter name="connectionEnabled" value="true" />
+    <Parameter name="communicatorReceiveTimeoutMillis" value="60000" />
+    <Parameter name="partialApprovals" value="Y" />
+    <!-- Set "trackBalance" to "true" if remaining balances reported by Xpay should be captured. -->
+    <Parameter name="trackBalance" value="false" />
+    <Parameter name="manualAuthValidation.length.maximum" value="30" />
+  
+  	<!-- this credential enables HTTP basic authentication. User name and password here is admin/admin
+    	 This is intended to be change as part of the script that takes values from base-xstore.properties 
+     -->
+    <Parameter name="connectionUserName">
+      <param_value dtype="EncryptedString" encrypted="Pj4+MAAAAAAVY8fyt/3goTqPYLSHdsGm" />
+    </Parameter>
+    <Parameter name="connectionPassword">
+       <param_value dtype="EncryptedString" encrypted="Pj4+MAAAAAAVY8fyt/3goTqPYLSHdsGm" /> 
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY ********************************************* -->
+  <AuthProcess name="XPAY" extends="XPAY_HOST" Abstract="true">
+    <!-- +++++ XPAY communication parameters +++++ -->
+    <Parameter name="communicator" value="dtv.tenderauth.impl.xpay.XpayCommunicator" />
+    <!-- the following (communicatorProgress...) control the progress bar -->
+    <!-- progress timing that work well with an IP connection -->
+    <Parameter name="communicatorProgressConnectMillis" value="500" />
+    <Parameter name="communicatorProgressSendingMillis" value="500" />
+    <Parameter name="communicatorProgressWaitMillis" value="6000" />
+    <Parameter name="communicatorProgressReceiveMillis" value="500" />
+    <!-- progress timings that work well with a dial-up connection -->
+    <!--
+    <Parameter name="communicatorProgressConnectMillis" value="5000" />
+    <Parameter name="communicatorProgressSendingMillis" value="500" />
+    <Parameter name="communicatorProgressWaitMillis" value="30000" />
+    <Parameter name="communicatorProgressReceiveMillis" value="500" />
+    -->
+    <!-- +++++ XPAY java-xml marshalling parameters +++++ -->
+    <Parameter name="requestConverter" value="dtv.tenderauth.impl.jaxb.JaxbRequestConverter" />
+    <Parameter name="responseConverter" value="dtv.tenderauth.impl.jaxb.JaxbResponseConverter" />
+    <Parameter name="commResponseClass">
+      <param_value dtype="Class">oracle.retail.xstore.payment.jaxb.ResponseData</param_value>
+    </Parameter>
+    <!-- +++++ XPAY auth record parameters +++++ -->
+    <Parameter name="manualAuthSuccessAdjucationCode" value="MANUALAUTH" />
+    <Parameter name="abortedAuthSuccessAdjucationCode" value="ABORTED" />
+    <!-- +++++ XPAY SOAP parameters +++++ -->
+    <Parameter name="soapHeader">
+      <param_value dtype="String"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SOAP-ENV:Header SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <xhead xmlns:xhead="dv:xhead">
+      <xhead:msg_id>0001</xhead:msg_id>
+      <xhead:msg_type>${soapMsgType}</xhead:msg_type>
+      <xhead:source_id>REGISTER</xhead:source_id>
+      <xhead:destination_id>SERVER</xhead:destination_id>
+      <xhead:body_format>SOAP</xhead:body_format>
+      <xhead:return_format>SOAP</xhead:return_format>
+      <xhead:priority>3</xhead:priority>
+      <xhead:charset>850</xhead:charset>
+      <xhead:expect_response>true</xhead:expect_response>
+    </xhead>
+  </SOAP-ENV:Header>
+  <SOAP-ENV:Body>]]></param_value>
+    </Parameter>
+    <Parameter name="soapFooter">
+      <param_value dtype="String"><![CDATA[    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>]]></param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_CREDIT ************************************* -->
+  <AuthProcess name="XPAY_CREDIT" extends="XPAY" Abstract="true">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.xpay.XpayCreditAuthProcess</AuthProcessClass>
+    <Parameter name="AuthorizationType" value="MajorCredit" />
+    <!-- +++++ XPAY_CREDIT java-xml marshalling parameters +++++ -->
+    <Parameter name="authResponseClass">
+      <param_value dtype="Class">dtv.tenderauth.impl.xpay.XpayCreditAuthResponse</param_value>
+    </Parameter>
+    <!-- +++++ XPAY_CREDIT action map +++++ -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">1</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2</key>
+          <!-- REFERRAL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3</key>
+          <!-- COMMUNICATION ERROR from XPAY to processor -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">8</key>
+          <!-- RETRY (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">10</key>
+          <!-- HOST_ERROR -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">32</key>
+          <!-- XPAY CONFIG error -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">33</key>
+          <!-- PICKUP (confiscate) the card -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">34</key>
+          <!-- REENTER (some data incorrect, reenter) -->
+          <!-- not currently used in XPAY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">35</key>
+          <!-- USER_ABORT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">36</key>
+          <!-- VALIDATION - invalid data (e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">37</key>
+          <!-- INSUFF_FUNDS -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">38</key>
+          <!-- CALLCENTER -->
+          <!-- not currently used in XPAY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">41</key>
+          <!-- CREATE_SKT_FAILURE - could not create a socket -->
+          <!-- not currently used in XPAY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">48</key>
+          <!-- CLIENT_AUTH_TIMEOUT -->
+          <!-- not currently used in XPAY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN XPAY IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- WHEN A BAD NUMBER IS ENTERED BY THE CASHIER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++++ XPAY_CREDIT message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="MANUAL::AMERICAN_EXPRESS">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditAMEXManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="MANUAL::DISCOVER">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditDISCOVERManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCreditOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE::AMERICAN_EXPRESS">
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCreditAMEXOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE::DISCOVER">
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCreditDISCOVEROffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="CID_ENTRY">
+          <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+        </MapEntry>
+        <MapEntry key="CID_REENTRY">
+          <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+        </MapEntry>
+        <MapEntry key="PARTIAL_APPROVAL">
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgPartialAuth">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" formatter="Money" method="getRequest.getAmount" />
+            <Parameter dtype="EvaluatedFormattable" formatter="Money" method="getAmount" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for action code 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for action code 2 (referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgREFERRAL">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for action code 3 (communication error from XPAY to processor) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCOMM_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for action code 8 (retry - processor probably too busy) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgRETRY">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for action code 10 (XPAY/processor error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgDACT_HOST_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_32">
+          <!-- message shown for action code 32 (XPAY config mismatch) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCONFIG">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_33">
+          <!-- message shown for action code 33 (pickup - confiscate card) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgPICKUP">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_34">
+          <!-- message shown for action code 34 (some data incorrect, reenter) -->
+          <!-- not currently used in XPAY -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xapyCreditMsgREENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_35">
+          <!-- message shown for action code 35 (cancel transaction-unreliable) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgUSER_ABORT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_36">
+          <!-- message shown for action code 36 (invalid data e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgVALIDATION">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_37">
+          <!-- message shown for action code 37 (insufficient funds) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgINSUFF_FUNDS">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_38">
+          <!-- message shown for action code 38 (call center- like referral) -->
+          <!-- not currently used in XPAY -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+            <Parameter dtype="Translatable" name="_authCreditCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_41">
+          <!-- message shown for action code 41 (Xpay could not create socket) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCREATE_SKT_FAILURE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_48">
+          <!-- message shown for action code 48 (client auth. timed out) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCLIENT_AUTH_TIMEOUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ******** AuthProcess XPAY_CREDIT_REQUESTS ************************ -->
+  <AuthProcess name="XPAY_CREDIT_REQUESTS" extends="XPAY_CREDIT" Abstract="true">
+    <!-- not specifying a value will value cause it to be cleared to null -->
+    <Parameter name="clearTrack2With" />
+    <Parameter name="SICCode" value="5946" />
+  </AuthProcess>
+  
+  <!-- ******************************************************************* -->
+  <!-- ***** AuthProcess MANUAL_BASE ************************************* -->
+  <!-- ******************************************************************* -->
+  <AuthProcess name="MANUAL_BASE" Abstract="true">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.ManualAuthProcess</AuthProcessClass>
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-IN-MANUAL"/>
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various reasons -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" translationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCheckManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <Parameter name="actionMap">
+      <param_value dtype="Map">
+        <MapEntry key="OFFLINE">
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_MANUAL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ******************************************************************* -->
+  <!-- ***** AuthProcess MANUAL ****************************************** -->
+  <!-- ******************************************************************* -->
+  <AuthProcess name="MANUAL" extends="MANUAL_BASE">
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various reasons -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" translationKey="_ajbAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCreditManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <value dtype="ParameterizedFormattable">
+            <TranslationKey dtype="String">_authProcessFailedOffline</TranslationKey>
+            <Parameter dtype="Translatable" name="_authCreditOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" translationKey="_authManualAuthNumberInvalid">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" translationKey="_authUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the Xstore code occurs -->
+          <value dtype="ParameterizedFormattable" translationKey="_authFatalError" />
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  
+  <!-- ******** AuthRequestMap XPAY_CREDIT_REQUESTS ********************* -->
+  <AuthRequestMap name="XPAY_CREDIT_REQUESTS">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_PURCHASE" />
+      <Parameter name="AcceptPartialAuth" ref="partialApprovals" />
+      <Parameter name="AcceptBalanceReturn" value="Y" />
+    </AuthRequest>
+    <AuthRequest key="CAPTURE_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditSafRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CAPTURE" />
+    </AuthRequest>
+    <AuthRequest key="CAPTURE_REFUND_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditSafRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_RETURN" />
+    </AuthRequest>
+    <AuthRequest key="CAPTURE_VOID_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditSafRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_VOID" />
+    </AuthRequest>
+    <AuthRequest key="CAPTURE_VOID_REFUND_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditSafRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_RETURN_VOID" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_RETURN" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_VOID" />
+    </AuthRequest>
+    <AuthRequest key="VOID_REFUND_TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_RETURN_VOID" />
+    </AuthRequest>
+  </AuthRequestMap>
+  
+  <!-- ***** AuthProcess XPAY_CREDIT_AMEX_STORE_SETTINGS *********** --> 
+  <AuthProcess name="XPAY_CREDIT_AMEX_STORE_SETTINGS" extends="XPAY_CREDIT" Abstract="true">
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-IN-XPAY_CREDIT_AMEX_STORE_SETTINGS" /> 
+    <Parameter name="TerminalID" value="-DEFAULT-TerminalID-IN-XPAY_CREDIT_AMEX_STORE_SETTINGS" /> 
+    <Parameter name="StoreCountry" value="840" /> 
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_CREDIT_AMEX ********************************* --> 
+  <AuthProcess name="XPAY_CREDIT_AMEX" extends="XPAY_CREDIT_AMEX_STORE_SETTINGS" Abstract="true">
+    <!-- not specifying a value will value cause it to be cleared to null -->
+    <Parameter name="clearTrack2With" />
+    <Parameter name="SICCode" value="5946" />
+  </AuthProcess>
+  <!-- ***** AuthProcesses that extend XPAY_CREDIT_AMEX ************** -->
+  <AuthProcess name="XPAY_AMEX_AMEX" extends="XPAY_CREDIT_AMEX">
+    <Parameter name="TenderID" value="AMERICAN_EXPRESS" />
+    <Parameter name="soapMsgType" value="XPAY-AMERICAN_EXPRESS" />
+  </AuthProcess>
+  <!-- ***** AuthRequestMap XPAY_CREDIT_AMEX_AMEX ************************ -->
+  <AuthRequestMap name="XPAY_AMEX_AMEX">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.xpay.XpayCreditAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" value="AuthorizationType" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="CardID" ref="CardID" />
+      <Parameter name="SICCode" ref="SICCode" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="StoreCountry" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="TransactionType" value="CREDIT_PURCHASE" />
+    </AuthRequest>
+  </AuthRequestMap>
+  
+  <!-- ***** AuthProcess XPAY_CHECK ************************************** -->
+  <AuthProcess name="XPAY_CHECK" extends="XPAY" Abstract="true">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.xpay.XpayCheckAuthProcess</AuthProcessClass>
+    <Parameter name="AuthorizationType" value="Check" />
+    <Parameter name="isNegativeAmountHandledLocally" value="true" />
+    <Parameter name="isVoidHandledLocally" value="true" />
+    <!-- +++++ XPAY_CHECK java-xml marshalling parameters +++++ -->
+    <Parameter name="authResponseClass">
+      <param_value dtype="Class">dtv.tenderauth.impl.xpay.XpayCreditAuthResponse</param_value>
+    </Parameter>
+    <!-- +++++ XPAY_CHECK action map +++++-->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">1</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2</key>
+          <!-- REFERRAL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3</key>
+          <!-- COMMUNICATION ERROR from XPAY to processor -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">8</key>
+          <!-- RETRY (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">10</key>
+          <!-- DACT_HOST_ERROR (XPAY/Host error) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">32</key>
+          <!-- XPAY CONFIG mismatch -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">33</key>
+          <!-- PICKUP (confiscate) the card -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">34</key>
+          <!-- REENTER (some data incorrect, reenter) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">35</key>
+          <!-- USER_ABORT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">36</key>
+          <!-- VALIDATION - invalid data (e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">37</key>
+          <!-- INSUFF_FUNDS -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">38</key>
+          <!-- CALLCENTER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">41</key>
+          <!-- CREATE_SKT_FAILURE - could not create a socket -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">48</key>
+          <!-- CLIENT_AUTH_TIMEOUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN XPAY IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- AFTER A MANUAL AUTH NUMBER IS ENTERED -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++++ XPAY_CHECK message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTender.getDescription" />
+            <Parameter dtype="Translatable" name="_authCheckManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when XPAY is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCheckOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckAuthInvalidManualAuthNumber">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckAuthFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for action code 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for action code 2 (referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgREFERRAL">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for action code 3 (communication error from XPAY to processor) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgCOMM_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for action code 8 (retry - processor probably too busy) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgRETRY">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for action code 10 (Xpay/processor error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgDACT_HOST_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_32">
+          <!-- message shown for action code 32 (XPAY config mismatch) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgCONFIG">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_33">
+          <!-- message shown for action code 33 (pickup - confiscate card) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgPICKUP">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_34">
+          <!-- message shown for action code 34 (some data incorrect, reenter) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgREENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_35">
+          <!-- message shown for action code 35 (cancel transaction-unreliable) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgUSER_ABORT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_36">
+          <!-- message shown for action code 36 (invalid data e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgVALIDATION">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_37">
+          <!-- message shown for action code 37 (insufficient funds) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgINSUFF_FUNDS">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_38">
+          <!-- message shown for action code 38 (call center- like referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+            <Parameter dtype="Translatable" name="_authCheckCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_41">
+          <!-- message shown for action code 41 (Xpay could not create socket) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgCREATE_SKT_FAILURE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_48">
+          <!-- message shown for action code 48 (client auth. timed out) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgCLIENT_AUTH_TIMEOUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCheckMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_CHECK_CERTEGY_STORE_SETTINGS *************** -->
+  <AuthProcess name="XPAY_CHECK_CERTEGY_STORE_SETTINGS" extends="XPAY_CHECK" Abstract="true">
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-CERTEGY" />
+    <Parameter name="TerminalID" value="-DEFAULT-TerminalID-CERTEGY" />
+    <Parameter name="StationNumber" value="-DEFAULT-StationNumber-CERTEGY" />
+    <Parameter name="RequestFormat" value="FM2" />
+    <!-- valid MICRFormat values TAC and RAW -->
+    <Parameter name="MICRFormat" value="TAC" />
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_CHECK_CERTEGY ****************************** -->
+  <AuthProcess name="XPAY_CHECK_CERTEGY" extends="XPAY_CHECK_CERTEGY_STORE_SETTINGS">
+    <Parameter name="TenderID" value="CHECK" />
+    <Parameter name="soapMsgType" value="XPAY-CHECK" />
+  </AuthProcess>
+  <!-- ***** AuthRequestMap XPAY_CHECK_CERTEGY *************************** -->
+  <AuthRequestMap name="XPAY_CHECK_CERTEGY">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.xpay.XpayCheckAuthRequest" enabled="true">
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="TransactionType" value="CHECK_PURCHASE" />
+      <Parameter name="LanguageID" value="USA" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="ProcessorVersionID" value="BX01" />
+      <Parameter name="StoreCountry" value="USA" />
+      <Parameter name="StoreCurrency" value="840" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StationNumber" ref="StationNumber" />
+      <Parameter name="RequestFormat" ref="RequestFormat" />
+      <Parameter name="MICRFormat" ref="MICRFormat" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.voiding.DoNothingVoidTenderAuthRequest" enabled="true" />
+  </AuthRequestMap>
+  <!-- ***** AuthProcess XPAY_DEBIT ************************************** -->
+  <AuthProcess name="XPAY_DEBIT" extends="XPAY" Abstract="true">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.impl.xpay.XpayDebitAuthProcess</AuthProcessClass>
+    <Parameter name="TenderID" value="DEBIT" />
+    <Parameter name="soapMsgType" value="XPAY-DEBIT" />
+    <!-- +++++ XPAY_DEBIT java-xml marshalling parameters +++++ -->
+    <Parameter name="authResponseClass">
+      <param_value dtype="Class">dtv.tenderauth.impl.xpay.XpayCreditAuthResponse</param_value>
+    </Parameter>
+    <!-- +++++ XPAY_DEBIT action map +++++ -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">1</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2</key>
+          <!-- REFERRAL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3</key>
+          <!-- COMMUNICATION ERROR from XPAY to processor -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">8</key>
+          <!-- RETRY (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">10</key>
+          <!-- DACT_HOST_ERROR (XPAY/Host error) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">32</key>
+          <!-- XPAY CONFIG mismatch -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">33</key>
+          <!-- PICKUP (confiscate) the card -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">34</key>
+          <!-- REENTER (some data incorrect, reenter) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">35</key>
+          <!-- USER_ABORT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">36</key>
+          <!-- VALIDATION - invalid data (e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">37</key>
+          <!-- INSUFF_FUNDS -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">38</key>
+          <!-- CALLCENTER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">41</key>
+          <!-- CREATE_SKT_FAILURE - could not create a socket -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">48</key>
+          <!-- CLIENT_AUTH_TIMEOUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="MANUAL">
+          <!-- WHEN MANUAL IS SELECTED -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN XPAY IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- WHEN AN INVALID MANUAL AUTH NUMBER IS ENTERED -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++++ XPAY_DEBIT message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitManualAuthNotAllowed" />
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when XPAY is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitAuthProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authCheckOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitManualAuthNotAllowed" />
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitAuthUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitAuthFatalError" />
+        </MapEntry>
+        
+        <MapEntry key="PARTIAL_APPROVAL">
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgPartialAuth">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" formatter="Money" method="getRequest.getAmount" />
+            <Parameter dtype="EvaluatedFormattable" formatter="Money" method="getAmount" />
+          </value>
+        </MapEntry>
+        
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for action code 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for action code 2 (referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgREFERRAL">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for action code 3 (communication error from XPAY to processor) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgCOMM_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for action code 8 (retry - processor probably too busy) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgRETRY">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for action code 10 (Xpay/processor error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgDACT_HOST_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_32">
+          <!-- message shown for action code 32 (XPAY config mismatch) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgCONFIG">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_33">
+          <!-- message shown for action code 33 (pickup - confiscate card) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgPICKUP">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_34">
+          <!-- message shown for action code 34 (some data incorrect, reenter) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgREENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_35">
+          <!-- message shown for action code 35 (cancel transaction-unreliable) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgUSER_ABORT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_36">
+          <!-- message shown for action code 36 (invalid data e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgVALIDATION">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_37">
+          <!-- message shown for action code 37 (insufficient funds) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgINSUFF_FUNDS">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_38">
+          <!-- message shown for action code 38 (call center- like referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+            <Parameter dtype="Translatable" name="_authDebitCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_41">
+          <!-- message shown for action code 41 (Xpay could not create socket) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgCREATE_SKT_FAILURE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_48">
+          <!-- message shown for action code 48 (client auth. timed out) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgCLIENT_AUTH_TIMEOUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayDebitMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthProcess XPAY_GIFT_CARD_RELATE_STORE_SETTINGS ******************* -->
+  <AuthProcess name="XPAY_GIFT_CARD_RELATE_STORE_SETTINGS" extends="XPAY" Abstract="true">
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-GC-RELATE" />
+    <Parameter name="TerminalID" value="-DEFAULT-TerminalID-GC-RELATE" />
+    <!--
+    <Parameter name="merchantNumber" value="97027000009" />
+    <Parameter name="TerminalID" value="321123" />
+    -->
+  </AuthProcess>
+  
+  <!-- ***** AuthProcess XPAY_GIFT_CARD_RELATE ********************************** -->
+  <AuthProcess name="XPAY_GIFT_CARD_RELATE" extends="XPAY_GIFT_CARD_RELATE_STORE_SETTINGS">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.storedvalue.xpay.XpayGiftCardAuthProcess</AuthProcessClass>
+    <Parameter name="AuthorizationType" value="GiftCard" />
+    <Parameter name="TenderID" value="GIFT_CARD" />
+    <Parameter name="soapMsgType" value="XPAY-GIFT_CARD" />
+    <Parameter name="isManualAuthAmountEditable" value="true" />
+    <Parameter name="ProcessorVersionID" value="40" />
+    <Parameter name="StoreCurrency" value="840" />
+    <Parameter name="TransactionEscheatable" value="Y" />
+    <!-- +++++ XPAY_GIFT_CARD_RELATE java-xml marshalling parameters +++++ -->
+    <Parameter name="authResponseClass">
+      <param_value dtype="Class">dtv.tenderauth.storedvalue.xpay.XpayGiftCardAuthResponse</param_value>
+    </Parameter>
+    <!-- +++++ XPAY_GIFT_CARD_RELATE action map +++++ -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">1</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">2</key>
+          <!-- REFERRAL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">3</key>
+          <!-- COMMUNICATION ERROR from XPAY to processor -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">8</key>
+          <!-- RETRY (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">19</key>
+          <!-- DACT_HOST_ERROR (XPAY/Host error) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">32</key>
+          <!-- XPAY CONFIG mismatch -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">AUTO_REPROCESS_OFFLINE</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">33</key>
+          <!-- PICKUP (confiscate) the card -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">34</key>
+          <!-- REENTER (some data incorrect, reenter) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">35</key>
+          <!-- USER_ABORT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">36</key>
+          <!-- VALIDATION - invalid data (e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">37</key>
+          <!-- INSUFF_FUNDS -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">38</key>
+          <!-- CALLCENTER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">41</key>
+          <!-- CREATE_SKT_FAILURE - could not create a socket -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">AUTO_NEXT_HOST</FailedActionType>
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">48</key>
+          <!-- CLIENT_AUTH_TIMEOUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN XPAY IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="BALANCE_INQUIRY_OFFLINE">
+          <!-- WHEN XPAY IS OFFLINE for a BALANCE_INQUIRY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- AFTER AN INVALID MANUAL AUTH NUMBER IS ENTERED -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++ XPAY_GIFT_CARD_RELATE message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+        <MapEntry key="MANUAL">
+          <!-- message displayed for a manual authorization -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayAuthManualMessage">
+            <Parameter dtype="EvaluatedFormattable" method="getTenderDescription" />
+            <Parameter dtype="Translatable" name="_authGiftCardManual" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="BALANCE_INQUIRY_OFFLINE">
+          <!-- message displayed from a balance inquiry when XPAY is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authGiftCardOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when XPAY is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authGiftCardOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="INVALID_MANUAL_AUTH_NBR">
+          <!-- message displayed when an invalid manual auth number is entered -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authManualAuthNumberInvalid">
+            <Parameter dtype="EvaluatedFormattable" method="toString" />
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authFatalError" />
+        </MapEntry>
+        <MapEntry key="CID_REENTRY">
+          <!-- message displayed to the user when they need to enter the CID again according to the auth provider -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_promptmsg422" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for action code 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_2">
+          <!-- message shown for action code 2 (referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgREFERRAL">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_3">
+          <!-- message shown for action code 3 (communication error from XPAY to processor) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCOMM_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for action code 8 (retry - processor probably too busy) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgRETRY">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_10">
+          <!-- message shown for action code 10 (Xpay/processor error) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgDACT_HOST_ERROR">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_32">
+          <!-- message shown for action code 32 (XPAY config mismatch) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCONFIG">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_33">
+          <!-- message shown for action code 33 (pickup - confiscate card) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCrditMsgPICKUP">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_34">
+          <!-- message shown for action code 34 (some data incorrect, reenter) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgREENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_35">
+          <!-- message shown for action code 35 (cancel transaction-unreliable) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgUSER_ABORT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_36">
+          <!-- message shown for action code 36 (invalid data e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgVALIDATION">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_37">
+          <!-- message shown for action code 37 (insufficient funds) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgINSUFF_FUNDS">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_38">
+          <!-- message shown for action code 38 (call center- like referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+            <Parameter dtype="Translatable" name="_authGiftCardCallCenter" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_41">
+          <!-- message shown for action code 41 (Xpay could not create socket) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCREATE_SKT_FAILURE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_48">
+          <!-- message shown for action code 48 (client auth. timed out) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCLIENT_AUTH_TIMEOUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getAVSResultCode" />
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+  <!-- ***** AuthRequestMap XPAY_GIFT_CARD_RELATE ******************************* -->
+  <AuthRequestMap name="XPAY_GIFT_CARD_RELATE">
+    <AuthRequest key="ISSUE" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="ACTIVATE" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="TENDER" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="REDEEM" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="RELOAD" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="RELOAD" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="INQUIRE_BALANCE" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardBalanceRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="BALANCE_INQUIRY" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="ACTIVATE" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="ACTIVATE" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="REFUND" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="CASH_OUT" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="CASHOUT" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="VOID_CASH_OUT" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardReversalRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="CASHOUT_VOID" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="VOID_RELOAD" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardReversalRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="RELOAD_VOID" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="VOID_ACTIVATE" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardReversalRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="ACTIVATE_VOID" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.storedvalue.xpay.XpayGiftCardReversalRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="REDEEM_VOID" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+  </AuthRequestMap>
+  
+  <!-- ohernando - XSTORE-10810 - Processing gift card directly to relate -->
+  <AuthProcess name="RELATE">
+  		<Parameter name="requestConverter" value="dtv.tenderauth.storedvalue.relate.RelateGiftCardRequestConverter" />
+      	<AuthProcessClass dtype="Class">dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthProcess</AuthProcessClass>
+      	
+         <!-- +++++ RELATE marshalling parameters +++++ -->
+        <Parameter name="authResponseClass">
+          <param_value dtype="Class">dtv.tenderauth.storedvalue.relate.RelateAuthResponse</param_value>
+        </Parameter>
+        <Parameter name="responseConverter">
+          <param_value dtype="Class">dtv.tenderauth.storedvalue.relate.RelateGiftCardResponseConverter</param_value>
+        </Parameter>
+        <!-- +++++ RELATE marshalling parameters +++++ -->
+     
+        <!-- +++++ RELATE communication parameters +++++ -->
+        <Parameter name="communicator" value="dtv.tenderauth.storedvalue.relate.RelateAuthCommunicator" />
+        <Parameter name="communicatorProgressConnectMillis" value="500" />
+        <Parameter name="communicatorProgressSendingMillis" value="500" />
+        <Parameter name="communicatorProgressWaitMillis" value="6000" />
+        <Parameter name="communicatorProgressReceiveMillis" value="500" />
+        <Parameter name="partialApprovals" value="Y" />
+        <!-- The total number of retries allowed when sending a timeout reversal -->
+        <Parameter name="retryLimit" value="3" />
+        <Parameter name="CancelAllowed" value="false" />
+        <!-- +++++ RELATE communication parameters +++++ -->
+    </AuthProcess>
+    
+  <!-- ***** AuthProcess GIFT_CARD_RELATE_STORE_SETTINGS ******************* -->
+  <AuthProcess name="GIFT_CARD_RELATE_STORE_SETTINGS" extends="RELATE" Abstract="true">
+    
+    <Parameter name="merchantNumber" value="-DEFAULT-merchantNumber-GC-RELATE" />
+    <Parameter name="TerminalID" value="-DEFAULT-TerminalID-GC-RELATE" />
+    
+    <!--
+    <Parameter name="merchantNumber" value="97027000009" />
+    <Parameter name="TerminalID" value="321123" />
+    -->
+    
+  </AuthProcess>
+  
+  <!-- ***** AuthProcess XPAY_GIFT_CARD_RELATE ********************************** -->
+  <AuthProcess name="GIFT_CARD_RELATE" extends="GIFT_CARD_RELATE_STORE_SETTINGS">
+    <AuthProcessClass dtype="Class">dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthProcess</AuthProcessClass>
+	<Parameter name="AuthorizationType" value="GiftCard" />
+    <Parameter name="TenderID" value="GIFT_CARD" />
+    <Parameter name="ProcessorVersionID" value="40" />
+    <Parameter name="StoreCurrency" value="840" />
+	<Parameter name="authResponseClass">
+      <param_value dtype="Class">dtv.tenderauth.storedvalue.relate.RelateAuthResponse</param_value>
+    </Parameter>
+    <!-- +++++ GIFT_CARD_RELATE action map +++++ -->
+    <Parameter name="actionMap">
+      <!-- a map of available action buttons for a given action code -->
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">1</key>
+          <!-- DECLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">8</key>
+          <!-- RETRY (processor probably busy... can try again) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">36</key>
+          <!-- VALIDATION - invalid data (e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <!-- <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>  -->
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">38</key>
+          <!-- CALLCENTER -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <!-- <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>  -->
+          </value>
+        </MapEntry>
+        <MapEntry>
+          <key dtype="Integer">48</key>
+          <!-- CLIENT_AUTH_TIMEOUT -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- WHEN RELATE IS OFFLINE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+           
+          </value>
+        </MapEntry>
+        <MapEntry key="BALANCE_INQUIRY_OFFLINE">
+          <!-- WHEN RELATE IS OFFLINE for a BALANCE_INQUIRY -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- WHEN USER SELECTS CANCEL -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+          </value>
+        </MapEntry>
+		<MapEntry key="EXCEPTION">
+          <!-- IF FATAL ERROR IN XSTORE CODE -->
+          <value dtype="AuthFailedActionTypes">
+            <FailedActionType dtype="String">CANCEL</FailedActionType>
+            <FailedActionType dtype="String">RETRY</FailedActionType>
+            <!-- <FailedActionType dtype="String">MANUAL_AUTH</FailedActionType>  -->
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+    <!-- +++ GIFT_CARD_RELATE message map +++++ -->
+    <Parameter name="authMessageMap">
+      <!-- a map of messages to display to the user for various action codes -->
+      <param_value dtype="Map">
+		<MapEntry key="BALANCE_INQUIRY_OFFLINE">
+          <!-- message displayed from a balance inquiry when RELATE is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authGiftCardOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="OFFLINE">
+          <!-- message displayed when RELATE is offline -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authProcessFailedOffline">
+            <Parameter dtype="Translatable" name="_authGiftCardOffline" bundle="dtv.pos.i18n.phone" />
+          </value>
+        </MapEntry>
+        <MapEntry key="USER_CANCEL">
+          <!-- message displayed when the user selects cancel -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authUserCancelled" />
+        </MapEntry>
+        <MapEntry key="EXCEPTION">
+          <!-- message displayed if a fatal error in the XStore code occurs -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_authFatalError" />
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_1">
+          <!-- message shown for action code 1 (decline) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgDECLINE">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_8">
+          <!-- message shown for action code 8 (retry - relate probably too busy) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgRETRY">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+           
+          </value>
+        </MapEntry>
+       <MapEntry key="ACTION_CODE_36">
+          <!-- message shown for action code 36 (invalid data e.g. wrong length, numeric in alpha field, etc.) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgVALIDATION">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_38">
+          <!-- message shown for action code 38 (call center- like referral) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCALLCENTER">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_48">
+          <!-- message shown for action code 48 (client auth. timed out) -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgCLIENT_AUTH_TIMEOUT">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            
+          </value>
+        </MapEntry>
+        <MapEntry key="ACTION_CODE_OTHER">
+          <!-- message shown for action codes not mapped to other messages -->
+          <value dtype="ParameterizedFormattable" TranslationKey="_xpayCreditMsgUNKNOWN">
+            <Parameter dtype="EvaluatedFormattable" method="getRequest.getTenderDescription" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorText" />
+            <Parameter dtype="EvaluatedFormattable" method="getErrorCode" />
+            
+            <Parameter dtype="EvaluatedFormattable" method="getActionCode" />
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+    
+  <!-- ***** AuthRequestMap GIFT_CARD_RELATE ******************************* -->
+  <AuthRequestMap name="GIFT_CARD_RELATE">
+    <AuthRequest key="ISSUE" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="ACTIVATE" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="RetryLimit" ref="retryLimit" />
+    </AuthRequest>
+    <AuthRequest key="TENDER" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="REDEEM" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="AcceptPartialAuth" ref="partialApprovals" />
+      <Parameter name="RetryLimit" ref="retryLimit" />
+    </AuthRequest>
+    <AuthRequest key="RELOAD" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="RELOAD" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="RetryLimit" ref="retryLimit" />
+    </AuthRequest>
+    <AuthRequest key="INQUIRE_BALANCE" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardBalanceRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="BALANCE_INQUIRY" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+    <AuthRequest key="ACTIVATE" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="ACTIVATE" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="RetryLimit" ref="retryLimit" />
+    </AuthRequest>
+    <AuthRequest key="REFUND_TENDER" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="REFUND" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="RetryLimit" ref="retryLimit" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="CASH_OUT" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="CASHOUT" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="RetryLimit" ref="retryLimit" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="VOID_CASH_OUT" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="CASHOUT_VOID" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="VOID_RELOAD" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="RELOAD_VOID" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="VOID_ACTIVATE" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="ACTIVATE_VOID" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.storedvalue.relate.RelateGiftCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="REDEEM_VOID" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="ClientID" ref="ClientID" />
+      <Parameter name="CancelAllowed" ref="CancelAllowed" />
+    </AuthRequest>
+  </AuthRequestMap>
+  <!-- ohernando -->
+  
+  <!-- ***** AuthProcess XPAY_POINTS_CARD ****************************** -->
+  <AuthProcess name="XPAY_POINTS_CARD" extends="XPAY_GIFT_CARD_RELATE">
+    <Parameter name="AuthorizationType" value="PointsCard" />
+    <Parameter name="TenderID" value="POINTS_CARD" />
+  </AuthProcess>
+  <!-- ***** AuthRequestmap XPAY_POINTS_CARD *************************** -->
+  <AuthRequestMap name="XPAY_POINTS_CARD">
+    <AuthRequest key="ISSUE" class="dtv.tenderauth.storedvalue.xpay.XpayPointsCardAuthRequest" enabled="true">
+      <Parameter name="TenderID" ref="TenderID" />
+      <Parameter name="TransactionType" value="ACTIVATE" />
+      <Parameter name="AuthorizationType" ref="AuthorizationType" />
+      <Parameter name="ProcessorVersionID" ref="ProcessorVersionID" />
+      <Parameter name="MerchantID" ref="merchantNumber" />
+      <Parameter name="TerminalID" ref="TerminalID" />
+      <Parameter name="StoreCurrency" ref="StoreCurrency" />
+      <Parameter name="TransactionEscheatable" ref="TransactionEscheatable" />
+      <Parameter name="ClientID" ref="ClientID" />
+    </AuthRequest>
+  </AuthRequestMap>
+  
+  <!-- ******************************************************************* -->
+  <!-- ***** AuthRequestMap MANUAL_BASE ********************************** -->
+  <!-- ******************************************************************* -->
+  <AuthRequestMap name="MANUAL_BASE">
+    <AuthRequest key="TENDER" class="dtv.tenderauth.impl.DefaultTenderAuthRequest" />
+    <AuthRequest key="VOID_TENDER" class="dtv.tenderauth.impl.voiding.DoNothingVoidTenderAuthRequest" />
+  </AuthRequestMap>
+  
+  <!-- ************************************************************** -->
+  <!-- ***** AuthProcess EFT_LINK_HOST ****************************** -->
+  <!-- ************************************************************** -->
+  <AuthProcess name="EFT_LINK_HOST" Abstract="true">
+    <Parameter name="communicatorHosts">
+      <param_value dtype="List">
+        <!-- the timeout value in the host string is the connect timeout -->
+        <Host dtype="String">socket://localhost:10100;timeout=1000</Host>
+      </param_value>
+    </Parameter>
+    <!-- Channel used by eft link to send notification/user input/print requests to Xstore -->
+    <!-- for Xstore, server is always going to be 'localhost' since this port is opened on the pc where the Xstore is installed. -->
+    <Parameter name="deviceCommChannel" value="socket://localhost:10101" />
+    <!-- following setting can be used to indicate the -->
+    <!-- processor is offline permenantly (or for a long time anyway) -->
+    <Parameter name="connectionEnabled" value="true" />
+    <Parameter name="manualAuthValidation.length.maximum" value="30" />
+    <!-- Defines how many milliseconds EFTLink information messages should stay on the screen -->
+    <Parameter name="displayTimeout" value="1000" />
+    
+    <!-- Defines a additional mapping between a Xstore workstation and EFTLink client (mapping key = workstation id). -->
+    <!-- If there is a mapping exists for the given workstation, it will be used instead of communicatorHosts and deviceCommChannel values. -->
+    <Parameter name="additionalWorkstationHostsMap">
+      <param_value dtype="Map">
+        <MapEntry>
+          <key dtype="Integer">9999</key> <!-- workstation id -->
+          <value dtype="EFTLinkCommunicationChannels">
+            <Channel0 dtype="String">socket://localhost:10100</Channel0>
+            <Channel1 dtype="String">socket://localhost:10101</Channel1>
+          </value>
+        </MapEntry>
+      </param_value>
+    </Parameter>
+  </AuthProcess>
+</AuthConfig>

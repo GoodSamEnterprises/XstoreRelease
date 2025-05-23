@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:include schemaLocation="../DtvConfigLibrary.xsd" />
+  <xs:element name="FormViewSet">
+    <xs:annotation>
+      <xs:documentation>root</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FormView" type="FormViewType" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="dtype" type="xs:string" fixed="FormViewSet" />
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="FormViewType">
+    <xs:sequence>
+      <xs:element name="FormKey" type="String" minOccurs="0" />
+      <xs:element name="FormLocation" type="String" minOccurs="0" />
+      <xs:element name="FormLayout" type="String" minOccurs="0" />
+      <xs:element name="TitleText" type="Translatable_Type" minOccurs="0" />
+      <xs:element name="Instructions" type="Translatable_Type" minOccurs="0" />
+      <xs:element name="CustomView" type="Class" minOccurs="0" />
+      <xs:element name="FormViewPanel" type="FormViewPanelType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="ActionGroup" type="ActionGroupType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="FormViewSection" type="FormViewSectionType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="dtype" type="xs:string" fixed="FormView" />
+    <xs:attribute name="autoOnScreenKeyboard" type="xs:boolean" use="optional" />
+    <xs:attribute name="formKey" type="xs:string" />
+    <xs:attribute name="formLocation" type="xs:string" />
+    <xs:attribute name="formLayout" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="ActionGroupType">
+    <xs:sequence>
+      <xs:element name="Key" type="String" minOccurs="0" />
+      <xs:element name="SubKey" type="String" minOccurs="0" />
+      <xs:element name="Action" type="Action_Type" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="dtype" type="xs:string" fixed="ActionGroup" />
+    <xs:attribute name="key" type="xs:string" />
+    <xs:attribute name="subKey" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="FormViewPanelType">
+    <xs:sequence>
+      <xs:element name="PanelType" type="PanelTypeType" minOccurs="0" />
+      <xs:element name="FormTabKey" type="String" minOccurs="0" />
+      <xs:element name="TabOrder" type="NonNegativeInteger" minOccurs="0" />
+      <xs:element name="ActionSubGroupKey" type="String" minOccurs="0" />
+      <xs:element name="TextKey" type="Translatable_Type" minOccurs="0" />
+      <xs:element name="Touch" type="TouchType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="IconGroup" type="String" minOccurs="0"/>
+      <xs:choice>
+        <xs:element name="DataKey" type="String" minOccurs="0" />
+        <xs:element name="ChainKey" type="String" minOccurs="0" />
+      </xs:choice>
+      <xs:element name="Resource" type="String" minOccurs="0" />
+      <xs:element name="VisibilityRule" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="RuleClass" type="VisibilityRuleClass" minOccurs="0" />
+            <xs:element name="Parameter" type="Parameter_Type" minOccurs="0" maxOccurs="unbounded" />
+          </xs:sequence>
+          <xs:attribute name="class" type="xs:string" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Layout" type="Class" minOccurs="0" />
+      <xs:element name="LayoutLocation" type="String" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Column, Row, Column Span, Row Span, Horizontal Align, Vertical Align</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="LayoutParameters" type="LayoutParametersType" minOccurs="0" />
+      <xs:element name="ComponentParameter" type="Parameter_Type" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="ColorGroup" type="ColorGroup" minOccurs="0" />
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="FormViewPanel" type="FormViewPanelType" />
+        <xs:element name="FormViewCell" type="FormViewCellType"  />
+        <xs:element name="FormViewSectionRef" type="FormViewSectionRefType" />
+      </xs:choice>
+      <xs:element name="CustomView" type="Class" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="dtype" type="xs:string" fixed="FormViewPanel" />
+    <xs:attribute name="privilege" type="xs:string" />
+    <xs:attribute name="class" type="xs:string" />
+    <xs:attribute name="name" type="xs:string" />
+    <xs:attribute name="panelType" type="xs:string" />
+    <xs:attribute name="formTabKey" type="xs:string" />
+    <xs:attribute name="componentId" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="FormViewCellType">
+    <xs:sequence>
+      <xs:element name="LayoutLocation" type="String" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Column, Row, Column Span, Row Span, Horizontal Align, Vertical Align</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="Type" type="String" minOccurs="0" />
+      <xs:element name="Resource" type="String" minOccurs="0" />
+      <xs:element name="ResourceLink" type="String" minOccurs="0" />
+      <xs:element name="NotifyDelay" type="Integer" minOccurs="0" />
+      <xs:element name="DataField" type="DataFieldType" minOccurs="0" />
+      <xs:element name="TextKey" type="Translatable_Type" minOccurs="0" />
+      <xs:element name="Value" type="AppendingFormattable" minOccurs="0" />
+      <xs:element name="BorderTextKey" type="Translatable_Type" minOccurs="0" />
+      <xs:element name="FormatterType" type="String" minOccurs="0" />
+      <xs:element name="ReadOnly" type="Boolean" minOccurs="0" />
+      <xs:element name="Required" type="Boolean" minOccurs="0" />
+      <xs:element name="TabOrder" type="NonNegativeInteger" minOccurs="0" />
+      <xs:element name="FieldWeight" type="NonNegativeInteger" minOccurs="0" />
+      <xs:element name="Columns" type="ColumnsType" minOccurs="0" />
+      <xs:element name="Width" type="NonNegativeInteger" minOccurs="0" />
+      <xs:element name="Height" type="NonNegativeInteger" minOccurs="0" />
+      <xs:element name="ColorGroup" type="ColorGroup" minOccurs="0" />
+      <xs:element name="VerticalScrollPolicy" type="String" minOccurs="0" />
+      <xs:element name="HorizontalScrollPolicy" type="String" minOccurs="0" />
+      <xs:element name="SelectionMode" type="String" minOccurs="0" />
+      <xs:element name="Font" type="Font" minOccurs="0" />
+      <xs:element name="Renderer" type="RendererType" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="ComponentParameter" type="Parameter_Type" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="Parameter" type="Parameter_Type" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="HideFromXstoreM" type="Boolean" minOccurs="0" />
+      <xs:element name="VisibilityGroup" type="String" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="dtype" type="xs:string" fixed="FormViewCell" />
+    <xs:attribute name="componentID" type="xs:string" />
+    <xs:attribute name="layoutLocation" type="xs:string" />
+    <xs:attribute name="type" type="xs:string" />
+    <xs:attribute name="resource" type="xs:string" />
+    <xs:attribute name="resourceLink" type="xs:string" />
+    <xs:attribute name="textKey" type="xs:string" />
+    <xs:attribute name="borderTextKey" type="xs:string" />
+    <xs:attribute name="visibilityGroup" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="ColumnsType">
+    <xs:sequence>
+      <xs:element name="Column" type="ColumnType" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="dtype" type="xs:string" use="required" fixed="TableColumns" />
+  </xs:complexType>
+  <xs:complexType name="ColumnType">
+    <xs:sequence>
+      <xs:element name="Resource" type="String" />
+      <xs:element name="Header" type="Translatable_Type" />
+      <xs:choice minOccurs="0">
+        <xs:element name="ViewFormatter" type="Class" />
+        <xs:element name="ViewFormatType" type="String" />
+      </xs:choice>
+      <xs:element name="EditFormatType" type="String" minOccurs="0" />
+      <xs:element name="Width" type="NonNegativeInteger" minOccurs="0" />
+      <xs:element name="ReadOnly" type="Boolean" />
+      <xs:element name="ModelColumnIndex" type="NonNegativeInteger" />
+    </xs:sequence>
+    <xs:attribute name="dtype" use="required" fixed="TableColumn" />
+  </xs:complexType>
+  <xs:complexType name="LayoutParametersType">
+    <xs:sequence maxOccurs="unbounded">
+      <xs:element name="Parameter" type="Parameter_Type" />
+    </xs:sequence>
+    <xs:attribute name="dtype" type="xs:string" use="required" fixed="ParameterList" />
+  </xs:complexType>
+  <xs:complexType name="TouchType">
+    <xs:simpleContent>
+      <xs:restriction base="String">
+        <xs:enumeration value="MASTER" />
+        <xs:enumeration value="DETAIL" />
+        <xs:enumeration value="HEADER" />
+        <xs:enumeration value="FOOTER" />
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="PanelTypeType">
+    <xs:simpleContent>
+      <xs:restriction base="String">
+        <xs:enumeration value="MASTER" />
+        <xs:enumeration value="DETAIL" />
+        <xs:enumeration value="HEADER" />
+        <xs:enumeration value="FOOTER" />
+      </xs:restriction>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="RendererType">
+    <xs:sequence>
+      <xs:element name="Role" type="String" minOccurs="0" />
+      <xs:element name="Simple" type="Boolean" minOccurs="0" />
+      <xs:element name="RuleSet" type="String" minOccurs="0" />
+      <xs:element name="Type" type="String" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FormViewSectionRefType">
+    <xs:sequence>
+      <xs:element name="Name" type="String" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="dtype" type="xs:string" fixed="FormViewSectionRef" />
+    <xs:attribute name="name" type="xs:string" use="optional" />
+  </xs:complexType>
+  <xs:complexType name="FormViewSectionType">
+    <xs:sequence>
+      <xs:element name="Name" type="String" minOccurs="0" />
+      <xs:element name="FormViewPanel" type="FormViewPanelType" />
+    </xs:sequence>
+    <xs:attribute name="dtype" type="xs:string" fixed="FormViewSection" />
+    <xs:attribute name="name" type="xs:string" use="optional" />
+    <xs:attribute name="visible" type="xs:boolean" use="optional" />
+  </xs:complexType>
+</xs:schema>

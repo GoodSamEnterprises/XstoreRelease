@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SequenceSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/SequenceConfig.xsd">
+  <Sequence name="LOYALTY_CARD" ref="_COMMON_">
+    <FileName dtype="String">loyaltyCard.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC_XSTORE</SequenceType>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="3" />
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">1</InitialValue>
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+</SequenceSet>

@@ -1,0 +1,184 @@
+<dataTemplate name="taxExemption" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER"  value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE"    value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE"     value="_rptPage"/>
+    <label name="FOOTER_OF"       value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="ALL"          value="_rptDefaultAll"/>
+    <label name="TO_DELIMITER" value="_rptTo"/>
+    <label name="MIN" value="_rptMin"/>
+    <label name="MAX" value="_rptMax"/>
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+    <label name="CRITERIA_REGISTER"   value="_rptRegisterColon"/>
+    <label name="START_TIME_COLON"    value="_rptStartTimeColon"/>
+    <label name="END_TIME_COLON"      value="_rptEndTimeColon"/>
+
+    <label name="TOTALS"        value="_rptTotals"/>
+    <label name="COUNTS"        value="_rptCounts"/>
+    <label name="AMOUNTS"       value="_rptAmounts"/>
+    <label name="TRANSACTION"   value="_rptTransaction"/>
+    <label name="EXEMPTION"     value="_rptTaxExemption"/>
+    <label name="CUST"          value="_rptCustomer"/>
+    <label name="ITEM_QUANTITY" value="_rptItemQuantity"/>
+    <label name="PRICE"         value="_rptSellingPrice"/>    
+    <label name="EXEMPTED_AMT"  value="_rptExemptedAmt"/>           
+    
+    <label name="CUST_ID"           value="_rptCustomerId"/>
+    <label name="TRANSACTION_COLON" value="_rptTransactionColon"/>
+    <label name="BUSINESS_DATE"     value="_rptBusinessDate"/>    
+    <label name="REGISTER"          value="_rptRegister"/>
+    <label name="CASHIER"           value="_rptCashier"/>
+    <label name="CUSTOMER"          value="_rptCustomer"/>
+    <label name="ADDRESS"           value="_rptAddress"/>
+    <label name="ORGANIZATION"      value="_rptOrganization"/>
+    
+    <label name="CERT_NUM"    value="_rptTaxExemptionNumber"/>
+    <label name="CERT_HOLDER" value="_rptTaxExemptionCertHolder"/>
+    <label name="EXP_DATE"    value="_rptExpirationDate"/>
+    <label name="REASON"      value="_rptReason"/>
+    <label name="ITEM"        value="_rptItem"/>
+    <label name="QTY"         value="_rptQuantity"/>
+    <label name="TOTAL"       value="_rptTotal"/>
+
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>    
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startRegister" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptStartReg;Text;Simple;maxCharacters=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endRegister" class="java.lang.String"  isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptEndReg;Text;Simple;maxCharacters=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[99999999]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_TAX_EXEMPTION_TRN" key="TAX_EXEMPTION_TRN_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startRegister</Parameter>
+        <Parameter>endRegister</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>wkstn_id</ResultField>      
+        <ResultField>trans_seq</ResultField>
+        <ResultField>business_date</ResultField>
+        <ResultField>trans_date</ResultField>
+        <ResultField>cust_id</ResultField>
+        <ResultField>customer_name</ResultField>
+        <ResultField>address1</ResultField>
+        <ResultField>address2</ResultField>
+        <ResultField>organization_name</ResultField>
+        <ResultField>apartment</ResultField>
+        <ResultField>city</ResultField>
+        <ResultField>state</ResultField>
+        <ResultField>postalCode</ResultField>
+         <ResultField>country</ResultField>
+        <ResultField>telephone1</ResultField>
+        <ResultField>employee_id</ResultField>    
+      </ResultFields>
+    </queryReference>    
+    <queryReference name="Q_TAX_EXEMPTION_LINE" key="TAX_EXEMPTION_LINE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>startRegister</Parameter>
+        <Parameter>endRegister</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>wkstn_id</ResultField>      
+        <ResultField>trans_seq</ResultField>
+        <ResultField>business_date</ResultField>
+        <ResultField>trans_date</ResultField>        
+        <ResultField>cert_nbr</ResultField>
+        <ResultField>expiration_date</ResultField>
+        <ResultField>reason_desc</ResultField>
+        <ResultField>cert_holder_name</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>quantity</ResultField>
+        <ResultField>tax_exempt_amt</ResultField>
+        <ResultField>exempt_tax_amount</ResultField>
+      </ResultFields>
+    </queryReference>    
+  </dataSource>
+  <dataStructure>
+    <group name="G_TAX_EXEMPTION_TRN" source="Q_TAX_EXEMPTION_TRN">     
+      <element name="TRN_SEQ"  value="trans_seq"/>
+      <element name="DATE"     value="business_date" formatter="DateShort"/>
+      <element name="TRANS_DATE" value="trans_date" formatter="DateShort"/>
+      <element name="REG"      value="wkstn_id" group-by="true"/>
+      <element name="CUST_ID"  value="cust_id" />
+      <element name="C_NAME"   value="customer_name" formatter="LastFirstNameFromString"/>
+      <element name="CUST_ORG" value="organization_name" />
+      <element name="ADDR1"    value="address1" />
+      <element name="ADDR1"    value="address2" />
+      <element name="APT"      value="apartment"  />
+      <element name="CITY"     value="city" />
+      <element name="STATE"    value="state" />
+      <element name="Z_CODE"   value="postalCode" />
+      <element name="COUNTRY"  value="country" />
+      <element name="PHONE"    value="telephone1" />
+      <element name="EMP"      value="employee_id" />
+    </group>
+    <group name="G_TAX_EXEMPTION_LINE" source="Q_TAX_EXEMPTION_LINE">     
+      <element name="TRN_SEQ"     value="trans_seq" />
+      <element name="DATE"        value="business_date" formatter="DateShort"/>
+      <element name="TRANS_DATE" value="trans_date" formatter="DateShort"/>
+      <element name="REG"         value="wkstn_id" />
+      <element name="CERT_NUM"    value="cert_nbr" />
+      <element name="CERT_HOLDER" value="cert_holder_name" />
+      <element name="EXP_DATE"    value="expiration_date" formatter="DateShort"/>
+      <element name="REASON"      value="reason_desc" />
+      <element name="ITM"         value="item_id" />
+      <element name="QTY"         value="quantity"          formatter="Integer" />
+      <element name="EXMP_AMT"    value="tax_exempt_amt"    formatter="Money" />
+      <element name="EXMPED"      value="exempt_tax_amount" formatter="Money" />
+    </group>
+    <group name="G_TAX_EXEMPTION_LINE_TOT" source="Q_TAX_EXEMPTION_LINE">     
+      <element name="TRN_SEQ"  group-by="true" value="trans_seq" />
+      <element name="DATE"     group-by="true" value="business_date" formatter="DateShort"/>
+      <element name="REG"      group-by="true" value="wkstn_id" />
+      <element name="CERT_NUM" group-by="true" value="cert_nbr" />
+      <element name="QTY"      function="SUM"  value="quantity"          formatter="Integer" />
+      <element name="EXMP_AMT" function="SUM"  value="tax_exempt_amt"    formatter="Money"   />
+      <element name="EXMPED"   function="SUM"  value="exempt_tax_amount" formatter="Money"   />
+    </group>  
+    <group name="G_TAX_EXEMPTION_TRN_CUST_COUNT" source="Q_TAX_EXEMPTION_TRN">     
+      <element name="CUST_COUNT"     function="COUNTDISTINCT"  value="cust_id"      formatter="Integer" />
+    </group>
+    <group name="G_TAX_EXEMPTION_COUNT" source="Q_TAX_EXEMPTION_LINE">     
+       <element name="EXMPT_COUNT" function="COUNTDISTINCT"  value="cert_nbr"  formatter="Integer" />
+    </group>
+    <group name="G_TAX_EXEMPTION_TRN_TOT" source="Q_TAX_EXEMPTION_LINE">     
+      <element name="QTY"      function="SUM"  value="quantity"          formatter="Integer" />
+      <element name="EXMP_AMT" function="SUM"  value="tax_exempt_amt"    formatter="Money" />
+      <element name="EXMPED"   function="SUM"  value="exempt_tax_amount" formatter="Money" />
+    </group>
+  </dataStructure>
+</dataTemplate>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Thu Feb 05 12:48:25 EST 2004 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">GIFT_REGISTRY_MAINT_LIST</FormKey>
+    <FormLocation dtype="String">TRANSACTION_LIST_AREA</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">HEADER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--0.0-->
+          <param_value dtype="DoubleArray">0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ColorGroup dtype="ColorGroup">
+        <BgColor dtype="Color">#6056D1</BgColor>
+      </ColorGroup>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ColorGroup dtype="ColorGroup">
+        <BgColor dtype="Color">#6056D1</BgColor>
+      </ColorGroup>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">viewList</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">GIFT_REGISTRY_ITEM</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <RuleSet dtype="String">GIFT_REGISTRY_ITEM</RuleSet>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">FOOTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">0</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter>
+          <param_name dtype="String">setColumn</param_name>
+          <param_value dtype="DoubleArray">-2.0, -1.0, -2.0</param_value>
+        </Parameter>
+        <Parameter>
+          <param_name dtype="String">setRow</param_name>
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter>
+          <param_name dtype="String">setMargins</param_name>
+          <param_value dtype="IntegerArray">15, 0, 15, 0</param_value>
+        </Parameter>
+        <Parameter>
+          <param_name dtype="String">setVerticalStretch</param_name>
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter name="setBackground" >
+        <param_value dtype="ColorRef" >_colorListHeaderBackground</param_value>
+      </ComponentParameter>
+      <ComponentParameter name="setOpaque" >
+        <param_value dtype="Boolean" >true</param_value>
+      </ComponentParameter>
+      <ComponentParameter name="setBorder" >
+        <param_value dtype="Border" >255,255,255</param_value>
+      </ComponentParameter>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">lineCount</Resource>
+        <Font fontStyle="BOLD" fontSize="+1" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">itemCount</Resource>
+        <Font fontStyle="BOLD" fontSize="+1" />
+      </FormViewCell>
+    </FormViewPanel>
+  </FormView>
+</FormViewSet>

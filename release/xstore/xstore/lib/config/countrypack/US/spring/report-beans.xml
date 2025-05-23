@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <context:annotation-config />
+
+  <!-- Report Beans for US -->
+  <!-- BEGIN: Report Framework Beans -->
+  <beans profile="retail" >
+
+  <bean id="US_IRS_FORM_8300" class="dtv.pos.framework.reporting.ReportDefinition">
+    <property name="title" value="_rptForm8300Title1" />
+    <property name="dataTemplate" value="classpath:report/countrypack/irs/form8300.xdt" />
+    <property name="layoutTemplate" value="classpath:report/countrypack/irs/form8300.rtf" />
+  </bean>
+  
+  </beans>
+  <!-- END: Report Definition Beans -->
+</beans>

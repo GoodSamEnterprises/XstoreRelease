@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+  
+  <bean id="orderServices" class="dtv.xst.xom.locate.impl.OrderServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="processInventoryMovementWorker" class="dtv.xst.xom.locate.impl.ProcessInventoryMovementWorker" scope="prototype" />
+  <bean id="orderRequestRetry" parent="requestRetryService" class="dtv.xst.xom.locate.impl.OrderRequestRetryService" />
+
+  <bean id="standardLocateErrorHandler" parent="standardServiceErrorHandler">
+    <property name="errorCases">
+      <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="exception" value="javax.xml.ws.soap.SoapFaultException" />
+          <property name="throws" value="dtv.xst.xom.exceptions.CriticalErrorException" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="locateJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="LOCATE" />
+    <property name="serviceInterface" value="com.microsretail.locate.Locate" />
+    <property name="namespaceUri" value="http://microsretail.com/Locate" />
+    <property name="serviceName" value="LocateService" />
+    <property name="portName" value="LocatePort" />
+    <property name="username" value="#{systemProperties['oracle.retail.xstore.locate.username']}" />
+    <property name="password" value="#{systemProperties['oracle.retail.xstore.locate.password']}" />
+  </bean>
+
+  <bean id="LOCATE_ITEMS" class="dtv.xst.xom.locate.impl.order.items.ProductAvailabilityHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="productAvailabilityExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.items.req.ProductAvailabilityRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.items.req.XstoreToLocateProductAvailabilityAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.items.resp.ProductAvailabilityResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.items.resp.LocateToXstoreProductAvailabilityAdapter" />
+      </list>
+    </property>
+    <property name="responseDecorators">
+      <list value-type="dtv.servicex.IDecorator">
+        <bean class="dtv.xst.xom.locate.impl.order.items.resp.LocateToXstoreProductAvailabilityDecorator" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="productAvailabilityExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="dtv.xst.xom.locate.impl.order.items.ProductAvailabilityResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardLocateErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1001" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.LocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1002" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.ItemIdInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1003" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1004" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.SystemCodeMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1005" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.LocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1007" />
+              <property name="message" value=".*Input string was not in a correct format.*" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.QuantityInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1008" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.FulfillmentTypeMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1009" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.MultipleOrderTypesException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1010" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1011" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1012" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.CustomerAddressNotFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1998" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1999" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*FAILED.*" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="ORDER_SUBMIT" class="dtv.xst.xom.locate.impl.order.submit.OrderLineSubmitHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="orderSubmitExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.submit.req.OrderLineSubmitRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.submit.req.XstoreOrderLineToLocateOrderAdapter" />
+        <bean class="dtv.xst.xom.locate.impl.order.submit.req.XstoreOrderLineToLocateOrderDetailAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.submit.resp.OrderSubmitResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.submit.resp.LocateToXstoreOrderSubmitAdapter" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="orderSubmitExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="dtv.xst.xom.locate.impl.GenericResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardLocateErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2000" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.SystemCodeInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2001" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.OrderIdMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2002" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.ActionTypeInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2003" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.FulfillmentTypeMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2004" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.OrderStatusInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2005" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.MessageHeaderInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2008" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.EmployeeIdMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2009" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.OrderSubtotalMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2010" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.OrderTaxMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2011" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.OrderTotalMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2012" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.OrderChannelMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2013" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.LocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2015" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.ItemIdMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2016" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.QuantityInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2017" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.UnitPriceMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2018" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.PickupLocationMissingException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2020" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.FulfillingLocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2021" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.PickupNotAllowedException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2022" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.DeliveryNotAllowedException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2023" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.FulfillingLocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2024" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.LocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2025" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.ItemIdInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2026" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.FulfillingLocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2027" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.LocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2028" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.CustomerDataInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2029" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.ShippingDataInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2030" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.FulfillingLocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2081" />
+              <property name="throws" value="dtv.service.ServiceException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2999" />
+              <property name="throws" value="dtv.xst.xom.exceptions.CriticalErrorException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="ORDER_FULFILLMENTS" class="dtv.xst.xom.locate.impl.order.lookup.OrderFulfillmentsHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="orderFulfillmentsExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.req.OrderFulfillmentsRequestPreparer">
+        <property name="parameters">
+          <map>
+            <entry key="argRetailLocationId" value="setLocationId" />
+          </map>
+        </property>
+      </bean>
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.lookup.req.XstoreQueryParamToLocateFulfillmentsAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.OrderFulfillmentsResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.LocateOrdersToXstoreOrdersAdapter">
+          <property name="preparer">
+            <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.OrderResponsePreparer" />
+          </property>
+          <property name="adapters">
+            <list value-type="dtv.servicex.IAdapter">
+              <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.LocateFulfillmentToXstoreOrderAdapter" />
+              <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.LocateFulfillmentItemDetailsToXstoreOrderLinesAdapter" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="orderFulfillmentsExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.FulfillmentsResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardLocateErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_ORDERS_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*FAILED.*Invalid requesting store_location.*" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.LocationInvalidException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="ORDER_INTRANSIT" class="dtv.xst.xom.locate.impl.order.lookup.OrderIntransitHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="orderIntransitExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.req.OrderIntransitRequestPreparer">
+        <property name="parameters">
+          <map>
+            <entry key="argRetailLocationId" value="setLocationId" />
+          </map>
+        </property>
+      </bean>
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.lookup.req.XstoreQueryParamToLocateIntransitAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.OrderIntransitResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.LocateOrdersToXstoreOrdersAdapter">
+          <property name="preparer">
+            <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.OrderResponsePreparer" />
+          </property>
+          <property name="adapters">
+            <list value-type="dtv.servicex.IAdapter">
+              <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.LocateIntransitToXstoreOrderAdapter" />
+              <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.LocateIntransitItemDetailsToXstoreOrderLinesAdapter" />
+            </list>
+          </property>
+        </bean>
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="orderIntransitExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.IntransitResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardLocateErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_ORDERS_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*FAILED.*Invalid requesting store_location.*" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.LocationInvalidException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="ORDER_RETRIEVE" class="dtv.xst.xom.locate.impl.order.lookup.OrderRetrieveHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="orderRetrieveExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.req.OrderRetrieveRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.lookup.req.XstoreRetrieveToLocateStatusRequestAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.OrderRetrieveResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.lookup.resp.LocateStatusRequestToXstoreRetrieveAdapter" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="orderRetrieveExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="dtv.xst.xom.locate.impl.order.lookup.StatusResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardLocateErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_ORDERS_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="ORDER_UPDATE" class="dtv.xst.xom.locate.impl.order.update.OrderUpdateHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="orderUpdateExceptionHandler" />
+    <!-- request -->
+    <property name="requestPreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.update.req.OrderUpdateRequestPreparer" />
+    </property>
+    <property name="requestAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.update.req.XstoreToLocateOrderUpdateAdapter" />
+        <bean class="dtv.xst.xom.locate.impl.order.update.req.XstoreToLocateUpdateItemsAdapter" />
+      </list>
+    </property>
+    <!-- response -->
+    <property name="responsePreparer">
+      <bean class="dtv.xst.xom.locate.impl.order.update.resp.OrderUpdateResponsePreparer" />
+    </property>
+    <property name="responseAdapters">
+      <list value-type="dtv.servicex.IAdapter">
+        <bean class="dtv.xst.xom.locate.impl.order.update.resp.LocateToXstoreOrderUpdateAdapter" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="orderUpdateExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="dtv.xst.xom.locate.impl.GenericResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardLocateErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="1" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.OrderStatusInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="2" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.UpdateLocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="3" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.StatusAlreadyAttainedException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="4" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="8" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.LocationInvalidException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="9" />
+              <property name="throws" value="dtv.xst.xom.locate.exceptions.LocationInvalidException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="UPDATE_AVAILABLE_INVENTORY" class="dtv.xst.xom.locate.impl.order.update.UpdateAvailableInventoryHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="updateAvailableInventoryExceptionHandler" />
+  </bean>
+
+  <bean id="updateAvailableInventoryExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="dtv.xst.xom.locate.impl.GenericResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardLocateErrorHandler" />
+    </property>
+  </bean>
+
+  <bean id="UPDATE_AVAILABLE_INVENTORY_RETRY" class="dtv.xst.xom.locate.impl.order.update.UpdateAvailableInventoryRetryHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="genericLocateExceptionHandler" />
+    <property name="path" value="${user.dir}/log/locate/inventoryUpdate" />
+  </bean>
+
+  <bean id="ORDER_UPDATE_RETRY" class="dtv.xst.xom.locate.impl.order.update.StatusUpdateRetryHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="genericLocateExceptionHandler" />
+    <property name="path" value="${user.dir}/log/locate/statusUpdate" />
+  </bean>
+  
+  <bean id="ORDER_SUBMIT_RETRY" class="dtv.xst.xom.locate.impl.order.submit.OrderSubmitRetryHandler">
+    <property name="serviceId" value="LOCATE" />
+    <property name="servicePort" ref="locateJaxWsServicePort" />
+    <property name="exceptionHandler" ref="genericLocateExceptionHandler" />
+    <property name="path" value="${user.dir}/log/locate/submit" />
+  </bean>
+
+  <bean id="genericLocateExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="dtv.xst.xom.locate.impl.GenericResponseAdapter" />
+    </property>
+  </bean>
+</beans>

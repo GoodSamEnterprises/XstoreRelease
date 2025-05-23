@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+   <FormView FormKey="EJOURNAL_SUMMARY" FormLocation="MULTI_PURPOSE_VIEW" FormLayout="TOP_TO_BOTTOM_TRANSPARENT">
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="COUNTRYPACK::INVOICE::FUNCTIONS">
+      <Action ref="COUNTRYPACK::INVOICE::ISSUE_INVOICE" />
+      <Action ref="COUNTRYPACK::INVOICE::REPRINT_INVOICE" />
+      <Action ref="COUNTRYPACK::INVOICE::VOID_INVOICE" >
+        <VisibilityRule class="dtv.pos.framework.action.access.AlwaysHideVisibilityRule" />
+      </Action>                    
+      <Action ref="COUNTRYPACK::INVOICE::RETRY_INVOICE"/>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

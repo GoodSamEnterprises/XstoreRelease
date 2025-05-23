@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+
+  <Action name="RETAIL::MENU.MODIFY_LINE_TAX" category="Register" keywords="exclude,actionForSelectedListItem" text="_menutextChangeItemTax" privilege="CHANGE_TAX">
+    <VisibilityRule class="dtv.pos.framework.action.access.AlwaysHideVisibilityRule" />
+    <IconGroup icon="_iconMenuChange" />
+  </Action>
+  
+  <Action name="ADMIN::POST_VOID" category="Back Office" keywords="back_office" text="_postvoid" chainKey="POST_VOID">
+    <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+      <Parameter name="state" value="OPEN" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TillAttachedAccessCheck" />
+    <VisibilityRule class="dtv.pos.framework.action.access.AlwaysHideVisibilityRule" />
+  </Action>
+  
+</ActionSet>

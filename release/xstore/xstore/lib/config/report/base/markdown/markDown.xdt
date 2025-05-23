@@ -1,0 +1,97 @@
+<dataTemplate name="PriceMarkdown" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+	
+	<label name="RPT_TITLE" value="_rptPermanentMarkDownReportTitle"/>
+	<label name="RPT_RUN_DATE" value="_rptPermanentMarkDownRunDate"/>
+	<label name="STORE_NBR" value="_rptStore"/>
+	<label name="INV_MOVE_ITEM_RANGE" value="_rptInventoryMovementReportItemRange"/>
+	<label name="START_ITEM_ALL" value="_rptStartItemAll"/>
+	<label name="SELECTION_DATE_RANGE" value="_rptSelectionDateRange"/>
+	<label name="ITEM_STYLE" value="_rptPermanentMarkDownStyle"/>
+	<label name="ITEM_ID" value="_rptItem" />
+	<label name="ITEM_DESCRIPTION" value="_rptDescription" />
+	<label name="ITEM_OLD_PRICE" value="_rptPermanentMarkDownOldPrice" />
+	<label name="ITEM_NEW_PRICE" value="_rptPermanentMarkDownNewPrice" />
+	<label name="MARKDOWN_TYPE" value="_rptPermanentMarkDownPriceType" />
+	<label name="MARKDOWN_CHANGE_DATE" value="_rptPermanentMarkDownChangeDate" />
+  </labels>
+  
+  <parameters>
+    <!-- System Parameters -->
+     <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+ 	<parameter name="organizationId" class="java.lang.Long" isForPrompting="false"/>
+	<parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false"/>
+	<parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="storeName" class="java.lang.String" isForPrompting="false"/>
+	
+    <!-- User Input Parameters -->
+	<parameter name="startItemId" class="java.lang.String">
+		<parameterDescription><![CDATA[_rptParamStartItemId;Text;Simple;maxLength=20]]></parameterDescription>
+		<defaultValueExpression><![CDATA["0"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="endItemId" class="java.lang.String">
+		<parameterDescription><![CDATA[_rptParamEndItemId;Text;Simple;maxLength=20]]></parameterDescription>
+		<defaultValueExpression><![CDATA["99999999999"]]></defaultValueExpression>
+	</parameter>
+    
+	<parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange">
+		<parameterDescription><![CDATA[_rptSelectionDateRange;DateRange]]></parameterDescription>
+		<defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+	</parameter>
+	<parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+        <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+        <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+     </parameter>
+	
+
+  </parameters>
+
+  <dataSource>
+    <queryReference name="Q_MARKDOWN" key="PRICE_CHANGE_REPORT" > 
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+		<Parameter>storeNbr</Parameter>
+		<Parameter>storename</Parameter>
+		
+	    <Parameter>startItemId</Parameter>
+	    <Parameter>endItemId</Parameter>
+    	<Parameter>startDate</Parameter>
+	    <Parameter>endDate</Parameter>
+	  </Parameters>
+      
+	  <ResultFields>
+	    <ResultField>merch_level_1</ResultField>
+        <ResultField>price_change_type</ResultField>
+        <ResultField>item_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>style_id</ResultField>
+        <ResultField>effective_date</ResultField>
+        <ResultField>expiration_date</ResultField>
+        <ResultField>old_price</ResultField>
+        <ResultField>current_price</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+
+  <dataStructure>
+      <group name="G_MARKDOWN_ITEM" source="Q_MARKDOWN">
+        <element name="MERCH_LVL" value="merch_level_1" />
+	    <element name="CHG_TYPE" value="price_change_type" translation-prefix="_dtv.pos.common.PriceTypes." />
+    	<element name="ITEM" value="item_id"/>
+	    <element name="DESC" value="description" />
+        <element name="STYLE" value="style_id" />
+	    <element name="EFF" value="effective_date" formatter="DateMedium" />
+        <element name="EXP" value="expiration_date" formatter="DateMedium" />
+	    <element name="OLD" value="old_price" formatter="Money" />
+	    <element name="CUR" value="current_price" formatter="Money" />
+      </group>
+  </dataStructure>
+</dataTemplate>

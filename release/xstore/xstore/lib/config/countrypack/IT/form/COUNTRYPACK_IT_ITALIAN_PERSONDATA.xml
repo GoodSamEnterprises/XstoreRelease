@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet>
+  <FormView>
+    <FormKey dtype="String">COUNTRYPACK_IT_ITALIAN_PERSONDATA</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, 10.0, FILL -->
+          <param_value dtype="DoubleArray">-2.0, 10.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, FILL -->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">false</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell layoutLocation="0, 0, 1, 1, R, F" type="FormLabel" textKey="_countrypack.amountLimit.fiscalCodeLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="2, 0, 1, 1, F, F" type="FormTextField" resource="fiscalCode" required="true">
+        <TabOrder dtype="Integer">1</TabOrder>
+        <DataField EditFormat="CaseAllUpper">
+          <Parameter name="maxCharacters">
+            <param_value dtype="Integer"><![CDATA[16]]></param_value>
+          </Parameter>
+        </DataField>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--********************************** -->
+    <!--** DEFAULT action keys ** -->
+    <!--********************************** -->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT_OK" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

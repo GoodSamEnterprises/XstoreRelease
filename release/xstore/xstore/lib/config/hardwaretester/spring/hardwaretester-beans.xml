@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="hardwaretester"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd" >
+
+  <bean id="hardwareTester" class="dtv.pos.hardware.test.HardwareTester" init-method="init" lazy-init="true" >
+    <property name="columnCount" value="3" />
+    <property name="actions" >
+      <array>
+        <bean class="dtv.pos.hardware.test.PinPadTestAction" />
+        <bean class="dtv.pos.hardware.test.CancelPinEntryTestAction" />
+        <null />
+        <bean class="dtv.pos.hardware.test.SignatureCaptureTestAction" />
+        <null />
+        <bean class="dtv.pos.hardware.test.CreditDebitTestAction" />
+        <bean class="dtv.pos.hardware.test.CancelQuestionAction" />
+        <null />
+        <bean class="dtv.pos.hardware.test.CustomerDisplayTestAction" />
+        <bean class="dtv.pos.hardware.test.CustomerDisplaySubtotalTestAction" />
+        <bean class="dtv.pos.hardware.test.CustomerDisplayStressTestAction" />
+        <bean class="dtv.pos.hardware.test.CustomerDisplayIdleTestAction" />
+        <bean class="dtv.pos.hardware.test.CashDrawerTestAction" />
+        <bean class="dtv.pos.hardware.test.PrinterFastTestAction" />
+        <bean class="dtv.pos.hardware.test.PrinterFirestampTestAction" />
+        <bean class="dtv.pos.hardware.test.ResetHardwareTestAction" />
+        <bean class="dtv.pos.hardware.test.SaveJposXmlTestAction" />
+        <null />
+        <bean class="dtv.pos.hardware.test.FiscalCleanReceiptTestAction" />
+        <bean class="dtv.pos.hardware.test.FiscalReceiptTestAction" />
+      </array>
+    </property>
+  </bean>
+
+  <bean id="playDaoFactory" class="dtv.pos.hardware.test.PlayDaoFactory" >
+    <property name="itemDescriptions">
+      <list>
+        <value>RED FISH PRIMER</value>
+        <value>BLUE FISH READER</value>
+        <value>MASTERING REGULAR EXPRESSIONS</value>
+        <value>ACTIVISION JUNGLEHUNT</value>
+        <value>CRYTOGRAPHY DECRYPTED BY MEL, BAKER, ET.AL.</value>
+      </list>
+    </property>
+    <property name="itemIds">
+      <list>
+        <value>12345678</value>
+        <value>ABCDEFGH</value>
+      </list>
+    </property>
+    <property name="fiscalPrices">
+      <list>
+        <value>#{T(java.math.BigDecimal).valueOf(1L, 2)}</value>
+      </list>
+    </property>
+    <property name="fiscalQuantities">
+      <list>
+        <value>#{T(java.math.BigDecimal).valueOf(1L)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(2L)}</value>
+      </list>
+    </property>
+    <property name="prices">
+      <list>
+        <value>#{T(java.math.BigDecimal).valueOf(0L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(1L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(-1L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(20L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(-20L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(350L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(-351L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(4999L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(-4998L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(53984L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(-53983L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(651681L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(-651680L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(7651681L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(-7651680L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(86545681L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(-86545680L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(100000000L, 2)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(-100000000L, 2)}</value>
+      </list>
+    </property>
+    <property name="quantities">
+      <list>
+        <value>#{T(java.math.BigDecimal).valueOf(1L)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(2L)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(3L)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(4L)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(20L)}</value>
+        <value>#{T(java.math.BigDecimal).valueOf(300L)}</value>
+      </list>
+    </property>
+    <property name="cashTender">
+      <bean class="dtv.xst.dao.tnd.impl.TenderModel">
+        <property name="tenderId" value="CASH" />
+        <property name="description" value="Cash" />
+      </bean>
+    </property>
+    <property name="halfOffDiscount">
+      <bean class="dtv.xst.dao.dsc.impl.DiscountModel" >
+        <property name="percent" value="#{T(java.math.BigDecimal).valueOf(50L,2)}" />
+        <property name="description" value="Off" />
+        <property name="calculationMethodCode" value="#{T(dtv.pos.pricing.discount.type.DiscountCalculationMethod).PERCENT.getName()}" />
+      </bean>
+    </property>
+  </bean>
+
+  <bean id="modeController" class="dtv.pos.framework.ModeController" scope="applicationMode">
+    <property name="flowEventListeners" ref="applicationFlowEventListeners" />
+    <property name="eventRouter">
+      <bean class="dtv.pos.framework.event.XstEventRouter" />
+    </property>
+    <property name="UIController">
+      <bean class="dtv.pos.framework.ui.UIControllerImplAnimated" />
+    </property>
+    <property name="contextManager">
+      <bean class="dtv.ui.context.ContextManager" />
+    </property>
+    <property name="stationModel">
+      <bean class="dtv.pos.hardware.test.HardwareTesterStationModel" init-method="create" destroy-method="destroy">
+        <property name="listPromptModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultListPromptModel" />
+        </property>
+        <property name="notifyPromptModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultNotifyPromptModel" />
+        </property>
+        <property name="promptActionModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultPromptActionModel" />
+        </property>
+        <property name="textPromptModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultTextPromptModel" />
+        </property>
+        <property name="longTextPromptModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultTextPromptModel" />
+        </property>
+        <property name="messageModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultMessageModel" />
+        </property>
+        <property name="helpModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultHelpModel" />
+        </property>
+        <property name="menuModel">
+          <bean class="dtv.pos.framework.ui.model.DefaultMenuModel" />
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+</beans>

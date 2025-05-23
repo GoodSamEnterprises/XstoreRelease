@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xmlns:task="http://www.springframework.org/schema/task"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd"
+  default-init-method="init">
+
+  <!-- Spring beans that are specific to country pack functionality, but are common to multiple different
+       countries should be configured here. Note that if you have a bean that is specific to a particular
+       country, that bean definition should be in the country-specific file in the countrypack/<country code>
+       part of the config path. -->
+
+  <!-- anyInvoice includes TaxFree, invoice includes only sale invoices -->
+  <bean id="anyInvoiceVisibility" class="oracle.retail.xstore.countrypack.common.invoice.visibilityrules.AnyInvoiceFormCellVisibilityRule" />
+  <bean id="invoiceVisibility" class="oracle.retail.xstore.countrypack.common.invoice.visibilityrules.InvoiceFormCellVisibilityRule" />
+  <bean id="fiscalCodeVisibility" class="oracle.retail.xstore.countrypack.common.invoice.visibilityrules.InvoiceFormCellVisibilityRule" />
+  <bean id="taxCodeVisibility" class="oracle.retail.xstore.countrypack.common.invoice.visibilityrules.InvoiceFormCellVisibilityRule" />
+
+  <!-- Electronic Invoice -->
+  <bean id="eInvoiceInformationVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="false" />
+  </bean>
+  <bean id="countryPack.InvoiceConfiguration" class="oracle.retail.xstore.countrypack.common.invoice.InvoiceConfiguration">
+    <property name="EnableElectronicInvoice" value="false" />
+  </bean>
+  
+
+  <bean id="wkstnParamsMgr" class="oracle.retail.xstore.countrypack.common.WorkstationParameterMgr" scope="prototype" />
+
+  <bean id="mxPropertyHelper" class="oracle.retail.xstore.countrypack.mx.MxPropertyHelper" />
+
+  <bean id="countryPack.invoiceHelper" class="oracle.retail.xstore.countrypack.common.invoice.InvoiceHelper" />
+  <bean id="countryPack.CountryHelperIt" class="oracle.retail.xstore.countrypack.it.CountryHelperIT" />
+  <bean id="countryPack.CountryHelperEs" class="oracle.retail.xstore.countrypack.es.CountryHelperES" >
+    <property name="descripcionOperacion" value="Venta de mercancia y servicios" />
+    <property name="claveRegimenEspecialOTrascendencia" value="01" />
+    <property name="fileExportPath" value="#{systemProperties['countrypack.es.fileExportPath'] ?: '.'}" />
+    <property name="enableTaxExport" value="#{systemProperties['countrypack.es.enableTaxExport'] ?: 'false'}" />
+  </bean>
+  <bean id="countryPack.CountryHelperFr" class="oracle.retail.xstore.countrypack.fr.CountryHelperFR" />
+  <bean id="countryPack.CountryHelperNl" class="oracle.retail.xstore.countrypack.nl.CountryHelperNL" />
+  <bean id="countryPack.CountryHelperDe" class="oracle.retail.xstore.countrypack.de.CountryHelperDE" />
+  <bean id="countryPack.CountryHelperGb" class="oracle.retail.xstore.countrypack.gb.CountryHelperGB" />
+  <bean id="countryPack.CountryHelperCa" class="oracle.retail.xstore.countrypack.ca.CountryHelperCA" />
+  <bean id="countryPack.CountryHelperPt" class="oracle.retail.xstore.countrypack.pt.CountryHelperPT">
+    <property name="countryId" value="PT" />
+    <property name="documentTypeProperty" value="PT_DOCUMENT_TYPE" />
+    <property name="internalDocumentTypeProperty" value="PT_INTERNAL_DOCUMENT_TYPE" />
+    <property name="documentNumberProperty" value="PT_DOCUMENT_NUMBER" />
+    <property name="documentSignatureProperty" value="PT_DOCUMENT_SIGNATURE" />
+    <property name="hashControlProperty" value="PT_HASH_CONTROL_CODE" />
+    <property name="atCodeProperty" value="PT_AT_CODE" />
+    <property name="atCodeManuallyInsertedProperty" value="PT_AT_CODE_MANUAL" />
+  </bean>
+  <bean id="countryPack.CountryHelperBr" class="oracle.retail.xstore.countrypack.br.CountryHelperBR" />
+  <bean id="countryPack.CountryHelperSe" class="oracle.retail.xstore.countrypack.se.CountryHelperSE"/>
+  <bean id="countryPack.CountryHelperMx" class="oracle.retail.xstore.countrypack.mx.CountryHelperMX"/>
+
+  <bean id="fiscalCodeFieldValidator" class="oracle.retail.xstore.countrypack.common.form.validators.FiscalCodeFieldValidator">
+    <property name="validators" ref="fiscalValidatorHelpers" />
+
+    <!-- This option allows to trigger the validation based on the following condition: -->
+    <!-- 1. CustomerStoreSame. The default validation type. It does the validation only if the store country is the same as the  -->
+    <!--    customer country, otherwise the field will be checked only for required property. -->
+    <!-- 2. Customer. It does the validation based on the customer country.  -->
+    <!-- 3. Store. It does the validation based on the store country.  -->
+    <property name="validationType" value="CustomerStoreSame" />
+  </bean>
+  <bean id="taxCodeFieldValidator" class="oracle.retail.xstore.countrypack.common.form.validators.TaxCodeFieldValidator" parent="fiscalCodeFieldValidator" />
+  <bean id="fiscalValidatorHelpers" class="org.springframework.beans.factory.config.MapFactoryBean">
+    <property name="sourceMap">
+      <map>
+        <entry key="IT" value-ref="countryPack.CountryHelperIt" />
+        <entry key="ES" value-ref="countryPack.CountryHelperEs" />
+        <entry key="FR" value-ref="countryPack.CountryHelperFr" />
+        <entry key="NL" value-ref="countryPack.CountryHelperNl" />
+        <entry key="DE" value-ref="countryPack.CountryHelperDe" />
+        <entry key="GB" value-ref="countryPack.CountryHelperGb" />
+        <entry key="CA" value-ref="countryPack.CountryHelperCa" />
+        <entry key="PT" value-ref="countryPack.CountryHelperPt" />
+        <entry key="BR" value-ref="countryPack.CountryHelperBr" />
+        <entry key="SE" value-ref="countryPack.CountryHelperSe" />
+        <entry key="MX" value-ref="countryPack.CountryHelperMx" />
+      </map>
+    </property>
+  </bean>
+
+  <!-- Objects to access country specific data with a standard interface -->
+  <bean id="countryDataHelper" class="dtv.pos.register.CountryDataHelper">
+    <property name="accessors" ref="countryDataAccessors" />
+  </bean>
+
+  <bean id="countryPack.dataAccessorDe" class="oracle.retail.xstore.countrypack.de.DataAccessorDE" />
+  <bean id="countryPack.dataAccessorEs" class="oracle.retail.xstore.countrypack.es.DataAccessorES" />
+  <bean id="countryPack.dataAccessorFr" class="oracle.retail.xstore.countrypack.fr.DataAccessorFR" />
+  <bean id="countryPack.dataAccessorIt" class="oracle.retail.xstore.countrypack.it.DataAccessorIT" />
+  <bean id="countryPack.dataAccessorPt" class="oracle.retail.xstore.countrypack.pt.DataAccessorPT" />
+  <bean id="countryPack.dataAccessorSe" class="oracle.retail.xstore.countrypack.se.DataAccessorSE" />
+
+  <bean id="countryDataAccessors" class="org.springframework.beans.factory.config.MapFactoryBean">
+    <property name="sourceMap">
+      <map>
+        <entry key="DE" value-ref="countryPack.dataAccessorDe" />
+        <entry key="ES" value-ref="countryPack.dataAccessorEs" />
+        <entry key="FR" value-ref="countryPack.dataAccessorFr" />
+        <entry key="IT" value-ref="countryPack.dataAccessorIt" />
+        <entry key="PT" value-ref="countryPack.dataAccessorPt" />
+        <entry key="SE" value-ref="countryPack.dataAccessorSe" />
+      </map>
+    </property>
+  </bean>
+  <!-- End of objects to access country specific data with a standard interface -->
+
+  <bean id="countrypack.manualReceiptNumberRule" class="oracle.retail.xstore.countrypack.common.validation.ValidateManualReceiptNumberRule" scope="prototype" />
+  <bean id="countrypack.manualReceiptDateRule" class="oracle.retail.xstore.countrypack.common.validation.ValidateManualReceiptDateRule" scope="prototype" />
+
+  <bean id="countrypack.manualReceiptNumberValidation" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countrypack.manualReceiptNumberRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countrypack.manualReceiptDateValidation" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countrypack.manualReceiptDateRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countrypack.fiscalPrinter.preTenderingRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countrypack.fiscalPrinter.online" />
+      </list>
+    </property>
+  </bean>
+  <bean id="countrypack.fiscalPrinter.backofficeDayOpenedRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countrypack.fiscalPrinter.online" />
+        <ref bean="countrypack.fiscalPrinter.dayOpened" />
+      </list>
+    </property>
+  </bean>
+  <bean id="countrypack.fiscalPrinter.backofficeOnlineRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countrypack.fiscalPrinter.online" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countrypack.fiscalPrinter.backofficeSetDateRules" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countrypack.fiscalPrinter.online" />
+        <ref bean="countrypack.fiscalPrinter.dayOpened" />
+        <ref bean="countrypack.fiscalPrinter.sameDayMatch" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="countryPack.fiscalPrinter.beginDay" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countrypack.fiscalPrinter.vatRateMatch" />        
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countrypack.fiscalPrinter.online" class="oracle.retail.xstore.countrypack.common.hardware.fiscal.validations.FiscalPrinterOnLineValidationRule" scope="prototype" />
+  <bean id="countrypack.fiscalPrinter.dayOpened" class="oracle.retail.xstore.countrypack.common.hardware.fiscal.validations.FiscalPrinterDayOpenedValidationRule" scope="prototype" />
+  <bean id="countrypack.fiscalPrinter.sameDayMatch" class="oracle.retail.xstore.countrypack.common.hardware.fiscal.validations.FiscalPrinterSameDayValidationRule" scope="prototype" />
+  <bean id="countrypack.fiscalPrinter.vatRateMatch" class="oracle.retail.xstore.countrypack.common.hardware.fiscal.validations.FiscalPrinterCheckVatRateValidationRule" scope="prototype" />
+  
+  <bean id="countrypack.fiscalSignatureFileWriter" class="oracle.retail.xstore.countrypack.common.signature.FiscalSignatureFileWriter" lazy-init="true" />
+
+  <bean id="countrypack.mixReturnTypeValidationRule" class="oracle.retail.xstore.countrypack.common.validation.MultipleTransInReturnsValidationRule" scope="prototype" />
+
+  <!-- COUNTRYPACK INVOICE START -->
+  <bean id="invoiceSummaryCustMaintModelFieldValidatorFactory" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory">
+    <property name="parameters">
+      <map merge="true">
+        <entry key="taxCode" value-ref="taxCodeFieldValidator" />
+        <entry key="fiscalCode" value-ref="fiscalCodeFieldValidator" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="countryPack.validateInvoiceOpenRetailLocationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.ValidateInvoiceOpenRetailLocationRule" scope="prototype" />
+
+  <bean id="countryPack.validateInvoiceIssueRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.ValidateInvoiceIssueRule" scope="prototype" />
+
+  <bean id="countryPack.invoiceValidateLine" class="oracle.retail.xstore.countrypack.common.invoice.validation.ValidateInvoiceLineRule" scope="prototype" />
+
+  <bean id="countryPack.taxFreeValidateLine" class="oracle.retail.xstore.countrypack.common.taxfree.validation.ValidateTaxFreeLineRule" scope="prototype" />
+
+  <bean id="countryPack.validateInvoiceHasItems" class="oracle.retail.xstore.countrypack.common.invoice.validation.ValidateInvoiceHasItemsRule" scope="prototype" />
+
+  <bean id="countryPack.invoiceTransRuleReprintLast" class="oracle.retail.xstore.countrypack.common.invoice.validation.ValidateIsInvoiceTransRule" scope="prototype">
+    <property name="errorMessage" value="_countrypack.invoice.CheckReprintLastInvoice" />
+  </bean>
+
+  <bean id="countryPack.invoiceTransRuleReprintEj" class="oracle.retail.xstore.countrypack.common.invoice.validation.ValidateIsInvoiceTransRule" scope="prototype">
+    <property name="errorMessage" value="_countrypack.invoice.ReprintInvoiceNotValid" />
+  </bean>
+
+  <bean id="countryPack.invoiceBusinessDateValidationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.InvoiceBusinessDateValidationRule" scope="prototype" />
+
+  <bean id="countryPack.invoiceAlreadyIssuedValidationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.ValidateIsInvoiceTransRule" scope="prototype">
+    <property name="errorMessage" value="_countrypack.invoice.ValidationInvoiceAlreadyIssued" />
+    <property name="inverted" value="true" />
+  </bean>
+
+  <bean id="countryPack.invoiceIssuedValidationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.ValidateIsInvoiceTransRule" scope="prototype">
+    <property name="errorMessage" value="_countrypack.invoice.ValidationInvoiceNotYetIssued" />
+  </bean>
+
+  <bean id="retailSaleOrDeferedInvoiceTypeValidationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.RetailSaleOrDeferedInvoiceTypeValidationRule" scope="prototype" />
+
+  <bean id="countryPack.taxFreeReprintLast" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeReprintLastValidationRule" scope="prototype" />
+
+  <bean id="countryPack.validateLineForInvoice" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.invoiceValidateLine" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.validateReturnLineForInvoice" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.invoiceValidateLine" />
+        <ref bean="countryPack.taxFreeValidateLine" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.validateInvoiceItems" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.validateInvoiceHasItems" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.validateReturnsOnInvoiceRequest" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.validateInvoiceIssueRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.reprintLastInvoice" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="transactionStatusValidationRule" />
+        <ref bean="retailSaleOrDeferedInvoiceTypeValidationRule" />
+        <ref bean="countryPack.invoiceTransRuleReprintLast" />
+        <ref bean="countryPack.taxFreeReprintLast" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.validateReprintInvoiceFromEj" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="transactionStatusValidationRule" />
+        <ref bean="retailSaleOrDeferedInvoiceTypeValidationRule" />
+        <ref bean="countryPack.invoiceTransRuleReprintEj" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.validateIssueInvoiceFromEj" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="transactionStatusValidationRule" />
+        <ref bean="countryPack.invoice.nonVoidedTransactionValidationRule" />
+        <ref bean="retailSaleOrDeferedInvoiceTypeValidationRule" />
+        <ref bean="countryPack.invoiceAlreadyIssuedValidationRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.deferedInvoiceTypeValidationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.DeferedInvoiceTypeValidationRule" scope="prototype" />
+
+  <bean id="countryPack.deferedInvoiceSuccessValidationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.DeferedInvoiceIsSuccessTransRule" scope="prototype">
+    <property name="errorMessage" value="_countrypack.invoice.ValidationInvoiceAlreadyIssued" />
+    <property name="inverted" value="true" />
+  </bean>
+
+  <bean id="countryPack.validateRetryInvoiceFromEj" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="transactionStatusValidationRule" />
+        <ref bean="countryPack.deferedInvoiceTypeValidationRule" />
+        <ref bean="countryPack.deferedInvoiceSuccessValidationRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.invoice.validateIssueInvoiceFromEj" parent="validationRuleList">
+    <property name="rules">
+      <list>
+      <ref bean="countryPack.invoiceBusinessDateValidationRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.validateVoidInvoiceFromEj" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="transactionStatusValidationRule" />
+        <ref bean="retailSaleOrDeferedInvoiceTypeValidationRule" />
+        <ref bean="countryPack.invoiceIssuedValidationRule" />
+        <ref bean="countryPack.taxfree.voidValidationRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.validatePostVoidInvoiceFromEj" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.taxfree.voidValidationRule" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean id="countryPack.invoice.voidInvoiceValidationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.InvoiceVoidValidationRule" scope="prototype">
+    <property name="errorMessage" value="_countrypack.invoice.ValidationVoidInvoice" />
+  </bean>
+
+  <bean id="countryPack.invoice.voidTransactionWithInvoiceValidationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.InvoiceVoidValidationRule" scope="prototype">
+    <property name="errorMessage" value="_countrypack.invoice.ValidationVoidTrnWithInvoice" />
+  </bean>
+  
+  <bean id="countryPack.invoice.nonVoidedTransactionValidationRule" class="oracle.retail.xstore.countrypack.common.invoice.validation.InvoiceNonVoidedTransactionValidationRule" scope="prototype" />
+  
+  <!-- COUNTRYPACK INVOICE END -->
+
+  <!-- COUNTRYPACK TAXFREE START -->
+  <bean id="countryPack.taxfreeProviderImpl" class="oracle.retail.xstore.countrypack.common.taxfree.StubTaxFreeProvider" />
+  <bean id="countryPack.taxFreeProviderReceiptBuilderImpl" class="oracle.retail.xstore.countrypack.common.taxfree.StubTaxFreeRcptBuilder" />
+
+  <bean id="countryPack.validateTaxFreeInvoiceMinimumAmount" class="oracle.retail.xstore.countrypack.common.taxfree.validation.ValidateTransactionAmountRule" scope="prototype" />
+  <bean id="countryPack.taxfree.validateReceivedTravellerCountry" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeCustomerCountryValidationRule" scope="prototype" />
+  <bean id="countryPack.taxfree.deferredIssueValidationRule" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeDeferredIssueValidationRule" scope="prototype" />
+  <bean id="countryPack.taxfree.consolidationIssueValidationRule" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeConsolidateValidationRule" scope="prototype" />
+  <bean id="countryPack.taxfree.consolidationIssueAmountValidationRule" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeConsolidateAmountValidationRule" scope="prototype" />
+  <bean id="countryPack.taxfree.voidValidationRule" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeVoidValidationRule" scope="prototype" />
+  <bean id="countryPack.taxfree.singleItemQtyValidationRule" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeSingleItemMaxQtyValidationRule" scope="prototype" />
+  <bean id="countryPack.taxfree.issueAnyMerchItemValidationRule" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeHasMerchItemsValidationRule" scope="prototype" />
+
+  <bean id="countryPack.taxfree.validateReceivedTraveller" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.taxfree.validateReceivedTravellerCountry" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.validateTaxFreeInvoiceRequest" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.validateTaxFreeInvoiceMinimumAmount" />
+        <ref bean="countryPack.taxfree.consolidationIssueAmountValidationRule" />
+        <ref bean="countryPack.taxfree.singleItemQtyValidationRule" />
+        <ref bean="countryPack.taxfree.issueAnyMerchItemValidationRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.taxfree.validateIssueInvoiceFromEj" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.taxfree.deferredIssueValidationRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.taxfree.validateConsolidateInvoice" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.taxfree.deferredIssueValidationRule" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="countryPack.taxfree.validateConsolidateInvoiceByReceipt" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.taxfree.consolidationIssueValidationRule" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Field validators for edit models -->
+  <bean id="countryPack.taxFreeProviderCardIdValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.AlwaysValidStringFieldValidator" />
+  <bean id="countryPack.taxFree.departureDateFieldValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.DepartureDateFieldValidator" scope="prototype" />
+  <bean id="countryPack.taxFree.arrivalDateFieldValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.ArrivalDateFieldValidator" scope="prototype" />
+  <bean id="countryPack.taxFree.birthDateFieldValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.BirthDateFieldValidator" scope="prototype" />
+  <bean id="countryPack.taxFree.etihadCardValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.EtihadCardFieldValidator" scope="prototype" />
+  <bean id="countryPack.taxFree.alipayNumberValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.AlipayNumberFieldValidator" scope="prototype" />
+
+  <bean id="countryPack.taxFree.firstLastNameFieldErrorValidator" class="oracle.retail.xstore.countrypack.common.validators.RegexValidator" scope="prototype">
+    <property name="regexPolicy" value="^(?:[\p{L}]+['\-\/ ]?)+$" />
+  </bean>
+  <bean id="countryPack.taxFree.firstLastNameFieldWarnValidator" class="oracle.retail.xstore.countrypack.common.validators.RegexValidator" scope="prototype">
+    <property name="regexPolicy" value="^ *\p{L}{0,1} *$" />
+    <property name="inverted" value="true" />
+  </bean>
+  <bean id="countryPack.taxFree.birthDateFieldWarnValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.BirthDateFieldValidator" scope="prototype">
+    <property name="warning" value="true" />
+  </bean>
+
+  <bean id="countryPack.taxFree.documentNumberFieldValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.IdentityDocumentRegexValidator" scope="prototype">
+    <property name="regexPolicies">
+      <map>
+        <entry key="Passport" value="^[a-zA-Z0-9]{4,13}$" />
+        <entry key="IdentityCard" value="^(\S\s*){4,}" />
+        <entry key="DriverLicense" value="^(\S\s*){4,}" />
+        <entry key="Other" value="^(\S\s*){4,}" />
+      </map>
+    </property>
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.invalidIdentityDocumentNumber" />
+  </bean>
+  <bean id="countryPack.taxFree.documentNumberFieldWarnValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.IdentityDocumentRegexValidator" scope="prototype">
+    <property name="regexPolicies">
+      <map>
+        <entry key="Passport" value="(?:0123|1234|2345|3456|4567|5678|6789|7890|3210|4321|5432|6543|7654|8765|9876|0987)|([\w])\1{3,}|[a-zA-Z0-9]{10,13}" />
+        <entry key="IdentityCard" value="(?:0123|1234|2345|3456|4567|5678|6789|7890|3210|4321|5432|6543|7654|8765|9876|0987)|([\w])\1{3,}" />
+        <entry key="DriverLicense" value="(?:0123|1234|2345|3456|4567|5678|6789|7890|3210|4321|5432|6543|7654|8765|9876|0987)|([\w])\1{3,}" />
+        <entry key="Other" value="(?:0123|1234|2345|3456|4567|5678|6789|7890|3210|4321|5432|6543|7654|8765|9876|0987)|([\w])\1{3,}" />
+      </map>
+    </property>
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.warnIdentityDocumentNumber" />
+    <property name="inverted" value="true" />
+    <property name="useFind" value="true" />
+  </bean>
+
+  <bean id="countryPack.taxFree.firstNameFieldWarnValidator" parent="countryPack.taxFree.firstLastNameFieldWarnValidator" scope="prototype">
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.warnFirstName" />
+  </bean>
+  <bean id="countryPack.taxFree.lastNameFieldWarnValidator" parent="countryPack.taxFree.firstLastNameFieldWarnValidator" scope="prototype">
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.warnLastName" />
+  </bean>
+
+  <bean id="countryPack.taxFree.firstNameFieldErrorValidator" parent="countryPack.taxFree.firstLastNameFieldErrorValidator" scope="prototype">
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.invalidFirstName" />
+  </bean>
+  <bean id="countryPack.taxFree.lastNameFieldErrorValidator" parent="countryPack.taxFree.firstLastNameFieldErrorValidator" scope="prototype">
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.invalidLastName" />
+  </bean>
+
+  <bean id="countryPack.taxFree.taxRegistrationNumberFieldErrorValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.AlwaysValidStringFieldValidator" />
+  <bean id="countryPack.taxFree.taxRegistrationNumberFieldWarnValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.AlwaysValidStringFieldValidator" />
+
+  <bean id="countryPack.taxFree.mobileNumberFieldWarnValidator" class="oracle.retail.xstore.countrypack.common.validators.RegexValidator" scope="prototype">
+    <property name="regexPolicy" value="(?:0123|1234|2345|3456|4567|5678|6789|7890|3210|4321|5432|6543|7654|8765|9876|0987)|([\d])\1{3,}" />
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.warnMobileNumber" />
+    <property name="inverted" value="true" />
+    <property name="useFind" value="true" />
+  </bean>
+
+  <bean id="countryPack.taxFree.mobileNumberFieldErrorValidator" class="oracle.retail.xstore.countrypack.common.taxfree.form.validators.MobileNumberValidator" scope="prototype">
+    <property name="regexPolicy" value="^(?:\+|00)(?=%PhonePrefixes%)(?: ?\d){5,15}$" />
+    <property name="failureMessage" value="_countrypack.taxfree.summaryform.validation.invalidMobileNumber" />
+  </bean>
+
+
+
+
+  <bean id="countryPack.custSummaryModelFieldValidatorFactory" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory">
+    <property name="parameters">
+      <map>
+        <entry key="arrivalDate" value-ref="countryPack.taxFree.arrivalDateFieldValidator" />
+        <entry key="departureDate" value-ref="countryPack.taxFree.departureDateFieldValidator" />
+        <entry key="emailAddress" value-ref="emailAddressFieldValidator" />
+        <entry key="birthDate" value-ref="countryPack.taxFree.birthDateFieldValidator" />
+        <entry key="identityDocumentNumber" value-ref="countryPack.taxFree.documentNumberFieldValidator" />
+        <entry key="firstName" value-ref="countryPack.taxFree.firstNameFieldErrorValidator" />
+        <entry key="lastName" value-ref="countryPack.taxFree.lastNameFieldErrorValidator" />
+        <entry key="mobileNumber" value-ref="countryPack.taxFree.mobileNumberFieldErrorValidator" />
+        <entry key="taxRegistrationNumber" value-ref="countryPack.taxFree.taxRegistrationNumberFieldErrorValidator" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="countryPack.custSummaryModelFieldSuspectValidatorFactory" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory">
+    <property name="parameters">
+      <map>
+        <entry key="firstName" value-ref="countryPack.taxFree.firstNameFieldWarnValidator" />
+        <entry key="lastName" value-ref="countryPack.taxFree.lastNameFieldWarnValidator" />
+        <entry key="identityDocumentNumber" value-ref="countryPack.taxFree.documentNumberFieldWarnValidator" />
+        <entry key="birthDate" value-ref="countryPack.taxFree.birthDateFieldWarnValidator" />
+        <entry key="mobileNumber" value-ref="countryPack.taxFree.mobileNumberFieldWarnValidator" />
+        <entry key="taxRegistrationNumber" value-ref="countryPack.taxFree.taxRegistrationNumberFieldWarnValidator" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="countryPack.taxFreeProviderCardModelFieldValidatorFactory" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory">
+    <property name="parameters">
+      <map merge="true">
+        <entry key="cardNumber" value-ref="countryPack.taxFreeProviderCardIdValidator" />
+      </map>
+    </property>
+  </bean>
+
+  <bean id="countryPack.refundModelFieldValidatorFactory" class="dtv.pos.framework.form.validators.DefaultEditModelFieldValidatorFactory">
+    <property name="parameters">
+      <map>
+        <entry key="etihadNumber" value-ref="countryPack.taxFree.etihadCardValidator" />
+        <entry key="alipayNumber" value-ref="countryPack.taxFree.alipayNumberValidator" />
+      </map>
+    </property>
+  </bean>
+
+  <!-- Validators for consolidation -->
+  <bean id="countryPack.TaxFreeConsolidateEnabledValidationRule" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeConsolidateEnabledValidationRule" scope="prototype" />
+  <bean id="countryPack.validateTaxFreeReceiptsBeforeAddToListNoRecordsSelected" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeHasReceiptsSelected" scope="prototype" />
+  <bean id="countryPack.validateTaxFreeReceiptsBeforeAddReceiptAlreadyOnList" class="oracle.retail.xstore.countrypack.common.taxfree.validation.TaxFreeTheReceiptIsOnList" scope="prototype" />
+
+  <bean id="countryPack.validateTaxFreeReceipts" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.TaxFreeConsolidateEnabledValidationRule" />
+        <ref bean="countryPack.validateTaxFreeReceiptsBeforeAddToListNoRecordsSelected" />
+        <ref bean="countryPack.validateTaxFreeReceiptsBeforeAddReceiptAlreadyOnList" />
+      </list>
+    </property>
+  </bean>
+  <!-- COUNTRYPACK TAXFREE END -->
+
+  <bean id="countryPack.common.validateReturnLines" class="oracle.retail.xstore.countrypack.common.validation.ValidateReturnLine" scope="prototype" />
+
+  <bean id="countryPack.common.validateReturns" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countryPack.common.validateReturnLines" />
+      </list>
+    </property>
+  </bean>
+
+  <!-- Usage constant for fiscal document types -->
+  <util:constant id="FISCAL_DOCUMENT_USAGE_NORMAL"
+        static-field="oracle.retail.xstore.countrypack.common.FiscalDocumentType.NORMAL_DOCUMENT_USAGE" />
+
+  <util:constant id="FISCAL_DOCUMENT_USAGE_MANUAL"
+        static-field="oracle.retail.xstore.countrypack.common.FiscalDocumentType.MANUAL_DOCUMENT_USAGE" />
+
+  <util:constant id="FISCAL_DOCUMENT_USAGE_RECOVER"
+        static-field="oracle.retail.xstore.countrypack.common.FiscalDocumentType.RECOVER_DOCUMENT_USAGE" />
+
+
+  <bean id="ptPersonalTaxIdSetFieldFilter" class="oracle.retail.xstore.countrypack.pt.mutators.FiscalCodeSetFieldFilter" scope="prototype" />
+
+  <bean id="pt.signatureHandler" class="oracle.retail.xstore.countrypack.pt.signature.PtSignatureHandler" lazy-init="true" />
+  <bean id="fiscalKeyStoreLoader" class="oracle.retail.xstore.countrypack.pt.signature.PtKeyStoreLoader" lazy-init="true" />
+  <bean id="pt.saftFileGenerator" class="oracle.retail.xstore.countrypack.pt.saft.SaftFileGenerator" scope="prototype" />
+  <bean id="pt.propertyHelper" class="oracle.retail.xstore.countrypack.pt.PropertyHelper" />
+
+  <bean id="countryPack.returnValidations" parent="validationRuleList">
+    <property name="rules">
+      <list>
+        <ref bean="countrypack.mixReturnTypeValidationRule" />
+        <ref bean="countryPack.crossStateValidationRule" />
+        <ref bean="countryPack.crossStoreValidationRule" />
+      </list>
+    </property>
+  </bean>
+  <bean id="countryPack.crossStateValidationRule" class="oracle.retail.xstore.countrypack.common.validation.CrossStateReturnValidationRule" scope="prototype" />
+  <bean id="countryPack.crossStoreValidationRule" class="oracle.retail.xstore.countrypack.common.validation.CrossStoreReturnValidationRule" scope="prototype" />
+  <bean id="countryPack.itemPriceDisallowGiveAwaysRule" class="oracle.retail.xstore.countrypack.common.validation.ValidateItemPriceDisallowGiveAwaysRule" scope="prototype" />
+  <bean id="countryPack.anyZeroPriceItem" class="oracle.retail.xstore.countrypack.common.validation.ValidateAnyItemZeroPriceRule" scope="prototype" />
+
+  <!--   Brazil START-->
+
+  <!-- Singleton helpers -->
+
+  <bean id="countryPack.fiscalHelper" class="oracle.retail.xstore.countrypack.common.FiscalHelper" />
+
+  <!--   Brazil END-->
+
+</beans>

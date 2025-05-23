@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">INVENTORY_MOVEMENT_PENDING_DETAIL</FormKey>
+    <FormLocation dtype="String">TRANSACTION_LIST_AREA</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">viewList</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">MOVEMENT_PENDING_ITEMS</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <RuleSet dtype="String">MOVEMENT_PENDING_ITEMS</RuleSet>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <ActionGroup key="DEFAULT">
+      <SubKey dtype="String">DEFAULT</SubKey>
+      <Action ref="CANCEL_BACK" />
+      <Action chainKey="MOVEMENT_PENDING_SAVE" text="_itemTransferActionSave" keyStroke="F2" />
+      <Action chainKey="MOVEMENT_PENDING_VIEW_DETAIL" text="_movementPendingActionViewDetail" keyStroke="F4">
+        <VisibilityRule class="dtv.pos.inventory.movement.AnyMovementPendingItemsVisibilityRule" />
+      </Action>
+      <Action chainKey="MOVEMENT_PENDING_RECONCILE_ITEM" text="_movementPendingActionReconcileItem" keyStroke="F5">
+        <VisibilityRule class="dtv.pos.inventory.movement.AnyMovementPendingItemsVisibilityRule" />
+      </Action>
+      <Action chainKey="MOVEMENT_PENDING_PRE_CHANGE_QUANTITY" text="_itemTransferActionChangeQty" keyStroke="F6" >
+        <VisibilityRule class="dtv.pos.inventory.movement.AnyMovementPendingItemsVisibilityRule" />
+      </Action>
+      <Action chainKey="MOVEMENT_PENDING_VOID_ITEM" text="_itemTransferActionVoidItem" keyStroke="F7">
+        <VisibilityRule class="dtv.pos.inventory.movement.AnyMovementPendingItemsVisibilityRule" />
+      </Action>
+      <Action chainKey="MOVEMENT_PENDING_SEARCH_ITEM" text="_itemTransferActionSearchItem" keyStroke="F8">
+        <VisibilityRule class="dtv.pos.inventory.movement.AnyMovementPendingItemsVisibilityRule" />
+      </Action>
+      <Action chainKey="PRINT_MOVEMENT_PENDING_REPORT" text="_movementPendingActionPrintReport" keyStroke="F10">
+        <VisibilityRule class="dtv.pos.inventory.movement.AnyMovementPendingItemsVisibilityRule" />
+      </Action>
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

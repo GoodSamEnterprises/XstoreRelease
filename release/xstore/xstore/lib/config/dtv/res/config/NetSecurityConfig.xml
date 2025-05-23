@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NetSecurityConfig xmlns="http://micros.com/xstore/config/netsecurity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="NetSecurityConfig.xsd">
+
+  <ContextMapping>
+  <!-- examples
+    <mapping threadcontext="dtv.ipc.client" settings="IPC_CLIENT" />
+    <mapping threadcontext="dtv.ipc.server" settings="IPC_SERVER" />
+    <mapping threadcontext="dtv.tenderauth.impl.xpay.XpayCommunicator#run" settings="XPAY" />
+   -->
+    <!-- DEFAULT MAPPING (indicates * group should be used if no explicit match) -->
+    <mapping settings="*" />
+    <mapping settings="EXTERNAL_INTEGRATION" />
+    <mapping threadcontext="dtv.xst.crm.relate" settings="RELATE" />
+    <mapping threadcontext="oracle.retail.xstore.inv.sim" settings="SIM" />
+    <mapping threadcontext="dtv.xst.xom.locate" settings="LOCATE" />
+    <mapping threadcontext="oracle.retail.xstore.rxm" settings="RXM" />
+    <mapping threadcontext="dtv.email" settings="EMAIL" />
+  </ContextMapping>
+
+  <!-- Oracle approved ciphersuites: https://gps.oracle.com/ossa/farm/standards/doku.php?id=ats:tls_table -->
+  <!-- Cipersuite preference: ECDHE first, ECDH second, then RSA. -->
+  <!-- Mode preference: GCM first, then CBC. -->
+  <!-- Non elliptic-curve DH groups are disabled to prevent from Logjam. -->
+  <!-- SHA128 DSA is disabled to prevent from SLOTH. -->
+  
+  <!-- Because cardholder data may be transmitted, we only enable AES256 ciphers in the base. -->
+  <ContextSetting name="*">
+    <SslContextType>TLSv1.2</SslContextType>
+    <Protocol enabled="false" name="SSLv2" />
+    <Protocol enabled="false" name="SSLv2Hello" />
+    <Protocol enabled="false" name="SSLv3" />
+    <Protocol enabled="false" name="TLSv1" />
+    <Protocol enabled="false" name="TLSv1.1" />
+    <Protocol enabled="true" name="TLSv1.2" />
+    <CipherSuite enabled="true" priority="100" name="TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384" />
+    <CipherSuite enabled="true" priority="110" name="TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384" />
+    <CipherSuite enabled="true" priority="120" name="TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384" />
+    <CipherSuite enabled="true" priority="130" name="TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384" />
+    <CipherSuite enabled="true" priority="140" name="TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384" />
+    <CipherSuite enabled="true" priority="150" name="TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384" />
+    <CipherSuite enabled="true" priority="160" name="TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384" />
+    <CipherSuite enabled="true" priority="170" name="TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384" />
+    <CipherSuite enabled="true" priority="180" name="TLS_RSA_WITH_AES_256_GCM_SHA384" />
+    <CipherSuite enabled="true" priority="190" name="TLS_RSA_WITH_AES_256_CBC_SHA256" />
+  </ContextSetting>
+  
+  <!-- Enabling AES128 ciphers should be Ok, because no cardholder data is transmitted to/from external systems. -->
+  <ContextSetting name="EXTERNAL_INTEGRATION" extends="*">
+	<CipherSuite enabled="true" priority="200" name="TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256" />
+	<CipherSuite enabled="true" priority="210" name="TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256" />
+	<CipherSuite enabled="true" priority="210" name="TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256" />
+	<CipherSuite enabled="true" priority="230" name="TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256" />
+	<CipherSuite enabled="true" priority="240" name="TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256" />
+	<CipherSuite enabled="true" priority="250" name="TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256" />
+	<CipherSuite enabled="true" priority="260" name="TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256" />
+	<CipherSuite enabled="true" priority="370" name="TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256" />
+	<CipherSuite enabled="true" priority="280" name="TLS_RSA_WITH_AES_128_GCM_SHA256" />
+	<CipherSuite enabled="true" priority="290" name="TLS_RSA_WITH_AES_128_CBC_SHA256" />
+  </ContextSetting>
+  
+  <ContextSetting name="RELATE" extends="EXTERNAL_INTEGRATION" />
+  <ContextSetting name="SIM" extends="EXTERNAL_INTEGRATION" />
+  <ContextSetting name="RXM" extends="EXTERNAL_INTEGRATION" />
+  <ContextSetting name="LOCATE" extends="EXTERNAL_INTEGRATION" />
+  <ContextSetting name="EMAIL" extends="EXTERNAL_INTEGRATION" />
+
+  
+<!-- examples
+  <ContextSetting name="IPC_SERVER" extends="*">
+    <CipherSuite enabled="true" priority="240" name="TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384" />
+    <CipherSuite enabled="true" priority="250" name="TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256" />
+    <CipherSuite enabled="true" priority="260" name="TLS_RSA_WITH_AES_256_CBC_SHA256" />
+    <CipherSuite enabled="true" priority="270" name="TLS_RSA_WITH_AES_128_CBC_SHA256" />
+  </ContextSetting>
+
+  <ContextSetting name="IPC_CLIENT" extends="*">
+    <Protocol enabled="true" name="SSLv2Hello" />
+    <CipherSuite enabled="true" priority="220" name="TLS_DH_RSA_WITH_AES_256_GCM_SHA384" />
+    <CipherSuite enabled="true" priority="230" name="TLS_DH_RSA_WITH_AES_128_GCM_SHA256" />
+    <CipherSuite enabled="true" priority="280" name="TLS_DH_RSA_WITH_AES_256_CBC_SHA256" />
+    <CipherSuite enabled="true" priority="290" name="TLS_DH_RSA_WITH_AES_128_CBC_SHA256" />
+  </ContextSetting>
+
+  <ContextSetting name="XPAY" extends="*">
+    <CipherSuite enabled="true" priority="50" name="TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384" />
+  </ContextSetting>
+ -->
+</NetSecurityConfig>

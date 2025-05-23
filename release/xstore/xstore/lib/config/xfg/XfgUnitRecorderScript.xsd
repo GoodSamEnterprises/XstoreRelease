@@ -1,0 +1,355 @@
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="TestSuite">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="TestCase" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="DataPoolFile" type="DataPoolFileType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="StateAssertation" type="StateAssertationType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="EvaluatedAssertation" type="EvaluatedAssertationType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="TransactionTotalAssertation" type="TransactionTotalAssertationType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="TransactionSubtotalAssertation" type="TransactionSubtotalAssertationType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="StateCondition" type="StateConditionType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="EvaluatedCondition" type="EvaluatedConditionType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="PasteEvaluated" type="PasteEvaluatedType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="PasteDateEvaluated" type="PasteDateEvaluatedType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="PasteData" type="PasteDataType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="PasteNumeric" type="PasteNumericType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="PasteDate" type="PasteDateType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="Swipe" type="SwipeType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="KeyPress" type="KeyPressType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="ListSelection" type="ListSelectionType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="ListClick" type="ListClickType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="DeviceData" type="DeviceDataType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="DeviceError" type="DeviceErrorType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="DrawerState" type="DrawerStateType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="Scan" type="ScanType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="Timer" type="TimerType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="AuthSuccessResponse" type="AuthSuccessResponseType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="AuthTenderFailedResponse" type="AuthTenderFailedResponseType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="AuthTenderMoreInfoNeededResponse" type="AuthTenderMoreInfoNeededResponse" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="EftLinkAdminMessage" type="EftLinkAdminMessageType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="EftLinkRequestMessage" type="EftLinkRequestMessageType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="EftLinkResponse" type="EftLinkResponseType" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="GiftCardResponse" type="GiftCardResponseType" minOccurs="0" maxOccurs="unbounded" />
+              </xs:choice>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="Description" use="optional" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute type="xs:string" name="Description" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="StateAssertationType">
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+    <xs:attribute type="xs:string" name="State" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="EvaluatedAssertationType">
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+    <xs:attribute type="xs:string" name="Data" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="PasteEvaluatedType">
+    <xs:attribute type="xs:string" name="Data" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="PasteDateEvaluatedType">
+    <xs:attribute type="xs:string" name="Data" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="PasteDataType">
+    <xs:attribute type="xs:string" name="Data" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="PasteNumericType">
+    <xs:attribute type="xs:decimal" name="Data" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="PasteDateType">
+    <xs:attribute type="xs:dateTime" name="Data" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="SwipeType">
+    <xs:attribute type="xs:string" name="Type" use="optional" />
+    <xs:attribute type="xs:long" name="CtrlId" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="KeyPressType">
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Key" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="ListSelectionType">
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:byte" name="Index" use="optional" />
+    <xs:attribute type="xs:string" name="List" use="optional" />
+    <xs:attribute type="xs:string" name="Key" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="ListClickType">
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:byte" name="Index" use="optional" />
+    <xs:attribute type="xs:string" name="List" use="optional" />
+    <xs:attribute type="xs:string" name="Key" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="StateConditionType">
+    <xs:sequence>
+      <xs:element name="Then" type="ThenType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Else" type="ElseType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="State" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="EvaluatedConditionType">
+    <xs:sequence>
+      <xs:element name="Then" type="ThenType" minOccurs="0" maxOccurs="1" />
+      <xs:element name="Else" type="ElseType" minOccurs="0" maxOccurs="1" />
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="Data" use="required" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="ThenType">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="DataPoolFile" type="DataPoolFileType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="StateAssertation" type="StateAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EvaluatedAssertation" type="EvaluatedAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="TransactionTotalAssertation" type="TransactionTotalAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="TransactionSubtotalAssertation" type="TransactionSubtotalAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="StateCondition" type="StateConditionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EvaluatedCondition" type="EvaluatedConditionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteEvaluated" type="PasteEvaluatedType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteDateEvaluated" type="PasteDateEvaluatedType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteData" type="PasteDataType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteNumeric" type="PasteNumericType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteDate" type="PasteDateType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Swipe" type="SwipeType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="KeyPress" type="KeyPressType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="ListSelection" type="ListSelectionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="ListClick" type="ListClickType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="DeviceData" type="DeviceDataType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="DeviceError" type="DeviceErrorType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="DrawerState" type="DrawerStateType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Scan" type="ScanType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Timer" type="TimerType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="AuthSuccessResponse" type="AuthSuccessResponseType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="AuthTenderFailedResponse" type="AuthTenderFailedResponseType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="AuthTenderMoreInfoNeededResponse" type="AuthTenderMoreInfoNeededResponse" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EftLinkAdminMessage" type="EftLinkAdminMessageType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EftLinkRequestMessage" type="EftLinkRequestMessageType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EftLinkResponse" type="EftLinkResponseType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="GiftCardResponse" type="GiftCardResponseType" minOccurs="0" maxOccurs="unbounded" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="ElseType">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="DataPoolFile" type="DataPoolFileType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="StateAssertation" type="StateAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EvaluatedAssertation" type="EvaluatedAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="TransactionTotalAssertation" type="TransactionTotalAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="TransactionSubtotalAssertation" type="TransactionSubtotalAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="StateCondition" type="StateConditionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EvaluatedCondition" type="EvaluatedConditionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteEvaluated" type="PasteEvaluatedType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteDateEvaluated" type="PasteDateEvaluatedType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteData" type="PasteDataType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteNumeric" type="PasteNumericType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteDate" type="PasteDateType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Swipe" type="SwipeType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="KeyPress" type="KeyPressType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="ListSelection" type="ListSelectionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="ListClick" type="ListClickType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="DeviceData" type="DeviceDataType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="DeviceError" type="DeviceErrorType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="DrawerState" type="DrawerStateType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Scan" type="ScanType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Timer" type="TimerType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="AuthSuccessResponse" type="AuthSuccessResponseType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="AuthTenderFailedResponse" type="AuthTenderFailedResponseType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="AuthTenderMoreInfoNeededResponse" type="AuthTenderMoreInfoNeededResponse" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EftLinkAdminMessage" type="EftLinkAdminMessageType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EftLinkRequestMessage" type="EftLinkRequestMessageType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EftLinkResponse" type="EftLinkResponseType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="GiftCardResponse" type="GiftCardResponseType" minOccurs="0" maxOccurs="unbounded" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="DataPoolFileType">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="StateAssertation" type="StateAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EvaluatedAssertation" type="EvaluatedAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="TransactionTotalAssertation" type="TransactionTotalAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="TransactionSubtotalAssertation" type="TransactionSubtotalAssertationType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="StateCondition" type="StateConditionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EvaluatedCondition" type="EvaluatedConditionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteEvaluated" type="PasteEvaluatedType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteDateEvaluated" type="PasteDateEvaluatedType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteData" type="PasteDataType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteNumeric" type="PasteNumericType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="PasteDate" type="PasteDateType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Swipe" type="SwipeType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="KeyPress" type="KeyPressType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="ListSelection" type="ListSelectionType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="ListClick" type="ListClickType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="DeviceData" type="DeviceDataType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="DeviceError" type="DeviceErrorType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="DrawerState" type="DrawerStateType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Scan" type="ScanType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="Timer" type="TimerType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="AuthSuccessResponse" type="AuthSuccessResponseType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="AuthTenderFailedResponse" type="AuthTenderFailedResponseType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="AuthTenderMoreInfoNeededResponse" type="AuthTenderMoreInfoNeededResponse" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EftLinkAdminMessage" type="EftLinkAdminMessageType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EftLinkRequestMessage" type="EftLinkRequestMessageType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="EftLinkResponse" type="EftLinkResponseType" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element name="GiftCardResponse" type="GiftCardResponseType" minOccurs="0" maxOccurs="unbounded" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="File" use="optional" />
+    <xs:attribute type="xs:string" name="sele" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="DeviceDataType">
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:decimal" name="Price" use="optional" />
+    <xs:attribute type="xs:string" name="Source" use="optional" />
+    <xs:attribute type="xs:string" name="Type" use="optional" />
+    <xs:attribute type="xs:string" name="UnitOfMeasureCode" use="optional" />
+    <xs:attribute type="xs:float" name="Weight" use="optional" />
+    <xs:attribute type="xs:float" name="Tare" use="optional" />
+    <xs:attribute type="xs:string" name="TareUnitOfMeasureCode" use="optional" />
+    <xs:attribute type="xs:string" name="TareType" use="optional" />
+    <xs:attribute type="xs:string" name="PrintLine" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="DeviceErrorType">
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Error" use="optional" />
+    <xs:attribute type="xs:string" name="Source" use="optional" />
+    <xs:attribute type="xs:string" name="Type" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="DrawerStateType">
+    <xs:attribute type="xs:string" name="State" use="optional" />
+    <xs:attribute type="xs:string" name="Data" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="ScanType">
+    <xs:attribute type="xs:string" name="Data" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="TimerType">
+    <xs:attribute type="xs:string" name="TimerName" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="TransactionTotalAssertationType">
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+    <xs:attribute type="xs:decimal" name="Value" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="TransactionSubtotalAssertationType">
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+    <xs:attribute type="xs:decimal" name="Value" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="AuthSuccessResponseType">
+    <xs:attribute type="xs:string" name="AuthCode" use="optional" />
+    <xs:attribute type="xs:string" name="ResponseCode" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="AuthTenderFailedResponseType">
+    <xs:attribute type="xs:string" name="AvailableActions" use="optional" />
+    <xs:attribute type="xs:string" name="Text" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="AuthTenderMoreInfoNeededResponse">
+    <xs:attribute type="xs:string" name="RequiredInfo" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="EftLinkAdminMessageType">
+    <xs:attribute type="xs:string" name="EftlinkType" use="optional" />
+    <xs:attribute type="xs:string" name="Data" use="optional" />
+    <xs:attribute type="xs:boolean" name="Success" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="EftLinkRequestMessageType">
+    <xs:attribute type="xs:string" name="Data" use="optional" />
+    <xs:attribute type="xs:string" name="Text" use="optional" />
+    <xs:attribute type="xs:string" name="Actions" use="optional" />
+    <xs:attribute type="xs:string" name="Signature" use="optional" />
+    <xs:attribute type="xs:string" name="Id" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="EftLinkResponseType">
+    <xs:attribute type="xs:string" name="Data" use="optional" />
+    <xs:attribute type="xs:string" name="Text" use="optional" />
+    <xs:attribute type="xs:string" name="Actions" use="optional" />
+    <xs:attribute type="xs:string" name="AvailableActions" use="optional" />
+    <xs:attribute type="xs:string" name="EPSResult" use="optional" />
+    <xs:attribute type="xs:string" name="AuthCode" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="GiftCardResponseType">
+    <xs:attribute type="xs:boolean" name="ApprovedFlag" use="optional" />
+    <xs:attribute type="xs:string" name="AuthCode" use="optional" />
+    <xs:attribute type="xs:decimal" name="BalanceAmount" use="optional" />
+    <xs:attribute type="xs:string" name="ResponseCode" use="optional" />
+    <xs:attribute type="xs:long" name="SVA_TRANSACTION_ID" use="optional" />
+    <xs:attribute type="xs:long" name="Delay" use="optional" />
+    <xs:attribute type="xs:string" name="Description" use="optional" />
+  </xs:complexType>
+
+</xs:schema>

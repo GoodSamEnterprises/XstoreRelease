@@ -1,0 +1,634 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Wed Jul 13 15:43:42 EDT 2005 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">WORK_ORDER_MAINTENANCE</FormKey>
+    <FormLocation dtype="String">MULTI_PURPOSE_VIEW</FormLocation>
+    <FormLayout dtype="String">TOP_TO_BOTTOM_TRANSPARENT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">MASTER</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">0.75, 0.25</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+        <Parameter name="setMargins">
+          <param_value dtype="InsetsRef">_marginCommonMaintFormHeaderPanel</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ComponentParameter>
+        <param_name dtype="String">setOpaque</param_name>
+        <param_value dtype="Boolean">true</param_value>
+      </ComponentParameter>
+      <ComponentParameter>
+        <param_name dtype="String">setBorder</param_name>
+        <param_value dtype="Border">_colorBorder+0,0,1,0</param_value>
+      </ComponentParameter>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setGaps">
+           <param_value dtype="InsetsRef">_gapsCommonMaintHeaderPanel</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">custAccountId</Resource>
+          <Value dtype="AppendingFormattable">
+            <Value dtype="Translatable">_workorderFormTextTitle</Value>
+          </Value>
+          <Font fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabel</Type>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <ComponentParameter name="setIcon">
+            <param_value dtype="IconRef">_imageTransactionHeaderDividerIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">customerName</Resource>
+          <FormatterType dtype="String">BasicName</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabel</Type>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <ComponentParameter name="setIcon">
+            <param_value dtype="IconRef">_imageLineDividerIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">custAccountId</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <Type dtype="String">FormLabel</Type>
+          <ReadOnly dtype="Boolean">true</ReadOnly>
+          <ComponentParameter name="setIcon">
+            <param_value dtype="IconRef">_imageLineDividerIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>  
+        <FormViewPanel>
+          <Layout dtype="Class">java.awt.BorderLayout</Layout>
+          <FormViewPanel>
+            <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+            <LayoutLocation dtype="String">North</LayoutLocation>
+            <FormViewCell>
+              <Type dtype="String">FormLabelEmphasized</Type>
+              <TextKey dtype="Translatable">_commonAcctDisplaySetupDate</TextKey>
+            </FormViewCell>
+            <FormViewCell>
+              <Type dtype="String">FormLabelEmphasized</Type>
+              <Resource dtype="String">accountSetupDate</Resource>
+              <FormatterType dtype="String">DateMedium</FormatterType>
+            </FormViewCell>
+         </FormViewPanel>
+         <FormViewPanel>
+           <Layout dtype="Class">dtv.ui.layout.RowLayout</Layout>
+           <LayoutLocation dtype="String">South</LayoutLocation>
+           <FormViewCell>
+             <Type dtype="String">FormLabelEmphasized</Type>
+             <TextKey dtype="Translatable">_workorderFormText3</TextKey>
+           </FormViewCell>
+           <FormViewCell>
+             <Type dtype="String">FormLabelEmphasized</Type>
+             <Resource dtype="String">serviceLocDescription</Resource>
+           </FormViewCell>
+         </FormViewPanel>
+        </FormViewPanel>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 0, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelEmphasized</Type>
+        <Resource dtype="String">accountStatus</Resource>
+        <Font fontSize="+4" />
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">WORK_ORDER_SUMMARY</FormTabKey>
+      <TabOrder dtype="Integer">10</TabOrder>
+      <TextKey dtype="Translatable">_workOrderSummaryKey</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <param_value dtype="DoubleArray">0.02, 0.38, 0.02, 0.48</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <param_value dtype="DoubleArray">0.03, 0.435, 0.03, 0.435</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <ColorGroup bgColorRef="_colorWorkOrderHeaderPanel"/>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">1, 0, 3, 2, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">0.023, 0.01, 0.05, 0.01, 0.25, 0.01, 0.25, 0.01, 0.18</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">0.05, 0.16, -2.0, 0.20, 0.12, 0.01, 0.12, 0.01, 0.12, 0.01, 0.12</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+          <ComponentParameter name="setIcon" >
+            <param_value dtype="IconRef">_imagePersonIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 1, 4, 1, L, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_commonCustomerInfo</TextKey>
+          <Font fontSize="+2" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 2, 5, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormIcon</Type>
+          <TextKey dtype="String">_imageBlueSeparator2</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 3, 3, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText1</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 3, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">customerName</Resource>
+          <FormatterType dtype="String">BasicName</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 4, 3, 2, R, T</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText15</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 4, 3, 5, F, T</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <Resource dtype="String">customerAddress</Resource>
+          <FormatterType dtype="String">LabelAddress</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 10, 3, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_emailLabel</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 10, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">emailAddress</Resource>
+          <DataField ref="Email" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">6, 4, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_phone1Label</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">8, 4, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">telephone1</Resource>
+          <DataField ref="Phone" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">6, 6, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_phone2Label</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">8, 6, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">telephone2</Resource>
+          <DataField ref="Phone" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">6, 8, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_phone3Label</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">8, 8, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">telephone3</Resource>
+          <DataField ref="Phone" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">6, 10, 1, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_phone4Label</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">8, 10, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">telephone4</Resource>
+          <DataField ref="Phone" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">1, 2, 3, 2, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <param_value dtype="DoubleArray">0.023, 0.01, 0.15, 0.01, 0.140, 0.10, 0.01, 0.10, 0.06, 0.01, 0.05, 0.01, 0.18</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <param_value dtype="DoubleArray">0.05, 0.16, -2.0, 0.20, 0.12, 0.01, 0.12, 0.01, 0.12, 0.01, 0.12</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 1, 0, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+          <ComponentParameter name="setIcon" >
+            <param_value dtype="IconRef">_imageClipboardIcon</param_value>
+          </ComponentParameter>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 1, 5, 1, L, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormInfo</TextKey>
+          <Font fontSize="+2" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 2, 5, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormIcon</Type>
+          <TextKey dtype="String">_imageBlueSeparator2</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 3, 3, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText2</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 3, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+          <Resource dtype="String">description</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">3, 3, 3, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText5</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">7, 3, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+          <Resource dtype="String">accountTotal</Resource>
+          <FormatterType dtype="String">Money</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">8, 3, 3, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText7</TextKey>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">12, 3, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabel</Type>
+          <Resource dtype="String">accountPayments</Resource>
+          <FormatterType dtype="String">Money</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 4, 3, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText4</TextKey>
+          <Font fontStyle="BOLD" /> 
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 4, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">estimatedCompletionDate</Resource>
+          <DataField ref="Date" />
+          <FormatterType dtype="String">DateMedium</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 6, 3, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText8</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 6, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">approvedWorkDate</Resource>
+          <DataField ref="Date" />
+          <FormatterType dtype="String">DateShort</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 8, 3, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText10</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 8, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">approvedWorkAmount</Resource>
+          <DataField ref="Money" />
+          <FormatterType dtype="String">Money</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 10, 3, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText12</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">4, 10, 2, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormTextField</Type>
+          <Resource dtype="String">lastCustomerNoticeDate</Resource>
+          <DataField ref="Date" />
+          <FormatterType dtype="String">DateShort</FormatterType>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">7, 4, 2, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText9</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">10, 4, 3, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormComboBox</Type>
+          <Resource dtype="String">custAccountStateCode</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">7, 6, 2, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText11</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">10, 6, 3, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormComboBox</Type>
+          <Resource dtype="String">priorityCode</Resource>
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">7, 8, 2, 1, R, F</LayoutLocation>
+          <Type dtype="String">FormLabelDiminished</Type>
+          <TextKey dtype="Translatable">_workorderFormText13</TextKey>
+          <Font fontStyle="BOLD" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">10, 8, 3, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormComboBox</Type>
+          <Resource dtype="String">contactInfo</Resource>
+        </FormViewCell>
+      </FormViewPanel>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">WORK_ORDER_DETAIL</FormTabKey>
+      <ActionSubGroupKey dtype="String">WORK_ORDER_DETAIL</ActionSubGroupKey>
+      <TabOrder dtype="Integer">20</TabOrder>
+      <TextKey dtype="Translatable">_workOrderDetailKey</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">workOrderDetailModel</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">WORK_ORDER_TASK_MAINTENANCE</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">WORK_ORDER_TASK_MAINTENANCE</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">WORK_ORDER_COMMENTS</FormTabKey>
+      <ActionSubGroupKey dtype="String">COMMENTS_SUB_GROUP</ActionSubGroupKey>
+      <TabOrder dtype="Integer">30</TabOrder>
+      <TextKey dtype="Translatable">_layawayCommentsKey</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--1.0-->
+          <param_value dtype="DoubleArray">1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">workOrderCommentModel</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">LAYAWAY_COMMENT</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">LAYAWAY_COMMENT</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">WORK_ORDER_HISTORY</FormTabKey>
+      <ActionSubGroupKey dtype="String">HISTORY_SUB_GROUP</ActionSubGroupKey>
+      <TabOrder dtype="Integer">40</TabOrder>
+      <TextKey dtype="Translatable">_workOrderHistoryKey</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 2, 2, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">workOrderHistoryModel</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">WORK_ORDER_HISTORY</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">WORK_ORDER_HISTORY</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">WORK_ORDER_ITEM</FormTabKey>
+      <ActionSubGroupKey dtype="String">ITEM_SUB_GROUP</ActionSubGroupKey>
+      <TabOrder dtype="Integer">50</TabOrder>
+      <TextKey dtype="Translatable">_workOrderWorkItemKey</TextKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, FILL-->
+          <param_value dtype="DoubleArray">-1.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 2, 2, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">workOrderItemModel</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">WORK_ORDER_ITEM</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">WORK_ORDER_ITEM</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** VIEW action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="VIEW">
+      <Action chainKey="PRE_WORK_ORDER_MAINTENANCE" text="_back" keyStroke="Escape" />
+      <Action dataKey="EDIT" text="_workorderMenuItem40">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AllowEditWorkOrderAccountVisibilityRule" />
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="VIEW" subKey="COMMENTS_SUB_GROUP">
+      <Action chainKey="PRE_WORK_ORDER_MAINTENANCE" text="_back" keyStroke="Escape" />
+      <Action chainKey="ADD_WORK_ORDER_COMMENT_BACK_OFFICE" text="_timecardMenu5" keyStroke="F2" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="VIEW" subKey="HISTORY_SUB_GROUP">
+      <Action chainKey="PRE_WORK_ORDER_MAINTENANCE" text="_back" keyStroke="Escape" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <!--**********************************-->
+    <!--** EDIT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="EDIT">
+      <Action ref="ABORT_CHANGES" text="_workorderMenuItem44" />
+      <Action ref="ACCEPT_SAVE" />
+      <Action chainKey="CHANGE_WORK_ORDER_PRICE_CATEGORY" text="_workorderMenuItem24" chainType="STACK" />
+      <Action chainKey="EDIT_WORK_ORDER_SERVICE_LOCATION_BACK_OFFICE" text="_workorderMenuItem29"/>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="EDIT" subKey="WORK_ORDER_DETAIL">
+      <Action ref="ABORT_CHANGES" text="_workorderMenuItem44" />
+      <Action ref="ACCEPT_SAVE" />
+      <Action chainKey="ADD_WORK_ORDER_TASK_BO" text="_workorderMenuItem9" chainType="STACK" />
+      <Action chainKey="DELETE_WORK_ORDER_TASK" text="_workorderMenuItem10" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyTaskOnCurrentWorkOrderCheck" />
+      </Action>
+      <Action chainKey="CONVERT_WORK_ORDER_ESTIMATE_TASK" text="_workorderMenuItem11" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyEstimateWorkOrderTaskCheck" />
+      </Action>
+      <Action chainKey="WORK_ORDER_TASK_INSTRUCTION" text="_workorderMenuItem12" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyTaskOnCurrentWorkOrderCheck" />
+      </Action>
+      <Action chainKey="ADD_WORK_ORDER_PARTS_BACKOFFICE" text="_workorderMenuItem17" chainType="STACK" />
+      <Action chainKey="DELETE_WORK_ORDER_PARTS" text="_workorderMenuItem18" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyPartOnCurrentWorkOrderCheck" />
+      </Action>
+      <Action chainKey="CHANGE_WORK_ORDER_LINE_ITEM_QTY" text="_workorderMenuItem19" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyWorkOrderLineItemCheck" />
+      </Action>
+      <Action chainKey="CHANGE_WORK_ORDER_LINE_ITEM_PRICE" text="_workorderMenuItem20" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyWorkOrderLineItemCheck" />
+      </Action>
+      <Action chainKey="TAX_WORK_ORDER_ITEM_CHANGE_LOCATION" text="_workorderMenuItem34" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyWorkOrderLineItemCheck" />
+      </Action>
+      <Action chainKey="TAX_WORK_ORDER_ITEM_EXEMPT" text="_workorderMenuItem35" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyWorkOrderLineItemCheck" />
+      </Action>
+      <Action chainKey="TAX_WORK_ORDER_ITEM_CHANGE_AMOUNT" text="_workorderMenuItem36" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyWorkOrderLineItemCheck" />
+      </Action>
+      <Action chainKey="TAX_WORK_ORDER_ITEM_CHANGE_PERCENT" text="_workorderMenuItem37" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyWorkOrderLineItemCheck" />
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="EDIT" subKey="COMMENTS_SUB_GROUP">
+      <Action ref="ABORT_CHANGES" text="_workorderMenuItem44" />
+      <Action chainKey="ADD_WORK_ORDER_COMMENT_BACK_OFFICE" text="_timecardMenu5" keyStroke="F2" chainType="STACK" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="EDIT" subKey="HISTORY_SUB_GROUP">
+      <Action ref="ABORT_CHANGES" text="_workorderMenuItem44" />
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+    <ActionGroup key="EDIT" subKey="ITEM_SUB_GROUP">
+      <Action ref="ABORT_CHANGES" text="_workorderMenuItem44" />
+      <Action ref="ACCEPT_SAVE" />
+      <Action chainKey="EDIT_WORK_ORDER_ITEM_VALUE_BACK_OFFICE" text="_workorderMenuItem15" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyWorkOrderItemCheck" />
+      </Action>
+      <Action chainKey="EDIT_WORK_ORDER_ITEM_DESCRIPTION" text="_workorderMenuItem16" chainType="STACK">
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyWorkOrderItemCheck" />
+      </Action>
+      <Action ref="PREVIOUS_TAB" />
+      <Action ref="NEXT_TAB" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

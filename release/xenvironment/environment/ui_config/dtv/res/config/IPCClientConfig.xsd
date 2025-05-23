@@ -1,0 +1,26 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified"
+           elementFormDefault="qualified">
+    <xs:element name="IPCClientConfigs">
+        <xs:annotation>
+            <xs:documentation>IPCClientConfigs are a collection of client calls to the Xenvironment Engine for invoking
+                remote functionality
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="client_config" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element type="xs:string" name="message"/>
+                        </xs:sequence>
+                        <xs:attribute type="xs:string" name="servicename" use="optional"/>
+                        <xs:attribute type="xs:string" name="address" use="optional"/>
+                        <xs:attribute type="xs:short" name="port" use="optional"/>
+                        <xs:attribute type="xs:string" name="extension" use="optional"/>
+                        <xs:attribute type="xs:string" name="enabled" use="optional"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

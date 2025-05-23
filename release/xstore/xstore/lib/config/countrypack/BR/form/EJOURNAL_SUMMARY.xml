@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- last saved in FormDesigner Thu Feb 22 11:41:57 EST 2007 -->
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView FormKey="EJOURNAL_SUMMARY" FormLocation="MULTI_PURPOSE_VIEW" FormLayout="TOP_TO_BOTTOM_TRANSPARENT">
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action dataKey="ELECTRONIC_JOURNAL_DETAIL" text="_menuEjournalViewDetail" keyStroke="F4" />
+      <Action dataKey="REPRINT_RECEIPT" text="_menuEjournalReprint" keyStroke="F5" privilege="EJOURNAL_REPRINT_RECEIPT" />        
+      <Action dataKey="ISSUE_GIFT_RECEIPT_PRINT_SELECTION" text="_menuEjournalGiftReceipt" keyStroke="F6" privilege="EJOURNAL_GIFT_RECEIPT" />
+      <Action dataKey="ISSUE_REBATE_RECEIPT" text="_menuEjournalRebateReceipt" keyStroke="F7" privilege="EJOURNAL_REBATE_RECEIPT" />
+      <Action dataKey="POST_VOID_EJOURNAL" text="_menuEjournalPostVoid" keyStroke="F9" privilege="EJOURNAL_POST_VOID">
+<!--         disable post void for Brazil -->
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.AlwaysNotOverridableVisibilityRule" />
+        <VisibilityRule class="dtv.pos.systemcycle.access.WorkstationStateAccessCheck">
+          <Parameter name="state" value="OPEN" />
+        </VisibilityRule>
+        <VisibilityRule class="dtv.pos.shared.visibilityrules.TillAttachedAccessCheck" />
+      </Action>
+    </ActionGroup>    
+  </FormView>
+</FormViewSet>

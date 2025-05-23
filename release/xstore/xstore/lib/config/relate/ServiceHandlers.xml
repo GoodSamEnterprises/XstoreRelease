@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/ServiceHandlers.xsd">
+
+  <Service name="RELATE_CUSTOMER_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://localhost:8084/soap/xst/v2_3/CustomerServices?wsdl</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <PriorityCustomerSegmentId dtype="Integer">940</PriorityCustomerSegmentId>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_CARD_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://localhost:8084/soap/xst/v2_1/CardServices?wsdl</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <LoyaltyUpdateRetryInterval dtype="Integer">15</LoyaltyUpdateRetryInterval>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_LOYALTY_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://localhost:8084/soap/xst/v1_0/LoyaltyAccountServices?wsdl</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_AWARD_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://localhost:8084/soap/xst/v1_0/AwardAccountServices?wsdl</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_PROMOTION_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://localhost:8084/soap/xst/v1_0/SerializedCouponServices?wsdl</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_REGISTRY_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://localhost:8084/soap/xst/v1_2/RegistryServices?wsdl</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <PurchaseRetryInterval dtype="Integer">15</PurchaseRetryInterval>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_ATTRIBUTE_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://localhost:8084/soap/xst/v1_1/AttributesServices?wsdl</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_TASK_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://localhost:8084/soap/xst/v1_1/TaskServices?wsdl</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+    </Parameters>
+  </Service>
+  <Service name="RELATE_GIFT_CARD_SVC_TRANSACTION_WS">
+    <Parameters dtype="Map">
+      <WsdlLocation dtype="String">http://localhost:8084/soap/xst/v3_0/SvcTransactionServices?wsdl</WsdlLocation>
+      <ReadTimeout dtype="Integer">30</ReadTimeout>
+      <ConnectTimeout dtype="Integer">30</ConnectTimeout>
+      <CardPrefix dtype="String">33333</CardPrefix>
+      <CardSeries dtype="String">01</CardSeries>
+    </Parameters>
+  </Service>
+</Services>

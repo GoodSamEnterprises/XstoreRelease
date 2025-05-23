@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SequenceSet xmlns:dtv="http://www.datavantagecorp.com/config" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SequenceConfig.xsd">
+
+  <Sequence name="COUNTRYPACK.PT.FATURASIMPLICADA">
+    <FileName dtype="String">PTInvoiceFS.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="FS" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="1" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="1" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.PT.FATURA">
+    <FileName dtype="String">PTInvoiceFT.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="FT" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="1" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="1" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.PT.CREDIT_NOTE">
+    <FileName dtype="String">PTCreditNote.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="CB" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="1" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="1" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.PT.RECOVERY.FATURASIMPLICADA">
+    <FileName dtype="String">PTInvoiceRFS.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="RFS" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.PT.RECOVERY.FATURA">
+    <FileName dtype="String">PTInvoiceRFT.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="RFT" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.PT.RECOVERY.CREDIT_NOTE">
+    <FileName dtype="String">PTCreditNoteR.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="RCB" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.PT.MANUAL.FATURASIMPLICADA">
+    <FileName dtype="String">PTInvoiceMFS.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="MFS" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.PT.MANUAL.FATURA">
+    <FileName dtype="String">PTInvoiceMFT.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="MFT" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.PT.MANUAL.CREDIT_NOTE">
+    <FileName dtype="String">PTCreditNoteM.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="MCB" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+
+  <Sequence name="COUNTRYPACK.PT.GR_SHIPPING">
+    <FileName dtype="String">PTGRShipping.seq</FileName>
+    <SequenceType dtype="String">ALPHA_NUMERIC</SequenceType>
+    <SequencePart partType="TEXT" param="GR" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[ ]]></Text>
+    </SequencePart>
+    <SequencePart partType="SYSTEM_PROPERTY" param="getRetailLocationId" padLength="4" />
+    <SequencePart partType="SYSTEM_PROPERTY" param="getWorkstationId" padLength="2" />
+    <SequencePart partType="PASS_VALUE_INDEX" param="0" padLength="2" />
+    <SequencePart>
+      <Text dtype="String"><![CDATA[/]]></Text>
+    </SequencePart>
+    <SequencePart partType="NEXT_NUMBER" padLength="6">
+      <InitialValue dtype="Long">0</InitialValue> <!-- The first number generated is 1 -->
+      <MaximumValue dtype="Long">999999</MaximumValue>
+      <ValueIncrement dtype="Integer">1</ValueIncrement>
+    </SequencePart>
+  </Sequence>
+</SequenceSet>

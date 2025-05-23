@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InputTypeList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="InputConfig.xsd">
+  <InputType name="GLOBAL_BLUE_TOKEN_SCAN">
+    <Event dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.globalblue.events.GlobalBlueTokenScanEvent</Event>
+    <Type dtype="String">GBT_TOKEN</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule" />
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Interleaved 2 of 5" />
+      </InputRule>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16" />
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="30" />
+        <Parameter name="range_end" value="30" />
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+  <InputType name="GLOBAL_BLUE_TOKEN_SWIPE">
+    <Event dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.globalblue.events.GlobalBlueTokenSwipeEvent</Event>
+    <Type dtype="String">GBT_TOKEN</Type>
+    <InputRuleList>
+      <InputRule RuleType="MsrSourceRule" />
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="16" />
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="30" />
+        <Parameter name="range_end" value="30" />
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+  <InputType name="GLOBAL_BLUE_FORM_ID_SCAN">
+    <Event dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.events.TaxFreeFormIdScanEvent</Event>
+    <Type dtype="String">GBT_FORM_ID</Type>
+    <InputRuleList>
+      <InputRule RuleType="ScannerSourceRule" />
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Interleaved 2 of 5" />
+      </InputRule>
+      <InputRule RuleType="RegExRule">
+        <Parameter name="expression" value="(\d{20})" />
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+  <ProcessingOrder>
+    <Entry name="GLOBAL_BLUE_TOKEN_SWIPE" order="1010" enabled="true" />
+    <Entry name="GLOBAL_BLUE_TOKEN_SCAN" order="1012" enabled="true" />
+    <Entry name="GLOBAL_BLUE_FORM_ID_SCAN" order="1014" enabled="true" />
+  </ProcessingOrder>
+</InputTypeList>

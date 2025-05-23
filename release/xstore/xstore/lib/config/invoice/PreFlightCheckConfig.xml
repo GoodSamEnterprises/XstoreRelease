@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreFlightChecks dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PreFlightCheckConfig.xsd">
+
+  <PreFlightCheck name="COUNTRYPACK.INVOICE.INVOICE_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.invoice.preflight.InvoiceSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.INVOICE.PREFLIGHT.SEQ_INVOICE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.invoice.SequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="COUNTRYPACK.INVOICE.CREDIT_NOTE_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.invoice.preflight.CreditNoteSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.INVOICE.PREFLIGHT.SEQ_INVOICE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.creditNote.SequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.TAXFREE.INVOICE_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.preflight.TaxFreeSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.INVOICE.PREFLIGHT.SEQ_INVOICE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.taxfree.SequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  
+  <PreFlightCheck name="COUNTRYPACK.TAXFREE.CREDIT_NOTE_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.common.taxfree.preflight.TaxFreeSequencePreflightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.INVOICE.PREFLIGHT.SEQ_INVOICE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.taxfree.SequencePreflightCheck</param_value>
+    </Parameter>
+    <Parameter name="TaxFreeCreditNote" value="true" />    
+  </PreFlightCheck>
+  
+</PreFlightChecks>

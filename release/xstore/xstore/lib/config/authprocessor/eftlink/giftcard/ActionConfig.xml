@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ActionSet xmlns="http://micros.com/xstore/config/action" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="ActionConfig.xsd">
+
+  <Action name="SALE::TENDER_GIFT_CARD" category="Register" keywords="sale_tender" text="_menutextGiftCard" chainKey="TENDER_EFTLINK_GIFT_CARD">
+    <IconGroup icon="_imageTenderGiftCard" rollIcon="_imageTenderGiftCardRoll" pressIcon="_imageTenderGiftCardPress" disabledIcon="_imageTenderGiftCardDisabled" />
+    <Parameter name="VoucherType" value="XPAY_GIFT_CARD" />
+    <Parameter name="TenderStatus" value="Tender" />
+    <Parameter name="VoucherActivityCodeType" value="REDEEMED" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderEnabledCheck">
+      <Parameter name="tender" value="XPAY_GIFT_CARD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderAccCheck">
+      <Parameter name="tender" value="XPAY_GIFT_CARD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AvailableLayawayTenderAccCheck">
+      <Parameter name="tender" value="XPAY_GIFT_CARD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.register.sale.AmountDueVisibilityRule" />
+  </Action>
+  <Action name="BALANCE_INQUIRY::GIFT_CARD" category="Anywhere" keywords="universal" text="_giftCardBalanceTitle" chainKey="EFTLINK_BALANCE_INQUIRY">
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.NoAvailableInTrainingModeRule" />
+  </Action>
+  <Action name="RETURN::TENDER_GIFT_CARD.RELOAD" category="Return" keywords="return_tender" text="_refundtogc" chainKey="REFUND_EFT_LINK_GIFT_CARD">
+    <IconGroup icon="_imageTenderReloadGiftCard" rollIcon="_imageTenderReloadGiftCardRoll" pressIcon="_imageTenderReloadGiftCardPress"
+      disabledIcon="_imageTenderReloadGiftCardDisabled" />
+    <Parameter name="VoucherType" value="XPAY_GIFT_CARD" />
+    <Parameter name="TenderStatus" value="Refund" />
+    <Parameter name="VoucherActivityCodeType" value="RELOAD" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderEnabledCheck">
+      <Parameter name="tender" value="RELOAD_XPAY_GIFT_CARD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.RefundTenderCheck">
+      <Parameter name="tender" value="RELOAD_XPAY_GIFT_CARD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.RefundBalanceTenderAccessCheck">
+      <Parameter name="tender" value="RELOAD_XPAY_GIFT_CARD" />
+      <Parameter name="privilege" value="REFUND_TENDER_BALANCE" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderAccCheck">
+      <Parameter name="tender" value="RELOAD_XPAY_GIFT_CARD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.register.sale.RefundDueVisibilityRule" />
+  </Action>
+  <Action name="RETURN::ADD_GIFT_CARD" category="Return" keywords="return" text="_menutext56" chainKey="EFTLINK_RETURN_VOUCHER_START" privilege="RETURN_GIFT_CARD">
+    <Parameter name="VoucherItemCategory" value="GIFT_CARD" />
+  </Action>
+  <Action name="RETURN::TENDER_GIFT_CARD.ISSUE" category="Return" keywords="return_tender" text="_menutextIssueGiftCard" chainKey="REFUND_ISSUE_EFT_LINK_GIFT_CARD">
+    <IconGroup icon="_imageTenderGiftCard" rollIcon="_imageTenderGiftCardRoll" pressIcon="_imageTenderGiftCardPress" disabledIcon="_imageTenderGiftCardDisabled" />
+      <Parameter name="VoucherType" value="XPAY_GIFT_CARD" />
+      <Parameter name="TenderStatus" value="Refund" />
+      <Parameter name="VoucherActivityCodeType" value="ISSUED" />
+      <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderEnabledCheck">
+        <Parameter name="tender" value="ISSUE_XPAY_GIFT_CARD" />
+      </VisibilityRule>
+      <VisibilityRule class="dtv.pos.shared.visibilityrules.RefundTenderCheck">
+        <Parameter name="tender" value="ISSUE_XPAY_GIFT_CARD" />
+      </VisibilityRule>
+      <VisibilityRule class="dtv.pos.shared.visibilityrules.RefundBalanceTenderAccessCheck">
+        <Parameter name="privilege" value="REFUND_TENDER_BALANCE" />
+        <Parameter name="tender" value="ISSUE_XPAY_GIFT_CARD" />
+      </VisibilityRule>
+      <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderAccCheck">
+          <Parameter name="tender" value="ISSUE_XPAY_GIFT_CARD" />
+      </VisibilityRule>
+      <VisibilityRule class="dtv.pos.register.sale.RefundDueVisibilityRule" />
+  </Action>
+   <Action name="TENDER_EXCHANGE::IN.TENDER_GIFT_CARD" category="Tender Exchange" keywords="tender_exchange_in" text="_menutextXpayGiftCard" chainKey="EFTLINK_STANDARD_INCOMING_TENDER_EXCHANGE_VOUCHER_TENDER">
+    <IconGroup icon="_imageTenderGiftCard" rollIcon="_imageTenderGiftCardRoll" pressIcon="_imageTenderGiftCardPress" disabledIcon="_imageTenderGiftCardDisabled" />
+    <Parameter name="VoucherType" value="XPAY_GIFT_CARD" />
+    <Parameter name="TenderStatus" value="Tender" />
+    <Parameter name="VoucherActivityCodeType" value="CASHOUT" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderEnabledCheck" >
+      <Parameter name="tender" value="XPAY_GIFT_CARD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderExchangeAccCheck">
+      <Parameter name="exchangeType" value="INCOMING" />
+      <Parameter name="tender" value="XPAY_GIFT_CARD" />
+    </VisibilityRule>
+  </Action>
+<Action name="TENDER_EXCHANGE::OUT.RELOAD_GIFT_CARD" category="Tender Exchange" keywords="tender_exchange_out" text="_menutextReloadXpayGiftCard" chainKey="EFTLINK_OUTGOING_TENDER_EXCHANGE_VOUCHER_TENDER">
+    <IconGroup icon="_imageTenderReloadGiftCard" rollIcon="_imageTenderReloadGiftCardRoll" pressIcon="_imageTenderReloadGiftCardPress" disabledIcon="_imageTenderReloadGiftCardDisabled" />
+    <Parameter name="VoucherType" value="XPAY_GIFT_CARD" />
+    <Parameter name="TenderStatus" value="Refund" />
+    <Parameter name="VoucherActivityCodeType" value="RELOAD" />
+    <VisibilityRule class="dtv.pos.tender.exchange.MultipleOutgoingTendersVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderEnabledCheck" >
+      <Parameter name="tender" value="RELOAD_XPAY_GIFT_CARD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderExchangeAccCheck">
+      <Parameter name="exchangeType" value="OUTGOING" />
+      <Parameter name="tender" value="RELOAD_XPAY_GIFT_CARD" />
+    </VisibilityRule>
+  </Action>
+  <Action name="TENDER_EXCHANGE::OUT.ISSUE_GIFT_CARD" category="Tender Exchange" keywords="tender_exchange_out" text="_menutextIssueXpayGiftCard" chainKey="EFTLINK_OUTGOING_TENDER_EXCHANGE_VOUCHER_TENDER">
+    <IconGroup icon="_imageTenderGiftCard" rollIcon="_imageTenderGiftCardRoll" pressIcon="_imageTenderGiftCardPress" disabledIcon="_imageTenderGiftCardDisabled" />
+    <Parameter name="VoucherType" value="XPAY_GIFT_CARD" />
+    <Parameter name="TenderStatus" value="Refund" />
+    <Parameter name="VoucherActivityCodeType" value="ISSUED" />
+    <VisibilityRule class="dtv.pos.tender.exchange.MultipleOutgoingTendersVisibilityRule" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.TenderEnabledCheck" >
+      <Parameter name="tender" value="ISSUE_XPAY_GIFT_CARD" />
+    </VisibilityRule>
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.EffectiveTenderExchangeAccCheck">
+      <Parameter name="exchangeType" value="OUTGOING" />
+      <Parameter name="tender" value="ISSUE_XPAY_GIFT_CARD" />
+    </VisibilityRule>
+  </Action>
+  <Action name="TENDER_EXCHANGE::VOID_TENDER" category="Tender Exchange" keywords="tender_exchange" text="_menutext46" chainKey="VOID_TENDER_FOR_TENDER_EXCHANGE" privilege="VOID_TENDER">
+    <IconGroup icon="_imageTenderVoidTender" rollIcon="_imageTenderVoidTenderRoll" pressIcon="_imageTenderVoidTenderPress" disabledIcon="_imageTenderVoidTenderDisabled" />
+    <VisibilityRule class="dtv.pos.shared.visibilityrules.AnyTenderAccCheck" />
+  </Action>
+</ActionSet> 

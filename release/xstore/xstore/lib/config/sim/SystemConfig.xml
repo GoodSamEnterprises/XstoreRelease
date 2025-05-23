@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <SystemConfig dtype="Default">
+    <LocationBasedInventory dtype="Default">
+      <CheckItemQuantity dtype="Boolean">false</CheckItemQuantity>
+    </LocationBasedInventory>
+    <!-- This configuration should always be turned on while using SIM while NEVER prompting for inventory location-->
+    <ProcessInventoryJournal dtype="Boolean">true</ProcessInventoryJournal>
+    <InventoryLocationPromptMethod dtype="String">NEVER</InventoryLocationPromptMethod>
+    <!-- These configurations should be turned off when using SIM, Xstore does not deal with any shipping or receiving of documents -->
+    <SendSale dtype="Default">
+      <CreateShippingDocument dtype="Boolean">false</CreateShippingDocument>
+    </SendSale>
+    <SpecialOrder dtype="Default">
+      <AutoGenerateReceivingDoc dtype="Boolean">false</AutoGenerateReceivingDoc>
+    </SpecialOrder>
+    <Order dtype="Default">
+      <CreateReceivingDocument dtype="Boolean">false</CreateReceivingDocument>
+    </Order>
+    <MixedTransactionSettings dtype="Default">
+      <AllowSaleItemTypeInMixedTransaction dtype="Default">
+        <SALE dtype="Boolean">true</SALE>
+        <RETURN dtype="Boolean">true</RETURN>
+        <LAYAWAY dtype="Boolean">false</LAYAWAY>
+        <SPECIALORDER dtype="Boolean">false</SPECIALORDER>
+        <ORDER dtype="Boolean">false</ORDER>
+        <SENDSALE dtype="Boolean">false</SENDSALE>
+        <WORKORDER dtype="Boolean">false</WORKORDER>
+      </AllowSaleItemTypeInMixedTransaction>
+    </MixedTransactionSettings>
+  </SystemConfig>
+</Store>

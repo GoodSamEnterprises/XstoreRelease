@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OpChainConfig.xsd">
+
+  <OpChain name="SALE_COMPLETE_AFTER_START.local.2">
+    <Op class="oracle.retail.xstore.countrypack.us.irs.op.Form8300LargeCashPaymentOp">
+      <Parameter name="printChain" value="US_IRS_FORM_8300_PRINT_CHAIN" />
+      <Parameter name="formKey" value="US_CASH_PAYMENT_FORM_8300" />
+      <Parameter name="editModelKey" value="US_CASH_PAYMENT_FORM_8300" />
+    </Op>
+  </OpChain>
+  <OpChain name="US_IRS_FORM_8300_PRINT_CHAIN">
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="US_IRS_FORM_8300" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.us.irs.op.SetForm8300CashReportDatasourceOp" />
+    <Op class="dtv.pos.reporting.fill.FillReportOp" />
+    <Op class="dtv.pos.reporting.print.PrintReportOp">
+      <Parameter name="continueOnError" value="true" />
+      <Parameter name="copies" value="3" />
+    </Op>
+    <Op class="dtv.pos.framework.op.DoNothingOp">
+      <!-- run this to clean-up transaction list area -->
+      <Parameter name="RESPONSE" value="COMPLETE" />
+    </Op>
+  </OpChain>
+
+</OpChainSet>

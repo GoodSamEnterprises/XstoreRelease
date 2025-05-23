@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LogDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="LogConfig.xsd">
+  <!-- ***************************************************** -->
+  <!-- ** ROUTING RULES -->
+  <!-- ***************************************************** -->
+  <RoutingRules>
+    <RoutingRule name="TIMECARD_ENTRY" document="TIMECARD_ENTRY" file="TIMECARD">
+      <condition class="dtv.pos.docbuilding.conditions.InstanceOfCondition" value="dtv.xst.dao.thr.ITimecardEntry" />
+    </RoutingRule>
+  </RoutingRules>
+  
+  <!-- ***************************************************** -->
+  <!-- ** LOG DOCUMENT TYPES -->
+  <!-- ***************************************************** -->
+  <LogTypes>
+    <LogType document="TIMECARD_ENTRY" sectionref="TIMECARD" />
+  </LogTypes>
+  
+  <!-- ***************************************************** -->
+  <!-- ** SECTIONS -->
+  <!-- ***************************************************** -->
+  <sections>
+    <section name="TIMECARD">
+      <xml><![CDATA[
+        <dtv:TimecardEntry Action="!{dtv.logbuilder.TimeclockActionTypeDocBuilderField}">
+          <dtv:EmployeeId>#{getEmployeeId}</dtv:EmployeeId>
+          <dtv:BusinessDate>#{getBusinessDate}[date]</dtv:BusinessDate>
+          <dtv:RetailLocationId>#{getRetailLocationId}</dtv:RetailLocationId>
+          <dtv:TimecardEntryId>#{getTimecardEntryId}</dtv:TimecardEntryId>
+          <?sectionref name="dao_creation_fields"?>
+          <?sectionref name="dao_update_fields"?>
+          <dtv:EntryType>#{getEntryType}</dtv:EntryType>
+          <dtv:WorkCode>#{getWorkCode.getCode}</dtv:WorkCode>
+          <dtv:ClockInDateTime>#{getClockInDateTime}[datetime]</dtv:ClockInDateTime>
+          <dtv:ClockOutDateTime>#{getClockOutDateTime}[datetime]</dtv:ClockOutDateTime>
+          <dtv:Finalized>#{getPostedFlag}[boolean]</dtv:Finalized>
+        </dtv:TimecardEntry>
+      ]]></xml>
+    </section>
+  </sections>
+</LogDefinitions>

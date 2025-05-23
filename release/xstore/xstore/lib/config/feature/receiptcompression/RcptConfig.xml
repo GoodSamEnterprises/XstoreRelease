@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- CHECKED: CONFIRMS WITH BASE 7.0.0 -->
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+
+  <sections>
+    <section name="item_details">
+      <!-- item iterator -->
+      <iterator method="getLineItemsByTypeCodeFiltered">
+        <impl dtype="Class">com.micros_retail.xfgclient.rcpt.ReceiptCompressionIterator</impl>
+        <method_param dtype="String">ITEM</method_param>
+        <method_param dtype="String">dtv.pos.hardware.rcptbuilding.DefaultRcptLineItemFilter</method_param>
+        <!-- The following line is an example of a summary filter, for base we are not going to use a summary filter-->
+        <!-- <method_param dtype="String">dtv.pos.hardware.rcptbuilding.SummaryRcptLineItemFilter</method_param> -->
+        <condition class="dtv.pos.docbuilding.conditions.VoidedLineCondition" />
+        <condition class="dtv.pos.docbuilding.conditions.VoidedCustomerAccountDetailLineCondition" />
+        <sectionref>nonvoided_item</sectionref>
+        <sectionref>nonvoided_scale_weighed_item</sectionref>
+      </iterator>
+    </section>
+
+  </sections>
+</ReceiptDefinitions>

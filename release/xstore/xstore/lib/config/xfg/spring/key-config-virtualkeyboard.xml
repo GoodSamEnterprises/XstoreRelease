@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="KEY_Toggle_Shift" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.key.toggleshift.label" />
+    <property name="code" value="24" />
+  </bean>
+
+  <bean id="KEY_Next_Keyboard_Language" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.keyboard.locale" />
+    <property name="code" value="33" />
+  </bean>
+
+  <bean id="KEY_Previous_Keyboard_Language" class="com.micros_retail.xfgclient.key.ActionKey">
+    <property name="label" value="_xfgclient.keyboard.locale" />
+    <property name="code" value="34" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_01" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="1" />
+    <property name="value" value="_xfgclient.keyboard.key01" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_02" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="2" />
+    <property name="value" value="_xfgclient.keyboard.key02" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_03" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="3" />
+    <property name="value" value="_xfgclient.keyboard.key03" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_04" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="4" />
+    <property name="value" value="_xfgclient.keyboard.key04" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_05" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="5" />
+    <property name="value" value="_xfgclient.keyboard.key05" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_06" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="6" />
+    <property name="value" value="_xfgclient.keyboard.key06" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_07" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="7" />
+    <property name="value" value="_xfgclient.keyboard.key07" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_08" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="8" />
+    <property name="value" value="_xfgclient.keyboard.key08" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_09" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="9" />
+    <property name="value" value="_xfgclient.keyboard.key09" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_10" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="10" />
+    <property name="value" value="_xfgclient.keyboard.key10" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_11" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="11" />
+    <property name="value" value="_xfgclient.keyboard.key11" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_12" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="12" />
+    <property name="value" value="_xfgclient.keyboard.key12" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_13" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="13" />
+    <property name="value" value="_xfgclient.keyboard.key13" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_14" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="14" />
+    <property name="value" value="_xfgclient.keyboard.key14" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_15" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="15" />
+    <property name="value" value="_xfgclient.keyboard.key15" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_16" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="16" />
+    <property name="value" value="_xfgclient.keyboard.key16" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_17" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="17" />
+    <property name="value" value="_xfgclient.keyboard.key17" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_18" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="18" />
+    <property name="value" value="_xfgclient.keyboard.key18" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_19" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="19" />
+    <property name="value" value="_xfgclient.keyboard.key19" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_20" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="20" />
+    <property name="value" value="_xfgclient.keyboard.key20" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_21" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="21" />
+    <property name="value" value="_xfgclient.keyboard.key21" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_22" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="22" />
+    <property name="value" value="_xfgclient.keyboard.key22" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_23" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="23" />
+    <property name="value" value="_xfgclient.keyboard.key23" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_24" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="24" />
+    <property name="value" value="_xfgclient.keyboard.key24" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_25" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="25" />
+    <property name="value" value="_xfgclient.keyboard.key25" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_26" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="26" />
+    <property name="value" value="_xfgclient.keyboard.key26" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_27" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="27" />
+    <property name="value" value="_xfgclient.keyboard.key27" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_28" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="28" />
+    <property name="value" value="_xfgclient.keyboard.key28" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_29" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="29" />
+    <property name="value" value="_xfgclient.keyboard.key29" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_30" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="30" />
+    <property name="value" value="_xfgclient.keyboard.key30" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_31" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="31" />
+    <property name="value" value="_xfgclient.keyboard.key31" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_32" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="32" />
+    <property name="value" value="_xfgclient.keyboard.key32" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_33" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="33" />
+    <property name="value" value="_xfgclient.keyboard.key33" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_34" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="34" />
+    <property name="value" value="_xfgclient.keyboard.key34" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_35" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="35" />
+    <property name="value" value="_xfgclient.keyboard.key35" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_36" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="36" />
+    <property name="value" value="_xfgclient.keyboard.key36" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_37" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="37" />
+    <property name="value" value="_xfgclient.keyboard.key37" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_38" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="38" />
+    <property name="value" value="_xfgclient.keyboard.key38" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_39" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="39" />
+    <property name="value" value="_xfgclient.keyboard.key39" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_40" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="40" />
+    <property name="value" value="_xfgclient.keyboard.key40" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_41" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="41" />
+    <property name="value" value="_xfgclient.keyboard.key41" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_42" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="42" />
+    <property name="value" value="_xfgclient.keyboard.key42" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_43" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="43" />
+    <property name="value" value="_xfgclient.keyboard.key43" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_44" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="44" />
+    <property name="value" value="_xfgclient.keyboard.key44" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_45" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="45" />
+    <property name="value" value="_xfgclient.keyboard.key45" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_46" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="46" />
+    <property name="value" value="_xfgclient.keyboard.key46" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_47" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="47" />
+    <property name="value" value="_xfgclient.keyboard.key47" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_48" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="48" />
+    <property name="value" value="_xfgclient.keyboard.key48" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_49" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="49" />
+    <property name="value" value="_xfgclient.keyboard.key49" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_50" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="50" />
+    <property name="value" value="_xfgclient.keyboard.key50" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_51" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="51" />
+    <property name="value" value="_xfgclient.keyboard.key51" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_52" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="52" />
+    <property name="value" value="_xfgclient.keyboard.key52" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_53" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="53" />
+    <property name="value" value="_xfgclient.keyboard.key53" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_54" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="54" />
+    <property name="value" value="_xfgclient.keyboard.key54" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_55" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="55" />
+    <property name="value" value="_xfgclient.keyboard.key55" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_56" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="56" />
+    <property name="value" value="_xfgclient.keyboard.key56" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_57" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="57" />
+    <property name="value" value="_xfgclient.keyboard.key57" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_58" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="58" />
+    <property name="value" value="_xfgclient.keyboard.key58" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_59" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="59" />
+    <property name="value" value="_xfgclient.keyboard.key59" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_60" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="60" />
+    <property name="value" value="_xfgclient.keyboard.key60" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_61" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="61" />
+    <property name="value" value="_xfgclient.keyboard.key61" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_62" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="62" />
+    <property name="value" value="_xfgclient.keyboard.key62" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_63" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="63" />
+    <property name="value" value="_xfgclient.keyboard.key63" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_64" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="64" />
+    <property name="value" value="_xfgclient.keyboard.key64" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_65" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="65" />
+    <property name="value" value="_xfgclient.keyboard.key65" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_66" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="66" />
+    <property name="value" value="_xfgclient.keyboard.key66" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_67" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="67" />
+    <property name="value" value="_xfgclient.keyboard.key67" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_68" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="68" />
+    <property name="value" value="_xfgclient.keyboard.key68" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_69" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="69" />
+    <property name="value" value="_xfgclient.keyboard.key69" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_70" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="70" />
+    <property name="value" value="_xfgclient.keyboard.key70" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_71" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="71" />
+    <property name="value" value="_xfgclient.keyboard.key71" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_72" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="72" />
+    <property name="value" value="_xfgclient.keyboard.key72" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_73" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="73" />
+    <property name="value" value="_xfgclient.keyboard.key73" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_74" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="74" />
+    <property name="value" value="_xfgclient.keyboard.key74" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_75" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="75" />
+    <property name="value" value="_xfgclient.keyboard.key75" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_76" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="76" />
+    <property name="value" value="_xfgclient.keyboard.key76" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_77" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="77" />
+    <property name="value" value="_xfgclient.keyboard.key77" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_78" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="78" />
+    <property name="value" value="_xfgclient.keyboard.key78" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_79" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="79" />
+    <property name="value" value="_xfgclient.keyboard.key79" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_80" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="80" />
+    <property name="value" value="_xfgclient.keyboard.key80" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_81" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="81" />
+    <property name="value" value="_xfgclient.keyboard.key81" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_82" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="82" />
+    <property name="value" value="_xfgclient.keyboard.key82" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_83" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="83" />
+    <property name="value" value="_xfgclient.keyboard.key83" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_84" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="84" />
+    <property name="value" value="_xfgclient.keyboard.key84" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_85" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="85" />
+    <property name="value" value="_xfgclient.keyboard.key85" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_86" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="86" />
+    <property name="value" value="_xfgclient.keyboard.key86" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_87" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="87" />
+    <property name="value" value="_xfgclient.keyboard.key87" />
+  </bean>
+
+  <bean id="KEY_KEYBOARD_88" class="com.micros_retail.xfgclient.key.VirtualKeyboardKey">
+    <property name="code" value="88" />
+    <property name="value" value="_xfgclient.keyboard.key88" />
+  </bean>
+
+</beans>

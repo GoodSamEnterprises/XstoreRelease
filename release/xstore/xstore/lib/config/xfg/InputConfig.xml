@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InputTypeList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="InputConfig.xsd">
+
+  <InputType name="GS1_DATABAR_BARCODE">
+    <Event dtype="Class">com.micros_retail.xfgclient.hardware.events.GS1BarcodeEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="]e0" />
+        <Parameter name="range_end" value="]e0" />
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="ITEM_SCAN_EAN13">
+    <Event dtype="Class">dtv.hardware.events.ItemScanEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13"/>
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="QUANTITY_BARCODE_EAN13">
+    <Event dtype="Class">com.micros_retail.xfgclient.hardware.events.QuantityBarcodeEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13" />
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="25" />
+        <Parameter name="range_end" value="25" />
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="PRICE_BARCODE_EAN13">
+    <Event dtype="Class">com.micros_retail.xfgclient.hardware.events.PriceBarcodeEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13" />
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="22" />
+        <Parameter name="range_end" value="22" />
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="WEIGHT_BARCODE_EAN13">
+    <Event dtype="Class">com.micros_retail.xfgclient.hardware.events.WeightBarcodeEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13" />
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="21" />
+        <Parameter name="range_end" value="21" />
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="PRESS_PRODUCT_FULL_EAN13">
+    <Event dtype="Class">com.micros_retail.xfgclient.hardware.events.PressProductBarcodeEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRangeRule">
+        <Parameter name="minimum" value="13"/>
+        <Parameter name="maximum" value="18"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="414" />
+        <Parameter name="range_end" value="414" />
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+        <Parameter name="end" value="13"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="PRESS_PRODUCT_REDUCED_EAN13">
+    <Event dtype="Class">com.micros_retail.xfgclient.hardware.events.PressProductBarcodeEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRangeRule">
+        <Parameter name="minimum" value="13"/>
+        <Parameter name="maximum" value="18"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="419" />
+        <Parameter name="range_end" value="419" />
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+        <Parameter name="end" value="13"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="PRESS_PRODUCT_RESTRICTED_FULL_EAN13">
+    <Event dtype="Class">com.micros_retail.xfgclient.hardware.events.PressProductBarcodeEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRangeRule">
+        <Parameter name="minimum" value="13"/>
+        <Parameter name="maximum" value="18"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="434" />
+        <Parameter name="range_end" value="434" />
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+        <Parameter name="end" value="13"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="PRESS_PRODUCT_RESTRICTED_REDUCED_EAN13">
+    <Event dtype="Class">com.micros_retail.xfgclient.hardware.events.PressProductBarcodeEvent</Event>
+    <Type dtype="String">INPUT_ITEM</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRangeRule">
+        <Parameter name="minimum" value="13"/>
+        <Parameter name="maximum" value="18"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="439" />
+        <Parameter name="range_end" value="439" />
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+        <Parameter name="end" value="13"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="BOTTLE_RETURN_EAN13">
+    <Event dtype="Class">com.micros_retail.xfgclient.hardware.events.BottleReturnBarcodeEvent</Event>
+    <Type dtype="String">BOTTLE_RETURN</Type>
+    <InputRuleList>
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="13" />
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="29" />
+        <Parameter name="range_end" value="29" />
+      </InputRule>
+      <InputRule RuleType="CheckDigitRule">
+        <Parameter name="mod" value="10"/>
+        <Parameter name="weight2" value="3"/>
+        <Parameter name="flattenChecksum" value="false"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="CUST_CARD_SCAN">
+    <Event dtype="Class">dtv.hardware.events.CustomerCardEvent</Event>
+    <Type dtype="String">INPUT_CUSTOMER_CARD</Type>
+    <InputRuleList>
+      <InputRule RuleType="SubstringRule">
+        <Parameter name="start" value="0"/>
+        <Parameter name="end" value="1"/>
+        <Parameter name="value" value="C"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="TRAN_SCAN">
+    <Event dtype="Class">dtv.hardware.events.TransactionScanEvent</Event>
+    <Type dtype="String">INPUT_RECEIPT</Type>
+    <InputRuleList>
+      <!-- <InputRule RuleType="ScannerSourceRule"/>
+      <InputRule RuleType="SymbologyRule">
+        <Parameter name="symbology" value="Code 93"/>
+      </InputRule>  -->
+      <InputRule RuleType="LengthRule">
+        <Parameter name="length" value="21"/>
+      </InputRule>
+      <InputRule RuleType="RangeRule">
+        <Parameter name="range_start" value="T"/>
+        <Parameter name="range_end" value="T"/>
+      </InputRule>
+    </InputRuleList>
+  </InputType>
+
+  <InputType name="KEYBOARD_OTHERS">
+    <Event dtype="Class">dtv.hardware.events.KeyboardEntryEvent</Event>
+    <Type dtype="String">OTHERS</Type>
+    <InputRuleList>
+    </InputRuleList>
+  </InputType>
+
+  <ProcessingOrder>
+    <Entry name="GS1_DATABAR_BARCODE" order="50" enabled="true" />
+    <!--  TODO: check if disable necessary -->
+    <Entry name="IN-STORE_COUPON_EAN13" order="800" enabled="false" />
+ 
+    <Entry name="QUANTITY_BARCODE_EAN13" order="3210" enabled="true" />
+    <Entry name="PRICE_BARCODE_EAN13" order="3220" enabled="true" />
+    <Entry name="WEIGHT_BARCODE_EAN13" order="3230" enabled="true" />
+    <Entry name="PRESS_PRODUCT_FULL_EAN13" order="3240" enabled="true" />
+    <Entry name="PRESS_PRODUCT_REDUCED_EAN13" order="3245" enabled="true" />
+    <Entry name="PRESS_PRODUCT_RESTRICTED_FULL_EAN13" order="3250" enabled="true" />
+    <Entry name="PRESS_PRODUCT_RESTRICTED_REDUCED_EAN13" order="3255" enabled="true" />
+    <Entry name="BOTTLE_RETURN_EAN13" order="3260" enabled="true" />
+    <Entry name="ITEM_SCAN_EAN13" order="3270" enabled="true" />
+
+    <!--  TODO: check if disable necessary -->
+    <Entry name="MALL_CERT" order="7500" enabled="false" />
+
+    <Entry name="KEYBOARD_OTHERS" order="100000" enabled="true" />
+  </ProcessingOrder>
+
+</InputTypeList>

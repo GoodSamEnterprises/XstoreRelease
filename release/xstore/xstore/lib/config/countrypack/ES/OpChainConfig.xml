@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OpChainConfig.xsd">
+
+  <OpChain name="PRE_TENDERING.1">
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.ClearInvoiceTypeOp" />
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.SetFacturaTypeOp" />
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.EnsureCustomerAssignedForCompleteInvoiceOp" />
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.EsCustomerSummaryOp" breakpoint="true" >
+      <Parameter name="FORM_KEY" value="CUSTOMER_SUMMARY" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.pre">
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.AssignSequenceOp">
+      <Parameter name="PeekSequence" value="true" />
+      <Parameter name="HandleSequence" value="true" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.EsAssignManualSequenceOp" />
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.FISCAL.AFTER_TRAN_SAVE">
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.AssignSequenceOp" />
+  </OpChain>
+
+  <OpChain name="WORKSTATION_OPEN_EXT.local.2">
+    <Op class="oracle.retail.xstore.countrypack.es.systemcycle.op.EsWorkstationOpenResetInvoiceSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.es.systemcycle.op.EsWorkstationOpenResetCreditNoteSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.es.systemcycle.op.EsWorkstationOpenResetSimpleInvoiceSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="RETAIL_LOCATION_OPEN_ACTIVITY.local.2">
+    <Op class="oracle.retail.xstore.countrypack.es.systemcycle.op.EsStoreOpenResetInvoiceSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.RETAIL_LOCATION_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.es.systemcycle.op.EsStoreOpenResetCreditNoteSequence">
+      <Parameter name="QueryKey" value="COUNTRYPACK.RETAIL_LOCATION_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.es.systemcycle.op.EsStoreOpenResetSimpleInvoiceSequenceOp">
+      <Parameter name="QueryKey" value="COUNTRYPACK.RETAIL_LOCATION_LAST_OPEN_DATE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.CUSTOMER_MAINTENANCE_EDIT">
+    <Op class="oracle.retail.xstore.countrypack.common.invoice.op.InvoiceEditCustomerOp" longRunning="true" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.ASSIGN_MANUAL_RECEIPT" rollbackChainKey="COUNTRYPACK.REMOVE_MANUAL_RECEIPT">
+    <PromptOp class="oracle.retail.xstore.countrypack.common.register.op.PromptManualReceiptNumberOp" key="COUNTRYPACK.PROMPT_MANUAL_RECEIPT_NUMBER" validationsBean="countrypack.manualReceiptNumberValidation" />
+    <PromptOp class="oracle.retail.xstore.countrypack.common.register.op.PromptManualReceiptDateOp" key="COUNTRYPACK.PROMPT_MANUAL_RECEIPT_DATE" validationsBean="countrypack.manualReceiptDateValidation" />
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.EsCreateManualReceiptOp" />
+    <OpChainRoute chainKey="SALE_ITEM_START" chainType="START" />
+  </OpChain>
+
+  <OpChain name="ROLLBACK_TENDER.local.pre">
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.ClearInvoiceTypeOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.op.TaxFreeInvoiceIssueSetValueOp" />
+  </OpChain>
+  
+  <OpChain name="RETAIL_LOCATION_CLOSE.local.2" >
+    <OpChainRoute chainKey="COUNTRYPACK.ES.TAX_EXPORT_PROCESS" condition="oracle.retail.xstore.countrypack.es.condition.IsTaxExportEnableRunCondition"/>
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.ES.TAX_EXPORT_PROCESS">
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.SetFileNameTaxExportOp" />
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.InvoicesIssuedWebServiceOp" longRunning="true" />
+    <OpChainRoute>
+      <Choice chainKey="COUNTRYPACK.ES.TAX_EXPORT_PROCESS.COMPLETE" condition="oracle.retail.xstore.countrypack.es.condition.IsTaxExportCompleteRunCondition" />
+      <Choice chainKey="COUNTRYPACK.ES.TAX_EXPORT_PROCESS.NO_RESPONSE" condition="oracle.retail.xstore.countrypack.es.condition.IsTaxExportNoResponseRunCondition" />
+      <Choice chainKey="COUNTRYPACK.ES.TAX_EXPORT_PROCESS.NOTHING_TO_EXPORT" condition="oracle.retail.xstore.countrypack.es.condition.IsTaxExportNothingToExportRunCondition" />
+    </OpChainRoute>
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.ES.TAX_EXPORT_PROCESS.COMPLETE">
+    <WorkerOp workersBean="taxExportWorkers" />
+    <PromptOp class="oracle.retail.xstore.countrypack.es.register.op.TaxExportCompletePromptOp" key="COUNTRYPACK.ES.TAX_EXPORT_PROCESS.COMPLETE" />
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.SetCompleteTaxExportOp" />
+    <WorkerOp workersBean="persistTransAndObjWorkers" />
+    <WorkerOp workersBean="taxExportErrorsWorkers" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.ES.TAX_EXPORT_PROCESS.NO_RESPONSE">
+    <PromptOp key="COUNTRYPACK.ES.TAX_EXPORT_PROCESS.NO_RESPONSE" />
+  </OpChain>
+  
+  <OpChain name="COUNTRYPACK.ES.TAX_EXPORT_PROCESS.NOTHING_TO_EXPORT" />
+
+  <OpChain name="BLIND_RETURN_VALIDATE.local" >
+    <ValidationOp class="oracle.retail.xstore.countrypack.es.register.op.EsValidateBlindReturnOp" validationsBean="countryPack.es.blindReturnValidations" />
+  </OpChain>
+  
+  <OpChain name="PRE_UNVERIFIED_RETURN.local">
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.EsPromptOriginalInvoiceNumberOp" />
+  </OpChain>
+
+  <OpChain name="ADD_RETURN_ITEM_TO_TRAN.local.post" >
+    <Op class="oracle.retail.xstore.countrypack.es.register.op.EsAddReturnOriginalReferenceOp" />
+  </OpChain>
+  
+  <OpChain name="TAX_EXPORT_ERRORS_REPORT">
+    <Op class="dtv.pos.reporting.LoadReportOp">
+      <Parameter name="reportName" value="COUNTRYPACK.TAX_EXPORT_ERRORS_REPORT" />
+    </Op>
+    <Op class="dtv.pos.reporting.PromptReportParametersOp" breakpoint="true" />
+  </OpChain>
+
+</OpChainSet>

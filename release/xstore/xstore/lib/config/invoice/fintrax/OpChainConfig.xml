@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="OpChainConfig.xsd">
+
+  <OpChain name="COUNTRYPACK.TAXFREE_CHECK_PROVIDER_STATUS_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxStatusAuthorizeOp" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_ISSUE_FORM_PROVIDER_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxInsertInvoiceIteratingOp">
+      <Parameter name="chainKey" value="COUNTRYPACK.TAXFREE_FINTRAX_INSERT_INVOICE" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxCreateVoucherAuthorizeOp" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_FINTRAX_INSERT_INVOICE">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxInsertInvoiceAuthorizeOp" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_REISSUE_FORM_PROVIDER_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxReprintVoucherAuthorizeOp" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_VOID_FORM_PROVIDER_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxVoidVoucherAuthorizeOp" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_VOID_FORM_ON_SALE_PROVIDER_IMPL">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxVoidVoucherAuthorizeOp" >
+      <Parameter name="IsSale" value="true" />
+    </Op>
+  </OpChain>
+
+ <OpChain name="COUNTRYPACK.TAXFREE_PROVIDER_CHECK_CARD_ELIGIBLE" >
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxBrtSearchIteratingOp" >
+      <Parameter name="chainKey" value="COUNTRYPACK.TAXFREE_FINTRAX_CHECK_CARD_ELIGIBLE" />
+    </Op>
+ </OpChain>
+
+ <OpChain name="COUNTRYPACK.TAXFREE_FINTRAX_CHECK_CARD_ELIGIBLE" >
+   <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxBrtSearchAuthorizeOp" />
+ </OpChain>
+
+  <OpChain name="COUNTRYPACK.TAXFREE_GET_CUSTOMER_BY_PROVIDER_TOKEN">
+    <Op class="oracle.retail.xstore.countrypack.common.taxfree.fintrax.op.FintraxTravellerAuthorizeOp" />
+  </OpChain>
+
+</OpChainSet>

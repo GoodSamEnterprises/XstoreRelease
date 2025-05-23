@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../../../pos/config/dtv/res/config/SystemConfig.xsd">
+
+  <SystemConfig dtype="Default">
+    <MixedTransactionSettings dtype="Default">
+      <!-- In Mexico we do not allow mixed transactions -->
+      <AllowSaleItemTypeInMixedTransaction dtype="Default">
+        <!-- What this section really means is the inverse of "Must this item type be exclusive in a transaction?"
+      For example, if SALE is set to false, then SALE type items only can be added to transactions with no items or with
+      other SALE type items. -->
+        <SALE dtype="Boolean">false</SALE>
+        <RETURN dtype="Boolean">false</RETURN>
+        <LAYAWAY dtype="Boolean">false</LAYAWAY>
+        <SPECIALORDER dtype="Boolean">false</SPECIALORDER>
+        <SENDSALE dtype="Boolean">false</SENDSALE>
+        <WORKORDER dtype="Boolean">false</WORKORDER>
+        <REMOTESEND dtype="Boolean">false</REMOTESEND>
+      </AllowSaleItemTypeInMixedTransaction>
+    </MixedTransactionSettings>
+
+    <Tax dtype="Default">
+      <EnableVatTaxSummaryPrint dtype="Boolean">true</EnableVatTaxSummaryPrint>
+      <!-- In Mexico we can't change tax amount -->
+      <DisableChangeTaxAmount dtype="Boolean">true</DisableChangeTaxAmount>
+      <SelectTaxPercentFromList dtype="Boolean">true</SelectTaxPercentFromList>
+      <!-- In Mexico we can't change to a NON TAXABLE group -->
+      <IgnoreTaxGroups dtype="String"></IgnoreTaxGroups>
+      <CompoundTaxIncludeOtherCompTaxAmt dtype="Boolean">true</CompoundTaxIncludeOtherCompTaxAmt>
+    </Tax>
+
+    <LocalCurrencyId dtype="String">MXN</LocalCurrencyId>
+
+    <FiscalConfig dtype="Default">
+      <Country dtype="Default">
+        <Mx dtype="Default">
+          <CFDIConfirmationCode dtype="String">CFDI33117, CFDI33119, CFDI33127</CFDIConfirmationCode>
+        </Mx>
+      </Country>
+    </FiscalConfig>
+  </SystemConfig>
+  
+</Store>

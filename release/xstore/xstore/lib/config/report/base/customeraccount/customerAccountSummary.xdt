@@ -1,0 +1,119 @@
+<dataTemplate name="CustomerAccountSummary" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Report Titles. There are ten kinds of report, All, Special Order, Send Sale, etc -->
+    <label name="CUSTOMER_ACTIVITY_SUMMARY_TITLE" value="_rptConfigurableCustAcctActivitySummaryTitle"/>
+     
+    <!-- Template-specific Text -->    
+    <label name="CRITERIA_DATE_RANGE_BASE_ON" value="_rptConfigurableCustAcctBaseAgeOnColon"/>
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+    <label name="BASE_AGE_ON" value=" _rptConfigurableCustAcctBaseAgeOnColon"/>
+    <label name="SORT_ORDER_COLON" value="_rptSortOrderColon"/>
+    <label name="CUSTOMER_ACCOUNT_STATUS_COLON" value="_rptCustomerAccountStatusColon"/>
+    <label name="CUSTOMER_ACCOUNT_TYPE_COLON" value="_rptCustomerAccountTypeColon"/>
+    <label name="ALL" value="_rptDefaultAll"/>
+    <label name="LAST_NAME" value="_rptLastName"/>
+    
+    <label name="ACCOUNT_NUMBER" value="_rptAccountNumber"/>    
+    <label name="CUSTOMER_NAME" value="_rptCustomerName"/>
+    <label name="PHONE_NUMBER" value="_rptPhoneNumber"/>
+    <label name="TYPE" value="_rptType"/>
+    <label name="SETUP" value="_rptSetup"/>
+    <label name="DATE" value="_rptDate"/>
+    <label name="LAST_ATV_DATE" value="_rptConfigurableCustAcctLastActivity"/>
+    <label name="PYM_DATE" value="_rptConfigurableCustAcctLastPayment"/>
+    <label name="LAST_PYM" value="_rptPayments"/>
+    <label name="ACCOUNT" value="_rptAccount"/>
+    <label name="ACCT_STATUS" value="_rptStatus"/>
+    <label name="ACCT_TOTAL" value="_rptTotal"/>
+    <label name="ACCT_PYM" value="_rptPayments"/>
+    <label name="ACCT_BALC" value="_rptBalance"/>   
+    <label name="NOT_AVALIABLE" value="_rptNotAvailable"/> 
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="baseAgeOn" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptConfigurableCustAcctBaseAgeOnSearch;Combo;dtv.pos.reporting.fill.SoftEnumFactory;Setup Date=_rptSetupDate|Last Activity Date=_rptConfigurableCustAcctLastActivityDate|Last Payment Date=_rptConfigurableCustAcctLastPaymentDate]]></parameterDescription>
+        <defaultValueExpression><![CDATA[Setup Date]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="accountType" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptConfigurableCustAcctActivityDetailItemAccountType;Combo;dtv.pos.customer.account.type.CustomerAccountType;all=_rptParamSelectionAll]]></parameterDescription>
+        <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>  
+    <parameter name="accountStatus" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptConfigurableCustAcctActivityDetailItemAccountStatus;Combo;dtv.pos.customer.account.type.CustAccountSearchStatusType;all=_rptParamSelectionAll]]></parameterDescription>
+        <defaultValueExpression><![CDATA[%]]></defaultValueExpression>
+    </parameter>    
+    <parameter name="sortOrder" class="java.lang.String">
+        <parameterDescription><![CDATA[_rptSortOrderParameter;Combo;dtv.pos.reporting.fill.SoftEnumFactory;last_name=_rptSortLastName|setup_date=_rptSetupDate]]></parameterDescription>
+        <defaultValueExpression><![CDATA["last_name"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>      
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_CUSTOMER_ACCOUNT_SUMMARY" key="CONFIGURABLE_CUST_ACCT_ACTIVITY_SUMMARY_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>accountStatus</Parameter>
+        <Parameter>accountType</Parameter>
+        <Parameter>baseAgeOn</Parameter>
+        <Parameter>sortOrder</Parameter>
+      </Parameters>
+      <ResultFields>      
+        <ResultField>cust_acct_id</ResultField>
+        <ResultField>last_name</ResultField>
+        <ResultField>first_name</ResultField>
+        <ResultField name="party_id" type="String" />
+        <ResultField>telephone1</ResultField>
+        <ResultField>acct_setup_date</ResultField>
+        <ResultField>last_activity_date</ResultField>
+        <ResultField>last_payment_date</ResultField>
+        <ResultField>acct_total</ResultField>
+        <ResultField>total_payment_amt</ResultField>
+        <ResultField>acct_balance</ResultField>
+        <ResultField>account_type</ResultField>    
+        <ResultField>account_status</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_CUSTOMER_ACCOUNT_SUMMARY" source="Q_CUSTOMER_ACCOUNT_SUMMARY">
+        <element name="ACCT_ID"  value="cust_acct_id"/>
+        <element name="FNAME"    value="first_name"/>
+        <element name="LNAME"    value="last_name"/>
+        <element name="PHONE_NO"        value="telephone1" formatter="Phone"/>
+        <element name="ACCT_TYPE"       value="account_type"   translation-prefix="_dtv.pos.customer.account.type.CustomerAccountType."/>
+        <element name="ACCT_STATUS"     value="account_status" translation-prefix="_dtv.pos.customer.account.type.CustomerAccountStateType."/>
+        <element name="ACCT_SETUP_DATE" value="acct_setup_date" formatter="DateMedium"/>
+        <element name="LAST_ATV_DATE"   value="last_activity_date" formatter="DateMedium"/>
+        <element name="PYM_DATE"        value="last_payment_date" formatter="DateMedium"/>
+        <element name="ACCT_STATE"      value="cust_acct_statcode" />
+        <element name="TOTAL"           value="acct_total" formatter="Money"/>
+        <element name="ACCT_PYM"        value="total_payment_amt" formatter="Money"/>
+        <element name="ACCT_BALC"       value="acct_balance" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

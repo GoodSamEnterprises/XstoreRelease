@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">CYCLE_COUNT_ITEMS</FormKey>
+    <FormLocation dtype="String">TRANSACTION_LIST_AREA</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">-2.0, -1.0, -2.0, -2.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--FILL, 0.0-->
+          <param_value dtype="DoubleArray">46.0, -1.0, 0.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewPanel>
+        <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+        <LayoutLocation dtype="String">0, 0, 3, 1, F, F</LayoutLocation>
+        <LayoutParameters dtype="ParameterList">
+          <Parameter name="setColumn">
+            <!--FILL, 0.0-->
+            <param_value dtype="DoubleArray">-2.0, -1.0, -2.0, -2.0, 0.0</param_value>
+          </Parameter>
+          <Parameter name="setRow">
+            <!--FILL, 0.0-->
+            <param_value dtype="DoubleArray">-1.0, 0.0</param_value>
+          </Parameter>
+          <Parameter name="setVerticalStretch">
+            <param_value dtype="Boolean">true</param_value>
+          </Parameter>
+          <Parameter name="setMargins">
+            <param_value dtype="IntegerArray">11,5,11,5</param_value>
+          </Parameter>
+        </LayoutParameters>
+        <ComponentParameter name="setBackground" >
+          <param_value dtype="ColorRef" >_colorListHeaderBackground</param_value>
+        </ComponentParameter>
+        <ComponentParameter name="setOpaque" >
+          <param_value dtype="Boolean" >true</param_value>
+        </ComponentParameter>
+        <ComponentParameter name="setBorder" >
+          <param_value dtype="Border" >255,255,255</param_value>
+        </ComponentParameter>
+        <FormViewCell>
+          <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_invCycleCountItems</TextKey>
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">2, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <TextKey dtype="Translatable">_invCountNumber</TextKey>
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+        <FormViewCell>
+          <LayoutLocation dtype="String">3, 0, 1, 1, F, F</LayoutLocation>
+          <Type dtype="String">FormLabelEmphasized</Type>
+          <Resource dtype="String">countNumber</Resource>
+          <Font fontStyle="BOLD" fontSize="+4" />
+        </FormViewCell>
+      </FormViewPanel>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 4, 1, F, F</LayoutLocation>
+        <Type dtype="String">ScrollEventFormList</Type>
+        <Resource dtype="String">viewList</Resource>
+        <SelectionMode dtype="String">SINGLE_SELECTION</SelectionMode>
+        <Renderer>
+          <Role dtype="String">ColumnHeader</Role>
+          <Type dtype="String">CYCLE_COUNT_ITEM_LIST</Type>
+        </Renderer>
+        <Renderer>
+          <Role dtype="String">Cell</Role>
+          <Type dtype="String">CYCLE_COUNT_ITEM_LIST</Type>
+        </Renderer>
+      </FormViewCell>
+    </FormViewPanel>
+  </FormView>
+</FormViewSet>

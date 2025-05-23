@@ -1,0 +1,77 @@
+<dataTemplate name="InventoryMovementPending" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+ 
+    
+    
+      <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptDateRange"/>
+    <label name="BUSINESS DATE" value="_rptDate"/>
+    <label name="TRANSACTION" value="_rptInvMovPendTrans"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="DESCRIPTION" value="_rptDescription"/>
+    <label name="SERIAL NUMBER" value="_rptInvMovPendSerialNbr"/>
+    <label name="ACTION CODE" value="_rptInvMovPendActionCode"/>
+    <label name="QTY" value="_rptQuantityHeading"/>
+ </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeNbr" class="java.lang.String" isForPrompting="false"/>
+    
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptSearchDateRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+        <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+        <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter> 
+  </parameters>
+  
+  
+  <!--Data source and data Structure-->
+    <dataSource>
+    <queryReference name="Q_INVENTORY_MOVEMENT_PENDING" key="INVENTORY_MOVEMENT_PENDING">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+      </Parameters>
+      <ResultFields>
+          <ResultField>item_id</ResultField>
+          <ResultField>serial_nbr</ResultField>          
+          <ResultField>code</ResultField>
+          <ResultField>quantity</ResultField>
+          <ResultField>trans_seq</ResultField>
+          <ResultField>business_date</ResultField>
+          <ResultField>description</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="INV_LIST" source="Q_INVENTORY_MOVEMENT_PENDING">
+      <element name="BUSDATE" value="business_date" formatter="DateMedium"/>
+      <element name="TRNS" value="trans_seq"/> 
+      <element name="ITM" value="item_id"/>
+      <element name="DESC" value="description"/> 
+      <element name="SNR" value="serial_nbr"/>
+      <element name="ACT" value="code"/>
+      <element name="QTY" value="quantity" formatter="Decimal"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- **********************************************************************************
+# Footer Labels layout left-to-right from 1-5 panels
+# the layout attrib defines the relative location for the field in the table, with
+# optional parameters for alignment.
+#	col, row,
+#	col, row, col, row defines a rectangle area
+#	col, row, {col, row}, val1, val2, ...
+#
+# valid values for val1, ... are;
+#	C = center
+#	b - border
+#	f - FILL
+#	p - PREFERRED
+#	vs - vertical space between labels and text fields
+#	vg - vertical gap between form elements
+#	hg - horizontal gap between form elements
+# ********************************************************************************** -->
+<FooterPanel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             dtype="BodyPanel"
+             xsi:noNamespaceSchemaLocation="FooterConfig.xsd" Debug.Outline="false">
+
+    <columns dtype="list">
+        <column dtype="double" value="5"/>
+        <column dtype="double" value="-1.0"/>
+        <column dtype="double" value="3"/>
+        <column dtype="double" value="-1.0"/>
+        <column dtype="double" value="3"/>
+        <column dtype="double" value="400"/>
+        <column dtype="double" value="3"/>
+        <column dtype="double" value="-1.0"/>
+        <column dtype="double" value="3"/>
+        <column dtype="double" value="-1.0"/>
+        <column dtype="double" value="5"/>
+    </columns>
+
+    <rows dtype="list">
+        <row dtype="double" value="4"/>
+        <row dtype="double" value=".97"/>
+        <row dtype="double" value="4"/>
+    </rows>
+
+    <icons>
+        <icon name="LongGreen.Left" path="res/graphics/long_green_lf.png"/>
+        <icon name="LongGreen" path="res/graphics/long_green.png"/>
+    </icons>
+
+    <labels>
+        <label sequence="1" enabled="true" layout="1, 1, FULL, FULL" value="${_STORENUMBER}" token="%{STORENUMBER}"/>
+        <label sequence="2" enabled="true" layout="3, 1, FULL, FULL" value="${_REGISTERNUMBER)"
+               token="%{REGISTERNUMBER}"/>
+        <label sequence="3" enabled="true" layout="5, 1, FULL, FULL" value="%{SPACEFILL}" token="%{SPACEFILL}"/>
+
+        <label sequence="4" enabled="true" layout="7, 1, FULL, FULL" value="${_INITIALIZATION}" token="%{SPACEFILL}"/>
+        <!-- label sequence="4" enabled="true" layout="7, 1, FULL, FULL" value="%{SPACEFILL}" token="%{SPACEFILL}"/ -->
+
+        <!-- This is always the data/time field, you have no choice -->
+        <label sequence="5" enabled="true" layout="9, 1, F, F"/>
+    </labels>
+</FooterPanel>

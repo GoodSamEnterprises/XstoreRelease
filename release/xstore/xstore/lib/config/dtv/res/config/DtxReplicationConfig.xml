@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DtxReplicationConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DtxReplicationConfig.xsd">
+  <!-- This entry should be copied and updated to represent the "high reliability" data source in 
+       which all replication requests will be queued in a given runtime environment. -->
+
+  <ReplicationQueue dataSource="Replication" cycleInterval="30000" maxRecsPerCycle="50" errorNotificationCycles="60">
+    <relegationLevel failedAttempts="3" retryAfterCycles="30"/>
+    <relegationLevel failedAttempts="10" retryAfterCycles="240"/>
+    <relegationLevel failedAttempts="15" retryAfterCycles="480"/>
+    <relegationLevel failedAttempts="20" retryAfterCycles="960"/>
+    <relegationLevel failedAttempts="25" retryAfterCycles="2880"/>
+    <relegationLevel failedAttempts="30" retryAfterCycles="9999999"/>
+  </ReplicationQueue>
+  
+  <!-- **************************************************************** -->
+  <!-- CONCURRENT SYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+  <!-- These services will be invoked when writes to Xcenter are done directly and concurrently with Store 
+      Primary, with replication only being used as a fallback when the Xcenter data source is offline/non-responsive. 
+      There is no need to disable these services; they will simply never be invoked if 
+      PersistenceManagerConfig.xml is configured not to target them. -->
+  <!-- **************************************************************** -->
+  <!--  When the Xcenter portion of ConcurrentStoreXcenter initially had a failover. -->
+  <service name="ConcurrentStoreXcenter->Xcenter" expireAfter="never">
+    <condition class="dtv.data2.replication.dtximpl.condition.CurrentDataSourceCondition">
+      <conditionParam key="currentDataSource" value="ConcurrentStoreXcenter|Xcenter" />
+    </condition>
+    <destination type="DataSource" dataSourceName="Xcenter" />
+    <subscriber name="*" />
+  </service>
+  
+  <!-- When the StorePrimary portion of ConcurrentStoreXcenter initially had a failover. -->
+  <service name="ConcurrentStoreXcenter->StorePrimary" expireAfter="never">
+    <condition class="dtv.data2.replication.dtximpl.condition.CurrentDataSourceCondition">
+      <conditionParam key="currentDataSource" value="ConcurrentStoreXcenter|StorePrimary" />
+    </condition>
+    <destination type="DataSource" dataSourceName="StorePrimary" />
+    <subscriber name="*" />
+  </service>
+  <!-- **************************************************************** -->
+  <!-- /CONCURRENT SYNCHRONOUS WRITES -->  
+  <!-- **************************************************************** -->
+  
+  <!-- This file's services are a template for customer-specific data source configurations. 
+       They should not be used directly, as no guarantee is made to their validity or effectiveness.
+       Use these templates, along with supplemental technical documentation, to configure the 
+       replication services appropriate for a given development, testing, or production environment. -->
+     
+  <!--<service name="StorePrimary->Xcenter" expireAfter="never">
+    <condition class="dtv.data2.replication.dtximpl.condition.CurrentDataSourceCondition">
+      <conditionParam key="currentDataSource" value="StorePrimary" />
+    </condition>
+    <destination type="DataSource" dataSourceName="Xcenter" />
+    <subscriber name="dtv.xst.dao" />
+    <subscriber exclude="true" name="dtv.xst.dao.inv.impl.InventoryCount" />
+    <subscriber exclude="true" name="dtv.xst.dao.tsn.impl.Session" />
+    <subscriber exclude="true" name="dtv.xst.dao.tsn.impl.TenderRepositoryDAO" />
+    <subscriber exclude="true" name="dtv.xst.dao.itm.impl.ItemLabelBatchDAO" />
+  </service>
+  
+  <service name="Local->StorePrimary" expireAfter="never">
+    <condition class="dtv.data2.replication.dtximpl.condition.CurrentDataSourceCondition">
+      <conditionParam key="currentDataSource"  value="Local"/>
+    </condition>
+    <destination type="DataSource" dataSourceName="StorePrimary"/>
+    <subscriber name="dtv.xst.dao"/>
+    <subscriber name="SP_FLASH_SALES"/>
+    <subscriber exclude="true" name="dtv.xst.dao.ctl.impl.EventLogEntryDAO"/>
+    <subscriber exclude="true" name="dtv.xst.dao.inv.impl.InventoryCount" />
+  </service>
+  
+  <service name="Local->Xcenter" expireAfter="never">
+    <condition class="dtv.data2.replication.dtximpl.condition.CurrentDataSourceCondition">
+      <conditionParam key="currentDataSource" value="Local" />
+    </condition>
+    <destination type="DataSource" dataSourceName="Xcenter" />
+    <subscriber name="dtv.xst.dao" />
+    <subscriber exclude="true" name="dtv.xst.dao.ctl.impl.EventLogEntryDAO" />
+    <subscriber exclude="true" name="dtv.xst.dao.inv.impl.InventoryCount" />
+    <subscriber exclude="true" name="dtv.xst.dao.tsn.Session" />
+    <subscriber exclude="true" name="dtv.xst.dao.tsn.TenderRepositoryDAO" />
+    <subscriber exclude="true" name="dtv.xst.dao.itm.impl.ItemLabelBatchDAO" />
+  </service>
+  
+  <service name="EventLogReplicationCritical" expireAfter="never">
+    <condition class="dtv.data2.replication.dtximpl.condition.MethodCallResultCondition">
+      <conditionParam key="methodName" value="getCriticalToDeliver" />
+      <conditionParam key="result" value="true" />
+    </condition>
+    <destination type="DataSource" dataSourceName="Xcenter" />
+    <subscriber name="dtv.xst.dao.ctl.impl.EventLogEntryDAO" />
+  </service>
+  
+  <service name="EventLogReplication" expireAfter="immediately">
+    <condition class="dtv.data2.replication.dtximpl.condition.MethodCallResultCondition">
+      <conditionParam key="methodName" value="getCriticalToDeliver" />
+      <conditionParam key="result" value="false" />
+    </condition>
+    <destination type="DataSource" dataSourceName="Xcenter" />
+    <subscriber name="dtv.xst.dao.ctl.impl.EventLogEntryDAO" />
+  </service>-->
+</DtxReplicationConfig>

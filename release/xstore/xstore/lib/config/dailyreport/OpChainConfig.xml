@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OpChainConfig.xsd">
+
+  <OpChain name="COUNTRYPACK.WORKSTATION_END_DAY.local.post">
+    <Op class="oracle.retail.xstore.countrypack.common.hardware.fiscal.op.StoreEjReceiptOnCurrentTransactionOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.dailyreport.op.SetTransactionPropertiesOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.dailyreport.op.DiscrepancyReasonCodeOp" />    
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.WORKSTATION_END_DAY.local.pre">
+    <Op class="oracle.retail.xstore.countrypack.common.dailyreport.op.GetTotalFromFiscalPrinterOp" />
+    <Op class="oracle.retail.xstore.countrypack.common.dailyreport.op.ManualRegisterCloseOp" />    
+    <Op class="dtv.pos.common.op.DisablePromptActionsOp" />  
+  </OpChain>
+
+  <OpChain name="RETAIL_LOCATION_CLOSE.local">
+    <Op class="oracle.retail.xstore.countrypack.common.dailyreport.op.PrepareDailyReportDataOp" longRunning="true">
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.DOCUMENT" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.FISCAL_PRINTER" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.TAX" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.TENDER_DISCREPANCY" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.TENDER" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.TILL" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.SAFE" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.DISCOUNT" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.INVOICE" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.EXTENDED_TRANSACTION" />
+      <Parameter name="QueryList" value="DAILYREPORT.REPORT.EXTRACT.CASH_MOVEMENT" />
+    </Op>
+    <OpChainRoute chainKey="COUNTRYPACK.DAILY_REPORT.PRINT" condition="oracle.retail.xstore.countrypack.common.dailyreport.condition.IsDailyReportReady" />
+  </OpChain>
+
+</OpChainSet>

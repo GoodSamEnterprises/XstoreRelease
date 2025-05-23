@@ -1,0 +1,159 @@
+<dataTemplate name="NightlyControl" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="TITLE" value="_rptNigthlyCtlReportTitle"/>
+    <label name="MLVL1" value="_merchLevel1" />
+    <label name="NET_SALES" value="_rptNetSales"/>
+    <label name="SALES" value="_rptSales" />
+    <label name="TNDRS" value="_rptNigthlyCtlTender"/>
+    <label name="TNDR_TYPE" value="_rptTenderType"/>
+    <label name="EMPS" value="_rptNigthlyCtlEmployees"/>
+    <label name="SALES_CNT" value="_rptNigthlyCtlSalesCount"/>
+    <label name="SALES_AMT" value="_rptNigthlyCtlSalesAmount"/>
+    <label name="SALES_AVG" value="_rptNigthlyCtlSalesAverage"/>
+    <label name="ID" value="_rptID"/>
+    <label name="DESC" value="_rptDescription"/>
+    <label name="PCT" value="_rptPercent"/>
+    <label name="CNT" value="_rptCount"/>
+    <label name="AMT" value="_rptAmount"/>
+    <label name="HOURS" value="_rptNigthlyCtlHrsWork"/>
+    <label name="ASSOC" value="_rptAssociate"/>
+    <label name="PROD" value="_rptNigthlyCtlProductivity"/>
+    <label name="TNDR_TOTAL" value="_rptTotalColon"/>
+    <label name="TOTAL" value="_rptTotal"/>
+  </labels>
+
+  <parameters>
+
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dtvStartDate" class="dtv.pos.iframework.type.IDtvDate" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriod;Date]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.RelativeDtvDate.TODAY]]></defaultValueExpression>
+    </parameter>
+    <parameter name="zeroAmount" class="java.math.BigDecimal" formatter="Money" isForPrompting="false" include_in_output="true">
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="zeroCount" class="java.math.BigDecimal" formatter="Decimal" isForPrompting="false" include_in_output="true">
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+
+  <dataSource>
+    <queryReference name="Q_TOTAL" key="NIGHTLY_CONTROL_TOTAL_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>line_enum</ResultField>
+        <ResultField>line_count</ResultField>
+        <ResultField>line_amt</ResultField>
+        <ResultField>line_avg</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_TENDER" key="NIGHTLY_CONTROL_TENDER_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>group_sort</ResultField>
+        <ResultField>group_name</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>line_count</ResultField>
+        <ResultField>line_amt</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_EMP" key="NIGHTLY_CONTROL_ASSOCIATE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>employee_id</ResultField>
+        <ResultField>employee_name</ResultField>
+        <ResultField>sales</ResultField>
+        <ResultField>duration</ResultField>
+        <ResultField>sales_per_hour</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_MLVL1" key="NIGHTLY_CONTROL_MERCHLVL1_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>dept_id</ResultField>
+        <ResultField>description</ResultField>
+        <ResultField>line_count</ResultField>
+        <ResultField>item_amt</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_TOTAL" source="Q_TOTAL">
+      <element name="GRP" value="line_enum"/>
+      <element name="CNT" value="line_count" />
+      <element name="AMT" value="line_amt" formatter="Money"/>
+      <element name="AVG" value="line_avg" formatter="Money"/>
+    </group>
+    <group name="G_TENDER" source="Q_TENDER">
+      <element name="GRP" value="group_name"/>
+      <element name="DESC" value="description"/>
+      <element name="CNT" value="line_count" />
+      <element name="AMT" value="line_amt" formatter="Money"/>
+    </group>
+    <group name="G_TENDER_SUBTTL" source="Q_TENDER">
+      <element name="GRP" value="group_name" group-by="true" />
+      <element name="CNT" value="line_count" function="SUM"/>
+      <element name="AMT" value="line_amt" function="SUM" formatter="Money"/>
+    </group>
+    <group name="G_TENDER_TTL" source="Q_TENDER">
+      <element name="CNT" value="line_count" function="SUM"/>
+      <element name="AMT" value="line_amt" function="SUM" formatter="Money"/>
+    </group>
+    <group name="G_EMP" source="Q_EMP">
+      <element name="ID" value="employee_id"/>
+      <element name="NAME" value="employee_name" formatter="LastFirstNameFromString"/>
+      <element name="HRS" value="duration" formatter="MillsToHours" />
+      <element name="AMT" value="sales" formatter="Money"/>
+      <element name="AMT_RAW" value="sales"/>
+      <element name="AVG" value="sales_per_hour" formatter="Money"/>
+    </group>
+    <group name="G_EMP_TTL" source="Q_EMP">
+      <element name="HRS" value="duration" function="SUM" formatter="MillsToHours"/>
+      <element name="AMT" value="sales" function="SUM" formatter="Money"/>
+      <element name="AVG" value="sales_per_hour" function="SUM" formatter="Money"/>
+    </group>
+    <group name="G_MLVL1" source="Q_MLVL1">
+      <element name="ID" value="dept_id"/>
+      <element name="DESC" value="description" />
+      <element name="CNT" value="line_count" />
+      <element name="AMT" value="item_amt" formatter="Money"/>
+    </group>
+    <group name="G_MLVL1_TTL" source="Q_MLVL1">
+      <element name="CNT" value="line_count" function="SUM"/>
+      <element name="AMT" value="item_amt" function="SUM" formatter="Money"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

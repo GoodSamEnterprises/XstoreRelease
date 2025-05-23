@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore" xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+  <bean id="associatedItemsHtmlContentInfo" class="dtv.pos.html.ContentInfo">
+    <constructor-arg value="ASSOCIATED_ITEMS" />
+    <property name="dynamic" value="true" />
+    <property name="transactionBased" value="true" />
+  </bean> 
+  
+  <bean id="associatedItemsContentBuilder" class="dtv.pos.html.AssociatedItemsContentBuilder" scope="transaction" init-method="init"/>
+  
+  <bean id="itemURLInfoVisibility" class="dtv.pos.framework.form.config.SimpleFormCellVisibilityRule">
+    <constructor-arg value="true" />
+  </bean>
+
+  <bean id="digitalCartServices" class="oracle.retail.xstore.rxm.cart.DigitalCartServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="associatedItemsServices" class="oracle.retail.xstore.rxm.item.AssociatedItemsServicesImpl" scope="maybeTrainingMode" primary="true" />
+  <bean id="extendItemInfoServices" class="oracle.retail.xstore.rxm.item.ExtendItemInfoServicesImpl" scope="maybeTrainingMode" primary="true" />
+  
+  <bean id="rxmDigitalCartJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RXM_DIGITAL_CART" />
+    <property name="serviceInterface" value="com.oracle.retail.ooc.integration.services.shoppingcartservice.v1.ShoppingCartPortType" />
+    <property name="namespaceUri" value="http://www.oracle.com/retail/ooc/integration/services/ShoppingCartService/v1" />
+    <property name="serviceName" value="ShoppingCartService" />
+    <property name="portName" value="ShoppingCartPort" />
+    <property name="username" value="#{systemProperties['oracle.retail.xstore.rxm.application.username']}" />
+    <property name="password" value="#{systemProperties['oracle.retail.xstore.rxm.application.password']}" />
+    <property name="customProperties">
+      <map>
+        <entry key="weblogic.wsee.security.wss.CredentialProviderList" value-ref="rxmAuthenticationCredentialProvider" />
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="rxmAssociatedItemsJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RXM_ASSOCIATED_ITEMS" />
+    <property name="serviceInterface" value="com.oracle.retail.ooc.integration.services.targeteditemsservice.v1.TargetedItemsPortType" />
+    <property name="namespaceUri" value="http://www.oracle.com/retail/ooc/integration/services/TargetedItemsService/v1" />
+    <property name="serviceName" value="TargetedItemsService" />
+    <property name="portName" value="TargetedItemsPort" />
+    <property name="username" value="#{systemProperties['oracle.retail.xstore.rxm.application.username']}" />
+    <property name="password" value="#{systemProperties['oracle.retail.xstore.rxm.application.password']}" />
+    <property name="customProperties">
+      <map>
+        <entry key="weblogic.wsee.security.wss.CredentialProviderList" value-ref="rxmAuthenticationCredentialProvider" />
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="rxmItemInfoJaxWsServicePort" parent="standardJaxWsServicePort">
+    <property name="serviceId" value="RXM_ITEM_INFORMATION" />
+    <property name="serviceInterface" value="com.oracle.retail.ooc.integration.services.iteminformationservice.v1.ItemInformationPortType" />
+    <property name="namespaceUri" value="http://www.oracle.com/retail/ooc/integration/services/ItemInformationService/v1" />
+    <property name="serviceName" value="ItemInformationService" />
+    <property name="portName" value="ItemInformationPort" />
+    <property name="username" value="#{systemProperties['oracle.retail.xstore.rxm.application.username']}" />
+    <property name="password" value="#{systemProperties['oracle.retail.xstore.rxm.application.password']}" />
+    <property name="customProperties">
+      <map>
+        <entry key="weblogic.wsee.security.wss.CredentialProviderList" value-ref="rxmAuthenticationCredentialProvider" />
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="rxmAuthenticationCredentialProvider" class="oracle.retail.xstore.rxm.RxmCredentialFactory" factory-method="getCredentials">
+    <constructor-arg index="0" value="#{systemProperties['oracle.retail.xstore.rxm.container.username']}" />
+    <constructor-arg index="1" value="#{systemProperties['oracle.retail.xstore.rxm.container.password']}" />
+  </bean>
+  
+  <bean id="DIGITAL_CART_RETRIEVE" class="oracle.retail.xstore.rxm.cart.RetrieveDigitalCartHandler">
+    <property name="serviceId" value="RXM_DIGITAL_CART" />
+    <property name="servicePort" ref="rxmDigitalCartJaxWsServicePort" />
+    <property name="exceptionHandler" ref="digitalCartRetrieveExceptionHandler" />
+  </bean>
+  
+  <bean id="DIGITAL_CART_REMOVE" class="oracle.retail.xstore.rxm.cart.RemoveDigitalCartHandler">
+    <property name="serviceId" value="RXM_DIGITAL_CART" />
+    <property name="servicePort" ref="rxmDigitalCartJaxWsServicePort" />
+    <property name="exceptionHandler" ref="digitalCartRemoveExceptionHandler" />
+  </bean>
+
+  <bean id="ASSOCIATED_ITEMS_RETRIEVE" class="oracle.retail.xstore.rxm.item.RetrieveAssociatedItemsHandler">
+    <property name="serviceId" value="RXM_ASSOCIATED_ITEMS" />
+    <property name="servicePort" ref="rxmAssociatedItemsJaxWsServicePort" />
+    <property name="exceptionHandler" ref="associatedItemsRetrieveExceptionHandler" />
+  </bean>
+  
+  <bean id="ITEM_INFORMATION_RETRIEVE" class="oracle.retail.xstore.rxm.item.RetrieveExtendItemInfoHandler">
+    <property name="serviceId" value="RXM_ITEM_INFORMATION" />
+    <property name="servicePort" ref="rxmItemInfoJaxWsServicePort" />
+    <property name="exceptionHandler" ref="itemInfoRetrieveExceptionHandler" />
+  </bean>
+
+  <bean id="digitalCartRetrieveExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="oracle.retail.xstore.rxm.cart.DigitalCartServiceResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value="No commerce profile exists with given customer id.*" />
+              <property name="throws" value="oracle.retail.xstore.itm.exceptions.NoCustomerProfileException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value="Input validation error.*" />
+              <property name="throws" value="oracle.retail.xstore.itm.exceptions.InvalidInputException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value="No active shopping cart found for this customer." />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="itemInfoRetrieveExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="oracle.retail.xstore.rxm.item.ItemInfoServiceResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+          <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value="Input validation error.*" />
+              <property name="throws" value="oracle.retail.xstore.itm.exceptions.InvalidInputException" />
+            </bean>
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value=".*java.util.IllformedLocaleException: Ill-formed.*" />
+              <property name="throws" value="oracle.retail.xstore.itm.exceptions.IllformedLocaleException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="associatedItemsRetrieveExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="oracle.retail.xstore.rxm.item.AssociatedItemsServiceResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="code" value="NO_RECORDS_FOUND" />
+              <property name="throws" value="dtv.data2x.impl.req.NoRecordsFoundException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+  <bean id="digitalCartRemoveExceptionHandler" parent="standardServiceExceptionHandler">
+    <property name="responseAdapter">
+      <bean class="oracle.retail.xstore.rxm.cart.DigitalCartServiceResponseAdapter" />
+    </property>
+    <property name="errorHandler">
+      <bean parent="standardServiceErrorHandler">
+        <property name="errorCases">
+          <list value-type="dtv.servicex.resp.IErrorCase" merge="true">
+            <bean class="dtv.servicex.impl.resp.ErrorCase">
+              <property name="message" value="Input validation error.*" />
+              <property name="throws" value="oracle.retail.xstore.itm.exceptions.InvalidInputException" />
+            </bean>
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+  
+</beans>

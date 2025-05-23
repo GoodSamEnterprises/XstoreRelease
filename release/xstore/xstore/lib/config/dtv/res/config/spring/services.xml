@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="xstore"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <!-- Service locator for serviceHandler beans -->
+  <bean id="serviceHandlerBeanLocator" class="org.springframework.beans.factory.config.ServiceLocatorFactoryBean">
+    <property name="serviceLocatorInterface" value="dtv.servicex.ServiceHandlerBeanLocator"/>
+  </bean>
+
+  <!-- Factory -->
+  <!-- This defines the handler factory to use for all service calls. -->
+  <!-- ======= -->
+  <bean id="serviceHandlerFactory" class="dtv.servicex.impl.DefaultServiceHandlerFactory" />
+  <bean id="serviceConfigHelper" class="dtv.servicex.impl.config.req.ConfigHelper" init-method="initialize" />
+  
+  <bean id="wsLoggingHandlerResolver" class="dtv.servicex.impl.ListableHandlerResolver" scope="prototype">
+    <property name="handlers">
+      <list value-type="java.xml.ws.handler.Handler">
+        <bean class="dtv.servicex.impl.WSLoggingHandler" />
+      </list>
+    </property>
+  </bean>
+  
+  <bean abstract="true" id="standardServiceExceptionHandler" class="dtv.servicex.impl.resp.DefaultExceptionHandler">
+    <property name="errorHandler" ref="standardServiceErrorHandler" />
+  </bean>
+  
+  <bean id="standardServiceErrorHandler" class="dtv.servicex.impl.resp.ErrorHandler" scope="prototype">
+    <property name="errorCases">
+      <list value-type="dtv.servicex.resp.IErrorCase">
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="exception" value="javax.xml.ws.WebServiceException" />
+          <property name="throws" value="dtv.service.ServiceUnavailableException" />
+        </bean>
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="exception" value="com.sun.xml.internal.ws.client.ClientTransportException" />
+          <property name="throws" value="dtv.service.ServiceUnavailableException" />
+        </bean>
+        <bean class="dtv.servicex.impl.resp.ErrorCase">
+          <property name="exception" value="org.springframework.remoting.RemoteAccessException" />
+          <property name="throws" value="dtv.service.ServiceUnavailableException" />
+        </bean>
+      </list>
+    </property>
+  </bean>
+  
+  <bean abstract="true" id="standardJaxWsServicePort" class="dtv.servicex.impl.XstoreJaxWsPortFactoryBean">
+    <property name="serviceConfigHelper" ref="serviceConfigHelper" />
+    <property name="handlerResolver" ref="wsLoggingHandlerResolver" />
+    <property name="lookupServiceOnStartup" value="false" />
+  </bean>
+  
+  <bean abstract="true" id="requestRetryService" class="dtv.service.IRequestRetryService" init-method="scheduleRequestRetries" destroy-method="destroy" />
+  
+  <!-- Data -->
+  <!-- Note: DataServices is the only service that does not support an alternate training-mode
+       implementation class, and therefore should use the default scope (singleton). -->
+  <!-- ==== -->
+  <bean id="dataServices" class="dtv.data2x.impl.DataServicesImpl" />
+  
+  <!-- Please note: for all remaining service classes, please be sure to declare them using our
+       special "maybeTrainingMode" scope, as these services need to be dynamically injected (using
+       "providers") with different implementation classes depending on whether or not Xstore is in
+       training mode. -->
+             
+  <!-- Note that each "service" impl must be marked as primary so that it chosen over the training mode bean. 
+       Not marking the non-training bean as primary will cause an error wherein Spring will not be able to 
+       figure out which bean to inject. When you think about it, it does make some sense. The non-training 
+       mode primarily should be used instead of the training mode one.-->
+             
+  <!-- Customer -->
+  <!-- ======== -->
+  <bean id="customerServices" class="dtv.xst.crm.impl.CustomerServicesImpl" scope="maybeTrainingMode" primary="true" />
+   
+  <!-- Coupon / Promotion -->
+  <!-- ================== -->
+  <bean id="promotionServices" class="dtv.xst.crm.impl.PromotionServicesImpl" scope="maybeTrainingMode" primary="true" />
+      
+  <!-- Loyalty -->
+  <!-- ======= -->
+  <bean id="loyaltyServices" class="dtv.xst.crm.impl.LoyaltyServicesImpl" scope="maybeTrainingMode" primary="true" />
+    
+  <!-- Guest -->
+  <!-- ===== -->
+  <bean id="guestServices" class="dtv.xst.opera.impl.guest.GuestServicesImpl" scope="maybeTrainingMode" primary="true" />
+
+  <!-- Tasks -->
+  <!-- ========== -->
+  <bean id="taskServices" class="dtv.xst.crm.impl.task.TaskServicesImpl" scope="maybeTrainingMode" primary="true" />
+  
+  <!-- Digital Cart -->
+  <!-- ========== -->
+  <bean id="digitalCartServices" class="oracle.retail.xstore.itm.impl.DigitalCartServicesImpl" scope="maybeTrainingMode" primary="true" />
+  
+  <!-- Associated Items -->
+  <!-- ========== -->
+  <bean id="associatedItemsServices" class="oracle.retail.xstore.itm.impl.AssociatedItemsServicesImpl" scope="maybeTrainingMode" primary="true" />
+  
+  <!-- Extend Item Information -->
+  <!-- ========== -->
+  <bean id="extendItemInfoServices" class="oracle.retail.xstore.itm.impl.ExtendItemInfoServicesImpl" scope="maybeTrainingMode" primary="true" />
+  
+  <!-- Relate Gift Card Tender -->
+  <!-- ========== -->
+  <bean id="giftCardServices" class="dtv.xst.crm.relate.impl.GiftCardTenderServicesImpl" scope="maybeTrainingMode" primary="true" />
+  
+  <!-- Inventory Look-up -->
+  <bean id="inventoryLookupServices" class="oracle.retail.xstore.inv.impl.InventoryLookupServicesImpl" scope="maybeTrainingMode" primary="true" />
+  
+  <!-- Inventory Movement -->
+  <bean id="inventoryMovementServices" class="oracle.retail.xstore.inv.impl.InventoryMovementServicesImpl" scope="maybeTrainingMode" primary="true" />
+  
+  <!-- Countrypack Portugal Shipping WS -->
+  <bean id="ptShippingWSServices" class="oracle.retail.xstore.countrypack.pt.shipping.services.impl.PtShippingServiceImpl" scope="maybeTrainingMode" primary="true" />
+
+  <!-- Training Mode implementation classes -->
+  <!-- ==================================== -->  
+  <bean id="trainingCustomerServices" class="dtv.xst.crm.impl.CustomerServicesImpl" scope="prototype" />
+  <bean id="trainingRegistryServices" class="dtv.xst.crm.relate.impl.RegistryServicesImpl" scope="prototype" />
+  <bean id="trainingPromotionServices" class="dtv.xst.crm.impl.PromotionServicesImpl" scope="prototype" />
+  <bean id="trainingAttributeServices" class="dtv.xst.crm.relate.impl.AttributesServicesImpl" scope="prototype" />
+  <bean id="trainingOrderServices" class="dtv.xst.xom.locate.impl.TrainingOrderServicesImpl" scope="prototype" />
+  <bean id="trainingLoyaltyServices" class="dtv.xst.crm.impl.LoyaltyServicesImpl" scope="prototype" />
+  <bean id="trainingGuestServices" class="dtv.xst.opera.impl.guest.GuestServicesImpl" scope="prototype" />
+  <bean id="trainingTaskServices" class="dtv.xst.crm.impl.task.TaskServicesImpl" scope="prototype" />
+  <bean id="trainingGiftCardServices" class="dtv.xst.crm.relate.impl.GiftCardTenderServicesImpl" scope="prototype" />
+  <bean id="trainingInventoryLookupServices" class="oracle.retail.xstore.inv.impl.InventoryLookupServicesImpl" scope="prototype" />
+  <bean id="trainingInventoryMovementServices" class="oracle.retail.xstore.inv.impl.TrainingInventoryMovementServicesImpl" scope="prototype" />
+  <bean id="trainingDigitalCartServices" class="oracle.retail.xstore.itm.impl.DigitalCartServicesImpl" scope="prototype" />
+  <bean id="trainingExtendItemInfoServices" class="oracle.retail.xstore.itm.impl.ExtendItemInfoServicesImpl" scope="prototype" />
+
+  <bean id="trainingPtShippingWSServices" class="oracle.retail.xstore.countrypack.pt.shipping.services.impl.TrainingPtShippingServiceImpl" scope="prototype" />
+  
+  <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+    <property name="scopes">
+       <map>
+         <entry key="maybeTrainingMode">
+           <bean class="dtv.pos.spring.MaybeTrainingModeScope" />
+         </entry>
+      </map>
+    </property>
+  </bean>
+</beans>

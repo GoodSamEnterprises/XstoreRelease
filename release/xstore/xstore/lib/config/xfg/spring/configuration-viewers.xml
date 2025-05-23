@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans profile="grocery"
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd" >
+
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+<!--  context for dumping collection contents to log -->
+  <context:annotation-config/>
+  <context:property-placeholder system-properties-mode="FALLBACK" location="" />
+
+  <bean id="VIEWER_Context" class="com.micros_retail.xfgclient.spring.BeanViewer">
+    <property name="type" value="com.micros_retail.xfgclient.statemachine.context.IContext" />
+    <property name="description" value="CONTEXT REPOSITORY CONFIGURATION" />
+  </bean>
+
+  <bean id="VIEWER_ValidationRuleList" class="com.micros_retail.xfgclient.spring.BeanViewer">
+    <property name="type" value="com.micros_retail.xfgclient.validation.XfgValidationRuleList" />
+    <property name="description" value="VALIDATION RULE LIST REPOSITORY CONFIGURATION" />
+  </bean>
+
+  <bean id="VIEWER_TransitionChain" class="com.micros_retail.xfgclient.spring.BeanViewer">
+    <property name="type" value="com.micros_retail.xfgclient.transition.ITransitionChain" />
+    <property name="description" value="TRANSITON CHAIN REPOSITORY CONFIGURATION" />
+  </bean>
+
+  <bean id="VIEWER_NamedBeans" class="com.micros_retail.xfgclient.spring.BeanDescriptionViewer">
+    <property name="type" value="com.micros_retail.xfgclient.spring.IXfgNamedBean" />
+    <property name="description" value="ALL SPRING CONFIGURED SINGLETONS CONFIGURATION" />
+  </bean>
+</beans>

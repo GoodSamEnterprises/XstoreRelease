@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">INVENTORY_ITEM_TRANSFER_HEADER</FormKey>
+    <FormLocation dtype="String">MESSAGE_AREA</FormLocation>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--10.0, PREFERRED, FILL, FILL, 10.0-->
+          <param_value dtype="DoubleArray">10.0, -2.0, -2.0, -1.0, 10.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, 20.0, PREFERRED, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, 20.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 5, 1, C, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_inventoryLocations</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell resourceLink="fromLocationAndBucket">
+        <LayoutLocation dtype="String">1, 2, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_itemTransferFrom</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">fromLocationAndBucket</Resource>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell resourceLink="toLocationAndBucket">
+        <LayoutLocation dtype="String">1, 3, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabelDiminished</Type>
+        <TextKey dtype="Translatable">_itemTransferTo</TextKey>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 3, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <Resource dtype="String">toLocationAndBucket</Resource>
+        <Font fontStyle="BOLD" fontSize="+4" />
+      </FormViewCell>
+    </FormViewPanel>
+  </FormView>
+</FormViewSet>

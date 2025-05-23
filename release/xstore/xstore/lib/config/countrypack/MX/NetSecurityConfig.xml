@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NetSecurityConfig xmlns="http://micros.com/xstore/config/netsecurity" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="NetSecurityConfig.xsd">
+
+  <ContextMapping>
+    <mapping threadcontext="oracle.retail.xstore.countrypack.mx.services.client.konesh" settings="KONESH" />
+  </ContextMapping>
+  
+  <!-- Enabling AES128 ciphers should be Ok, because no cardholder data is transmitted to/from external systems. -->
+  <ContextSetting name="KONESH" extends="EXTERNAL_INTEGRATION">
+  	<CipherSuite enabled="true" priority="400" name="TLS_RSA_WITH_AES_128_CBC_SHA" />
+  </ContextSetting>
+
+</NetSecurityConfig>

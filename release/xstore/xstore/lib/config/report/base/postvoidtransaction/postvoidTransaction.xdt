@@ -1,0 +1,144 @@
+<dataTemplate name="PostVoidTransaction" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+    
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="DISPLAY_OPTION" value="_rptDisplayOptionColon"/>
+    <label name="DATE" value="_rptDate"/>
+    <label name="SUMMARY" value="_rptSummary"/>
+    <label name="DETAIL" value="_rptDetail"/>    
+    <label name="SUMMARY_AND_DETAIL" value="_rptSummaryAndDetailOption"/>
+    <label name="DASH_DELIMITER_WITH_SPACE" value="_rptDashDelimiterWithSpace"/>
+
+    <label name="TRANS" value="_rptTransaction"/>
+    <label name="TRAN_TIME" value="_rptTransactionTime"/>
+    <label name="TRAN_TIME_COLON" value="_rptTransactionColon"/>
+    <label name="REG_NO" value="_rptRegister"/>
+    <label name="CASHIER" value="_rptCashier"/>
+    <label name="REASON_CODE" value="_rptReasonCode"/>
+    <label name="SUB_TOTAL" value="_rptSubTotal"/>
+    <label name="TAX" value="_rptTax"/>
+    <label name="TAX_COLON" value="_rptTaxColon"/>    
+    <label name="NET" value="_rptNetSales"/>
+    <label name="TOT" value="_rptTotal"/>
+    <label name="TOTAL_COLON" value="_rptTotalColon"/>
+    <label name="ITEM" value="_rptItem"/>
+    <label name="QUANTITY" value="_rptQuantity"/>
+    <label name="SELLING_PRICE" value="_rptSellingPrice"/>
+    <label name="EXT_PRICE" value="_rptExtPrice"/>
+  </labels>
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="displayOption" class="java.lang.String" isForPrompting="true" include_in_output="true" translation-prefix="_rptDisplayOptions.">
+      <parameterDescription><![CDATA[_rptDisplayOptions;Combo;dtv.pos.reporting.fill.SoftEnumFactory;SUMMARY=_rptSummaryOption|DETAIL=_rptDetailOption|SUMMARY_AND_DETAIL=_rptSummaryAndDetailOption]]></parameterDescription>
+       <defaultValueExpression><![CDATA["SUMMARY"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_POST_VOID_TRANSACTION_SUMMARY" key="POST_VOID_TRANSACTION_SUMMARY_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>       
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>transaction_number</ResultField>
+        <ResultField>associate_no</ResultField>
+        <ResultField>register_no</ResultField>
+        <ResultField>transaction_time</ResultField>
+        <ResultField>reason_code_desc</ResultField>
+        <ResultField>tax</ResultField>
+        <ResultField>sub_total</ResultField>
+        <ResultField>total</ResultField>
+      </ResultFields>
+    </queryReference>
+    <queryReference name="Q_POST_VOID_TRANSACTION_DETAIL" key="POST_VOID_TRANSACTION_DETAIL_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocationId</Parameter>       
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+        <Parameter>displayOption</Parameter>
+      </Parameters>
+      <ResultFields>
+        <ResultField>transaction_number</ResultField>
+        <ResultField>associate_no</ResultField>
+        <ResultField>register_no</ResultField>
+        <ResultField>transaction_time</ResultField>
+        <ResultField>reason_code_desc</ResultField>
+        <ResultField>itemid</ResultField>
+        <ResultField>itemdesc</ResultField>
+        <ResultField>quantity</ResultField>
+        <ResultField>unitprice</ResultField>
+        <ResultField>tax</ResultField>
+        <ResultField>netamount</ResultField>
+        <ResultField>total</ResultField>s
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_POST_VOID_TRANSACTION_SUMMARY" source="Q_POST_VOID_TRANSACTION_SUMMARY">
+        <element name="TRAN_ID"     value="transaction_number"/>
+        <element name="CASHIER_ID"  value="associate_no"/>
+        <element name="REG_NO"      value="register_no"/>
+        <element name="TRAN_TIME"   value="transaction_time" formatter="DateTimeMedium"/>
+        <element name="REASON_CODE" value="reason_code_desc"/>
+        <element name="TAX"         value="tax"              formatter="Money"/>
+        <element name="SUB_TOTAL"   value="sub_total"        formatter="Money"/>
+        <element name="TOT"         value="total"            formatter="Money"/>
+    </group>
+    <group name="G_POST_VOID_TRANSACTION_SUMMARY_TOTALS" source="Q_POST_VOID_TRANSACTION_SUMMARY">
+        <element name="TAX"         value="tax"       function="SUM" formatter="Money"/>  
+        <element name="SUB_TOTAL"   value="sub_total" function="SUM" formatter="Money"/>
+        <element name="TOT"         value="total"     function="SUM" formatter="Money"/>
+    </group>    
+    <group name="G_POST_VOID_TRANSACTION_DETAIL" source="Q_POST_VOID_TRANSACTION_DETAIL">
+        <element name="TRAN_ID"     value="transaction_number"/>
+        <element name="CASHIER_ID"  value="associate_no"/>
+        <element name="REG_NO"      value="register_no"/>
+        <element name="TRAN_TIME"   value="transaction_time" formatter="DateTimeMedium"/>
+        <element name="REASON_CODE" value="reason_code_desc"/>
+        <element name="ITEM_ID"     value="itemid"/>
+        <element name="DESC"        value="itemdesc"/>
+        <element name="QTY"         value="quantity"/>
+        <element name="S_PRICE"     value="unitprice" formatter="Money"/>
+        <element name="TAX"         value="tax"       formatter="Money"/>
+        <element name="NET"         value="netamount" formatter="Money"/>
+        <element name="TOT"         value="total"     formatter="Money"/>
+    </group>    
+    <group name="G_POST_VOID_TRANSACTION_DETAIL_TOTALS" source="Q_POST_VOID_TRANSACTION_DETAIL">
+        <element name="TRAN_ID"    group-by="true" value="transaction_number"/>
+        <element name="CASHIER_ID" group-by="true" value="associate_no"/>
+        <element name="REG_NO"     group-by="true" value="register_no"/>
+        <element name="TRAN_TIME"  group-by="true" value="transaction_time" formatter="DateTimeMedium"/>
+        <element name="REASON"     group-by="true" value="reason_code_desc"/>
+        <element name="QTY"        function="SUM"  value="quantity"/>
+        <element name="NET"        function="SUM"  value="netamount"  formatter="Money" />
+    </group>
+  </dataStructure>
+</dataTemplate>

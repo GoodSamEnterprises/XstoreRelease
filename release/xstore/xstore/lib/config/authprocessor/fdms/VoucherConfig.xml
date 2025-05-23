@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Vouchers dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="VoucherConfig.xsd">
+  <!-- **************XPAY_GIFT_CARD****************************************************** -->
+  <!-- ****  voucher type ************************************ -->
+  <!-- ******************************************************************** -->
+  <Voucher name="XPAY_GIFT_CARD">
+    <VoucherCategory dtype="String">GIFT_CARD</VoucherCategory>
+    <Description dtype="Translatable">_giftcardtender</Description>
+    <AllowIssueAndRedeemInSameTransaction dtype="Boolean">false</AllowIssueAndRedeemInSameTransaction>
+    <AutoGenerateSerial dtype="Boolean">false</AutoGenerateSerial>
+    <NumberOfDaysToExpire dtype="Integer">0</NumberOfDaysToExpire>
+    <Activity name="ISSUED">
+      <TenderId dtype="String">ISSUE_XPAY_GIFT_CARD</TenderId>
+      <ItemId dtype="String">1500</ItemId>
+      <ItemId dtype="String">1501</ItemId>
+      <ItemId dtype="String">1502</ItemId>
+      <ItemId dtype="String">1503</ItemId>
+      <ItemId dtype="String">1504</ItemId>
+      <ItemId dtype="String">2001</ItemId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <MaximumNumberPerTransaction dtype="Integer">1</MaximumNumberPerTransaction>
+      <MinimumAmount dtype="BigDecimal">0</MinimumAmount>
+      <MaximumAmount dtype="BigDecimal">1000</MaximumAmount>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="REDEEMED">
+      <TenderId dtype="String">XPAY_GIFT_CARD</TenderId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="CASHOUT">
+      <TenderId dtype="String">XPAY_GIFT_CARD</TenderId>
+      <ItemId dtype="String">1500</ItemId>
+      <ItemId dtype="String">1501</ItemId>
+      <ItemId dtype="String">1502</ItemId>
+      <ItemId dtype="String">1503</ItemId>
+      <ItemId dtype="String">1504</ItemId>
+      <ItemId dtype="String">2001</ItemId>
+      <MultipleAllowed dtype="Boolean">true</MultipleAllowed>
+      <RequireInputEvent dtype="Boolean">false</RequireInputEvent>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+      <PromptForAmount dtype="Boolean">false</PromptForAmount>
+    </Activity>
+    <Activity name="RELOAD">
+      <TenderId dtype="String">RELOAD_XPAY_GIFT_CARD</TenderId>
+      <ItemId dtype="String">1505</ItemId>
+      <ItemId dtype="String">2001</ItemId>
+      <ValidateLocalBalance dtype="Boolean">false</ValidateLocalBalance>
+    </Activity>
+    <Activity name="INQUIRE_BALANCE">
+      <TenderId dtype="String">XPAY_GIFT_CARD</TenderId>
+      <RequiresTransaction dtype="Boolean">true</RequiresTransaction>
+    </Activity>
+  </Voucher>
+</Vouchers>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="OpChainConfig.xsd">
+
+  <OpChain name="WORKSTATION_OPEN_EXT.local.2">
+    <Op class="oracle.retail.xstore.countrypack.de.systemcycle.op.DailyResetSequenceOp" >
+      <Parameter name="QueryKey" value="COUNTRYPACK.WKSTN_LAST_OPEN_DATE" />
+      <Parameter name="SequenceType" value="COUNTRYPACK.DE.INVOICE" />
+      <Parameter name="ResultField" value="Date" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.pre">
+    <Op class="oracle.retail.xstore.countrypack.de.register.op.DeAssignSequenceFiscalOp">
+      <Parameter name="PeekSequence" value="true" />
+      <Parameter name="HandleSequence" value="true" />
+      <Parameter name="SequenceName" value="COUNTRYPACK.DE.INVOICE" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.FISCAL.AFTER_TRAN_SAVE">
+    <Op class="oracle.retail.xstore.countrypack.de.register.op.DeAssignSequenceFiscalOp">
+      <Parameter name="SequenceName" value="COUNTRYPACK.DE.INVOICE" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.DE.GENERATE_GOBD_DATA">
+    <Op class="oracle.retail.xstore.countrypack.de.gobd.DeGobdSelectParamsOp" />
+    <Op class="dtv.pos.common.op.DisablePromptActionsOp" />
+    <Op class="oracle.retail.xstore.countrypack.de.gobd.DeGobdGenerateOp" longRunning="true" />
+    <OpChainRoute chainKey="COUNTRYPACK.DE.GENERATE_GOBD_SUMMARY_REPORT" chainType="STACK" condition="oracle.retail.xstore.countrypack.de.gobd.generate.report.DeGobdReportRunCondition" />
+    <OpChainRoute chainKey="COUNTRYPACK.DE.GENERATE_GOBD_DETAIL_REPORT" chainType="STACK" condition="oracle.retail.xstore.countrypack.de.gobd.generate.report.DeGobdReportRunCondition" />
+    <Op class="oracle.retail.xstore.countrypack.de.gobd.DeGobdGenerateInfoOp" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.DE.GENERATE_GOBD_SUMMARY_REPORT">
+    <Op class="dtv.pos.reporting.LoadReportOp" longRunning="true" >
+      <Parameter name="reportName" value="COUNTRYPACK.DE.GOBD_SUMMARY_REPORT" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.de.gobd.generate.report.DeGobdSetReportDataSourceOp" />
+    <Op class="dtv.pos.reporting.fill.FillReportNoUiOp" longRunning="true" />
+    <Op class="oracle.retail.xstore.countrypack.de.gobd.generate.report.DeGobdSaveReportPdfOp" >
+      <Parameter name="reportName" value="ExportLogFile" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.DE.GENERATE_GOBD_DETAIL_REPORT">
+    <Op class="dtv.pos.reporting.LoadReportOp" longRunning="true" >
+      <Parameter name="reportName" value="COUNTRYPACK.DE.GOBD_DETAIL_REPORT" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.de.gobd.generate.report.DeGobdSetReportDataSourceOp" />
+    <Op class="dtv.pos.reporting.fill.FillReportNoUiOp" longRunning="true" />
+    <Op class="oracle.retail.xstore.countrypack.de.gobd.generate.report.DeGobdSaveReportPdfOp" >
+      <Parameter name="reportName" value="ExportDescription" />
+    </Op>
+  </OpChain>
+
+</OpChainSet>

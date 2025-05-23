@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/query/QueryConfig.xsd">
+  <Query name="ORDER_SEARCH" pmType="ORDER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.xom.impl.order.lookup.OrderQueryResult</ResultClass>
+    <ResultField name="OrganizationId" type="Long" />
+    <ResultField name="OrderId" type="String" />
+    <ResultField name="FirstName" type="String" />
+    <ResultField name="LastName" type="String" />
+    <ResultField name="OrderDate" type="Date" />
+    <ResultField name="OrderStatus" type="String" />
+    <ResultField name="OrderType" type="String" />
+    <ResultField name="Telephone" type="String" />
+    <ResultField name="OrderLocationId" type="String" />
+    <ResultField name="UnderReview" type="Boolean" />
+    <ResultField name="ShippingNecessary" type="Boolean" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[        
+          SELECT xom_order.organization_id,
+                 xom_order.order_id,
+                 cust.first_name,
+                 cust.last_name,
+                 xom_order.order_date,
+                 xom_order.status_code,
+                 xom_order.order_type,
+                 cust.telephone1,
+                 xom_order.order_loc_id,
+                 xom_order.under_review_flag,
+                 CASE WHEN ship_order.order_id is null 
+                      THEN 'FALSE' 
+                      ELSE 'TRUE' 
+                 END as shipping_necessary_flag
+            FROM xom_order  
+            LEFT JOIN xom_customer_mod cust
+              ON xom_order.organization_id = cust.organization_id 
+             AND xom_order.order_id = cust.order_id
+            LEFT JOIN (SELECT line.organization_id, line.order_id 
+                         FROM xom_order_line line 
+                         LEFT JOIN xom_source_mod src
+                           ON src.order_id = line.order_id
+                          AND src.organization_id = line.organization_id
+                          AND src.detail_seq = line.detail_seq
+                         LEFT JOIN xom_fulfillment_mod ful
+                           ON ful.order_id = line.order_id
+                          AND ful.organization_id = line.organization_id
+                          AND ful.detail_seq = line.detail_seq
+                        WHERE line.void_flag = 0
+                          AND (ful.LOC_ID is null OR /*UPPER*/ ful.LOC_ID <> /*UPPER*/ src.LOC_ID)
+                        GROUP BY line.organization_id, line.order_id) ship_order
+              ON xom_order.organization_id = ship_order.organization_id 
+             AND xom_order.order_id = ship_order.order_id
+           WHERE xom_order.organization_id = ?
+             AND /*UPPER*/ xom_order.status_code <> 'SUSPENDED'        
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Expression trigger="argOrderId"><![CDATA[xom_order.order_id = ?]]></Expression>
+      <Expression trigger="argOrderLocId"><![CDATA[/*UPPER*/ xom_order.order_loc_id = ?]]></Expression>
+      <Expression parameters="argOrderDate, argEndOfOrderDate" trigger="argOrderDate"><![CDATA[xom_order.order_date BETWEEN ? AND ?]]></Expression>
+      <Expression trigger="argOrderType"><![CDATA[/*UPPER*/ xom_order.order_type = ?]]></Expression>
+      <Expression trigger="@argOrderTypes"><![CDATA[/*UPPER*/ xom_order.order_type IN ?]]></Expression>
+      <Expression trigger="argNotOrderType"><![CDATA[/*UPPER*/ xom_order.order_type <> ?]]></Expression>
+      <Expression trigger="argOrderStatus"><![CDATA[/*UPPER*/ xom_order.status_code = ?]]></Expression>
+      <Expression trigger="@argStatusCodes"><![CDATA[/*UPPER*/ xom_order.status_code IN ?]]></Expression>
+      <Expression trigger="@argNotStatusCodes"><![CDATA[/*UPPER*/ xom_order.status_code NOT IN ?]]></Expression>
+      <Expression parameters="argFirstName%" trigger="argFirstName"><![CDATA[/*UPPER*/ cust.first_name LIKE ?]]></Expression>
+      <Expression parameters="argLastName%" trigger="argLastName"><![CDATA[/*UPPER*/ cust.last_name LIKE ?]]></Expression>
+      <Expression parameters="argTelephone, argTelephone" trigger="argTelephone"><![CDATA[/*UPPER*/ cust.telephone1 = ? OR /*UPPER*/ cust.telephone2 = ?]]></Expression>
+      <Expression trigger="argSourceLocationId"><![CDATA[
+                  EXISTS (SELECT order_id 
+                    FROM xom_source_mod 
+                   WHERE xom_source_mod.organization_id = xom_order.organization_id
+                     AND xom_source_mod.order_id = xom_order.order_id
+                     AND /*UPPER*/ xom_source_mod.loc_id = ?)
+      ]]></Expression>
+      <Expression trigger="@argLineStatuses"><![CDATA[
+                  EXISTS (SELECT order_id
+                    FROM xom_order_line
+                   WHERE xom_order_line.organization_id = xom_order.organization_id
+                     AND xom_order_line.order_id = xom_order.order_id
+                     AND /*UPPER*/ xom_order_line.status_code IN ?)
+      ]]></Expression>
+      <Expression trigger="argWorklistSourceLocationId"><![CDATA[
+                  EXISTS (SELECT line.order_id 
+                    FROM xom_order_line line 
+                    LEFT JOIN xom_source_mod src
+                      ON src.order_id = line.order_id
+                     AND src.organization_id = line.organization_id
+                     AND src.detail_seq = line.detail_seq
+                    LEFT JOIN xom_fulfillment_mod ful
+                      ON ful.order_id = line.order_id
+                     AND ful.organization_id = line.organization_id
+                     AND ful.detail_seq = line.detail_seq
+                   WHERE line.organization_id = xom_order.organization_id
+                     AND line.order_id = xom_order.order_id
+                     AND /*UPPER*/ src.loc_id = ?
+                     AND line.void_flag = 0
+                     AND (/*UPPER*/ line.status_code IN ('POLLED', 'ACCEPTED') OR ((/*UPPER*/ line.status_code = 'RESERVED') AND (ful.loc_id IS NULL OR /*UPPER*/ src.loc_id <> /*UPPER*/ ful.loc_id))))
+      ]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="ORDER_LINES_SEARCH" pmType="ORDER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.xom.OrderLineId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+         WHERE t.organization_id = ?
+           AND t.order_id IN ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="@argOrderIds" />
+      <Expression trigger="@argLineStatuses"><![CDATA[/*UPPER*/ status_code IN ?]]></Expression>
+    </SQL>
+  </Query>
+
+  <Query name="ORDER_LINES_SEARCH_BY_ORDER_ID" pmType="ORDER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.DtxQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.dao.xom.OrderLineId</ResultClass>
+    <SQL>
+      <WhereClause dtype="String"><![CDATA[
+         WHERE t.organization_id = ?
+         AND t.order_id = ?
+      ]]></WhereClause>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrderId" />
+    </SQL>
+  </Query>
+
+  <!-- The query returns the total quantity of order items that require receiving in an order grouped by item ids -->
+  <Query name="RECEIVING_ORDER_LINES_BY_ORDER_ID_ITEM_GROUP" pmType="ORDER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.xom.impl.order.lookup.OrderLineQueryResult</ResultClass>
+    <ResultField name="OrderId" />
+    <ResultField name="ItemId" />
+    <ResultField name="TotalQuantity" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+         SELECT MAX(line.order_id) as OrderId, MAX(line.item_id) as ItemId, SUM(line.quantity) as TotalQuantity
+          FROM xom_order_line line
+          LEFT JOIN xom_source_mod src
+            ON src.order_id = line.order_id
+           AND src.organization_id = line.organization_id
+           AND src.detail_seq = line.detail_seq
+          LEFT JOIN xom_fulfillment_mod ful
+            ON ful.order_id = line.order_id
+           AND ful.organization_id = line.organization_id
+           AND ful.detail_seq = line.detail_seq
+         WHERE line.organization_id = ?
+           AND line.order_id = ?
+           AND line.void_flag = 0
+           AND /*UPPER*/ line.status_code NOT IN ('CANCELLED', 'UNFULFILLABLE')
+           AND /*UPPER*/ ful.LOC_ID = ?
+           AND /*UPPER*/ ful.LOC_ID <> /*UPPER*/ src.LOC_ID
+         GROUP BY line.item_id
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argOrderId" />
+      <Parameter name="argFulfillingLocationId" />
+    </SQL>
+  </Query>
+
+  <Query name="POLLED_ORDER_SEARCH" pmType="ORDER">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.xom.impl.order.lookup.AcceptedOrderQueryResult</ResultClass>
+    <ResultField name="OrganizationId" />
+    <ResultField name="OrderId" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+          SELECT xom_order.organization_id,
+                 xom_order.order_id 
+            FROM xom_order 
+           WHERE xom_order.organization_id = ?
+             AND /*UPPER*/ xom_order.status_code <> 'SUSPENDED'  
+             AND EXISTS (SELECT line.order_id 
+                    FROM xom_order_line line 
+                    LEFT JOIN xom_source_mod src
+                      ON src.order_id = line.order_id
+                     AND src.organization_id = line.organization_id
+                     AND src.detail_seq = line.detail_seq
+                   WHERE line.organization_id = xom_order.organization_id
+                     AND line.order_id = xom_order.order_id
+                     AND /*UPPER*/ src.loc_id = ?
+                     AND line.void_flag = 0
+                     AND /*UPPER*/ line.status_code = 'POLLED') 
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argSourceLocationId" />
+    </SQL>
+  </Query>
+
+  <Query name="ITEM_DIMENSION_VALUE_SEARCH" pmType="ITEM">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.xst.query.results.ItemDimensionValueQueryResult</ResultClass>
+    <ResultField name="Dimension" />
+    <ResultField name="Value" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+         SELECT itm_item_dimension_value.dimension as Dimension, itm_item_dimension_value.value as Value
+         FROM itm_item_dimension_value
+         
+         WHERE itm_item_dimension_value.organization_id = ?
+         AND itm_item_dimension_value.dimension_system = ?
+             
+      ]]></Statement>
+      <Parameter name="argOrganizationId" />
+      <Parameter name="argDimensionSystem" />
+    </SQL>
+  </Query>
+
+</QuerySet>

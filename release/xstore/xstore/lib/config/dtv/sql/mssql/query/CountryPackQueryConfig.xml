@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuerySet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QueryConfig.xsd">
+
+  <Query name="COUNTRYPACK.ES.SII_ERRORS" pmType="REPORTS">
+    <QueryHandler dtype="Class">dtv.data2.access.query.SqlQueryHandler</QueryHandler>
+    <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+    <ResultField name="organization_id" type="Long" />
+    <ResultField name="rtl_loc_id" type="Long" />
+    <ResultField name="business_date" type="Date" />
+    <ResultField name="wkstn_id" type="Integer" />
+    <ResultField name="trans_seq" type="Integer" />
+    <ResultField name="ES_SII_FILE_NAME" type="String" />
+    <ResultField name="ES_DOCUMENT_NUMBER" type="String" />
+    <ResultField name="ES_SII_ERROR_STATUS" type="String" />
+    <ResultField name="ES_SII_ERROR_DESCRIPTION" type="String" />
+    <SQL>
+      <Statement dtype="String"><![CDATA[
+        WITH error_report AS
+        (
+          SELECT *
+          FROM
+          (
+            SELECT 
+              organization_id, 
+              rtl_loc_id, 
+              business_date, 
+              wkstn_id, 
+              trans_seq, 
+              string_value, 
+              property_code
+            FROM trn_trans_p tmp
+          ) as tmp
+          PIVOT
+          (
+            MAX(string_value)
+            FOR property_code IN (
+                                  [ES_SII_FILE_NAME], 
+                                  [ES_DOCUMENT_NUMBER], 
+                                  [ES_SII_ERROR_STATUS], 
+                                  [ES_SII_ERROR_DESCRIPTION]
+                                )
+          ) as tmp
+        ) 
+        
+        SELECT * 
+        FROM error_report
+        WHERE ES_SII_ERROR_STATUS IS NOT NULL
+        AND organization_id = ?
+        AND rtl_loc_id = ?
+    
+      ]]></Statement>
+      <Parameter name="organizationId" />
+      <Parameter name="retailLocationId" />
+      <Expression trigger="argBusinessDateStart" parameters="argBusinessDateStart, argBusinessDateEnd"><![CDATA[business_date BETWEEN ? AND ?]]></Expression>
+    </SQL>
+   <Suffix dtype="String"><![CDATA[ORDER BY business_date, ES_SII_FILE_NAME, ES_DOCUMENT_NUMBER]]></Suffix>
+  </Query>
+
+
+</QuerySet>

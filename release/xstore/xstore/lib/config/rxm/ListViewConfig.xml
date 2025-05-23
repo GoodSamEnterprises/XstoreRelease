@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../pos/config/dtv/res/config/ListViewConfig.xsd">
+  <Header name="DIGITAL_CART_LIST">
+    <Row>
+      <Column start="0" width="20" translatable="_digitalCartItemId" />
+      <Column start="20" width="40" translatable="_digitalCartItemDescription" />
+      <Column start="60" width="15" translatable="_digitalCartItemQuantity" alignment="CENTER" />
+      <Column start="75" width="12" translatable="_digitalCartItemInStock" alignment="CENTER" />
+      <Column start="87" width="13" translatable="_digitalCartItemOrderAllow" alignment="CENTER" />
+    </Row>
+  </Header>
+  <Element name="DIGITAL_CART_LIST">
+    <Row>
+      <Column start="0" width="20" method="getItemId" />
+      <Column start="20" width="40" method="getDescription" />
+      <Column start="60" width="15" method="getQuantity" alignment="CENTER" formatter="Integer" />
+      <Column start="75" width="12" method="getInStockQty" alignment="CENTER" formatter="Integer" />
+      <Column start="87" width="13" alignment="CENTER">
+        <CellDataHandlerFactoryClass dtype="Class">dtv.pos.framework.ui.listview.NamedIconColumnDataHandler</CellDataHandlerFactoryClass>
+        <EvaluatedFormattable method="isDisallowOrder" />
+        <Parameter name="false">
+          <param_value dtype="IconRef">_imageListCheckMark</param_value>
+        </Parameter>
+      </Column>
+    </Row>
+  </Element>
+  <Header name="DIGITAL_CART_ITEM_SELECTION">
+    <Row>
+      <Column start="0" width="30" translatable="_digitalCartItemId" />
+      <Column start="30" width="50" translatable="_digitalCartItemDescription" />
+      <Column start="80" width="20" translatable="_digitalCartItemQuantity" alignment="CENTER" />
+    </Row>
+  </Header>
+  <Element name="DIGITAL_CART_ITEM_SELECTION">
+    <Row>
+      <Column start="0" width="30" method="getItemId" />
+      <Column start="30" width="50" method="getDescription" />
+      <Column start="80" width="20" method="getQuantity" alignment="CENTER"  formatter="Integer" />
+    </Row>
+  </Element>
+</ListView>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="BodyPanel">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="NorthPanel"/>
+                <xs:element ref="CenterPanel"/>
+                <xs:element ref="WestPanel"/>
+                <xs:element ref="EastPanel"/>
+                <xs:element ref="SouthPanel"/>
+            </xs:sequence>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="xsi:noNamespaceSchemaLocation" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="CenterPanel">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="columns"/>
+                <xs:element ref="rows"/>
+                <xs:element ref="Icon"/>
+                <xs:element ref="CopyrightNotice"/>
+            </xs:sequence>
+            <xs:attribute name="enabled" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="Debug.Outline" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="column">
+        <xs:complexType>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required" fixed="double"/>
+            <xs:attribute name="value" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="columns">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="column" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="CopyrightNotice">
+        <xs:complexType>
+            <xs:attribute name="Layout" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="EastPanel">
+        <xs:complexType>
+            <xs:attribute name="Icon" type="xs:string" use="required"/>
+            <xs:attribute name="enabled" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="Debug.Outline" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="HeaderBar">
+        <xs:complexType>
+            <xs:attribute name="Layout" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Icon">
+        <xs:complexType>
+            <xs:attribute name="Icon" type="xs:string" use="optional"/>
+            <xs:attribute name="name" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="Layout" type="xs:string" use="optional"/>
+            <xs:attribute name="path" type="xs:string" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="NorthPanel">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="columns"/>
+                <xs:element ref="rows"/>
+                <xs:element ref="HeaderTitle"/>
+                <xs:element ref="HeaderBar"/>
+                <xs:element ref="Icon" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="enabled" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="Debug.Outline" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="row">
+        <xs:complexType>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="required" fixed="double"/>
+            <xs:attribute name="value" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:NMTOKEN">
+                        <xs:enumeration value="-1.0"/>
+                        <xs:enumeration value="-2.0"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="rows">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="row" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="dtype" type="xs:NMTOKEN" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="SouthPanel">
+        <xs:complexType>
+            <xs:attribute name="enabled" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="Debug.Outline" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="WestPanel">
+        <xs:complexType>
+            <xs:attribute name="Icon" type="xs:string" use="required"/>
+            <xs:attribute name="enabled" type="xs:NMTOKEN" use="required"/>
+            <xs:attribute name="Debug.Outline" type="xs:NMTOKEN" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

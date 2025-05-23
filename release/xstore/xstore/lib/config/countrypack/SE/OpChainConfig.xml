@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="OpChainConfig.xsd">
+
+  <OpChain name="WORKSTATION_CLOSE" contextKey="WORKSTATION_CLOSE">
+    <OpChainRoute chainKey="WORKSTATION_CLOSE_IMPL" />
+    <OpChainRoute chainKey="RETURN_TO_LOGIN" />
+  </OpChain>
+
+  <OpChain name="WORKSTATION_CLOSE_IMPL" contextKey="WORKSTATION_CLOSE" signal="TransactionComplete" rollbackChainKey="ROLLBACK_WORKSTATION_CLOSE_TRANS">
+    <Op class="dtv.pos.register.itemmessages.DefaultIdleMsgOp" />
+    <ValidationOp validationsBean="closeWorkstationRules" />
+    <PromptOp class="dtv.pos.systemcycle.close.PromptToCloseOp" key="CLOSE_WORKSTATION" />
+    <OpChainRoute chainKey="EXT_WORKSTATION_CLOSE_CHECK" />
+    <OpChainRoute chainKey="WORKSTATION_CLOSE.local" />
+    <OpChainRoute>
+      <Choice chainKey="REGISTER_CLOSING_NO_COUNT" condition="dtv.pos.till.rollingclose.RollingCloseRunCondition" />
+      <Choice chainKey="REGISTER_CLOSING_WITH_COUNT" condition="dtv.pos.till.rollingclose.NonRollingCloseRunCondition" />
+    </OpChainRoute>
+    <PromptOp class="dtv.pos.systemcycle.questions.PromptCycleQuestionsOp">
+      <Parameter name="QuestionType" value="WORKSTATION_CLOSE" />
+    </PromptOp>
+    <Op class="dtv.pos.systemcycle.workstation.CreateCloseTransactionOp" />
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+    <OpChainRoute chainKey="COUNTRYPACK.ZREPORT" />
+    <OpChainRoute chainKey="NOTIFY_CLOSE_WORKSTATION" />
+    <WorkerOp workersBean="registerCloserWorkers" />
+    <PromptOp class="dtv.pos.systemcycle.workstation.PromptToReopenRegisterOp">
+      <Parameter name="ChainKey" value="WORKSTATION_OPEN"/>
+    </PromptOp>
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.pre">
+    <Op class="oracle.retail.xstore.countrypack.common.op.AssignSequenceFiscalOp">
+      <Parameter name="PeekSequence" value="true" />
+      <Parameter name="HandleSequence" value="true" />
+      <Parameter name="SequenceName" value="COUNTRYPACK_SE_RECEIPT_SEQ" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.local.1">
+    <Op class="oracle.retail.xstore.countrypack.se.register.op.SignTransactionSeOp" />
+  </OpChain>
+
+  <OpChain name="SALE_COMPLETE_FINISH.FISCAL.AFTER_TRAN_SAVE">
+    <Op class="oracle.retail.xstore.countrypack.common.op.AssignSequenceFiscalOp">
+      <Parameter name="SequenceName" value="COUNTRYPACK_SE_RECEIPT_SEQ" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="REPRINT_RECEIPT">
+    <ValidationOp validationsBean="receiptReprintRules" />
+    <PromptOp class="dtv.pos.framework.op.PromptYesNoOp" key="REPRINT_RECEIPT" />
+    <Op class="dtv.pos.hardware.op.BuildTenderFrankingsOnSelectedTransactionOp" />
+    <PromptOp class="dtv.pos.register.reprint.PromptRefrankDocsOp" />
+    <OpChainRoute>
+      <Choice chainKey="REPRINT_PREPARE_RECEIPTS_X_REPORT" condition="oracle.retail.xstore.countrypack.se.IsXReportRunCondition" />
+      <Choice chainKey="REPRINT_PREPARE_RECEIPTS" />
+    </OpChainRoute>
+    <OpChainRoute chainKey="REPRINT_EJ_RECEIPTS.local" />
+    <Op class="dtv.pos.hardware.op.FrankTendersOp" />
+    <Op class="dtv.pos.hardware.op.PrintRcptsOp" />
+    <OpChainRoute chainKey="PRINT_DOCUMENTS" />
+    <Op class="dtv.pos.hardware.op.WaitForRcptPrintOp" required="false" />
+    <OpChainRoute chainKey="PRINT_FISCAL_RECEIPTS.local" />
+  </OpChain>
+
+  <OpChain name="REPRINT_PREPARE_RECEIPTS_X_REPORT">
+    <Op class="dtv.pos.register.reprint.GetReprintRcptsOp" />
+  </OpChain>
+
+  <OpChain name="REPRINT_PREPARE_RECEIPTS">
+    <Op class="oracle.retail.xstore.countrypack.se.register.op.SignTransactionSeOp" >
+      <Parameter name="isCopy" value="true" />
+    </Op>
+    <Op class="dtv.pos.register.reprint.GetReprintRcptsOp" >
+      <Parameter name="tryLookup" value="false" />
+    </Op>
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.XREPORT">
+    <Op class="dtv.pos.common.op.CreateTransactionAsNeededOp">
+      <Parameter name="TransactionType" value="WORKSTATION_X_REPORT" />
+    </Op>
+    <Op class="oracle.retail.xstore.countrypack.se.op.XReportBeanOp" longRunning="true"/>
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+    <PromptOp key="COUNTRYPACK.XREPORT_OPERATION_COMPLETED" />
+    <OpChainRoute chainKey="SIMPLE_COMPLETE_TRANSACTION" />
+  </OpChain>
+
+  <OpChain name="COUNTRYPACK.ZREPORT">
+    <Op class="oracle.retail.xstore.countrypack.se.op.ZReportBeanOp" longRunning="true"/>
+    <OpChainRoute chainKey="PRINT_RECEIPTS" />
+    <PromptOp key="COUNTRYPACK.ZREPORT_OPERATION_COMPLETED" />
+  </OpChain>
+
+</OpChainSet>

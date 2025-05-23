@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: THIS CONFIG SHOULD BE MAINTAINED USING dtv.pos.framework.form.design.FormDesigner ANY OTHER EDITS MAY GET LOST -->
+<FormViewSet>
+  <FormView>
+    <FormKey dtype="String">COUNTRYPACK_IT_ABROAD_PERSONDATA</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--MINIMUM, FILL -->
+          <param_value dtype="DoubleArray">-3.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, 10.0, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, FILL -->
+          <param_value dtype="DoubleArray">-2.0, -2.0, 10.0, -2.0, -2.0, -2.0, 10.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setGaps">
+          <param_value dtype="IntegerArray">0, 1, 0, 1</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">true</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell layoutLocation="0, 0, 1, 1, R, F" type="FormLabel" textKey="_countrypack.amountLimit.firstNameLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 0, 1, 1, F, F" type="FormTextField" resource="firstName" required="true">
+        <DataField ref="Name" editFormat="CaseAllUpper"/>
+        <TabOrder dtype="Integer">0</TabOrder>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 1, 1, 1, R, F" type="FormLabel" textKey="_countrypack.amountLimit.lastNameLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 1, 1, 1, F, F" type="FormTextField" resource="lastName" required="true">
+        <DataField ref="Name" editFormat="CaseAllUpper"/>
+        <TabOrder dtype="Integer">1</TabOrder>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 3, 1, 1, R, F" type="FormLabel" textKey="_countrypack.amountLimit.birthDateLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 3, 1, 1, F, F" type="FormTextField" resource="birthDate" required="true">
+        <TabOrder dtype="Integer">2</TabOrder>
+        <DataField Ref="BirthDate" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 4, 1, 1, R, F" type="FormLabel" textKey="_countrypack.amountLimit.birthCityLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 4, 1, 1, F, F" type="FormTextField" resource="birthCity" required="true">
+        <TabOrder dtype="Integer">3</TabOrder>
+        <Font fontSize="+2" />
+        <DataField editFormat="CaseAllUpper" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 5, 1, 1, R, F" type="FormLabel" textKey="_countrypack.amountLimit.birthProvinceLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 5, 1, 1, F, F" type="FormTextField" resource="birthProvince">
+        <TabOrder dtype="Integer">4</TabOrder>
+        <Font fontSize="+2" />
+        <DataField editFormat="CaseAllUpper" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 7, 1, 1, R, F" type="FormLabel" textKey="_countrypack.amountLimit.birthCountryLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 7, 1, 1, F, F" type="FormComboBox" resource="birthCountry" required="true">
+        <TabOrder dtype="Integer">5</TabOrder>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+      <FormViewCell layoutLocation="0, 8, 1, 1, R, F" type="FormLabel" textKey="_countrypack.amountLimit.residenceCountryLabel">
+        <Font fontStyle="BOLD" fontSize="+2" />
+      </FormViewCell>
+      <FormViewCell layoutLocation="1, 8, 1, 1, F, F" type="FormComboBox" resource="residenceCountry" required="true">
+        <TabOrder dtype="Integer">6</TabOrder>
+        <Font fontSize="+2" />
+        <ComponentParameter name="setPreferredSize">
+          <component_value dtype="DimensionRef">_sizePreferredFormViewField</component_value>
+        </ComponentParameter>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--********************************** -->
+    <!--** DEFAULT action keys ** -->
+    <!--********************************** -->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT_OK" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <XstRollingRandomAccessFile name="XFG-LOGANALYZER.file" fileName="${sys:user.dir}/log/xfg-loganalyzer.log"
+      filePattern="${sys:user.dir}/log/xfg-loganalyzer.%i.log">
+      <PatternLayout pattern="%d %5p [%t] %c - %m%n" header="loading ${log4j:configLocation}%n" />
+      <SizeBasedTriggeringPolicy size="50MB" />
+      <DefaultRolloverStrategy max="14" />
+    </XstRollingRandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.micros_retail.xfgclient.loganalyzer.LogAnalyzer" level="info" />
+    <Root level="warn">
+      <AppenderRef ref="XFG-LOGANALYZER.file" />
+    </Root>
+  </Loggers>
+</Configuration>

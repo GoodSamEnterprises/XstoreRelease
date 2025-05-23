@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+
+  <MenuItem name="RETAIL::CUSTOMER_OPTIONS" text="_customerOptionsMenu" category="Retail" keywords="universal,sale,register_extended,register_all">
+    <MenuOption>
+      <Action ref="CUSTOMER::ATTACH" />
+      <Action ref="CUSTOMER::DETACH" />
+    </MenuOption>
+    <MenuOption ref="CUSTOMER::EDIT" />
+    <!-- Scan TaxFree provider identification code -->
+    <MenuOption>
+      <Action ref="COUNTRYPACK::TAXFREE_PROVIDER_TOKEN_SCAN" />
+      <Action ref="COUNTRYPACK::TAXFREE_REMOVE_PROVIDER_TOKEN" />
+    </MenuOption>
+    <!-- Taxfree issuing request -->
+    <MenuOption ref="COUNTRYPACK::TAXFREE_REQUEST" />
+    <!-- Invoice issuing request -->
+    <MenuOption ref="COUNTRYPACK::INVOICE_REQUEST" />
+  </MenuItem>
+
+  <MenuItem name="ADMIN::REPRINT_OPTIONS" text="_menutextRcptPrint">
+    <MenuOption ref="ADMIN::REPRINT_GIFT_RECEIPTS" />
+    <MenuOption ref="ADMIN::REPRINT_LAST_RECEIPT" />
+    <MenuOption ref="ADMIN::REPRINT_DOCUMENT" />
+    <MenuOption ref="ADMIN::PRINT_REBATE_RECEIPT" />
+    <MenuOption ref="COUNTRYPACK::ADMIN::INVOICE::REPRINT_LAST_INVOICE" />
+  </MenuItem>
+
+  <MenuItem name="ADMIN::BACK_OFFICE_OPTIONS" text="_menuTopText" rootText="_menuTopTextRoot" displayType="LIST" category="Back Office" keywords="universal,back_office,inventory,back_office_only,report_customer,report_inventory,report_employee,report_till,report_system,report" >
+    <MenuOption ref="ADMIN::VIEW_DASHBOARD" />
+    <MenuOption ref="RETAIL::REPORT.FLASH_SALES" />
+    <SubMenu ref="INVENTORY::OPTIONS" />
+    <SubMenu ref="EMPLOYEE::MANAGER_OPTIONS" />
+    <SubMenu ref="TILL::OPTIONS" />
+    <SubMenu ref="ADMIN::SYSTEM_CYCLE_OPTIONS" />
+    <MenuOption ref="TENDER_EXCHANGE" />
+    <SubMenu ref="ADMIN::REPORTS" />
+
+    <SubMenu text="_menuTextJournal">
+      <MenuOption ref="ADMIN::ELECTRONIC_JOURNAL" />
+      <MenuOption ref="RETAIL::REPORT.JOURNAL_ROLL" />
+    </SubMenu>
+
+    <SubMenu ref="CUSTOMER::MANAGER_OPTIONS" />
+
+    <SubMenu ref="ASSOCIATE::TASKS" />
+
+    <SubMenu text="_menutext141">
+      <MenuOption ref="BROWSER::ORACLE" />
+    </SubMenu>
+
+    <SubMenu ref="BALANCE_INQUIRY::BACK_OFFICE_OPTIONS" />
+    <SubMenu ref="ADMIN::HARDWARE_MANAGEMENT" />
+    <MenuOption ref="ADMIN::REPRINT_RECEIPT" />
+
+    <!--  Invoice options submenu -->
+    <SubMenu ref="COUNTRYPACK::INVOICE_OPTIONS" />
+
+    <MenuOption>
+      <Action ref="ADMIN::TRAINING_MODE_ENTER" />
+      <Action ref="ADMIN::TRAINING_MODE_EXIT" />
+    </MenuOption>
+  </MenuItem>
+
+  <MenuItem name="COUNTRYPACK::INVOICE_OPTIONS" text="_countrypack.invoice.options_menu" displayType="LIST" category="Admin" keywords="exclude">
+    <MenuOption ref="COUNTRYPACK::INVOICE_SEARCH" />
+    <MenuOption ref="COUNTRYPACK::TAXFREE_SCAN_RECEIPT" />
+  </MenuItem>
+
+  <MenuItem name="TAXFREE_RECEIPT_SCAN::OPTIONS" text="_countrypack.taxfree.options_menu" displayType="BUTTON" category="Admin">
+    <MenuOption ref="COUNTRYPACK::TAXFREE_ISSUE_TAXFREE" />
+    <MenuOption ref="COUNTRYPACK::TAXFREE_CONSOLIDATE" />
+    <MenuOption ref="COUNTRYPACK::TAXFREE_REMOVE_RECEIPT" />
+  </MenuItem>
+
+</MenuSet>

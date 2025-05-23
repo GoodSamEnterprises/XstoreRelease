@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreFlightChecks dtype="Root" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="PreFlightCheckConfig.xsd">
+
+  <PreFlightCheck name="COUNTRYPACK.FR.CHECKFISCALYEAR" type="CORE" level="FATAL" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrFiscalYearStartPreflightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.preflight.noFirstFiscalMonth</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.CHECK_SIRET" type="CORE" level="FATAL" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrSiretPreFlightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.preflight.missingSiret</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.CHECK_NAF" type="CORE" level="FATAL" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrNafPreFlightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.preflight.missingNaf</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.CHECK_TVA" type="CORE" level="FATAL" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrTvaPreFlightCheck</CheckClass>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.preflight.missingTva</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <!-- BEGIN: Sequence file pre-flight checks for France -->
+  <PreFlightCheck name="COUNTRYPACK.FR.SALES_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.FR.PREFLIGHT.SALE_SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.FR.SALES_SEQUENCE"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.saleSequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.RECEIPT_DUPLICATES_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.FR.PREFLIGHT.REPRINT_DUPLICATE_SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.FR.REPRINT_RECEIPT_SEQUENCE"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.reprintDuplicateSequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.EVENT_LOG_SEQUENCE" enabled="true" type="CONFIG" level="FATAL">
+    <CheckClass dtype="Class">dtv.pos.appmanagement.preflight.check.SequencePreFlightCheck</CheckClass>
+    <Parameter name="QueryKey" value="COUNTRYPACK.FR.PREFLIGHT.EVENT_LOG_SEQUENCE" />
+    <Parameter name="SequenceType" value="COUNTRYPACK.FR.EVENT_LOG_SEQUENCE"/>
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.eventLogSequencePreflightCheck</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- END: Sequence file pre-flight checks for France -->
+
+  <!-- BEGIN: Signature file pre-flight check -->
+  <PreFlightCheck name="COUNTRYPACK.FR.SALES_SIGNATURE" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrSignatureFilePreFlightCheck</CheckClass>
+    <Parameter name="FileToCheck" value="SALE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.signatureSalesFile</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.RECEIPT_DUPLICATE_SIGNATURE" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrSignatureFilePreFlightCheck</CheckClass>
+    <Parameter name="FileToCheck" value="DUPLICATE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.signatureDuplicateFile</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.JET_LOG_SIGNATURE" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrSignatureFilePreFlightCheck</CheckClass>
+    <Parameter name="FileToCheck" value="TECHNICALEVENTLOG" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.signatureJETLogFile</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.SALES_TOTALS_SIGNATURE" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrSignatureFilePreFlightCheck</CheckClass>
+    <Parameter name="FileToCheck" value="TRANSTOTAL" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.signatureTransTotalFile</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.DAILY_CLOSURE_SIGNATURE" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrSignatureFilePreFlightCheck</CheckClass>
+    <Parameter name="FileToCheck" value="DAILYCLOSURE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.signatureDailyClosureFile</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.MONTHLY_CLOSURE_SIGNATURE" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrSignatureFilePreFlightCheck</CheckClass>
+    <Parameter name="FileToCheck" value="MONTHLYCLOSURE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.signatureMonthlyClosureFile</param_value>
+    </Parameter>
+  </PreFlightCheck>
+
+  <PreFlightCheck name="COUNTRYPACK.FR.YEARLY_CLOSURES_SIGNATURE" level="FATAL" type="CORE" enabled="true">
+    <CheckClass dtype="Class">oracle.retail.xstore.countrypack.fr.preflight.FrSignatureFilePreFlightCheck</CheckClass>
+    <Parameter name="FileToCheck" value="YEARLYCLOSURE" />
+    <Parameter name="FailureMessage">
+      <param_value dtype="Translatable">_countrypack.fr.signatureYearlyClosureFile</param_value>
+    </Parameter>
+  </PreFlightCheck>
+  <!-- END: Signature file pre-flight check -->
+
+</PreFlightChecks>

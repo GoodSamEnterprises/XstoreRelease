@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FormViewSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../pos/config/dtv/res/config/form/FormsConfig.xsd">
+  <FormView>
+    <FormKey dtype="String">NFE_MAINTENANCE_SEARCH</FormKey>
+    <FormLocation dtype="String">POPUP_VIEW_PANEL</FormLocation>
+    <FormLayout dtype="String">LEFT_TO_RIGHT</FormLayout>
+    <FormViewPanel>
+      <PanelType dtype="String">DETAIL</PanelType>
+      <FormTabKey dtype="String">DEFAULT</FormTabKey>
+      <Layout dtype="Class">dtv.ui.layout.TableLayout</Layout>
+      <LayoutParameters dtype="ParameterList">
+        <Parameter name="setColumn">
+          <!--PREFERRED, FILL, FILL, MINIMUM, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -1.0, -1.0, -3.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setRow">
+          <!--PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, PREFERRED, FILL-->
+          <param_value dtype="DoubleArray">-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -1.0</param_value>
+        </Parameter>
+        <Parameter name="setVerticalStretch">
+          <param_value dtype="Boolean">false</param_value>
+        </Parameter>
+      </LayoutParameters>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 0, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.nfeUsageType</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+       <FormViewCell>
+        <LayoutLocation dtype="String">2, 0, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">nfeUsageTypeStr</Resource>
+        <Height dtype="Integer">25</Height>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <!--<FormViewCell>
+        <LayoutLocation dtype="String">0, 1, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.transactionType</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 1, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">transType</Resource>
+        <ReadOnly dtype="Boolean">true</ReadOnly>
+        <Height dtype="Integer">25</Height>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+             </FormViewCell> -->
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 2, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.queueStatus</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 2, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">queueStatusStr</Resource>
+        <Height dtype="Integer">25</Height>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 3, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.NFeMode</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+       <FormViewCell>
+        <LayoutLocation dtype="String">2, 3, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormComboBox</Type>
+        <Resource dtype="String">mode</Resource>
+        <Height dtype="Integer">25</Height>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 2, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.saiEnt</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 4, 2, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.saiEntDateStart</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+        <ColorGroup>
+          <FgColor dtype="Color">#9f2d2b</FgColor>
+        </ColorGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">saiEntDateStart</Resource>
+        <DataField Ref="Date" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 4, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.saiEntDateEnd</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+        <ColorGroup>
+          <FgColor dtype="Color">#9f2d2b</FgColor>
+        </ColorGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 4, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">saiEntDateEnd</Resource>
+        <DataField Ref="Date" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 5, 2, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.saiEntTimeStart</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+        <ColorGroup>
+          <FgColor dtype="Color">#9f2d2b</FgColor>
+        </ColorGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">saiEntTimeStart</Resource>
+        <DataField Ref="Time" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 5, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.saiEntTimeEnd</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+        <ColorGroup>
+          <FgColor dtype="Color">#9f2d2b</FgColor>
+        </ColorGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 5, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">saiEntTimeEnd</Resource>
+        <DataField Ref="Time" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 6, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.registerId</TextKey>
+        <Required dtype="Boolean">false</Required>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 6, 2, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.registerIdStart</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+        <ColorGroup>
+          <FgColor dtype="Color">#9f2d2b</FgColor>
+        </ColorGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 6, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">registerIdStart</Resource>
+        <DataField Ref="Numeric" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 6, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.registerIdEnd</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+        <ColorGroup>
+          <FgColor dtype="Color">#9f2d2b</FgColor>
+        </ColorGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 6, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">registerIdEnd</Resource>
+        <DataField Ref="Numeric" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 7, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.queueSequence</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">1, 7, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.queueSequenceStart</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+        <ColorGroup>
+          <FgColor dtype="Color">#9f2d2b</FgColor>
+        </ColorGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 7, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">queueSequenceStart</Resource>
+        <DataField Ref="Numeric" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">3, 7, 1, 1, R, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.queueSequenceEnd</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+        <ColorGroup>
+          <FgColor dtype="Color">#9f2d2b</FgColor>
+        </ColorGroup>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">4, 7, 1, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">queueSequenceEnd</Resource>
+        <DataField Ref="Numeric" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">0, 8, 1, 1, L, F</LayoutLocation>
+        <Type dtype="String">FormLabel</Type>
+        <TextKey dtype="Translatable">_countrypack.br.nfe.maintenance.search.chave</TextKey>
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+      <FormViewCell>
+        <LayoutLocation dtype="String">2, 8, 3, 1, F, F</LayoutLocation>
+        <Type dtype="String">FormTextField</Type>
+        <Resource dtype="String">chave</Resource>
+        <DataField Ref="Numeric_44" />
+        <Font>
+          <FontStyle dtype="String">BOLD</FontStyle>
+        </Font>
+      </FormViewCell>
+    </FormViewPanel>
+    <!--**********************************-->
+    <!--** DEFAULT action keys **-->
+    <!--**********************************-->
+    <ActionGroup key="DEFAULT">
+      <Action ref="CANCEL_BACK" />
+      <Action ref="ACCEPT" />
+    </ActionGroup>
+  </FormView>
+</FormViewSet>

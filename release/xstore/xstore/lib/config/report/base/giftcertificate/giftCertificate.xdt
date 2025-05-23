@@ -1,0 +1,106 @@
+<dataTemplate name="GiftCertificate" xmlns="http://micros.com/xstore/config/report">
+  <labels>
+    <!-- Common Text -->
+    <label name="RESULTS_NO_DATA" value="_rptNoDataToDisplay"/>
+    <label name="DASH_DELIMITER" value="_rptDashDelimiter"/>
+    <label name="HEADER_STORE" value="_rptStore"/>
+    <label name="FOOTER_RUN_DATE" value="_rptReportRunDate"/>
+    <label name="FOOTER_PAGE" value="_rptPage"/>
+    <label name="FOOTER_OF" value="_rptof"/>
+
+    <!-- Template-specific Text -->
+    <label name="CRITERIA_DATE_RANGE" value="_rptRetailPeriodRangeColon"/>
+    <label name="CRITERIA_EMPLOYEE" value="_rptEmployeeColon"/>
+    <label name="DATE" value="_rptDateTime"/>
+    <label name="SERIAL" value="_rptGiftCertificateSerialNbr"/>
+    <label name="SOLD" value="_rptSold"/>
+    <label name="REDEEMED" value="_rptGiftCertificateRedeemed"/>
+    <label name="S_TRANS" value="_rptTransaction"/>
+    <label name="R_TRANS" value="_rptTransaction"/>
+    <label name="S_ID" value="_rptID"/>
+    <label name="R_ID" value="_rptID"/>
+    <label name="S_DATE" value="_rptDate"/>
+    <label name="R_DATE" value="_rptDate"/>
+    <label name="DENOM" value="_rptGiftCertificateDenom"/>
+    <label name="AMT" value="_rptAmount"/>
+    <label name="CNT" value="_rptCountColon"/>
+    <label name="TOT" value="_rptTotal"/>
+  </labels>
+
+  <parameters>
+    <!-- System Parameters -->
+    <parameter name="systemDate" class="dtv.pos.iframework.type.IDtvDate" include_in_output="true" formatter="DateTimeShort"/>
+    <parameter name="reportTitle" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="logo" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+    <parameter name="organizationId" class="java.lang.Long" isForPrompting="false" include_in_output="false"/>
+    <parameter name="retailLocationId" class="java.lang.Long" isForPrompting="false" include_in_output="true"/>
+    <parameter name="storeName" class="java.lang.String" isForPrompting="false" include_in_output="true"/>
+
+    <!-- User Parameters -->
+    <parameter name="dateRange" class="dtv.pos.iframework.type.IDtvDateRange" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptRetailPeriodRange;DateRange]]></parameterDescription>
+      <defaultValueExpression><![CDATA[dtv.pos.framework.reporting.fill.AbsoluteDtvDateRange.DEFAULT]]></defaultValueExpression>
+    </parameter>
+    <parameter name="startEmployee" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptGiftCertificateStartEmployee;Text;Simple;maxCharacters=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+    </parameter>
+    <parameter name="endEmployee" class="java.lang.String">
+      <parameterDescription><![CDATA[_rptGiftCertificateEndEmployee;Text;Simple;maxCharacters=20]]></parameterDescription>
+      <defaultValueExpression><![CDATA[99999999999999999]]></defaultValueExpression>
+    </parameter>
+    <parameter name="showCriteria" class="java.lang.String" isForPrompting="true" include_in_output="true">
+      <parameterDescription><![CDATA[_rptShowReportCriteria;Combo;dtv.pos.reporting.fill.SoftEnumFactory;YES=_rptDefaultYes|NO=_rptDefaultNo]]></parameterDescription>
+      <defaultValueExpression><![CDATA["YES"]]></defaultValueExpression>
+    </parameter>
+  </parameters>
+  <dataSource>
+    <queryReference name="Q_GIFT" key="GIFT_CERTIFICATE_REPORT">
+      <Parameters>
+        <Parameter>organizationId</Parameter>
+        <Parameter>retailLocation</Parameter>
+        <Parameter>retailLocationId</Parameter>
+        <Parameter>startEmployee</Parameter>
+        <Parameter>endEmployee</Parameter>
+        <Parameter>argBusinessDateStart</Parameter>
+        <Parameter>argBusinessDateEnd</Parameter>
+      </Parameters>
+
+      <ResultFields>
+        <ResultClass dtype="String">dtv.data2.access.DefaultQueryResult</ResultClass>
+        <ResultField>serial_nbr</ResultField>
+        <ResultField>business_date</ResultField>
+        <ResultField>trans_seq</ResultField>
+        <ResultField>employee_id</ResultField>
+        <ResultField>face_value_amt</ResultField>
+        <ResultField>tndr_serial_nbr</ResultField>
+        <ResultField>tndr_business_date</ResultField>
+        <ResultField>tndr_trans_seq</ResultField>
+        <ResultField>tndr_amt</ResultField>
+        <ResultField>tnd_employee_id</ResultField>
+        <ResultField>redeemed_amt</ResultField>
+        <ResultField>redeemed</ResultField>
+      </ResultFields>
+    </queryReference>
+  </dataSource>
+  <dataStructure>
+    <group name="G_GIFT" source="Q_GIFT">
+      <element name="SERIAL" value="serial_nbr"/>
+      <element name="S_TRANS" value="trans_seq"/>
+      <element name="S_ID" value="employee_id"/>
+      <element name="S_DATE" value="business_date" formatter="DateMedium"/>
+      <element name="DENOM" value="face_value_amt" formatter="Money"/>
+      <element name="R_TRANS" value="tndr_trans_seq"/>
+      <element name="R_ID" value="tnd_employee_id"/>
+      <element name="R_DATE" value="tndr_business_date" formatter="DateMedium"/>
+      <element name="AMT" value="redeemed_amt" formatter="Money"/>
+    </group>
+
+      <group name="G_GIFT_TTL" source="Q_GIFT">
+     <element name="S_TOT" value="face_value_amt" formatter="Money" function="SUM"/>
+     <element name="R_TOT" value="redeemed_amt" formatter="Money" function="SUM"/>
+     <element name="S_CNT" value="serial_nbr" formatter="Decimal" function="COUNT"/>
+     <element name="R_CNT" value="redeemed" formatter="Decimal" function="SUM"/>
+    </group>
+  </dataStructure>
+</dataTemplate>

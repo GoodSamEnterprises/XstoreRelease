@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpChainSet xmlns="http://micros.com/xstore/config/opchain"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://com.micros-retail/common OpChainConfig.xsd">
+            
+  <OpChain name="REGISTER_STARTUP" contextKey="REGISTER_LOGIN">
+    <OpChainRoute chainKey="REGISTER_STARTUP.pre" />
+    <OpChainRoute chainKey="REGISTER_STARTUP.workers" />
+    <PromptOp class="dtv.pos.appmanagement.preflight.check.op.PromptPreFlightOp" />
+    
+    <!--  Overridden just for the mode controller to be set to initialized -->
+    <Op class="dtv.cheetah.operations.XstoremModeInitializedOp" />
+    
+    <Op class="dtv.pos.systemcycle.access.SynchStateJournalOp">
+      <Parameter name="SilentChange" value="true" />
+    </Op>
+    <OpChainRoute chainKey="REGISTER_STARTUP.1" />
+    <OpChainRoute chainKey="INITIALIZE_FACTORIES" />
+    <Op class="dtv.pos.hardware.op.WaitForHardwareSetupOp" required="false" />
+    <OpChainRoute chainKey="REGISTER_STARTUP.2" />
+    <OpChainRoute chainKey="INITIALIZE_BACKGROUND_PROCESSES" />
+    <OpChainRoute chainKey="INITIALIZE_REFRESH_PROMOTIONS_PROCESSES" />
+    <OpChainRoute chainKey="REGISTER_STARTUP.post" />
+    <OpChainRoute chainKey="REGISTER_STARTUP.local.post" />
+    <OpChainRoute chainKey="REGISTER_LOGIN" chainType="START" />
+  </OpChain>
+
+  <OpChain name="REGISTER_LOGIN" contextKey="REGISTER_LOGIN" rollbackLevel="0">
+    <!-- Handles the post processing of the orphaned transactions. -->
+    <Op class="dtv.pos.startup.orphanedtrans.PostProcessOrphanedTransactionsOp">
+      <!-- This additional hook can be helpful in adding additional handling for orphaned transactions -->
+      <Parameter name="chainKey" value="POST_PROCESS_ORPHANED_TRANSACTIONS" />
+    </Op>
+    <!--The user is logging in to the register from within the register app. -->
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <Op class="dtv.pos.register.itemmessages.DefaultIdleMsgOp" />
+    <Op class="dtv.pos.security.op.LogoutOp" />
+    <PromptOp key="LOGIN_USER_ID" />
+  </OpChain>
+  
+  <OpChain name="REGISTER_LOGIN_FINISH">
+    <Op class="dtv.pos.security.op.PosLoginOp">
+      <Parameter name="OneStepAuthenticate" value="true" />
+      <Parameter name="LoginDescription" value="_registerFunctions" />    
+    </Op>
+    <OpChainRoute chainKey="VALIDATE_REGISTER_STARTUP" />
+    <PromptOp class="dtv.pos.payroll.op.PromptPayrollNotYetPostMsgOp" />
+    <OpChainRoute chainKey="PRE_SALE_TRANSACTION" chainType="START" />
+  </OpChain>
+ 
+  <OpChain name="INVENTORY_OPTIONS_LOGIN" contextKey="BACK_OFFICE_LOGIN">
+    <Op class="dtv.pos.security.op.PosLoginOp">
+      <Parameter name="OneStepAuthenticate" value="true" />
+      <Parameter name="LoginDescription" value="_menuTextInventory" />
+    </Op>
+    <OpChainRoute chainKey="UPDATE_PROMPTS_ROLLBACK" />
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <OpChainRoute chainKey="INVENTORY_OPTIONS_SELECTION" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="INVENTORY_OPTIONS_SELECTION" rollbackLevel="10">
+    <Op class="dtv.pos.framework.op.PromptMenuOp">
+      <Parameter name="MenuKey" value="INVENTORY::OPTIONS" />
+    </Op>
+  </OpChain>
+  
+  <OpChain name="CLOCK_IN_OUT" contextKey="CLOCK_IN_OUT">
+    <Op class="dtv.pos.security.op.PosLoginOp">
+      <Parameter name="OneStepAuthenticate" value="true" />
+      <Parameter name="LoginDescription" value="_menutext1" />
+    </Op>
+    <Op class="dtv.pos.timeclock.DoClockInOrOutOp" />
+    <OpChainRoute chainKey="CLOCK_IN_OUT_FINISH" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="WORKSTATION_OPEN_LOGIN" contextKey="BACK_OFFICE_LOGIN">
+    <Op class="dtv.pos.security.op.PosLoginOp">
+      <Parameter name="OneStepAuthenticate" value="true" />
+      <Parameter name="LoginDescription" value="_systemCyclePromptToOpenTitleWkstn" />
+    </Op>
+    <OpChainRoute chainKey="UPDATE_PROMPTS_ROLLBACK" />
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <Op class="dtv.pos.systemcycle.access.SynchStateJournalOp" />
+    <OpChainRoute chainKey="WORKSTATION_OPEN" chainType="START" />
+  </OpChain>
+  
+  <OpChain name="WORKSTATION_CLOSE_LOGIN" contextKey="BACK_OFFICE_LOGIN">
+    <Op class="dtv.pos.security.op.PosLoginOp">
+      <Parameter name="OneStepAuthenticate" value="true" />
+      <Parameter name="LoginDescription" value="_systemCyclePromptToCloseTitleWkstn" />
+    </Op>
+    <OpChainRoute chainKey="UPDATE_PROMPTS_ROLLBACK" />
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <OpChainRoute chainKey="WORKSTATION_CLOSE" chainType="START" />  
+  </OpChain>
+  
+  <OpChain name="CUSTOMER_MAINTENANCE_LOGIN" contextKey="BACK_OFFICE_LOGIN">
+    <Op class="dtv.pos.security.op.PosLoginOp">
+      <Parameter name="OneStepAuthenticate" value="true" />
+      <Parameter name="LoginDescription" value="_menutext123" />
+    </Op>
+    <OpChainRoute chainKey="UPDATE_PROMPTS_ROLLBACK" />
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <OpChainRoute chainKey="CUSTOMER_MAINTENANCE" chainType="START" />
+  </OpChain>
+  
+   <OpChain name="TILL_OPTIONS_LOGIN" contextKey="TILL">
+    <Op class="dtv.pos.security.op.PosLoginOp">
+      <Parameter name="OneStepAuthenticate" value="true" />
+      <Parameter name="LoginDescription" value="_registerTillOptionsMenuText" />
+    </Op>
+    <OpChainRoute chainKey="UPDATE_PROMPTS_ROLLBACK" />
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <OpChainRoute chainKey="TILL_OPTIONS_SELECTION" chainType="START" />
+  </OpChain>
+  <OpChain name="TILL_OPTIONS_SELECTION" rollbackLevel="10" contextKey="TILL">
+    <Op class="dtv.pos.framework.op.PromptMenuOp">
+      <Parameter name="MenuKey" value="TILL::OPTIONS" />
+    </Op>
+  </OpChain>
+  
+  <OpChain name="REINIT_HARDWARE_PROMPT" contextKey="BACK_OFFICE_LOGIN">
+  	<Op class="dtv.pos.security.op.PosLoginOp">
+      <Parameter name="OneStepAuthenticate" value="true" />
+      <Parameter name="LoginDescription" value="_labelPromptConfirmReinitializeHardwareTitle" />
+    </Op>
+    <OpChainRoute chainKey="UPDATE_PROMPTS_ROLLBACK" />
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <PromptOp class="dtv.pos.hardware.op.PromptReinitializeHardwareOp" />
+    <OpChainRoute chainKey="REINIT_HARDWARE" />
+  </OpChain>
+  
+  <OpChain name="EFTLINK_ADMIN_FUNCTIONS" contextKey="BACK_OFFICE_LOGIN">
+    <Op class="dtv.pos.security.op.PosLoginOp">
+      <Parameter name="OneStepAuthenticate" value="true" />
+      <Parameter name="LoginDescription" value="_eftlinkAdminFunctions" />
+    </Op>
+    <OpChainRoute chainKey="UPDATE_PROMPTS_ROLLBACK" />
+    <Op class="dtv.pos.security.op.StopAutoLogoutTimerOp" />
+    <Op class="dtv.tenderauth.impl.eftlink.op.EftLinkAdministrativeFunctionsOp">
+      <Parameter name="RequestType" value="ADMINISTRATION" />
+    </Op>
+  </OpChain>
+</OpChainSet>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MenuSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="MenuConfig.xsd"
+  xmlns="http://micros.com/xstore/config/menu">
+  <MenuItem name="LOGIN::REGISTER" text="_menuLoginRegister" displayType="BUTTON" category="Login" keywords="exclude">
+    <MenuOption ref="ADMIN::SEARCH_FOR_ITEM" />
+    <MenuOption ref="EMPLOYEE::CLOCK_IN_OUT" />
+    <MenuOption ref="LOGIN::CUSTOMER_MAINTENANCE" />
+
+    <MenuOption>
+      <Action ref="LOGIN::OPEN_REGISTER" />
+      <Action ref="LOGIN::CLOSE_REGISTER" />
+    </MenuOption>
+    <SubMenu ref="BALANCE_INQUIRY::REGISTER_OPTIONS" />
+    <MenuOption ref="LOGIN::TILL_OPTIONS" />
+  </MenuItem>
+</MenuSet>

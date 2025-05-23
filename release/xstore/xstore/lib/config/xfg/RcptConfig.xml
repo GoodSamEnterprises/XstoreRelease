@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- CHECKED: CONFIRMS WITH BASE 15.0.0 -->
+<ReceiptDefinitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="RcptConfig.xsd">
+
+  <sections>
+
+    <section name="nonvoided_scale_weighed_item">
+      <condition class="dtv.pos.docbuilding.conditions.AllowDonationLineItemOnReceipts" />
+      <condition class="com.micros_retail.xfgclient.docbuilding.conditions.XfgRcptScaleWeighedItemCondition" />
+      <region>
+        <field>
+          <aggregate class="com.micros_retail.xfgclient.rcpt.XfgWeighedItemDocBuilderField" />
+        </field>
+      </region>
+      <row>
+        <condition method="getItem.getItemDimensions.getDimension1" comparison="NOT_NULL" />
+        <field>
+          <aggregate class="dtv.pos.register.sale.ItemDimensionDocBuilderField" />
+          <Parameter name="DimensionIndex" value="1" />
+        </field>
+      </row>
+      <row>
+        <condition method="getItem.getItemDimensions.getDimension2" comparison="NOT_NULL" />
+        <field>
+          <aggregate class="dtv.pos.register.sale.ItemDimensionDocBuilderField" />
+          <Parameter name="DimensionIndex" value="2" />
+        </field>
+      </row>
+      <row>
+        <condition method="getItem.getItemDimensions.getDimension3" comparison="NOT_NULL" />
+        <field>
+          <aggregate class="dtv.pos.register.sale.ItemDimensionDocBuilderField" />
+          <Parameter name="DimensionIndex" value="3" />
+        </field>
+      </row>
+      <sectionref>LOCAL.NONVOIDED_ITEM</sectionref>
+      <sectionref>kit_components</sectionref>
+      <sectionref>item_serial_number</sectionref>
+      <sectionref>item_inventory_locations</sectionref>
+      <sectionref>return_proration</sectionref>
+      <sectionref>return_reason_code</sectionref>
+      <sectionref>item_discounts</sectionref>
+      <sectionref>return_verification</sectionref>
+      <sectionref>layaway_info</sectionref>
+      <sectionref>SP_ORDER_INFO</sectionref>
+      <sectionref>WARRANTY_COVERAGE</sectionref>
+      <sectionref>WARRANTY_LINE</sectionref>
+      <sectionref>registry_info</sectionref>
+      <sectionref>item_comments</sectionref>
+    </section>
+
+  </sections>
+</ReceiptDefinitions>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+  default-init-method="init">
+
+  <bean id="uiController" class="dtv.pos.framework.ui.UIControllerImplAnimated" scope="prototype" />
+  <bean id="uiInvoker" class="dtv.ui.SwingUIServicesExecutor" destroy-method="destroy" />
+  <bean id="cheetahXstore" class="dtv.cheetah.CheetahDemoXstoreImpl" scope="session" />
+  <bean id="textPromptOpRequestHandler" class="dtv.cheetah.operations.req.DelegatingRequestHandler" scope="prototype">
+    <property name="requestHandlers">
+      <list value-type="dtv.pos.iframework.op.req.IOpReqHandler">
+        <bean class="dtv.cheetah.operations.req.TextPromptReqHandler" parent="abstractPromptReqHandler" />
+        <bean class="dtv.pos.framework.op.req.TextPromptReqHandler" />
+      </list>
+    </property>
+  </bean> 
+  <bean id="longTextPromptOpRequestHandler" class="dtv.cheetah.operations.req.DelegatingRequestHandler" scope="prototype">
+    <property name="requestHandlers">
+      <list value-type="dtv.pos.iframework.op.req.IOpReqHandler">
+        <bean class="dtv.cheetah.operations.req.LongTextPromptReqHandler" parent="abstractPromptReqHandler" />
+        <bean class="dtv.pos.framework.op.req.LongTextPromptReqHandler" />
+      </list>
+    </property>
+  </bean> 
+  <bean id="notifyPromptOpRequestHandler" class="dtv.cheetah.operations.req.DelegatingRequestHandler" scope="prototype">
+    <property name="requestHandlers">
+      <list value-type="dtv.pos.iframework.op.req.IOpReqHandler">
+        <bean class="dtv.cheetah.operations.req.NotifyPromptReqHandler" parent="abstractPromptReqHandler" />
+        <bean class="dtv.pos.framework.op.req.NotifyPromptReqHandler" />
+      </list>
+    </property>
+  </bean> 
+  <bean id="viewportPromptOpRequestHandler" class="dtv.cheetah.operations.req.DelegatingRequestHandler" scope="prototype">
+    <property name="requestHandlers">
+      <list value-type="dtv.pos.iframework.op.req.IOpReqHandler">
+        <bean class="dtv.cheetah.operations.req.ViewportPromptReqHandler" parent="abstractPromptReqHandler" />
+        <bean class="dtv.pos.framework.op.req.ViewportPromptReqHandler" />
+      </list>
+    </property>
+  </bean> 
+  <bean id="listPromptOpRequestHandler" class="dtv.cheetah.operations.req.DelegatingRequestHandler" scope="prototype">
+    <property name="requestHandlers">
+      <list value-type="dtv.pos.iframework.op.req.IOpReqHandler">
+        <bean class="dtv.cheetah.operations.req.ListPromptReqHandler" parent="abstractPromptReqHandler">
+          <property name="customListStyles" ref="customCheetahListStyles" />
+        </bean>
+        <bean class="dtv.pos.framework.op.req.ListPromptReqHandler" />
+      </list>
+    </property>
+  </bean>
+  <bean id="formOpRequestHandler" class="dtv.cheetah.operations.req.DelegatingFormReqHandler" scope="prototype">
+    <property name="requestHandlers">
+      <list value-type="dtv.pos.iframework.op.req.IOpReqHandler">
+        <bean class="dtv.cheetah.operations.req.FormReqHandler" scope="prototype">
+          <constructor-arg ref="cheetahFormBuilderFactory" />
+        </bean>
+        <bean class="dtv.pos.framework.op.req.FormReqHandler" />
+      </list>
+    </property>
+  </bean>
+</beans>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Store dtype="Default" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SystemConfig.xsd">
+  <RegisterConfig dtype="Default">
+  </RegisterConfig>
+  <SystemConfig dtype="Default">
+    <Tax dtype="Default">
+      <EnableVatTaxSummaryPrint dtype="Boolean">true</EnableVatTaxSummaryPrint>
+      <DisableChangeTaxAmount dtype="Boolean">true</DisableChangeTaxAmount>
+      <SelectTaxPercentFromList dtype="Boolean">true</SelectTaxPercentFromList>
+      <IgnoreTaxGroups dtype="String"></IgnoreTaxGroups>
+    </Tax>
+    <OnScreenKeyboard dtype="Default">
+      <Layout dtype="String">azerty_fr</Layout>
+    </OnScreenKeyboard>
+    <MeasurementUnits dtype="Default">
+      <!-- VALUES:  CELSIUS, FAHRENHEIT, KELVIN -->
+      <Temperature dtype="String">CELSIUS</Temperature>
+      <!-- VALUES:  IMPERIAL, METRIC -->
+      <Length dtype="String">METRIC</Length>
+    </MeasurementUnits>
+    <SuspendTransaction dtype="Default">
+      <PrintSuspendTransReceipt dtype="Boolean">false</PrintSuspendTransReceipt>
+    </SuspendTransaction>
+    <LocalCurrencyId dtype="String">EUR</LocalCurrencyId>
+    <InvoiceConfig dtype="Default">
+      <EnableInvoicing dtype="Boolean">true</EnableInvoicing>
+      <Sequence dtype="Default">
+        <Invoice dtype="Default">
+          <SequencePrefix dtype="String">COUNTRYPACK.INVOICE_PREFIX</SequencePrefix>
+        </Invoice>
+        <CreditNote dtype="Default">
+          <SequencePrefix dtype="String">COUNTRYPACK.CREDIT_NOTE_PREFIX</SequencePrefix>
+        </CreditNote>
+      </Sequence>
+    </InvoiceConfig>
+    <FiscalConfig dtype="Default">
+      <CashLimits dtype="Default">
+        <OverridableLimit dtype="BigDecimal">3000</OverridableLimit>
+        <NotOverridableLimit dtype="BigDecimal">15000</NotOverridableLimit>
+      </CashLimits>
+      <Country dtype="Default">
+        <Fr dtype="Default">
+          <FiscalYearFirstMonth dtype="Integer">1</FiscalYearFirstMonth>
+          <ArchiveBasePath dtype="String">/xstore/closures/</ArchiveBasePath>
+          <FrNonFiscalStatement dtype="String">Non Valable Pour Encaissement</FrNonFiscalStatement>
+        </Fr>
+      </Country>
+    </FiscalConfig>
+    <TaxFreeConfig dtype="Default">
+      <FintraxConfig dtype="Default">
+        <ShopCountryCode dtype="String">250</ShopCountryCode>
+        <MinAmountThreshold dtype="BigDecimal">175.01</MinAmountThreshold>
+        <MerchantLogoImgPath dtype="String">res/graphics/taxfree/fintrax/FINTRAX_LOGO.bmp</MerchantLogoImgPath>
+        <ProviderLogoImgPath dtype="String">res/graphics/taxfree/fintrax/FINTRAX_PABLO_LOGO.bmp</ProviderLogoImgPath>
+        <SingleItemMaxQty dtype="PositiveInteger">15</SingleItemMaxQty>
+        <RefundMethodsDetails dtype="Default">
+          <RefundMethods dtype="String">CASH,CREDIT_CARD,ALIPAY,FAST_REFUND,ETIHAD_CARD</RefundMethods>
+          <ForceRefundSelection dtype="Boolean">true</ForceRefundSelection>
+        </RefundMethodsDetails>
+        <MandatoryFields dtype="String">identityDocumentNumber,lastName,firstName,countryCode,birthDate</MandatoryFields>
+        <OptionalFields dtype="String">street,postalCode,city,emailAddress,identityDocumentCountryCode</OptionalFields>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">day</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </FintraxConfig>
+      <GlobalBlueConfig dtype="Default">
+        <ProviderLogoImgPath dtype="String">res/graphics/taxfree/globalblue/GB_PABLO_LOGO.bmp</ProviderLogoImgPath>
+        <MinimumAge dtype="PositiveInteger">16</MinimumAge>
+        <SingleItemMaxQty dtype="PositiveInteger">15</SingleItemMaxQty>
+        <MandatoryFields dtype="String">identityDocumentNumber,lastName,firstName,countryCode,birthDate</MandatoryFields>
+        <OptionalFields dtype="String">street,postalCode,city,emailAddress,identityDocumentCountryCode</OptionalFields>
+        <DeferredInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">day</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+        </DeferredInvoiceLimit>
+        <VoidInvoiceLimit dtype="Default">
+          <TimeUnit dtype="String">none</TimeUnit>
+        </VoidInvoiceLimit>
+        <ConsolidateInvoiceLimit dtype="Default">
+          <Enabled dtype="Boolean">true</Enabled>
+          <TimeUnit dtype="String">none</TimeUnit>
+          <UnitLimit dtype="String">0</UnitLimit>
+          <AmountRule dtype="String">none</AmountRule>
+        </ConsolidateInvoiceLimit>
+      </GlobalBlueConfig>
+    </TaxFreeConfig>
+  </SystemConfig>
+</Store>
