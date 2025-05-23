@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
+<!-- $Id: build-workspace-common.xml 28 2016-01-28 17:03:04Z dtvdomain\ikhan $ -->
+<!-- $URL: https://dtvsource/remote-svn/cst_caw/trunk/projects/build-workspace-common.xml $ -->
+<project name="build-workspace-common" basedir=".">
+
+  <target name="copy-dependencies-web_inf" description="Copy dependencies Web Inf files to the target project">
+    <!-- Confirming if the target project name is defined -->
+    <fail unless="project.name" message="Property 'project.name' must be specified" />
+
+    <!-- Setting source and destination path -->
+    <property name="source" value="../${project.name}/WEB-INF" />
+    <property name="destination" value="${project.name}/WEB-INF" />
+
+    <!-- Checking if the target project is available to copy the dependencies -->
+    <fail message="Make sure the project ${project.name} is checked out. Look into the PSF file to determine the dependency project paths.">
+      <condition>
+        <not>
+          <and>
+            <available file="${source}/classes" />
+            <available file="${source}/lib" />
+          </and>
+        </not>
+      </condition>
+    </fail>
+
+    <!-- Coyping the dependencies from the target project path to the desired project -->
+    <echo message="Copying from ${source}" />
+    <copy todir="${destination}" overwrite="true">
+      <fileset dir="${source}" />
+    </copy>
+  </target>
+
+  <target name="copy-dependencies-modules" description="Copy dependencies module files to the target project">
+    <!-- Confirming if the target project name is defined -->
+    <fail unless="project.name" message="Property 'project.name' must be specified" />
+
+    <!-- Setting source and destination path -->
+    <property name="source" value="../${project.name}/${project.name}" />
+    <property name="destination" value="${project.name}" />
+
+    <!-- Checking if the target project is available to copy the dependencies -->
+    <fail message="Make sure the project ${project.name} is checked out. Look into the PSF file to determine the dependency project paths.">
+      <condition>
+        <not>
+          <and>
+            <available file="${source}" />
+          </and>
+        </not>
+      </condition>
+    </fail>
+
+    <!-- Coyping the dependencies from the target project path to the desired project -->
+    <echo message="Copying from ${source}" />
+    <copy todir="${destination}" overwrite="true">
+      <fileset dir="${source}" />
+    </copy>
+  </target>
+  
+  <!-- ###################################################################################### -->
+  <!-- ###################################################################################### -->
+  
+  <target name="copy-files-to-config" description="Copy files from customer layer to config project to resolve missing resource issue">
+    <fail unless="copy-to-config-target-dir" message="Property 'copy-to-config-target-dir' must be specified" />
+    <copy todir="../config/${target-dir}" overwrite="true">
+      <fileset dir="${copy-to-config-target-dir}" />
+    </copy>
+  </target>
+  
+  <!-- ###################################################################################### -->
+  <!-- ###################################################################################### -->
+
+  <target name="backup-localconfig" description="Backup local config changes for this workspace">
+    <fail unless="zipfilefullpath" message="Property 'zipfilefullpath' must be specified" />
+    <delete file="${zipfilefullpath}" />
+    <zip destfile="${zipfilefullpath}">
+      <zipfileset dir="cust_config/localconfig" prefix="cust_config/localconfig" />
+      <zipfileset file="system.local.properties" />
+      <zipfileset file="xstorem-demo.properties" />
+      <zipfileset file="xstorem.properties" />
+    </zip>
+  </target>
+
+</project>

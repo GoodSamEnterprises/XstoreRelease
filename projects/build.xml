@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE project>
+<!-- $Id: build.xml 4 2015-10-22 19:50:16Z dtvdomain\ikhan $ -->
+<project name="customer-projects" basedir="..">
+
+  <available property="has.xc.shared" file="xcenter-shared" type="dir"/>
+  <available property="has.xadmin" file="xcenter-admin" type="dir"/>
+  <available property="has.xdtx" file="xcenter-dtx" type="dir"/>
+  <available property="has.customer.xadmin" file="${ant.project.name}_xcenter-admin" type="dir"/>
+  <!--echoproperties/-->
+
+  <target name="build-dev-workspace-step-1">
+    <subant target="make">
+      <fileset dir="database" includes="build.xml" />
+    </subant>
+    <antcall target="-xc-shared" />
+    <antcall target="-xadmin1-if" />
+    <antcall target="-xdtx1-if" />
+    <subant target="generation">
+      <fileset dir="dtx" includes="build.xml" />
+    </subant>
+  </target>
+  <target name="-xadmin1-if" if="has.xadmin">
+    <subant target="generate-classes">
+      <fileset dir="xcenter-admin" includes="build.xml" />
+    </subant>
+    <subant target="create-db-scripts-zip">
+      <fileset dir="xcenter-admin" includes="build.xml" />
+    </subant>
+  </target>
+  <target name="-xdtx1-if" if="has.xdtx">
+    <subant target="generate-classes">
+      <fileset dir="xcenter-dtx" includes="build.xml" />
+    </subant>
+  </target>
+  <target name="-xc-shared" if="has.xc.shared">
+    <subant target="make">
+      <fileset dir="xcenter-shared" includes="build.xml" />
+    </subant>
+  </target>
+
+  <target name="build-dev-workspace-step-2">
+    <subant target="dtx-and-reports-dev">
+      <fileset dir="${ant.project.name}_pos" includes="build.xml" />
+    </subant>
+    <antcall target="-xdtx2-if" />
+    <antcall target="-xadmin2-if" />
+    <antcall target="-xcustomerxadmin2" />
+  </target>
+
+  <target name="-xadmin2-if" if="has.xadmin">
+    <subant target="build-exploded-war">
+      <fileset dir="xcenter-admin" includes="build.xml" />
+    </subant>
+  </target>
+  <target name="-xdtx2-if" if="has.xdtx">
+    <subant target="build-dev-war">
+      <fileset dir="xcenter-dtx" includes="build.xml" />
+    </subant>
+  </target>
+  <target name="-xcustomerxadmin2" if="has.customer.xadmin">
+    <subant target="build-exploded-war">
+      <fileset dir="${ant.project.name}_xcenter-admin" includes="build.xml" />
+    </subant>
+  </target>
+
+</project>
